@@ -1,0 +1,88 @@
+package module.workflow.domain;
+
+/*
+ * @(#)domain_model_workflow_1.dml
+ *
+ * Copyright 2009 Instituto Superior Tecnico
+ * Founding Authors: Jo‹o Figueiredo, Luis Cruz, Paulo Abrantes, Susana Fernandes
+ * 
+ *      https://fenix-ashes.ist.utl.pt/
+ * 
+ *   This file is part of the MyOrg web application infrastructure.
+ *
+ *   MyOrg is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU Lesser General Public License as published
+ *   by the Free Software Foundation, either version 3 of the License, or
+ *   (at your option) any later version.*
+ *
+ *   MyOrg is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *   GNU Lesser General Public License for more details.
+ *
+ *   You should have received a copy of the GNU Lesser General Public License
+ *   along with MyOrg. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ */
+ 
+valueType myorg.domain.util.ByteArray as ByteArray;
+
+class WorkflowProcess {
+	String ojbConcreteClass;
+	Integer processNumber;
+}
+
+class ActivityLog {
+	String ojbConcreteClass;
+	DateTime whenOperationWasRan;
+	String operation;
+}
+
+class WorkflowProcessComment {
+	String comment;
+	DateTime date;
+} 
+
+class GenericFile {
+	String ojbConcreteClass;
+	String filename;
+	String displayName;
+	String contentType;
+}
+
+class FileContent {
+	ByteArray content;
+}
+
+relation WorkflowProcessActivityLog {
+	ActivityLog playsRole executionLogs {
+		multiplicity *;
+	}
+	WorkflowProcess playsRole process;
+}
+
+relation WorkflowProcessWorkflowProcessComment {
+	WorkflowProcessComment playsRole comments {
+		multiplicity *;
+	}	
+	WorkflowProcess playsRole process;
+}
+
+relation ProcessFile {
+	WorkflowProcess playsRole process;
+	GenericFile playsRole files {
+		multiplicity *;
+	}
+}
+
+relation FileContent {
+	GenericFile playsRole file;
+	FileContent playsRole content;
+}
+
+relation ProcessFileDeletion {
+	WorkflowProcess playsRole processWithDeleteFile;
+	GenericFile playsRole deletedFiles {
+		multiplicity *;
+	}
+}
