@@ -263,4 +263,8 @@ public class ProcessManagement extends ContextBaseAction {
 	return (T) getDomainObject(request, "processId");
     }
 
+    public static ActionForward forwardToProcess(final long processId) {
+	return new ActionForward("/workflowProcessManagement.do?method=viewProcess&processId=" + processId);
+    }
+
 }
