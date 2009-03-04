@@ -99,7 +99,7 @@ public class ProcessManagement extends ContextBaseAction {
 	return executeActivity(process, request, activity, information);
     }
 
-    private ActionForward executeActivity(WorkflowProcess process, HttpServletRequest request,
+    public ActionForward executeActivity(WorkflowProcess process, HttpServletRequest request,
 	    WorkflowActivity<WorkflowProcess, ActivityInformation<WorkflowProcess>> activity,
 	    ActivityInformation<WorkflowProcess> information) {
 	if (information.hasAllneededInfo()) {
@@ -109,18 +109,18 @@ public class ProcessManagement extends ContextBaseAction {
 		addMessage(request, e.getMessage());
 	    } catch (DomainException e) {
 		addMessage(request, e.getMessage());
-		request.setAttribute("information", information);
-		return forwardProcessForInput(activity, request);
+		return forwardProcessForInput(activity, request, information);
 	    }
 	    return viewProcess(process, request);
 	}
 
-	request.setAttribute("information", information);
-	return forwardProcessForInput(activity, request);
+	return forwardProcessForInput(activity, request, information);
     }
 
-    private ActionForward forwardProcessForInput(
-	    WorkflowActivity<WorkflowProcess, ActivityInformation<WorkflowProcess>> activity, HttpServletRequest request) {
+    public static ActionForward forwardProcessForInput(
+	    WorkflowActivity<WorkflowProcess, ActivityInformation<WorkflowProcess>> activity,
+	    HttpServletRequest request, ActivityInformation<WorkflowProcess> information) {
+	request.setAttribute("information", information);
 	return activity.isDefaultInputInterfaceUsed() ? forward(request, "/workflow/activityInput.jsp") : forward(request,
 		"workflow/" + activity.getClass().getName().replace('.', '/') + ".jsp");
     }
