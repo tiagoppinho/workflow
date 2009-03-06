@@ -4,7 +4,7 @@ package module.workflow.domain;
  * @(#)domain_model_workflow_1.dml
  *
  * Copyright 2009 Instituto Superior Tecnico
- * Founding Authors: João Figueiredo, Luis Cruz, Paulo Abrantes, Susana Fernandes
+ * Founding Authors: Jo√£o Figueiredo, Luis Cruz, Paulo Abrantes, Susana Fernandes
  * 
  *      https://fenix-ashes.ist.utl.pt/
  * 
@@ -24,8 +24,14 @@ package module.workflow.domain;
  *   along with MyOrg. If not, see <http://www.gnu.org/licenses/>.
  * 
  */
- 
-valueType myorg.domain.util.ByteArray as ByteArray;
+
+
+valueType myorg.domain.util.ByteArray as ByteArray {
+    externalizeWith {
+        bytearray getBytes();
+    }
+}
+
 
 class WorkflowProcess {
 	String ojbConcreteClass;
