@@ -175,6 +175,7 @@ public class ProcessManagement extends ContextBaseAction {
 	Set<WorkflowProcessComment> comments = new TreeSet<WorkflowProcessComment>(WorkflowProcessComment.COMPARATOR);
 	comments.addAll(process.getComments());
 
+	process.markCommentsAsReadForUser(UserView.getCurrentUser());
 	request.setAttribute("comments", comments);
 	request.setAttribute("bean", new VariantBean());
 

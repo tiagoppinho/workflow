@@ -59,4 +59,7 @@ public class WorkflowProcessComment extends WorkflowProcessComment_Base {
 	setMyOrg(MyOrg.getInstance());
     }
 
+    public boolean isUnreadBy(User user) {
+	return !getReaders().contains(user);
+    }
 }

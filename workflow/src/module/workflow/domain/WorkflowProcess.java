@@ -221,12 +221,34 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base {
     public <T extends ActivityLog> T logExecution(User person, String operationName, Object... args) {
 	return (T) new ActivityLog(this, person, operationName);
     }
-    
+
     @Override
     @Service
     public void removeFiles(GenericFile file) {
-        super.removeFiles(file);
-        addDeletedFiles(file);
+	super.removeFiles(file);
+	addDeletedFiles(file);
     }
 
+    public List<WorkflowProcessComment> getUnreadCommentsForCurrentUser() {
+	return getUnreadCommentsForUser(UserView.getCurrentUser());
+    }
+
+    public List<WorkflowProcessComment> getUnreadCommentsForUser(User user) {
+	List<WorkflowProcessComment> comments = new ArrayList<WorkflowProcessComment>();
+	for (WorkflowProcessComment comment : getComments()) {
+	    if (comment.isUnreadBy(user)) {
+		comments.add(comment);
+	    }
+	}
+	return comments;
+    }
+
+    @Service
+    public void markCommentsAsReadForUser(User user) {
+	for (WorkflowProcessComment comment : getComments()) {
+	    if (comment.isUnreadBy(user)) {
+		comment.addReaders(user);
+	    }
+	}
+    }
 }

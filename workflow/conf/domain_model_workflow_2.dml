@@ -3,7 +3,7 @@
  * @(#)domain_model_workflow_2.dml
  *
  * Copyright 2009 Instituto Superior Tecnico
- * Founding Authors: João Figueiredo, Luis Cruz, Paulo Abrantes, Susana Fernandes
+ * Founding Authors: Jo√£o Figueiredo, Luis Cruz, Paulo Abrantes, Susana Fernandes
  * 
  *      https://fenix-ashes.ist.utl.pt/
  * 
@@ -57,6 +57,16 @@ relation UserComment {
 	module.workflow.domain.WorkflowProcessComment playsRole comments {
 		multiplicity *;
 	}
+}
+
+relation UserReadComment {
+	myorg.domain.User playsRole readers {
+		multiplicity *;
+	}
+	module.workflow.domain.WorkflowProcessComment playsRole readComments {
+		multiplicity *;
+	}
+
 }
 
 relation TakeSupport {
