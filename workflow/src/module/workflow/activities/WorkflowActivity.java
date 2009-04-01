@@ -140,9 +140,19 @@ public abstract class WorkflowActivity<P extends WorkflowProcess, AI extends Act
      * An activity is said active when the conditions to be ran are met.
      * 
      * @param process
-     * @return true if the process is active
+     * @return true if the process is active for the current user
      */
-    public abstract boolean isActive(P process);
+    public boolean isActive(P process) {
+	return isActive(process, getLoggedPerson());
+    }
+
+    /**
+     * An activity is said active when the conditions to be ran are met.
+     * 
+     * @param process
+     * @return true if the process is active for the given user
+     */
+    public abstract boolean isActive(P process, User user);
 
     /**
      * This is the method that needs contains the activity specific behaviour.
