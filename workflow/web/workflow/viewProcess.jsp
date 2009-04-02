@@ -51,25 +51,6 @@
 
 <ul class="operations">
 	<li>
-	<logic:present name="process" property="currentOwner">
-		<logic:equal name="process" property="userCurrentOwner" value="true">
-				<html:link page="/workflowProcessManagement.do?method=releaseProcess" paramId="processId" paramName="process" paramProperty="OID">
-					<bean:message key="link.releaseProcess" bundle="WORKFLOW_RESOURCES"/>
-				</html:link>
-		</logic:equal>
-		<logic:equal name="process" property="userCurrentOwner" value="false">
-				<html:link page="/workflowProcessManagement.do?method=stealProcess" paramId="processId" paramName="process" paramProperty="OID">
-					<bean:message key="link.stealProcess" bundle="WORKFLOW_RESOURCES"/>
-				</html:link>
-		</logic:equal>
-	</logic:present>
-	<logic:notPresent name="process" property="currentOwner">
-		<html:link page="/workflowProcessManagement.do?method=takeProcess" paramId="processId" paramName="process" paramProperty="OID">
-				<bean:message key="link.takeProcess" bundle="WORKFLOW_RESOURCES"/>
-		</html:link>
-	</logic:notPresent>
-	</li>
-	<li>
 		<html:link page="/workflowProcessManagement.do?method=fileUpload" paramId="processId" paramName="process" paramProperty="OID">
 			<bean:message key="link.uploadFile" bundle="WORKFLOW_RESOURCES"/>
 		</html:link>

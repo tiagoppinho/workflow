@@ -125,47 +125,6 @@ public class ProcessManagement extends ContextBaseAction {
 		"workflow/" + activity.getClass().getName().replace('.', '/') + ".jsp");
     }
 
-    public ActionForward takeProcess(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
-	    final HttpServletResponse response) {
-
-	final WorkflowProcess process = getProcess(request);
-
-	try {
-	    process.takeProcess();
-	} catch (DomainException e) {
-	    addMessage(request, e.getMessage());
-	}
-
-	return viewProcess(process, request);
-    }
-
-    public ActionForward releaseProcess(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
-	    final HttpServletResponse response) {
-
-	final WorkflowProcess process = getProcess(request);
-	try {
-	    process.releaseProcess();
-	} catch (DomainException e) {
-	    addMessage(request, e.getMessage());
-	}
-
-	return viewProcess(process, request);
-    }
-
-    public ActionForward stealProcess(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
-	    final HttpServletResponse response) {
-
-	final WorkflowProcess process = getProcess(request);
-	try {
-	    process.stealProcess();
-	} catch (DomainException e) {
-	    addMessage(request, e.getMessage());
-	}
-
-	return viewProcess(process, request);
-
-    }
-
     public ActionForward viewComments(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
 	    final HttpServletResponse response) {
 

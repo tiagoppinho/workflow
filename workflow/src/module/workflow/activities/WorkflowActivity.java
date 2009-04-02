@@ -95,8 +95,8 @@ public abstract class WorkflowActivity<P extends WorkflowProcess, AI extends Act
     /**
      * Activity core method. When called runs the activity, it has 4 different
      * steps: verification of the conditions, log, actual execution and user
-     * notification. To specify activity behaviour this should not be the method
-     * to be overriden. But process instead.
+     * notification. To specify activity behavior this should not be the method
+     * to be overridden. But process instead.
      * 
      * @param activityInformation
      */
@@ -150,12 +150,40 @@ public abstract class WorkflowActivity<P extends WorkflowProcess, AI extends Act
      * An activity is said active when the conditions to be ran are met.
      * 
      * @param process
+     * @param user
+     *            that will run activity
      * @return true if the process is active for the given user
      */
     public abstract boolean isActive(P process, User user);
 
     /**
-     * This is the method that needs contains the activity specific behaviour.
+     * An activity is said to need user awareness if it's important that the
+     * users nows such activity is active.
+     * 
+     * @param process
+     * @return true if the current user should be aware of such activity is
+     *         active.
+     */
+
+    public boolean isUserAwarenessNeeded(P process) {
+	return isUserAwarenessNeeded(process, getLoggedPerson());
+    }
+
+    /**
+     * An activity is said to need user awareness if it's important that the
+     * users nows such activity is active.
+     * 
+     * @param process
+     * @param user
+     * @return true if the user should be aware of such activity is active.
+     */
+
+    public boolean isUserAwarenessNeeded(P process, User user) {
+	return true;
+    }
+
+    /**
+     * This is the method that needs contains the activity specific behavior.
      * 
      * @param activityInformation
      */
@@ -204,7 +232,7 @@ public abstract class WorkflowActivity<P extends WorkflowProcess, AI extends Act
     }
 
     /**
-     * This is used when a activity needs confirmation. Helds the confirmation
+     * This is used when a activity needs confirmation. Holds the confirmation
      * message.
      * 
      * @return Localized confirmation message
