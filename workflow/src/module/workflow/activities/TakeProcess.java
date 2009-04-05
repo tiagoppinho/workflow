@@ -1,7 +1,6 @@
 package module.workflow.activities;
 
 import module.workflow.domain.WorkflowProcess;
-import module.workflowTest.domain.TestProcess;
 import myorg.domain.User;
 import myorg.util.BundleUtil;
 
