@@ -4,12 +4,16 @@
 <%@ taglib uri="/WEB-INF/struts-logic.tld" prefix="logic"%>
 <%@ taglib uri="/WEB-INF/fenix-renderers.tld" prefix="fr"%>
 
+<script src="<%= request.getContextPath() + "/javaScript/jquery.alerts.js"%>" type="text/javascript"></script> 
+<script src="<%= request.getContextPath() + "/javaScript/alertHandlers.js"%>" type="text/javascript"></script> 
+ 
 <bean:define id="processId" name="process" property="OID" />
 <bean:define id="processClassName" name="process" property="class.name" type="java.lang.String"/>
 <bean:define id="includeFolder" value="<%= processClassName.replace('.','/')%>"/>
 
 <jsp:include page='<%= "/" + includeFolder + "/header.jsp" %>'/>
 
+ 
 <logic:present name="process" property="currentOwner">
 	<bean:define id="ownerName" name="process" property="currentOwner.username"/>
 	<div class="infoop4">
@@ -22,32 +26,20 @@
 <logic:iterate id="activity" name="process" property="activeActivities">
 	<bean:define id="name" name="activity" property="name" />
 	<li>
-	<html:link
+	<bean:define id="activityName" name="activity" property="localizedName"/>
+	<html:link styleId="<%= name.toString() %>"
 		page='<%="/workflowProcessManagement.do?method=process&activity=" + name + "&processId=" + processId%>'>
-		<fr:view name="activity" property="localizedName" />
+		<fr:view name="activityName"/>
+		<logic:equal name="activity" property="confirmationNeeded" value="true">
+			<bean:define id="message" name="activity" property="localizedConfirmationMessage"/>
+			  <script type="text/javascript"> 
+	   				linkConfirmationHook('<%= name %>', '<%= message %>','<%= activityName %>'); 
+	 		</script> 
+		</logic:equal>
 	</html:link>
 	</li>
 </logic:iterate>
 </ul>
-
-<logic:present name="information">
-	<logic:equal name="information" property="confirmationNeeded" value="true">
-		<logic:equal name="information" property="confirmed" value="false">
-			<bean:define id="name" name="information" property="activityName"/>
-			<div>
-				<fr:form  action='<%="/workflowProcessManagement.do?method=confirmActivity&activity=" + name + "&processId=" + processId%>'>
-					<fr:edit id="confirmationBean" name="information" visible="false">
-						<fr:destination name="cancel" path='<%="/workflowProcessManagement.do?method=viewProcess&processId=" + processId%>'/>
-					</fr:edit>
-					<fr:view name="information" property="localizedMessage"/>
-					<html:submit><bean:message key="button.confirm" bundle="WORKFLOW_RESOURCES"/></html:submit>
-					<html:cancel><bean:message key="button.cancel" bundle="WORKFLOW_RESOURCES"/></html:cancel>
-				</fr:form>
-				
-			</div>
-		</logic:equal>
-	</logic:equal>
-</logic:present>
 
 <ul class="operations">
 	<li>

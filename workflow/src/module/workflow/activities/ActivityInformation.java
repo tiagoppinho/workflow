@@ -34,25 +34,6 @@ public class ActivityInformation<P extends WorkflowProcess> implements Serializa
 
     private DomainReference<P> process;
     private String activityName;
-    private boolean confirmationNeeded;
-    private boolean confirmed;
-    private String localizedMessage;
-
-    public boolean isConfirmationNeeded() {
-	return confirmationNeeded;
-    }
-
-    public void setConfirmationNeeded(boolean confirmationNeeded) {
-	this.confirmationNeeded = confirmationNeeded;
-    }
-
-    public String getLocalizedMessage() {
-	return localizedMessage;
-    }
-
-    public void setLocalizedMessage(String localizedMessage) {
-	this.localizedMessage = localizedMessage;
-    }
 
     public String getActivityName() {
 	return activityName;
@@ -65,9 +46,6 @@ public class ActivityInformation<P extends WorkflowProcess> implements Serializa
     public ActivityInformation(P process, WorkflowActivity<? extends WorkflowProcess, ? extends ActivityInformation> activity) {
 	setProcess(process);
 	setActivity(activity);
-	setConfirmationNeeded(activity.needsConfirmation());
-	setConfirmed(!activity.needsConfirmation());
-	setLocalizedMessage(activity.getLocalizedConfirmationMessage());
     }
 
     public P getProcess() {
@@ -82,11 +60,4 @@ public class ActivityInformation<P extends WorkflowProcess> implements Serializa
 	return true;
     }
 
-    public boolean isConfirmed() {
-	return confirmed;
-    }
-
-    public void setConfirmed(boolean confirmed) {
-	this.confirmed = confirmed;
-    }
 }

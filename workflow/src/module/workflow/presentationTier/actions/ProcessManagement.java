@@ -67,15 +67,6 @@ public class ProcessManagement extends ContextBaseAction {
 	return forward(request, "/workflow/viewProcess.jsp");
     }
 
-    public ActionForward confirmActivity(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
-	    final HttpServletResponse response) {
-	WorkflowProcess process = getProcess(request);
-	WorkflowActivity<WorkflowProcess, ActivityInformation<WorkflowProcess>> activity = getActivity(request);
-	ActivityInformation<WorkflowProcess> information = getRenderedObject("confirmationBean");
-	information.setConfirmed(true);
-	return doLifeCycle(information, process, activity, request);
-    }
-
     public ActionForward process(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
 	    final HttpServletResponse response) {
 
@@ -89,11 +80,6 @@ public class ProcessManagement extends ContextBaseAction {
 	    WorkflowActivity<WorkflowProcess, ActivityInformation<WorkflowProcess>> activity, HttpServletRequest request) {
 	if (information == null) {
 	    information = activity.getActivityInformation(process);
-	}
-
-	if (information.isConfirmationNeeded() && !information.isConfirmed()) {
-	    request.setAttribute("information", information);
-	    return viewProcess(process, request);
 	}
 
 	return executeActivity(process, request, activity, information);

@@ -227,7 +227,7 @@ public abstract class WorkflowActivity<P extends WorkflowProcess, AI extends Act
      * 
      * @return by default false
      */
-    public boolean needsConfirmation() {
+    public boolean isConfirmationNeeded() {
 	return false;
     }
 
