@@ -25,13 +25,15 @@
 
 package module.workflow.domain;
 
+import module.workflow.activities.ActivityInformation;
+import module.workflow.activities.WorkflowActivity;
 import myorg.domain.MyOrg;
 import myorg.domain.User;
 
 import org.joda.time.DateTime;
 
 public class ActivityLog extends ActivityLog_Base {
-    
+
     public ActivityLog(WorkflowProcess process, User person, String operationName) {
 	super();
 	setMyOrg(MyOrg.getInstance());
@@ -40,5 +42,11 @@ public class ActivityLog extends ActivityLog_Base {
 	setOperation(operationName);
 	setWhenOperationWasRan(new DateTime());
 	setOjbConcreteClass(this.getClass().getName());
+    }
+
+    public String getDescription() {
+	WorkflowActivity<WorkflowProcess, ActivityInformation<WorkflowProcess>> activity = getProcess().getActivity(
+		getOperation());
+	return activity.getLocalizedName();
     }
 }

@@ -13,7 +13,7 @@ public class ReleaseProcess extends WorkflowActivity<WorkflowProcess, ActivityIn
 
     @Override
     public boolean isActive(WorkflowProcess process, User user) {
-	return process.getCurrentOwner() != null && process.getCurrentOwner() == user;
+	return process.isTicketSupportAvailable() && process.getCurrentOwner() != null && process.getCurrentOwner() == user;
     }
 
     @Override

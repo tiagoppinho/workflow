@@ -21,66 +21,101 @@
 	</div>
 </logic:present>
 
-
-<ul>
-<logic:iterate id="activity" name="process" property="activeActivities">
-	<bean:define id="name" name="activity" property="name" />
-	<li>
-	<bean:define id="activityName" name="activity" property="localizedName"/>
-	<html:link styleId="<%= name.toString() %>"
-		page='<%="/workflowProcessManagement.do?method=process&activity=" + name + "&processId=" + processId%>'>
-		<fr:view name="activityName"/>
-		<logic:equal name="activity" property="confirmationNeeded" value="true">
-			<bean:define id="message" name="activity" property="localizedConfirmationMessage"/>
-			  <script type="text/javascript"> 
-	   				linkConfirmationHook('<%= name %>', '<%= message %>','<%= activityName %>'); 
-	 		</script> 
+<table class="structural">
+	<tr>
+		<td style="width: 50%; padding-right: 1em; border: 1px dotted #aaa; padding: 10px 15px;">
+			<p class="mtop0 mbottom05"><b style="color: #555;"><bean:message key="label.activities" bundle="WORKFLOW_RESOURCES"/></b></p>
+			<ul class="operations mtop0">
+			<logic:iterate id="activity" name="process" property="activeActivities">
+				<bean:define id="name" name="activity" property="name" />
+				<li>
+				<bean:define id="activityName" name="activity" property="localizedName"/>
+				<html:link styleId="<%= name.toString() %>"
+					page='<%="/workflowProcessManagement.do?method=process&activity=" + name + "&processId=" + processId%>'>
+					<fr:view name="activityName"/>
+					<logic:equal name="activity" property="confirmationNeeded" value="true">
+						<bean:define id="message" name="activity" property="localizedConfirmationMessage"/>
+						  <script type="text/javascript"> 
+				   				linkConfirmationHook('<%= name %>', '<%= message %>','<%= activityName %>'); 
+				 		</script> 
+					</logic:equal>
+				</html:link>
+				</li>
+			</logic:iterate>
+			</ul>
+			<logic:empty name="process" property="activeActivities">
+				<p>
+					<em>
+						<bean:message key="messages.info.noOperatesAvailabeATM" bundle="WORKFLOW_RESOURCES"/>.
+					</em>
+				</p>
+			</logic:empty>
+			
+			
+			<ul class="operations">
+				<li>
+					<html:link page="/workflowProcessManagement.do?method=viewLogs" paramId="processId" paramName="process" paramProperty="OID">
+						<bean:message key="link.viewLogs" bundle="WORKFLOW_RESOURCES"/>
+					</html:link>
+				</li>
+			
+				<logic:equal name="process" property="commentsSupportAvailable" value="true">
+					<bean:size id="comments"  name="process" property="comments"/>
+					<li> 
+						<html:link page="/workflowProcessManagement.do?method=viewComments" paramId="processId" paramName="process" paramProperty="OID">
+							<bean:message key="link.comments" bundle="WORKFLOW_RESOURCES"/> (<%= comments %>)
+						</html:link>	
+					</li>
+				</logic:equal>
+			</ul>
+		</td>
+		
+		<logic:equal name="process" property="fileSupportAvailable" value="true">
+				
+		<td style="width: 2%;"></td>
+			
+			<td style="width: 45%; border: 1px dotted #aaa; padding: 10px 15px;">
+				<p class="mtop0 mbottom05"><b style="color: #555;"><bean:message key="label.documents" bundle="EXPENDITURE_RESOURCES"/></b></p>
+				<div class="documents mtop0" style="overflow: hidden; width: 300px">
+						<logic:iterate id="file" name="process" property="files">
+							<p>
+								<bean:define id="fileId" name="file" property="OID"/>
+								<fr:view name="file" property="displayName"/> <html:link page='<%= "/workflowProcessManagement.do?method=downloadFile&fileId=" + fileId %>'><bean:message key="link.downloadFile" bundle="WORKFLOW_RESOURCES"/></html:link> <html:link page='<%= "/workflowProcessManagement.do?method=removeFile&fileId=" + fileId %>'><bean:message key="link.removeFile" bundle="WORKFLOW_RESOURCES"/></html:link>
+							</p>
+						</logic:iterate>
+				</div>
+						<p>
+							<html:link page="/workflowProcessManagement.do?method=fileUpload" paramId="processId" paramName="process" paramProperty="OID">
+								<bean:message key="link.uploadFile" bundle="WORKFLOW_RESOURCES"/>
+							</html:link>
+						</p>
+						<p>
+							<html:link page="/workflowProcessManagement.do?method=viewRemovedFiles" paramId="processId" paramName="process" paramProperty="OID">
+								<bean:message key="link.viewRemovedFiles" bundle="WORKFLOW_RESOURCES"/>
+							</html:link>
+						</p>
+			</td>
 		</logic:equal>
-	</html:link>
-	</li>
-</logic:iterate>
-</ul>
+	</tr>
+</table>
 
-<ul class="operations">
-	<li>
-		<html:link page="/workflowProcessManagement.do?method=fileUpload" paramId="processId" paramName="process" paramProperty="OID">
-			<bean:message key="link.uploadFile" bundle="WORKFLOW_RESOURCES"/>
-		</html:link>
-	</li>
-	<li>
-		<html:link page="/workflowProcessManagement.do?method=viewRemovedFiles" paramId="processId" paramName="process" paramProperty="OID">
-			<bean:message key="link.viewRemovedFiles" bundle="WORKFLOW_RESOURCES"/>
-		</html:link>
-	</li>
-	<li>
-		<html:link page="/workflowProcessManagement.do?method=viewLogs" paramId="processId" paramName="process" paramProperty="OID">
-			<bean:message key="link.viewLogs" bundle="WORKFLOW_RESOURCES"/>
-		</html:link>
-	</li>
-
-	<bean:size id="comments"  name="process" property="comments"/>
-	<li> 
-		<html:link page="/workflowProcessManagement.do?method=viewComments" paramId="processId" paramName="process" paramProperty="OID">
-			<bean:message key="link.comments" bundle="WORKFLOW_RESOURCES"/> (<%= comments %>)
-		</html:link>	
-		<logic:greaterThan name="comments" value="0">
-			|
-			<span class="color888" style="font-size: 0.9em;">
-				<bean:message key="label.lastBy" bundle="WORKFLOW_RESOURCES"/> 
-				<bean:define id="mostRecentComment" name="process" property="mostRecentComment"/>
-				<strong><fr:view name="mostRecentComment" property="commenter.username"/></strong>, <fr:view name="mostRecentComment" property="date"/> 
-			</span>
-		</logic:greaterThan>
-	</li>
-</ul>
-
-<ul>
-	<logic:iterate id="file" name="process" property="files">
-		<li>
-		<bean:define id="fileId" name="file" property="OID"/>
-		<fr:view name="file" property="displayName"/> <html:link page='<%= "/workflowProcessManagement.do?method=downloadFile&fileId=" + fileId %>'><bean:message key="link.downloadFile" bundle="WORKFLOW_RESOURCES"/></html:link> <html:link page='<%= "/workflowProcessManagement.do?method=removeFile&fileId=" + fileId %>'><bean:message key="link.removeFile" bundle="WORKFLOW_RESOURCES"/></html:link>
-		</li>
-	</logic:iterate>
-</ul>
+<bean:define id="unreadComments" name="process" property="unreadCommentsForCurrentUser"/>
+<logic:notEmpty name="unreadComments">
+	<bean:size id="count" name="unreadComments"/>
+		<div class="infoop4 mtop05 mbottom15">
+		<p class="mvert025">
+			<logic:greaterThan name="count" value="1">
+				<bean:message key="label.unreadComments.info.moreThanOne" arg0="<%= count.toString() %>" bundle="WORKFLOW_RESOURCES"/>
+			</logic:greaterThan>
+			<logic:equal name="count" value="1">
+				<bean:message key="label.unreadComments.info" arg0="<%= count.toString() %>" bundle="WORKFLOW_RESOURCES"/>
+			</logic:equal>
+			
+			<html:link page="/workflowProcessManagement.do?method=viewComments" paramId="processId" paramName="process" paramProperty="OID">
+				<bean:message key="link.view.unreadComments" bundle="WORKFLOW_RESOURCES"/> »
+			</html:link>
+		</p>
+	</div>
+</logic:notEmpty>
 
 <jsp:include page='<%= "/" + includeFolder + "/body.jsp" %>'/>

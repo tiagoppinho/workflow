@@ -13,7 +13,7 @@ public class TakeProcess extends WorkflowActivity<WorkflowProcess, ActivityInfor
 
     @Override
     public boolean isActive(WorkflowProcess process, User user) {
-	return process.getCurrentOwner() == null;
+	return process.isTicketSupportAvailable() && process.getCurrentOwner() == null;
     }
 
     @Override

@@ -1,0 +1,11 @@
+<schema name="activityInformation.GiveProcessInformation" type="module.workflow.activities.GiveProcessInformation">
+	<slot name="user" layout="autoComplete" key="label.giveProcess.user"
+		bundle="WORKFLOW_RESOURCES">
+		<property name="labelField" value="username" />
+		<property name="format" value="${username}" />
+		<property name="minChars" value="3" />
+		<property name="args"
+			value="provider=myorg.presentationTier.renderers.autoCompleteProvider.UserAutoComplete" />
+		<property name="size" value="40" />
+	</slot>
+</schema>

@@ -204,6 +204,15 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base {
 	super.setCurrentOwner(UserView.getCurrentUser());
     }
 
+    public void giveProcess(User user) {
+	final User currentOwner = getCurrentOwner();
+	final User currentUser = UserView.getCurrentUser();
+	if (currentOwner != null && currentOwner != currentUser) {
+	    throw new DomainException("error.message.illegal.state.unableToGiveAnAlreadyTakenProcess");
+	}
+	super.setCurrentOwner(user);
+    }
+
     public boolean isUserCurrentOwner() {
 	final User loggedPerson = UserView.getCurrentUser();
 	return loggedPerson != null && loggedPerson == getCurrentOwner();
@@ -251,4 +260,17 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base {
 	    }
 	}
     }
+
+    public boolean isFileSupportAvailable() {
+	return true;
+    }
+
+    public boolean isCommentsSupportAvailable() {
+	return true;
+    }
+
+    public boolean isTicketSupportAvailable() {
+	return true;
+    }
+
 }
