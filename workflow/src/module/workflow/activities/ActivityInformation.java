@@ -34,6 +34,7 @@ public class ActivityInformation<P extends WorkflowProcess> implements Serializa
 
     private DomainReference<P> process;
     private String activityName;
+    private String localizedName;
 
     public String getActivityName() {
 	return activityName;
@@ -41,6 +42,7 @@ public class ActivityInformation<P extends WorkflowProcess> implements Serializa
 
     public void setActivity(WorkflowActivity<? extends WorkflowProcess, ? extends ActivityInformation> activity) {
 	this.activityName = activity.getName();
+	this.localizedName = activity.getLocalizedName();
     }
 
     public ActivityInformation(P process, WorkflowActivity<? extends WorkflowProcess, ? extends ActivityInformation> activity) {
@@ -50,6 +52,14 @@ public class ActivityInformation<P extends WorkflowProcess> implements Serializa
 
     public P getProcess() {
 	return process.getObject();
+    }
+
+    public String getLocalizedName() {
+	return localizedName;
+    }
+
+    public void setLocalizedName(String localizedName) {
+	this.localizedName = localizedName;
     }
 
     public void setProcess(P process) {
