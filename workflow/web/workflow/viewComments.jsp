@@ -24,7 +24,7 @@
 	<logic:iterate id="comment" name="comments">
 		<div class="comment">
 			<p>
-				<span><fr:view name="comment" property="commenter.username"/></span> <fr:view name="comment" property="date"/>
+				<span><fr:view name="comment" property="commenter.presentationName"/></span> <fr:view name="comment" property="date"/>
 			</p>
 			<div class="body"><fr:view name="comment" property="comment" layout="null-as-label" type="java.lang.String"/></div>
 		</div>
