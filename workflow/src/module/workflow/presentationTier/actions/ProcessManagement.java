@@ -80,6 +80,8 @@ public class ProcessManagement extends ContextBaseAction {
 	    WorkflowActivity<WorkflowProcess, ActivityInformation<WorkflowProcess>> activity, HttpServletRequest request) {
 	if (information == null) {
 	    information = activity.getActivityInformation(process);
+	} else {
+	    information.markHasForwardedFromInput();
 	}
 
 	return executeActivity(process, request, activity, information);

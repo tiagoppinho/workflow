@@ -35,6 +35,15 @@ public class ActivityInformation<P extends WorkflowProcess> implements Serializa
     private DomainReference<P> process;
     private String activityName;
     private String localizedName;
+    private boolean forwardFromInput;
+
+    public boolean isForwardedFromInput() {
+	return forwardFromInput;
+    }
+
+    public void markHasForwardedFromInput() {
+	this.forwardFromInput = true;
+    }
 
     public String getActivityName() {
 	return activityName;
@@ -48,6 +57,7 @@ public class ActivityInformation<P extends WorkflowProcess> implements Serializa
     public ActivityInformation(P process, WorkflowActivity<? extends WorkflowProcess, ? extends ActivityInformation> activity) {
 	setProcess(process);
 	setActivity(activity);
+	forwardFromInput = false;
     }
 
     public P getProcess() {
