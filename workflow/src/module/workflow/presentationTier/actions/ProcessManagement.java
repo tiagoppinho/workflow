@@ -105,9 +105,8 @@ public class ProcessManagement extends ContextBaseAction {
 	return forwardProcessForInput(activity, request, information);
     }
 
-    public static ActionForward forwardProcessForInput(
-	    WorkflowActivity<WorkflowProcess, ActivityInformation<WorkflowProcess>> activity, HttpServletRequest request,
-	    ActivityInformation<WorkflowProcess> information) {
+    public static <T extends WorkflowProcess> ActionForward forwardProcessForInput(
+	    WorkflowActivity<T, ActivityInformation<T>> activity, HttpServletRequest request, ActivityInformation<T> information) {
 	request.setAttribute("information", information);
 	return activity.isDefaultInputInterfaceUsed() ? forward(request, "/workflow/activityInput.jsp") : forward(request,
 		activity.getClass().getName().replace('.', '/') + ".jsp");
