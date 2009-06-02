@@ -2,10 +2,16 @@
 	<slot name="user" layout="autoComplete" key="label.giveProcess.user"
 		bundle="WORKFLOW_RESOURCES">
 		<property name="labelField" value="username" />
-		<property name="format" value="${username}" />
+		<property name="format" value="${presentationName}" />
 		<property name="minChars" value="3" />
 		<property name="args"
 			value="provider=myorg.presentationTier.renderers.autoCompleteProvider.UserAutoComplete" />
 		<property name="size" value="40" />
 	</slot>
+</schema>
+
+<schema name="viewLogs" type="module.workflow.domain.ActivityLog" bundle="WORKFLOW_RESOURCES">
+	<slot name="whenOperationWasRan" key="label.whenOperationWasRan"/>
+	<slot name="description" key="label.description"/>
+	<slot name="activityExecutor.username" key="label.activityExecutor"/>
 </schema>

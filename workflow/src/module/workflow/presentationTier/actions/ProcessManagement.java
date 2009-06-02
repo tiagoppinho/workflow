@@ -104,11 +104,11 @@ public class ProcessManagement extends ContextBaseAction {
     }
 
     public static ActionForward forwardProcessForInput(
-	    WorkflowActivity<WorkflowProcess, ActivityInformation<WorkflowProcess>> activity,
-	    HttpServletRequest request, ActivityInformation<WorkflowProcess> information) {
+	    WorkflowActivity<WorkflowProcess, ActivityInformation<WorkflowProcess>> activity, HttpServletRequest request,
+	    ActivityInformation<WorkflowProcess> information) {
 	request.setAttribute("information", information);
 	return activity.isDefaultInputInterfaceUsed() ? forward(request, "/workflow/activityInput.jsp") : forward(request,
-		"workflow/" + activity.getClass().getName().replace('.', '/') + ".jsp");
+		activity.getClass().getName().replace('.', '/') + ".jsp");
     }
 
     public ActionForward viewComments(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
@@ -138,8 +138,8 @@ public class ProcessManagement extends ContextBaseAction {
 	return viewComments(mapping, form, request, response);
     }
 
-    public ActionForward fileUpload(final ActionMapping mapping, final ActionForm form,
-	    final HttpServletRequest request, final HttpServletResponse response) {
+    public ActionForward fileUpload(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
+	    final HttpServletResponse response) {
 
 	final WorkflowProcess process = getProcess(request);
 	FileUploadBean bean = new FileUploadBean();
@@ -177,27 +177,27 @@ public class ProcessManagement extends ContextBaseAction {
 	final GenericFile file = getDomainObject(request, "fileId");
 	return download(response, file.getFilename(), file.getContent().getContent().getBytes(), file.getContentType());
     }
-    
+
     public ActionForward removeFile(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
 	    final HttpServletResponse response) {
 
 	final GenericFile file = getDomainObject(request, "fileId");
 	final WorkflowProcess process = file.getProcess();
 	process.removeFiles(file);
-	
+
 	return viewProcess(process, request);
-	
+
     }
-    
+
     public ActionForward viewRemovedFiles(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
 	    final HttpServletResponse response) {
 
 	final WorkflowProcess process = getProcess(request);
-	request.setAttribute("process",process);
+	request.setAttribute("process", process);
 	return forward(request, "/workflow/viewRemovedFiles.jsp");
-	
+
     }
-    
+
     private <T extends WorkflowProcess> WorkflowActivity<T, ActivityInformation<T>> getActivity(HttpServletRequest request) {
 	String activityName = request.getParameter("activity");
 	WorkflowProcess process = getProcess(request);

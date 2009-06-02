@@ -19,8 +19,7 @@
 	</p>
 </logic:empty>
 
-<bean:define id="processClass" name="process" property="class.simpleName"/>
-<fr:view name="operationLogs" schema="<%= "viewLogFor" +  processClass %>">
+<fr:view name="operationLogs" schema="viewLogs">
 	<fr:layout name="tabular">
 		<fr:property name="classes" value="tstyle2"/>
 		<fr:property name="columnClasses" value=",aleft,"/>

@@ -15,7 +15,7 @@
 
  
 <logic:present name="process" property="currentOwner">
-	<bean:define id="ownerName" name="process" property="currentOwner.username"/>
+	<bean:define id="ownerName" name="process" property="currentOwner.presentationName"/>
 	<div class="infoop4">
 		<bean:message key="message.info.currentOwnerIs" bundle="WORKFLOW_RESOURCES" arg0="<%= ownerName.toString() %>"/>
 	</div>
@@ -51,23 +51,25 @@
 				</p>
 			</logic:empty>
 			
-			
-			<ul class="operations">
-				<li>
-					<html:link page="/workflowProcessManagement.do?method=viewLogs" paramId="processId" paramName="process" paramProperty="OID">
-						<bean:message key="link.viewLogs" bundle="WORKFLOW_RESOURCES"/>
-					</html:link>
-				</li>
-			
-				<logic:equal name="process" property="commentsSupportAvailable" value="true">
-					<bean:size id="comments"  name="process" property="comments"/>
-					<li> 
-						<html:link page="/workflowProcessManagement.do?method=viewComments" paramId="processId" paramName="process" paramProperty="OID">
-							<bean:message key="link.comments" bundle="WORKFLOW_RESOURCES"/> (<%= comments %>)
-						</html:link>	
+			<p>
+				<strong><bean:message key="label.otherOperations" bundle="WORKFLOW_RESOURCES"/></strong>
+				<ul class="operations">
+					<li>
+						<html:link page="/workflowProcessManagement.do?method=viewLogs" paramId="processId" paramName="process" paramProperty="OID">
+							<bean:message key="link.viewLogs" bundle="WORKFLOW_RESOURCES"/>
+						</html:link>
 					</li>
-				</logic:equal>
-			</ul>
+				
+					<logic:equal name="process" property="commentsSupportAvailable" value="true">
+						<bean:size id="comments"  name="process" property="comments"/>
+						<li> 
+							<html:link page="/workflowProcessManagement.do?method=viewComments" paramId="processId" paramName="process" paramProperty="OID">
+								<bean:message key="link.comments" bundle="WORKFLOW_RESOURCES"/> (<%= comments %>)
+							</html:link>	
+						</li>
+					</logic:equal>
+				</ul>
+			</p>
 		</td>
 		
 		<logic:equal name="process" property="fileSupportAvailable" value="true">
