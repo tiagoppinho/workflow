@@ -108,8 +108,12 @@ public class ProcessManagement extends ContextBaseAction {
     public static <T extends WorkflowProcess> ActionForward forwardProcessForInput(
 	    WorkflowActivity<T, ActivityInformation<T>> activity, HttpServletRequest request, ActivityInformation<T> information) {
 	request.setAttribute("information", information);
-	return activity.isDefaultInputInterfaceUsed() ? forward(request, "/workflow/activityInput.jsp") : forward(request,
-		activity.getClass().getName().replace('.', '/') + ".jsp");
+	if (activity.isDefaultInputInterfaceUsed()) {
+	    return forward(request, "/workflow/activityInput.jsp");
+	} else {
+	    request.setAttribute("inputInterface", activity.getClass().getName().replace('.', '/') + ".jsp");
+	    return forward(request, "/workflow/nonDefaultActivityInput.jsp");
+	}
     }
 
     public ActionForward viewComments(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,

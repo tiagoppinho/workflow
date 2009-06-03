@@ -54,6 +54,7 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base {
 	setMyOrg(MyOrg.getInstance());
     }
 
+    @SuppressWarnings("unchecked")
     public static <T extends WorkflowProcess> Set<T> getAllProcesses(Class<T> processClass) {
 	Set<T> classes = new HashSet<T>();
 	for (WorkflowProcess process : MyOrg.getInstance().getProcessesSet()) {
@@ -64,6 +65,7 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base {
 	return classes;
     }
 
+    @SuppressWarnings("unchecked")
     public static <T extends WorkflowProcess> Set<T> getAllProcesses(Class<T> processClass, Predicate predicate) {
 	Set<T> classes = new HashSet<T>();
 	for (WorkflowProcess process : MyOrg.getInstance().getProcessesSet()) {
@@ -76,26 +78,33 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base {
     }
 
     public <T extends WorkflowProcess, AI extends ActivityInformation<T>> WorkflowActivity<T, AI> getActivity(String activityName) {
-	for (WorkflowActivity activity : getActivities()) {
+	List<WorkflowActivity<T, AI>> activeActivities = getActivities();
+	for (WorkflowActivity<T, AI> activity : activeActivities) {
 	    if (activity.getName().equals(activityName)) {
 		return activity;
 	    }
 	}
+
 	return null;
     }
 
-    public abstract <T extends WorkflowActivity<? extends WorkflowProcess, ? extends ActivityInformation>> List<T> getActivities();
+   public abstract <T extends WorkflowActivity<? extends WorkflowProcess, ? extends ActivityInformation>> List<T> getActivities();
 
+    @SuppressWarnings("unchecked")
     public <T extends WorkflowProcess, AI extends ActivityInformation<T>> List<WorkflowActivity<T, AI>> getActiveActivities() {
 	List<WorkflowActivity<T, AI>> activities = new ArrayList<WorkflowActivity<T, AI>>();
-	for (WorkflowActivity activity : getActivities()) {
-	    if (activity.isActive(this)) {
+	List<WorkflowActivity<T, AI>> activeActivities = getActivities();
+
+	for (WorkflowActivity<T, AI> activity : activeActivities) {
+	    if (activity.isActive((T) this)) {
 		activities.add(activity);
 	    }
 	}
+
 	return activities;
     }
 
+    @SuppressWarnings("unchecked")
     public boolean hasAnyAvailableActivitity() {
 	for (WorkflowActivity activity : getActivities()) {
 	    if (activity.isActive(this)) {
@@ -134,7 +143,7 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base {
 	return getExecutionLogs(begin, end);
     }
 
-    public List<ActivityLog> getExecutionLogs(DateTime begin, DateTime end, Class... activitiesClass) {
+    public List<ActivityLog> getExecutionLogs(DateTime begin, DateTime end, Class<?>... activitiesClass) {
 	List<ActivityLog> logs = new ArrayList<ActivityLog>();
 	Interval interval = new Interval(begin, end);
 	for (ActivityLog log : getExecutionLogs()) {
@@ -146,8 +155,8 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base {
 	return logs;
     }
 
-    private boolean match(Class[] classes, String name) {
-	for (Class clazz : classes) {
+    private boolean match(Class<?>[] classes, String name) {
+	for (Class<?> clazz : classes) {
 	    if (clazz.getSimpleName().equals(name)) {
 		return true;
 	    }
@@ -227,6 +236,7 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base {
 	return loggedPerson != null && isTakenByPerson(loggedPerson);
     }
 
+    @SuppressWarnings("unchecked")
     public <T extends ActivityLog> T logExecution(User person, String operationName, Object... args) {
 	return (T) new ActivityLog(this, person, operationName);
     }
