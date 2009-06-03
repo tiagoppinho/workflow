@@ -15,3 +15,15 @@
 	<slot name="description" key="label.description"/>
 	<slot name="activityExecutor.username" key="label.activityExecutor"/>
 </schema>
+
+<schema name="addFile"
+		type="myorg.util.FileUploadBean"
+		bundle="WORKFLOW_RESOURCES">
+	<slot name="displayName" key="label.filename">
+		<property name="size" value="50"/>
+	</slot>
+	<slot name="inputStream" key="label.document">
+		<property name="fileNameSlot" value="filename" />
+		<property name="size" value="50"/>
+	</slot>
+</schema>
