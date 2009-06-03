@@ -80,4 +80,11 @@ public class ActivityInformation<P extends WorkflowProcess> implements Serializa
 	return true;
     }
 
+    public void execute() {
+	getActivity().execute(this);
+    }
+
+    public WorkflowActivity<P, ActivityInformation<P>> getActivity() {
+	return getProcess().getActivity(getActivityName());
+    }
 }
