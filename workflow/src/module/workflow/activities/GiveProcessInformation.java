@@ -4,13 +4,12 @@ import pt.ist.fenixWebFramework.util.DomainReference;
 import module.workflow.domain.WorkflowProcess;
 import myorg.domain.User;
 
-public class GiveProcessInformation extends ActivityInformation<WorkflowProcess> {
+public class GiveProcessInformation<T extends WorkflowProcess> extends ActivityInformation<T> {
 
     private static final long serialVersionUID = 1L;
     private DomainReference<User> user;
 
-    public GiveProcessInformation(WorkflowProcess process,
-	    WorkflowActivity<? extends WorkflowProcess, GiveProcessInformation> activity) {
+    public GiveProcessInformation(T process, WorkflowActivity<T, GiveProcessInformation<T>> activity) {
 	super(process, activity);
 	setUser(null);
     }

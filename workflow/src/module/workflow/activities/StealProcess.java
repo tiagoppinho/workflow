@@ -4,7 +4,7 @@ import module.workflow.domain.WorkflowProcess;
 import myorg.domain.User;
 import myorg.util.BundleUtil;
 
-public class StealProcess extends WorkflowActivity<WorkflowProcess, ActivityInformation<WorkflowProcess>> {
+public class StealProcess<T extends WorkflowProcess> extends WorkflowActivity<T, ActivityInformation<T>> {
 
     @Override
     public String getLocalizedName() {
@@ -12,16 +12,17 @@ public class StealProcess extends WorkflowActivity<WorkflowProcess, ActivityInfo
     }
 
     @Override
-    public boolean isActive(WorkflowProcess process, User user) {
+    public boolean isActive(T process, User user) {
 	return process.isTicketSupportAvailable() && process.getCurrentOwner() != null && process.getCurrentOwner() != user;
     }
 
     @Override
-    protected void process(ActivityInformation<WorkflowProcess> information) {
+    protected void process(ActivityInformation<T> information) {
 	information.getProcess().stealProcess();
     }
 
-    public boolean isUserAwarenessNeeded(WorkflowProcess process, User user) {
+    @Override
+    public boolean isUserAwarenessNeeded(T process, User user) {
 	return false;
     }
 

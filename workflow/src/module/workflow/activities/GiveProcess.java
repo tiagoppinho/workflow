@@ -4,7 +4,7 @@ import module.workflow.domain.WorkflowProcess;
 import myorg.domain.User;
 import myorg.util.BundleUtil;
 
-public class GiveProcess extends WorkflowActivity<WorkflowProcess, GiveProcessInformation> {
+public class GiveProcess<T extends WorkflowProcess> extends WorkflowActivity<T, GiveProcessInformation<T>> {
 
     @Override
     public String getLocalizedName() {
@@ -17,17 +17,17 @@ public class GiveProcess extends WorkflowActivity<WorkflowProcess, GiveProcessIn
     }
 
     @Override
-    protected void process(GiveProcessInformation information) {
+    protected void process(GiveProcessInformation<T> information) {
 	information.getProcess().giveProcess(information.getUser());
     }
 
-    public boolean isUserAwarenessNeeded(WorkflowProcess process, User user) {
+    public boolean isUserAwarenessNeeded(T process, User user) {
 	return false;
     }
 
     @Override
-    public ActivityInformation<WorkflowProcess> getActivityInformation(WorkflowProcess process) {
-	return new GiveProcessInformation(process, this);
+    public ActivityInformation<T> getActivityInformation(T process) {
+	return new GiveProcessInformation<T>(process, this);
     }
 
 }
