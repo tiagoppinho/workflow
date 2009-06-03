@@ -6,6 +6,11 @@
 
 <h2><bean:message key="title.viewLogs" bundle="WORKFLOW_RESOURCES"/></h2>
 
+<bean:define id="processClassName" name="process" property="class.name" type="java.lang.String"/>
+<bean:define id="includeFolder" value="<%= processClassName.replace('.','/')%>"/>
+
+<jsp:include page='<%= "/" + includeFolder + "/shortBody.jsp" %>'/>
+
 <p>
 	<html:link action="/workflowProcessManagement.do?method=viewProcess" paramId="processId" paramName="process" paramProperty="OID">
 		«  <bean:message key="link.backToProcess" bundle="WORKFLOW_RESOURCES"/>

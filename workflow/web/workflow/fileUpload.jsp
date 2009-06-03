@@ -9,6 +9,11 @@
 <bean:define id="process" name="process" toScope="request"/>
 <bean:define id="processOID" name="process" property="OID" toScope="request"/>
 
+<bean:define id="processClassName" name="process" property="class.name" type="java.lang.String"/>
+<bean:define id="includeFolder" value="<%= processClassName.replace('.','/')%>"/>
+
+<jsp:include page='<%= "/" + includeFolder + "/shortBody.jsp" %>'/>
+
 <bean:define id="urlView">/workflowProcessManagement.do?method=viewProcess&amp;processId=<bean:write name="process" property="OID"/></bean:define>
 
 <fr:edit name="bean" id="uploadFile" action='<%= "workflowProcessManagement.do?method=upload&processId=" + processOID %>' schema="addFile">
