@@ -38,10 +38,10 @@ import module.workflow.activities.WorkflowActivity;
 import module.workflow.domain.GenericFile;
 import module.workflow.domain.WorkflowProcess;
 import module.workflow.domain.WorkflowProcessComment;
+import module.workflow.util.WorkflowFileUploadBean;
 import myorg.applicationTier.Authenticate.UserView;
 import myorg.domain.exceptions.DomainException;
 import myorg.presentationTier.actions.ContextBaseAction;
-import myorg.util.FileUploadBean;
 import myorg.util.VariantBean;
 
 import org.apache.struts.action.ActionForm;
@@ -147,7 +147,7 @@ public class ProcessManagement extends ContextBaseAction {
 	    final HttpServletResponse response) {
 
 	final WorkflowProcess process = getProcess(request);
-	FileUploadBean bean = new FileUploadBean();
+	WorkflowFileUploadBean bean = new WorkflowFileUploadBean(process);
 
 	request.setAttribute("bean", bean);
 	request.setAttribute("process", process);
@@ -157,9 +157,15 @@ public class ProcessManagement extends ContextBaseAction {
 
     public ActionForward upload(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
 	    final HttpServletResponse response) throws IOException {
-	FileUploadBean bean = getRenderedObject("uploadFile");
+	WorkflowFileUploadBean bean = getRenderedObject("uploadFile");
 	final WorkflowProcess process = getProcess(request);
-	process.addFile(bean.getDisplayName(), bean.getFilename(), consumeInputStream(bean.getInputStream()));
+
+	try {
+	    process.addFile(bean.getSelectedInstance(), bean.getDisplayName(), bean.getFilename(), consumeInputStream(bean
+		    .getInputStream()));
+	} catch (Exception e) {
+	    e.printStackTrace();
+	}
 
 	return viewProcess(process, request);
 

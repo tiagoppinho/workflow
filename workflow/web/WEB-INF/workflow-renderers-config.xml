@@ -1,0 +1,10 @@
+
+<renderer type="module.workflow.domain.WorkflowProcess" layout="processFiles"
+	class="module.workflow.presentationTier.renderers.WorkflowProcessFiles">
+
+	<property name="downloadFormat"
+		value="/workflowProcessManagement.do?method=downloadFile&amp;fileId=${OID}" />
+	<property name="removeFormat"
+		value="/workflowProcessManagement.do?method=removeFile&amp;fileId=${OID}" />
+
+</renderer>

@@ -11,12 +11,17 @@
 
 <bean:define id="processClassName" name="process" property="class.name" type="java.lang.String"/>
 <bean:define id="includeFolder" value="<%= processClassName.replace('.','/')%>"/>
+<bean:define id="schema" value="addFile" toScope="request"/>
+
+<logic:equal name="bean" property="instanceLock" value="true">
+	<bean:define id="schema" value="addFile-instanceLock" toScope="request"/>
+</logic:equal>
 
 <jsp:include page='<%= "/" + includeFolder + "/shortBody.jsp" %>'/>
 
 <bean:define id="urlView">/workflowProcessManagement.do?method=viewProcess&amp;processId=<bean:write name="process" property="OID"/></bean:define>
 
-<fr:edit name="bean" id="uploadFile" action='<%= "workflowProcessManagement.do?method=upload&processId=" + processOID %>' schema="addFile">
+<fr:edit name="bean" id="uploadFile" action='<%= "workflowProcessManagement.do?method=upload&processId=" + processOID %>' schema="<%= schema %>">
 	<fr:layout name="tabular">
 		<fr:property name="classes" value="form mtop05"/>
 		<fr:property name="columnClasses" value=",,tderror"/>

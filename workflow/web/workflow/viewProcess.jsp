@@ -79,12 +79,7 @@
 			<td style="width: 45%; border: 1px dotted #aaa; padding: 10px 15px;">
 				<p class="mtop0 mbottom05"><b style="color: #555;"><bean:message key="label.documents" bundle="EXPENDITURE_RESOURCES"/></b></p>
 				<div class="documents mtop0" style="overflow: hidden; width: 300px">
-						<logic:iterate id="file" name="process" property="files">
-							<p>
-								<bean:define id="fileId" name="file" property="OID"/>
-								<fr:view name="file" property="displayName"/> <html:link page='<%= "/workflowProcessManagement.do?method=downloadFile&fileId=" + fileId %>'><bean:message key="link.downloadFile" bundle="WORKFLOW_RESOURCES"/></html:link> <html:link page='<%= "/workflowProcessManagement.do?method=removeFile&fileId=" + fileId %>'><bean:message key="link.removeFile" bundle="WORKFLOW_RESOURCES"/></html:link>
-							</p>
-						</logic:iterate>
+						<fr:view name="process" layout="processFiles"/>
 				</div>
 						<p>
 							<html:link page="/workflowProcessManagement.do?method=fileUpload" paramId="processId" paramName="process" paramProperty="OID">

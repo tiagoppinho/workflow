@@ -25,7 +25,10 @@
 
 package module.workflow.domain;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -40,11 +43,13 @@ import myorg.domain.MyOrg;
 import myorg.domain.User;
 import myorg.domain.exceptions.DomainException;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Predicate;
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
 
 import pt.ist.fenixWebFramework.services.Service;
+import pt.ist.fenixframework.pstm.IllegalWriteException;
 
 public abstract class WorkflowProcess extends WorkflowProcess_Base {
 
@@ -88,7 +93,7 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base {
 	return null;
     }
 
-   public abstract <T extends WorkflowActivity<? extends WorkflowProcess, ? extends ActivityInformation>> List<T> getActivities();
+    public abstract <T extends WorkflowActivity<? extends WorkflowProcess, ? extends ActivityInformation>> List<T> getActivities();
 
     @SuppressWarnings("unchecked")
     public <T extends WorkflowProcess, AI extends ActivityInformation<T>> List<WorkflowActivity<T, AI>> getActiveActivities() {
@@ -170,9 +175,19 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base {
     }
 
     @Service
-    public void addFile(String displayName, String filename, byte[] consumeInputStream) {
-	GenericFile file = new GenericFile(displayName, filename, consumeInputStream);
+    public <T extends GenericFile> T addFile(Class<T> instanceToCreate, String displayName, String filename,
+	    byte[] consumeInputStream) throws Exception {
+	Constructor<T> fileConstructor = instanceToCreate.getConstructor(String.class, String.class, byte[].class);
+	T file = null;
+	try {
+	    file = fileConstructor.newInstance(new Object[] { displayName, filename, consumeInputStream });
+	} catch (InvocationTargetException e) {
+	    if (e.getCause() instanceof IllegalWriteException) {
+		throw new IllegalWriteException();
+	    }
+	}
 	addFiles(file);
+	return file;
     }
 
     @Override
@@ -283,4 +298,19 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base {
 	return true;
     }
 
+    public List<Class<? extends GenericFile>> getAvailableFileTypes() {
+	List<Class<? extends GenericFile>> availableClasses = new ArrayList<Class<? extends GenericFile>>();
+	availableClasses.add(GenericFile.class);
+	return availableClasses;
+    }
+
+    public <T extends GenericFile> List<T> getFiles(Class<T> selectedClass) {
+	List<T> classes = new ArrayList<T>();
+	for (GenericFile file : getFiles()) {
+	    if (file.getClass() == selectedClass) {
+		classes.add((T) file);
+	    }
+	}
+	return classes;
+    }
 }

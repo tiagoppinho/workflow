@@ -17,7 +17,7 @@
 </schema>
 
 <schema name="addFile"
-		type="myorg.util.FileUploadBean"
+		type="module.workflow.util.WorkflowFileUploadBean"
 		bundle="WORKFLOW_RESOURCES">
 	<slot name="displayName" key="label.filename">
 		<property name="size" value="50"/>
@@ -26,4 +26,19 @@
 		<property name="fileNameSlot" value="filename" />
 		<property name="size" value="50"/>
 	</slot>
+	<slot name="selectedInstance" layout="menu-select" key="label.selectedInstance">
+		<property name="providerClass" value="module.workflow.presentationTier.renderers.providers.AvailableFileClassesProvider"/>
+		<property name="eachLayout" value="values"/>
+		<property name="eachSchema" value="showFileClasses" /> 
+	</slot>
+</schema>
+
+<schema name="addFile-instanceLock"
+		type="module.workflow.util.WorkflowFileUploadBean"
+		bundle="WORKFLOW_RESOURCES" extends="addFile">
+		<slot name="selectedInstance" read-only="true"/>
+</schema>
+
+<schema name="showFileClasses" type="java.lang.Class">
+	<slot name="simpleName"/>
 </schema>
