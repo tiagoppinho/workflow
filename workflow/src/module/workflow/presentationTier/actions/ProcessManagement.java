@@ -26,6 +26,9 @@
 package module.workflow.presentationTier.actions;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.Enumeration;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -50,6 +53,9 @@ import org.apache.struts.action.ActionMapping;
 
 import pt.ist.fenixWebFramework.renderers.utils.RenderUtils;
 import pt.ist.fenixWebFramework.struts.annotations.Mapping;
+import pt.ist.fenixWebFramework.util.DomainReference;
+import pt.ist.fenixframework.pstm.AbstractDomainObject;
+import pt.ist.fenixframework.pstm.Transaction;
 
 @Mapping(path = "/workflowProcessManagement")
 public class ProcessManagement extends ContextBaseAction {
@@ -71,9 +77,55 @@ public class ProcessManagement extends ContextBaseAction {
 	    final HttpServletResponse response) {
 
 	WorkflowProcess process = getProcess(request);
-	WorkflowActivity<WorkflowProcess, ActivityInformation<WorkflowProcess>> activity = getActivity(request);
+	WorkflowActivity<WorkflowProcess, ActivityInformation<WorkflowProcess>> activity = getActivity(process, request);
 	ActivityInformation<WorkflowProcess> information = getRenderedObject("activityBean");
 	return doLifeCycle(information, process, activity, request);
+    }
+
+    public ActionForward actionLink(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
+	    final HttpServletResponse response) throws Exception {
+
+	WorkflowProcess process = getProcess(request);
+	WorkflowActivity<WorkflowProcess, ActivityInformation<WorkflowProcess>> activity = getActivity(process, request);
+	ActivityInformation<WorkflowProcess> information = populateInformation(process, activity, request);
+	return doLifeCycle(information, process, activity, request);
+    }
+
+    private ActivityInformation<WorkflowProcess> populateInformation(WorkflowProcess process,
+	    WorkflowActivity<WorkflowProcess, ActivityInformation<WorkflowProcess>> activity, HttpServletRequest request)
+	    throws Exception {
+	ActivityInformation<WorkflowProcess> activityInformation = activity.getActivityInformation(process);
+	String paremeters = request.getParameter("parameters");
+	Class<? extends ActivityInformation> activityClass = activityInformation.getClass();
+	for (String parameter : paremeters.split(",")) {
+
+	    Field field = activityClass.getDeclaredField(parameter);
+	    Class<?> type = field.getType();
+	    Object convertedValue = convert(type, request.getParameter(parameter));
+	    Method declaredMethod = activityClass.getDeclaredMethod("set" + parameter.substring(0, 1).toUpperCase()
+		    + parameter.substring(1), convertedValue.getClass());
+	    declaredMethod.invoke(activityInformation, convertedValue);
+	}
+	return activityInformation;
+    }
+
+    private Object convert(Class<?> type, String parameterValue) throws Exception {
+	if (DomainReference.class == type) {
+	    return Transaction.getObjectForOID(Long.valueOf(parameterValue).longValue());
+	}
+	if (type == Integer.class) {
+	    return Integer.parseInt(parameterValue);
+	}
+	if (type == Double.class) {
+	    return Double.parseDouble(parameterValue);
+	}
+	if (type == Float.class) {
+	    return Float.parseFloat(parameterValue);
+	}
+	if (type == String.class) {
+	    return parameterValue;
+	}
+	throw new IllegalArgumentException("Invalid type" + type.getName());
     }
 
     private ActionForward doLifeCycle(ActivityInformation<WorkflowProcess> information, WorkflowProcess process,
@@ -209,10 +261,9 @@ public class ProcessManagement extends ContextBaseAction {
 
     }
 
-    private <T extends WorkflowProcess> WorkflowActivity<T, ActivityInformation<T>> getActivity(HttpServletRequest request) {
+    private <T extends WorkflowProcess> WorkflowActivity<T, ActivityInformation<T>> getActivity(WorkflowProcess process,
+	    HttpServletRequest request) {
 	String activityName = request.getParameter("activity");
-	WorkflowProcess process = getProcess(request);
-
 	return process.getActivity(activityName);
     }
 
