@@ -27,20 +27,22 @@
 			<p class="mtop0 mbottom05"><b style="color: #555;"><bean:message key="label.activities" bundle="WORKFLOW_RESOURCES"/></b></p>
 			<ul class="operations mtop0">
 			<logic:iterate id="activity" name="process" property="activeActivities">
-				<bean:define id="name" name="activity" property="name" />
-				<li>
-				<bean:define id="activityName" name="activity" property="localizedName"/>
-				<html:link styleId="<%= name.toString() %>"
-					page='<%="/workflowProcessManagement.do?method=process&activity=" + name + "&processId=" + processId%>'>
-					<fr:view name="activityName"/>
-					<logic:equal name="activity" property="confirmationNeeded" value="true">
-						<bean:define id="message" name="activity" property="localizedConfirmationMessage"/>
-						  <script type="text/javascript"> 
-				   				linkConfirmationHook('<%= name %>', '<%= message %>','<%= activityName %>'); 
-				 		</script> 
-					</logic:equal>
-				</html:link>
-				</li>
+				<logic:equal name="activity" property="visible" value="true">
+					<bean:define id="name" name="activity" property="name" />
+					<li>
+					<bean:define id="activityName" name="activity" property="localizedName"/>
+					<html:link styleId="<%= name.toString() %>"
+						page='<%="/workflowProcessManagement.do?method=process&activity=" + name + "&processId=" + processId%>'>
+						<fr:view name="activityName"/>
+						<logic:equal name="activity" property="confirmationNeeded" value="true">
+							<bean:define id="message" name="activity" property="localizedConfirmationMessage"/>
+							  <script type="text/javascript"> 
+					   				linkConfirmationHook('<%= name %>', '<%= message %>','<%= activityName %>'); 
+					 		</script> 
+						</logic:equal>
+					</html:link>
+					</li>
+				</logic:equal>
 			</logic:iterate>
 			</ul>
 			<logic:empty name="process" property="activeActivities">

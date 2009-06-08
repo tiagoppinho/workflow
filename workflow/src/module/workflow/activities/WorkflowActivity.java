@@ -110,9 +110,10 @@ public abstract class WorkflowActivity<P extends WorkflowProcess, AI extends Act
     }
 
     /**
-     * Returns values that will be used in activity's log description t
-     * If this is redefined, when presenting the description the bundle defined in
-     * getUsedBundle will be looked into a string label.description.FULL_CLASS_NAME.
+     * Returns values that will be used in activity's log description t If this
+     * is redefined, when presenting the description the bundle defined in
+     * getUsedBundle will be looked into a string
+     * label.description.FULL_CLASS_NAME.
      * 
      * @param activityInformation
      * @return
@@ -253,7 +254,28 @@ public abstract class WorkflowActivity<P extends WorkflowProcess, AI extends Act
 	return "";
     }
 
+    /**
+     * Specifies which bundle should be used when doing localization operation
+     * in the activity. Things such as the LocalizedName,
+     * LocalizedConfirmationMessage should relay on this method. Also
+     * ActivityLog uses this method in order to localize the description message
+     * if needed.
+     * 
+     * @return name of the used bundle
+     */
     public String getUsedBundle() {
 	return "resources/WorkflowResources";
+    }
+
+    /**
+     * Sometimes developers do not want to have the activity listed in the
+     * activity list in the process page. If so this method should be overriden
+     * and start returning false.
+     * 
+     * @return true if activity should be listed in the activity list, false
+     *         otherwise
+     */
+    public boolean isVisible() {
+	return true;
     }
 }
