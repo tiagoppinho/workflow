@@ -75,7 +75,7 @@ public class ActivitivyLinkTag extends BodyTagSupport {
 		pageContext.getOut().write("/workflowProcessManagement.do?method=actionLink&activity=");
 		pageContext.getOut().write(getActivityName());
 		pageContext.getOut().write("&processId=");
-		pageContext.getOut().write(String.valueOf(process.getOid()));
+		pageContext.getOut().write(String.valueOf(process.getOID()));
 		pageContext.getOut().write("&parameters=");
 		pageContext.getOut().write(getParameters());
 		pageContext.getOut().write(getParameterString());
