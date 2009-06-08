@@ -8,7 +8,7 @@ public class StealProcess<T extends WorkflowProcess> extends WorkflowActivity<T,
 
     @Override
     public String getLocalizedName() {
-	return BundleUtil.getStringFromResourceBundle("resources/WorkflowResources", "activity." + getClass().getSimpleName());
+	return BundleUtil.getStringFromResourceBundle(getUsedBundle(), "activity." + getClass().getSimpleName());
     }
 
     @Override

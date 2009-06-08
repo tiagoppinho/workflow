@@ -27,26 +27,28 @@ package module.workflow.domain;
 
 import module.workflow.activities.ActivityInformation;
 import module.workflow.activities.WorkflowActivity;
-import myorg.domain.MyOrg;
 import myorg.domain.User;
-
-import org.joda.time.DateTime;
+import myorg.util.BundleUtil;
 
 public class ActivityLog extends ActivityLog_Base {
 
-    public ActivityLog(WorkflowProcess process, User person, String operationName) {
+    public ActivityLog(WorkflowProcess process, User person, String operationName, String... argumentsDescription) {
 	super();
-	setMyOrg(MyOrg.getInstance());
-	setProcess(process);
-	setActivityExecutor(person);
+	init(process, person, argumentsDescription);
 	setOperation(operationName);
-	setWhenOperationWasRan(new DateTime());
-	setOjbConcreteClass(this.getClass().getName());
     }
 
+    @Override
     public String getDescription() {
 	WorkflowActivity<WorkflowProcess, ActivityInformation<WorkflowProcess>> activity = getProcess().getActivity(
 		getOperation());
-	return activity.getLocalizedName();
+
+	if (getDescriptionArguments() != null) {
+	    return BundleUtil.getFormattedStringFromResourceBundle(activity.getUsedBundle(), "label.description."
+		    + activity.getClass().getName(), getDescriptionArguments().toArray(new String[] {}));
+	} else {
+	    return activity.getLocalizedName();
+	}
     }
+
 }

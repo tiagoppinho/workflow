@@ -86,10 +86,10 @@ public abstract class WorkflowActivity<P extends WorkflowProcess, AI extends Act
      * 
      * @param process
      * @param operationName
-     * @param user
+     * @param userx
      */
-    protected void logExecution(P process, String operationName, User user) {
-	process.logExecution(getLoggedPerson(), operationName);
+    protected void logExecution(P process, String operationName, User user, String... argumentsDescription) {
+	process.logExecution(getLoggedPerson(), operationName, argumentsDescription);
     }
 
     /**
@@ -104,9 +104,21 @@ public abstract class WorkflowActivity<P extends WorkflowProcess, AI extends Act
     public final void execute(AI activityInformation) {
 	P process = activityInformation.getProcess();
 	checkConditionsFor(process);
-	logExecution(process, getClass().getSimpleName(), getLoggedPerson());
+	logExecution(process, getClass().getSimpleName(), getLoggedPerson(), getArgumentsDescription(activityInformation));
 	process(activityInformation);
 	notifyUsers(process);
+    }
+
+    /**
+     * Returns values that will be used in activity's log description t
+     * If this is redefined, when presenting the description the bundle defined in
+     * getUsedBundle will be looked into a string label.description.FULL_CLASS_NAME.
+     * 
+     * @param activityInformation
+     * @return
+     */
+    protected String[] getArgumentsDescription(AI activityInformation) {
+	return null;
     }
 
     private void checkConditionsFor(P process) {
@@ -239,5 +251,9 @@ public abstract class WorkflowActivity<P extends WorkflowProcess, AI extends Act
      */
     public String getLocalizedConfirmationMessage() {
 	return "";
+    }
+
+    public String getUsedBundle() {
+	return "resources/WorkflowResources";
     }
 }

@@ -32,16 +32,35 @@ valueType myorg.domain.util.ByteArray as ByteArray {
     }
 }
 
+valueType pt.utl.ist.fenix.tools.util.Strings as Strings {
+    externalizeWith {
+        String exportAsString();
+    }
+
+    internalizeWith importFromString();
+}
 
 class WorkflowProcess {
 	String ojbConcreteClass;
 	Integer processNumber;
 }
 
-class ActivityLog {
+class WorkflowLog {
 	String ojbConcreteClass;
 	DateTime whenOperationWasRan;
+	Strings descriptionArguments;
+}
+
+class ActivityLog extends WorkflowLog {
 	String operation;
+}
+
+class FileUploadLog extends WorkflowLog {
+
+}
+
+class FileRemoveLog extends WorkflowLog {
+
 }
 
 class WorkflowProcessComment {
@@ -61,7 +80,7 @@ class FileContent {
 }
 
 relation WorkflowProcessActivityLog {
-	ActivityLog playsRole executionLogs {
+	WorkflowLog playsRole executionLogs {
 		multiplicity *;
 	}
 	WorkflowProcess playsRole process;

@@ -8,3 +8,7 @@
 		value="/workflowProcessManagement.do?method=removeFile&amp;fileId=${OID}" />
 
 </renderer>
+
+<renderer type="java.lang.Class" layout="fileTypeNames"
+	class="module.workflow.presentationTier.renderers.FileTypeNameRenderer">
+</renderer>

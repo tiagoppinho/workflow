@@ -8,7 +8,7 @@ public class GiveProcess<T extends WorkflowProcess> extends WorkflowActivity<T, 
 
     @Override
     public String getLocalizedName() {
-	return BundleUtil.getStringFromResourceBundle("resources/WorkflowResources", "activity." + getClass().getSimpleName());
+	return BundleUtil.getStringFromResourceBundle(getUsedBundle(), "activity." + getClass().getSimpleName());
     }
 
     @Override
@@ -30,4 +30,8 @@ public class GiveProcess<T extends WorkflowProcess> extends WorkflowActivity<T, 
 	return new GiveProcessInformation<T>(process, this);
     }
 
+    @Override
+    protected String[] getArgumentsDescription(GiveProcessInformation<T> activityInformation) {
+	return new String[] { activityInformation.getUser().getPresentationName() };
+    }
 }

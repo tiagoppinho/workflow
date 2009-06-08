@@ -5,6 +5,7 @@ import java.util.List;
 
 import module.workflow.domain.GenericFile;
 import module.workflow.domain.WorkflowProcess;
+import module.workflow.util.FileTypeNameResolver;
 import pt.ist.fenixWebFramework.renderers.OutputRenderer;
 import pt.ist.fenixWebFramework.renderers.components.HtmlBlockContainer;
 import pt.ist.fenixWebFramework.renderers.components.HtmlComponent;
@@ -56,7 +57,7 @@ public class WorkflowProcessFiles extends OutputRenderer {
 		List<? extends GenericFile> files = process.getFiles(fileType);
 		HtmlInlineContainer container = new HtmlInlineContainer();
 
-		container.addChild(new HtmlText(fileType.getSimpleName() + ": "));
+		container.addChild(new HtmlText(FileTypeNameResolver.getNameFor(fileType) + ": "));
 		if (files.isEmpty()) {
 		    container.addChild(new HtmlText("-"));
 		} else {

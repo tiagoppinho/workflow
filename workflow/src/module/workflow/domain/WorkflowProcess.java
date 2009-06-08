@@ -38,6 +38,8 @@ import java.util.TreeSet;
 
 import module.workflow.activities.WorkflowActivity;
 import module.workflow.activities.ActivityInformation;
+import module.workflow.presentationTier.renderers.FileTypeNameRenderer;
+import module.workflow.util.FileTypeNameResolver;
 import myorg.applicationTier.Authenticate.UserView;
 import myorg.domain.MyOrg;
 import myorg.domain.User;
@@ -48,8 +50,10 @@ import org.apache.commons.collections.Predicate;
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
 
+import pt.ist.expenditureTrackingSystem.domain.organization.Person;
 import pt.ist.fenixWebFramework.services.Service;
 import pt.ist.fenixframework.pstm.IllegalWriteException;
+import sun.security.action.GetLongAction;
 
 public abstract class WorkflowProcess extends WorkflowProcess_Base {
 
@@ -120,11 +124,11 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base {
     }
 
     public DateTime getDateFromLastActivity() {
-	List<ActivityLog> logs = new ArrayList<ActivityLog>();
+	List<WorkflowLog> logs = new ArrayList<WorkflowLog>();
 	logs.addAll(getExecutionLogs());
-	Collections.sort(logs, new Comparator<ActivityLog>() {
+	Collections.sort(logs, new Comparator<WorkflowLog>() {
 
-	    public int compare(ActivityLog log1, ActivityLog log2) {
+	    public int compare(WorkflowLog log1, WorkflowLog log2) {
 		return -1 * log1.getWhenOperationWasRan().compareTo(log2.getWhenOperationWasRan());
 	    }
 
@@ -148,12 +152,13 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base {
 	return getExecutionLogs(begin, end);
     }
 
-    public List<ActivityLog> getExecutionLogs(DateTime begin, DateTime end, Class<?>... activitiesClass) {
-	List<ActivityLog> logs = new ArrayList<ActivityLog>();
+    public List<WorkflowLog> getExecutionLogs(DateTime begin, DateTime end, Class<?>... activitiesClass) {
+	List<WorkflowLog> logs = new ArrayList<WorkflowLog>();
 	Interval interval = new Interval(begin, end);
-	for (ActivityLog log : getExecutionLogs()) {
+	for (WorkflowLog log : getExecutionLogs()) {
 	    if (interval.contains(log.getWhenOperationWasRan())
-		    && (activitiesClass.length == 0 || match(activitiesClass, log.getOperation()))) {
+		    && (activitiesClass.length == 0 || (log instanceof ActivityLog && match(activitiesClass, ((ActivityLog) log)
+			    .getOperation())))) {
 		logs.add(log);
 	    }
 	}
@@ -187,6 +192,8 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base {
 	    }
 	}
 	addFiles(file);
+	new FileUploadLog(this, UserView.getCurrentUser(), file.getFilename(), file.getDisplayName(), FileTypeNameResolver
+		.getNameFor(file.getClass()));
 	return file;
     }
 
@@ -252,8 +259,8 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base {
     }
 
     @SuppressWarnings("unchecked")
-    public <T extends ActivityLog> T logExecution(User person, String operationName, Object... args) {
-	return (T) new ActivityLog(this, person, operationName);
+    public <T extends ActivityLog> T logExecution(User person, String operationName, String... args) {
+	return (T) new ActivityLog(this, person, operationName, args);
     }
 
     @Override
@@ -261,6 +268,8 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base {
     public void removeFiles(GenericFile file) {
 	super.removeFiles(file);
 	addDeletedFiles(file);
+	new FileRemoveLog(this, UserView.getCurrentUser(), file.getFilename(), file.getDisplayName(), FileTypeNameResolver
+		.getNameFor(file.getClass()));
     }
 
     public List<WorkflowProcessComment> getUnreadCommentsForCurrentUser() {
@@ -304,6 +313,7 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base {
 	return availableClasses;
     }
 
+    @SuppressWarnings("unchecked")
     public <T extends GenericFile> List<T> getFiles(Class<T> selectedClass) {
 	List<T> classes = new ArrayList<T>();
 	for (GenericFile file : getFiles()) {

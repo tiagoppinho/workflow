@@ -10,10 +10,10 @@
 	</slot>
 </schema>
 
-<schema name="viewLogs" type="module.workflow.domain.ActivityLog" bundle="WORKFLOW_RESOURCES">
+<schema name="viewLogs" type="module.workflow.domain.WorkflowLog" bundle="WORKFLOW_RESOURCES">
 	<slot name="whenOperationWasRan" key="label.whenOperationWasRan"/>
 	<slot name="description" key="label.description"/>
-	<slot name="activityExecutor.username" key="label.activityExecutor"/>
+	<slot name="activityExecutor.presentationName" key="label.activityExecutor"/>
 </schema>
 
 <schema name="addFile"
@@ -28,8 +28,7 @@
 	</slot>
 	<slot name="selectedInstance" layout="menu-select" key="label.selectedInstance">
 		<property name="providerClass" value="module.workflow.presentationTier.renderers.providers.AvailableFileClassesProvider"/>
-		<property name="eachLayout" value="values"/>
-		<property name="eachSchema" value="showFileClasses" /> 
+		<property name="eachLayout" value="fileTypeNames"/>
 	</slot>
 </schema>
 
@@ -37,8 +36,4 @@
 		type="module.workflow.util.WorkflowFileUploadBean"
 		bundle="WORKFLOW_RESOURCES" extends="addFile">
 		<slot name="selectedInstance" read-only="true"/>
-</schema>
-
-<schema name="showFileClasses" type="java.lang.Class">
-	<slot name="simpleName"/>
 </schema>

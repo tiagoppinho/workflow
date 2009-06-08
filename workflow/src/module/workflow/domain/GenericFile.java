@@ -25,9 +25,15 @@
 
 package module.workflow.domain;
 
+import module.workflow.util.FileTypeNameResolver;
 import myorg.domain.MyOrg;
 
 public class GenericFile extends GenericFile_Base {
+
+    static {
+	FileTypeNameResolver.registerType(GenericFile.class, "resources/WorkflowResources",
+		"label.module.workflow.domain.GenericFile");
+    }
 
     public GenericFile() {
 	super();

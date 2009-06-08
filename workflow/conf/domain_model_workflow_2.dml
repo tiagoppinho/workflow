@@ -40,7 +40,7 @@ relation MyOrgProcessComment {
 
 relation MyOrgGenericLog {
 	myorg.domain.MyOrg playsRole myOrg;
-	module.workflow.domain.ActivityLog playsRole processLogs {
+	module.workflow.domain.WorkflowLog playsRole processLogs {
 		multiplicity *;
 	}
 }
@@ -78,7 +78,7 @@ relation TakeSupport {
 
 relation UserLog {
 	myorg.domain.User playsRole activityExecutor;
-	module.workflow.domain.ActivityLog playsRole userLogs {
+	module.workflow.domain.WorkflowLog playsRole userLogs {
 		multiplicity *;
 	} 
 }
