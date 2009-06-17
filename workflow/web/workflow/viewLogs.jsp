@@ -27,7 +27,7 @@
 <fr:view name="operationLogs" schema="viewLogs">
 	<fr:layout name="tabular">
 		<fr:property name="classes" value="tstyle2"/>
-		<fr:property name="columnClasses" value=",aleft,"/>
+		<fr:property name="columnClasses" value="smalltxt, smalltxt aleft,smalltxt"/>
 		<fr:property name="sortBy" value="whenOperationWasRan"/>
 	</fr:layout>
 </fr:view>

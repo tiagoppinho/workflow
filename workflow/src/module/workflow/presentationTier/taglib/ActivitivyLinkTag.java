@@ -80,7 +80,11 @@ public class ActivitivyLinkTag extends BodyTagSupport {
 		pageContext.getOut().write(getParameters());
 		pageContext.getOut().write(getParameterString());
 		pageContext.getOut().write("\">");
-		pageContext.getOut().write(getLinkName());
+		if (getLinkName() != null) {
+		    pageContext.getOut().write(getLinkName());
+		} else {
+		    pageContext.getOut().write(activity.getLocalizedName());
+		}
 		pageContext.getOut().write("</a>");
 	    } catch (Exception e) {
 		e.printStackTrace();

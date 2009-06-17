@@ -40,6 +40,7 @@ import module.workflow.activities.WorkflowActivity;
 import module.workflow.activities.ActivityInformation;
 import module.workflow.presentationTier.renderers.FileTypeNameRenderer;
 import module.workflow.util.FileTypeNameResolver;
+import module.workflow.util.WorkflowFileUploadBean;
 import myorg.applicationTier.Authenticate.UserView;
 import myorg.domain.MyOrg;
 import myorg.domain.User;
@@ -181,7 +182,7 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base {
 
     @Service
     public <T extends GenericFile> T addFile(Class<T> instanceToCreate, String displayName, String filename,
-	    byte[] consumeInputStream) throws Exception {
+	    byte[] consumeInputStream, WorkflowFileUploadBean bean) throws Exception {
 	Constructor<T> fileConstructor = instanceToCreate.getConstructor(String.class, String.class, byte[].class);
 	T file = null;
 	try {
@@ -191,10 +192,20 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base {
 		throw new IllegalWriteException();
 	    }
 	}
-	addFiles(file);
+	file.fillInNonDefaultFields(bean);
+
+	super.addFiles(file);
 	new FileUploadLog(this, UserView.getCurrentUser(), file.getFilename(), file.getDisplayName(), FileTypeNameResolver
 		.getNameFor(file.getClass()));
 	return file;
+    }
+
+    @Override
+    public void addFiles(GenericFile file) {
+	if (file.validUpload(this)) {
+	    super.addFiles(file);
+	}
+	throw new DomainException("error.message.file.not.accepted");
     }
 
     @Override

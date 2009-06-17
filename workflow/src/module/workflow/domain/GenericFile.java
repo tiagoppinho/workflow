@@ -26,6 +26,7 @@
 package module.workflow.domain;
 
 import module.workflow.util.FileTypeNameResolver;
+import module.workflow.util.WorkflowFileUploadBean;
 import myorg.domain.MyOrg;
 
 public class GenericFile extends GenericFile_Base {
@@ -48,4 +49,11 @@ public class GenericFile extends GenericFile_Base {
 	setContent(new FileContent(content));
     }
 
+    public <T extends WorkflowFileUploadBean> void fillInNonDefaultFields(T bean) {
+
+    }
+
+    public <T extends WorkflowProcess> boolean validUpload(T workflowProcess) {
+	return true;
+    }
 }

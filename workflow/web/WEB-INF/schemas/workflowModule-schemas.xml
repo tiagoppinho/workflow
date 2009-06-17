@@ -16,7 +16,7 @@
 	<slot name="activityExecutor.presentationName" key="label.activityExecutor"/>
 </schema>
 
-<schema name="addFile"
+<schema name="addFile-GenericFile"
 		type="module.workflow.util.WorkflowFileUploadBean"
 		bundle="WORKFLOW_RESOURCES">
 	<slot name="displayName" key="label.filename">
@@ -26,14 +26,11 @@
 		<property name="fileNameSlot" value="filename" />
 		<property name="size" value="50"/>
 	</slot>
-	<slot name="selectedInstance" layout="menu-select" key="label.selectedInstance">
+	<slot name="selectedInstance" layout="menu-select-postback" key="label.selectedInstance">
 		<property name="providerClass" value="module.workflow.presentationTier.renderers.providers.AvailableFileClassesProvider"/>
 		<property name="eachLayout" value="fileTypeNames"/>
+		<property name="nullOptionHidden" value="true"/>
+		<property name="saveOptions" value="true"/>
 	</slot>
 </schema>
 
-<schema name="addFile-instanceLock"
-		type="module.workflow.util.WorkflowFileUploadBean"
-		bundle="WORKFLOW_RESOURCES" extends="addFile">
-		<slot name="selectedInstance" read-only="true"/>
-</schema>

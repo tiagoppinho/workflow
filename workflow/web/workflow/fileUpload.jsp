@@ -11,15 +11,16 @@
 
 <bean:define id="processClassName" name="process" property="class.name" type="java.lang.String"/>
 <bean:define id="includeFolder" value="<%= processClassName.replace('.','/')%>"/>
-<bean:define id="schema" value="addFile" toScope="request"/>
+<bean:define id="selectedInstance" name="bean" property="selectedInstance.simpleName"/>
 
-<logic:equal name="bean" property="instanceLock" value="true">
-	<bean:define id="schema" value="addFile-instanceLock" toScope="request"/>
-</logic:equal>
+<bean:define id="schema" value="<%= "addFile-" + selectedInstance%>" toScope="request"/>
+
 
 <jsp:include page='<%= "/" + includeFolder + "/shortBody.jsp" %>'/>
 
 <bean:define id="urlView">/workflowProcessManagement.do?method=viewProcess&amp;processId=<bean:write name="process" property="OID"/></bean:define>
+<bean:define id="urlPostBack">/workflowProcessManagement.do?method=uploadPostBack&amp;processId=<bean:write name="process" property="OID"/></bean:define>
+
 
 <fr:edit name="bean" id="uploadFile" action='<%= "workflowProcessManagement.do?method=upload&processId=" + processOID %>' schema="<%= schema %>">
 	<fr:layout name="tabular">
@@ -27,4 +28,5 @@
 		<fr:property name="columnClasses" value=",,tderror"/>
 	</fr:layout>
 	<fr:destination name="cancel" path="<%= urlView %>" />
+	<fr:destination name="postBack"  path="<%= urlPostBack %>"/>
 </fr:edit>

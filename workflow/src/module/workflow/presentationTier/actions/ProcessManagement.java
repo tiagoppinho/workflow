@@ -28,7 +28,6 @@ package module.workflow.presentationTier.actions;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.Enumeration;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -52,9 +51,9 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
 import pt.ist.fenixWebFramework.renderers.utils.RenderUtils;
+import pt.ist.fenixWebFramework.servlets.filters.contentRewrite.GenericChecksumRewriter;
 import pt.ist.fenixWebFramework.struts.annotations.Mapping;
 import pt.ist.fenixWebFramework.util.DomainReference;
-import pt.ist.fenixframework.pstm.AbstractDomainObject;
 import pt.ist.fenixframework.pstm.Transaction;
 
 @Mapping(path = "/workflowProcessManagement")
@@ -71,6 +70,16 @@ public class ProcessManagement extends ContextBaseAction {
 
 	request.setAttribute("process", process);
 	return forward(request, "/workflow/viewProcess.jsp");
+    }
+
+    public ActionForward forwardToProcessPage(WorkflowProcess process, HttpServletRequest request) {
+
+	ActionForward forward = new ActionForward();
+	forward.setRedirect(true);
+	String realPath = "/workflowProcessManagement.do?method=viewProcess&processId=" + process.getOID();
+	forward.setPath(realPath + "&" + GenericChecksumRewriter.CHECKSUM_ATTRIBUTE_NAME + "="
+		+ GenericChecksumRewriter.calculateChecksum(request.getContextPath() + realPath));
+	return forward;
     }
 
     public ActionForward process(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
@@ -102,11 +111,33 @@ public class ProcessManagement extends ContextBaseAction {
 	    Field field = activityClass.getDeclaredField(parameter);
 	    Class<?> type = field.getType();
 	    Object convertedValue = convert(type, request.getParameter(parameter));
-	    Method declaredMethod = activityClass.getDeclaredMethod("set" + parameter.substring(0, 1).toUpperCase()
-		    + parameter.substring(1), convertedValue.getClass());
+	    Method declaredMethod = getMethod("set" + parameter.substring(0, 1).toUpperCase() + parameter.substring(1),
+		    activityClass, convertedValue.getClass());
 	    declaredMethod.invoke(activityInformation, convertedValue);
 	}
 	return activityInformation;
+    }
+
+    private Method getMethod(String methodName, Class<? extends ActivityInformation> activityClass,
+	    Class<? extends Object> argumentClass) {
+	Method method = null;
+	try {
+	    method = activityClass.getDeclaredMethod(methodName, argumentClass);
+	} catch (NoSuchMethodException e) {
+	    /*
+	     * There's the chance that we just had a mismatch about the argument
+	     * classes. For example. the method is defined for a super class and
+	     * we were looking for a subclass. So in order to try to recover
+	     * we'll try to look for a method with the name 'methodName'.
+	     */
+	    for (Method declaredMethod : activityClass.getDeclaredMethods()) {
+		if (declaredMethod.getName().equals(methodName)) {
+		    method = declaredMethod;
+		    break;
+		}
+	    }
+	}
+	return method;
     }
 
     private Object convert(Class<?> type, String parameterValue) throws Exception {
@@ -151,7 +182,7 @@ public class ProcessManagement extends ContextBaseAction {
 		addMessage(request, e.getMessage());
 		return forwardProcessForInput(activity, request, information);
 	    }
-	    return viewProcess(process, request);
+	    return forwardToProcessPage(process, request);
 	}
 
 	return forwardProcessForInput(activity, request, information);
@@ -200,6 +231,7 @@ public class ProcessManagement extends ContextBaseAction {
 
 	final WorkflowProcess process = getProcess(request);
 	WorkflowFileUploadBean bean = new WorkflowFileUploadBean(process);
+	bean.setSelectedInstance(process.getAvailableFileTypes().get(0));
 
 	request.setAttribute("bean", bean);
 	request.setAttribute("process", process);
@@ -214,13 +246,24 @@ public class ProcessManagement extends ContextBaseAction {
 
 	try {
 	    process.addFile(bean.getSelectedInstance(), bean.getDisplayName(), bean.getFilename(), consumeInputStream(bean
-		    .getInputStream()));
+		    .getInputStream()), bean);
 	} catch (Exception e) {
 	    e.printStackTrace();
 	}
 
 	return viewProcess(process, request);
 
+    }
+
+    public ActionForward uploadPostBack(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
+	    final HttpServletResponse response) throws IOException {
+	WorkflowFileUploadBean bean = getRenderedObject("uploadFile");
+	final WorkflowProcess process = getProcess(request);
+
+	request.setAttribute("bean", bean);
+	request.setAttribute("process", process);
+
+	return forward(request, "/workflow/fileUpload.jsp");
     }
 
     public ActionForward viewLogs(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
