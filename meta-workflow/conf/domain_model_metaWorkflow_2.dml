@@ -1,0 +1,92 @@
+
+/*
+ * @(#)domain_model_metaWorkflow_2.dml
+ *
+ * Copyright 2009 Instituto Superior Tecnico
+ * Founding Authors: João Figueiredo, Luis Cruz, Paulo Abrantes, Susana Fernandes
+ * 
+ *      https://fenix-ashes.ist.utl.pt/
+ * 
+ *   This file is part of the MyOrg web application infrastructure.
+ *
+ *   MyOrg is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU Lesser General Public License as published
+ *   by the Free Software Foundation, either version 3 of the License, or
+ *   (at your option) any later version.*
+ *
+ *   MyOrg is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *   GNU Lesser General Public License for more details.
+ *
+ *   You should have received a copy of the GNU Lesser General Public License
+ *   along with MyOrg. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ */
+ class module.metaWorkflow.domain.WorkflowMetaProcess extends module.workflow.domain.WorkflowProcess {
+ 	String instanceDescription;
+ 	DateTime creationDate;
+ }
+ 
+ relation WorkflowMetaProcessWorkflowMetaType {
+	module.metaWorkflow.domain.WorkflowMetaProcess playsRole metaProcesses {
+		multiplicity *;
+	}
+	module.metaWorkflow.domain.WorkflowMetaType playsRole metaType;
+}
+
+relation WorkflowMetaProcessWorkflowQueue {
+	module.metaWorkflow.domain.WorkflowMetaProcess playsRole metaProcess {
+		multiplicity *;
+	}	
+	module.metaWorkflow.domain.WorkflowQueue playsRole currentQueue;
+}
+
+relation QueueHistory {
+	module.metaWorkflow.domain.WorkflowMetaProcess playsRole processesHistory {
+		multiplicity *;
+	}	
+	module.metaWorkflow.domain.WorkflowQueue playsRole queueHistory {
+		multiplicity *;
+	}
+}
+
+relation MyOrgWorkflowMetaType {
+	myorg.domain.MyOrg playsRole myOrg;
+	module.metaWorkflow.domain.WorkflowMetaType playsRole metaTypes {
+		multiplicity *;
+	}
+}
+
+relation MyOrgWorkflowMetaProcessIdentifierCounter {
+	myorg.domain.MyOrg playsRole myOrg;
+	module.metaWorkflow.domain.WorkflowMetaProcessIdentifierCounter playsRole workflowMetaProcessIdentifierCounter;
+}
+
+relation MyOrgWorkflowMetaTypeDescription {
+	myorg.domain.MyOrg playsRole myOrg;
+	module.metaWorkflow.domain.WorkflowMetaTypeDescription playsRole metaTypeDescriptions {
+		multiplicity *;
+	}
+}
+
+relation UserWorkflowMetaTypeDescription {
+	myorg.domain.User playsRole versionOwner;
+	module.metaWorkflow.domain.WorkflowMetaTypeDescription playsRole metaTypeDescriptions {
+		multiplicity *;
+	}
+}
+
+relation UserWorkflowMetaProcess {
+	myorg.domain.User playsRole creator;
+	module.metaWorkflow.domain.WorkflowMetaProcess playsRole metaProcesses {
+		multiplicity *;
+	}
+}
+
+relation MyOrgWorkflowQueue {
+	myorg.domain.MyOrg playsRole myOrg;
+	module.metaWorkflow.domain.WorkflowQueue playsRole metaWorkflowQueues {
+		multiplicity *;
+	}
+}

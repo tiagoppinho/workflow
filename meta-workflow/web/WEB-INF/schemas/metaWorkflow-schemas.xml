@@ -1,0 +1,76 @@
+<schema name="view.meta.type" type="module.metaWorkflow.domain.WorkflowMetaType" bundle="META_WORKFLOW_RESOURCES">
+	<slot name="name" key="label.metaType.name"/>
+	<slot name="currentDescription.description" key="label.metaType.description"/>
+	<slot name="availableFileTypes" key="label.metaType.availableFileTypes">
+		<property name="eachLayout" value="fileTypeNames"/>
+	</slot>
+</schema>
+
+<schema name="create.meta.type" type="module.metaWorkflow.util.WorkflowMetaTypeBean" bundle="META_WORKFLOW_RESOURCES">
+	<slot name="name" key="label.metaType.name" validator="pt.ist.fenixWebFramework.renderers.validators.RequiredValidator">
+		<property name="size" value="40"/>
+	</slot>
+	<slot name="description" key="label.metaType.description" layout="longText" validator="pt.ist.fenixWebFramework.renderers.validators.RequiredValidator">
+		<property name="rows" value="20"/>
+		<property name="columns" value="80"/>
+	</slot>
+	<slot name="fileClassNames" key="label.metaType.availableFileTypes" layout="option-select">
+		<property name="providerClass" value="module.metaWorkflow.presentationTier.renderers.providers.FileSubClasses"/>
+		<property name="eachLayout" value="fileTypeNames"/>
+		<property name="classes" value="nobullet"/>
+	</slot>
+</schema>
+
+<schema name="activityInformation.ChangeQueueInformation" type="module.metaWorkflow.activities.ChangeQueueInformation" bundle="META_WORKFLOW_RESOURCES">
+	<slot name="queue" layout="autoComplete" key="label.changeQueue">
+		<property name="labelField" value="name" />
+		<property name="format" value="${name}" />
+		<property name="minChars" value="3" />
+		<property name="args"
+			value="provider=module.metaWorkflow.presentationTier.renderers.autoCompleteProviders.WorkflowQueueAutoComplete" />
+		<property name="size" value="40" />
+	</slot>
+</schema>
+
+<schema name="create.meta.process" type="module.metaWorkflow.util.WorkflowMetaProcessBean" bundle="META_WORKFLOW_RESOURCES">
+	<slot name="metaType" layout="menu-select" key="label.metaType" validator="pt.ist.fenixWebFramework.renderers.validators.RequiredValidator">
+		<property name="providerClass" value="module.metaWorkflow.presentationTier.renderers.providers.AvailableWorkflowMetaTypes"/>
+		<property name="eachLayout" value="values"/>
+		<property name="eachSchema" value="view.metaType.name"/>
+	</slot>	
+	<slot name="instanceDescription" layout="longText" key="label.metaProcess.instanceDescription" validator="pt.ist.fenixWebFramework.renderers.validators.RequiredValidator">
+		<property name="rows" value="10"/>
+		<property name="columns" value="80"/>
+	</slot>
+</schema>
+
+<schema name="view.metaType.name" type="module.metaWorkflow.domain.WorkflowMetaType" bundle="META_WORKFLOW_RESOURCES">
+	<slot name="name" key="label.metaType.name"/>
+</schema>
+
+<schema name="view.meta.process" type="module.metaWorkflow.domain.WorkflowMetaProcess" bundle="META_WORKFLOW_RESOURCES">
+	<slot name="metaType.name" key="label.metaType.name"/>
+	<slot name="processNumber" key="label.processNumber=" bundle="WORKFLOW_RESOURCES"/>
+</schema>
+
+<schema name="view.meta.process.details" type="module.metaWorkflow.domain.WorkflowMetaProcess" bundle="META_WORKFLOW_RESOURCES">
+	<slot name="processNumber" key="label.processNumber=" bundle="WORKFLOW_RESOURCES"/>
+	<slot name="instanceDescription" key="label.metaProcess.instanceDescription"/>
+	<slot name="creationDate" key="label.metaProcess.creationDate"/>
+	<slot name="creator.presentationName" key="label.metaProcess.creator"/>
+	<slot name="currentQueue" layout="null-as-label" key="label.metaProcess.currentQueue">
+		<property name="subLayout" value="values"/>
+		<property name="subSchema" value="view.queue.name"/>
+	</slot>
+</schema>
+
+<schema name="view.queue.name" type="module.metaWorkflow.domain.WorkflowQueue" bundle="META_WORKFLOW_RESOURCES">
+	<slot name="name"/>
+</schema>
+
+<schema name="edit.metaTypeDescription" type="module.metaWorkflow.domain.WorkflowMetaTypeDescription" bundle="META_WORKFLOW_RESOURCES">
+	<slot name="description" key="label.metaType.description" layout="longText" validator="pt.ist.fenixWebFramework.renderers.validators.RequiredValidator">
+		<property name="rows" value="20"/>
+		<property name="columns" value="80"/>
+	</slot>
+</schema>
