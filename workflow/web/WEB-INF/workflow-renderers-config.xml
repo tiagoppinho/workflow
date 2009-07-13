@@ -21,5 +21,5 @@
 	  <property name="photoClasses" value="photoHolder"/>
 	  <property name="bodyClasses" value="aleft"/>
 	  <property name="photoUrl" value="https://fenix.ist.utl.pt/publico/viewHomepage.do?method=retrieveByUUID&amp;contentContextPath_PATH=/homepage&amp;uuid=${username}"/>
-	  <property name="reverseOrder" value="true"/>
+	  <property name="reverseOrder" value="false"/>
 </renderer>
