@@ -12,3 +12,14 @@
 <renderer type="java.lang.Class" layout="fileTypeNames"
 	class="module.workflow.presentationTier.renderers.FileTypeNameRenderer">
 </renderer>
+
+<renderer type="module.workflow.domain.WorkflowProcess" layout="viewComments"
+	class="module.workflow.presentationTier.renderers.CommentRenderer">
+
+	  <property name="commentBlockClasses" value="comment infoop2 roundCorners"/>
+	  <property name="nameClasses" value="bold"/>
+	  <property name="photoClasses" value="photoHolder"/>
+	  <property name="bodyClasses" value="aleft"/>
+	  <property name="photoUrl" value="https://fenix.ist.utl.pt/publico/viewHomepage.do?method=retrieveByUUID&amp;contentContextPath_PATH=/homepage&amp;uuid=${username}"/>
+	  <property name="reverseOrder" value="true"/>
+</renderer>

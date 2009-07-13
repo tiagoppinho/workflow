@@ -28,6 +28,8 @@ package module.workflow.presentationTier.actions;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -59,6 +61,8 @@ import pt.ist.fenixframework.pstm.Transaction;
 @Mapping(path = "/workflowProcessManagement")
 public class ProcessManagement extends ContextBaseAction {
 
+    public static Map<Class<? extends WorkflowProcess>, ProcessRequestHandler<? extends WorkflowProcess>> handlers = new HashMap<Class<? extends WorkflowProcess>, ProcessRequestHandler<? extends WorkflowProcess>>();
+
     public ActionForward viewProcess(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
 	    final HttpServletResponse response) throws ClassNotFoundException {
 
@@ -69,6 +73,11 @@ public class ProcessManagement extends ContextBaseAction {
     public ActionForward viewProcess(WorkflowProcess process, final HttpServletRequest request) {
 
 	request.setAttribute("process", process);
+	ProcessRequestHandler<WorkflowProcess> handler = (ProcessRequestHandler<WorkflowProcess>) handlers
+		.get(process.getClass());
+	if (handler != null) {
+	    handler.handleRequest(process, request);
+	}
 	return forward(request, "/workflow/viewProcess.jsp");
     }
 
@@ -318,4 +327,12 @@ public class ProcessManagement extends ContextBaseAction {
 	return new ActionForward("/workflowProcessManagement.do?method=viewProcess&processId=" + process.getOID());
     }
 
+    public static <T extends WorkflowProcess> void registerProcessRequestHandler(Class<T> workflowProcessClass,
+	    ProcessRequestHandler<T> handler) {
+	handlers.put(workflowProcessClass, handler);
+    }
+
+    public static interface ProcessRequestHandler<T extends WorkflowProcess> {
+	public void handleRequest(T process, HttpServletRequest request);
+    }
 }

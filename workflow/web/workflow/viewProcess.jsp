@@ -80,9 +80,10 @@
 			
 			<td style="width: 45%; border: 1px dotted #aaa; padding: 10px 15px;">
 				<p class="mtop0 mbottom05"><b style="color: #555;"><bean:message key="label.documents" bundle="EXPENDITURE_RESOURCES"/></b></p>
-				<div class="documents mtop0" style="overflow: hidden; width: 300px">
+				<div class="documents mtop0" style="overflow: hidden; width: 400px">
 						<fr:view name="process" layout="processFiles"/>
 				</div>
+				<div class="mbottom05">
 						<p>
 							<html:link page="/workflowProcessManagement.do?method=fileUpload" paramId="processId" paramName="process" paramProperty="OID">
 								<bean:message key="link.uploadFile" bundle="WORKFLOW_RESOURCES"/>
@@ -93,28 +94,31 @@
 								<bean:message key="link.viewRemovedFiles" bundle="WORKFLOW_RESOURCES"/>
 							</html:link>
 						</p>
+				</div>
 			</td>
 		</logic:equal>
 	</tr>
 </table>
 
-<bean:define id="unreadComments" name="process" property="unreadCommentsForCurrentUser"/>
-<logic:notEmpty name="unreadComments">
-	<bean:size id="count" name="unreadComments"/>
-		<div class="infoop4 mtop05 mbottom15">
-		<p class="mvert025">
-			<logic:greaterThan name="count" value="1">
-				<bean:message key="label.unreadComments.info.moreThanOne" arg0="<%= count.toString() %>" bundle="WORKFLOW_RESOURCES"/>
-			</logic:greaterThan>
-			<logic:equal name="count" value="1">
-				<bean:message key="label.unreadComments.info" arg0="<%= count.toString() %>" bundle="WORKFLOW_RESOURCES"/>
-			</logic:equal>
-			
-			<html:link page="/workflowProcessManagement.do?method=viewComments" paramId="processId" paramName="process" paramProperty="OID">
-				<bean:message key="link.view.unreadComments" bundle="WORKFLOW_RESOURCES"/> »
-			</html:link>
-		</p>
-	</div>
-</logic:notEmpty>
+<logic:equal name="process" property="commentsSupportAvailable" value="true">
+	<bean:define id="unreadComments" name="process" property="unreadCommentsForCurrentUser"/>
+	<logic:notEmpty name="unreadComments">
+		<bean:size id="count" name="unreadComments"/>
+			<div class="infoop4 mtop05 mbottom15">
+			<p class="mvert025">
+				<logic:greaterThan name="count" value="1">
+					<bean:message key="label.unreadComments.info.moreThanOne" arg0="<%= count.toString() %>" bundle="WORKFLOW_RESOURCES"/>
+				</logic:greaterThan>
+				<logic:equal name="count" value="1">
+					<bean:message key="label.unreadComments.info" arg0="<%= count.toString() %>" bundle="WORKFLOW_RESOURCES"/>
+				</logic:equal>
+				
+				<html:link page="/workflowProcessManagement.do?method=viewComments" paramId="processId" paramName="process" paramProperty="OID">
+					<bean:message key="link.view.unreadComments" bundle="WORKFLOW_RESOURCES"/> »
+				</html:link>
+			</p>
+		</div>
+	</logic:notEmpty>
+</logic:equal>
 
 <jsp:include page='<%= "/" + includeFolder + "/body.jsp" %>'/>
