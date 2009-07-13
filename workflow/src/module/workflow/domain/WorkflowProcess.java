@@ -28,7 +28,6 @@ package module.workflow.domain;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -36,9 +35,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
-import module.workflow.activities.WorkflowActivity;
 import module.workflow.activities.ActivityInformation;
-import module.workflow.presentationTier.renderers.FileTypeNameRenderer;
+import module.workflow.activities.WorkflowActivity;
 import module.workflow.util.FileTypeNameResolver;
 import module.workflow.util.WorkflowFileUploadBean;
 import myorg.applicationTier.Authenticate.UserView;
@@ -46,15 +44,12 @@ import myorg.domain.MyOrg;
 import myorg.domain.User;
 import myorg.domain.exceptions.DomainException;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Predicate;
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
 
-import pt.ist.expenditureTrackingSystem.domain.organization.Person;
 import pt.ist.fenixWebFramework.services.Service;
 import pt.ist.fenixframework.pstm.IllegalWriteException;
-import sun.security.action.GetLongAction;
 
 public abstract class WorkflowProcess extends WorkflowProcess_Base {
 

@@ -27,8 +27,6 @@ package module.workflow.activities;
 
 import java.io.Serializable;
 
-import module.metaWorkflow.activities.ChangeQueueInformation;
-import module.metaWorkflow.domain.WorkflowMetaProcess;
 import module.workflow.domain.WorkflowProcess;
 import pt.ist.fenixWebFramework.util.DomainReference;
 
