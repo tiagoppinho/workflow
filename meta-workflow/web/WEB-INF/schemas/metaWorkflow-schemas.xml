@@ -74,11 +74,3 @@
 		<property name="columns" value="80"/>
 	</slot>
 </schema>
-
-<schema name="createProcessComment" type="module.workflow.domain.WorkflowProcessComment" bundle="WORKFLOW_RESOURCES">
-	<slot name="comment" key="label.addComment" layout="longText" validator="pt.ist.fenixWebFramework.renderers.validators.RequiredValidator">
-		<property name="rows" value="6"/>
-		<property name="columns" value="60"/>
-		<property name="classes" value="form"/>
-	</slot>
-</schema>

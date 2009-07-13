@@ -1,12 +1,11 @@
 package module.metaWorkflow.domain;
 
-import org.apache.commons.lang.StringUtils;
-import org.imsproject.xsd.imscpRootv1P1P2.MetadataType;
-import org.joda.time.DateTime;
-
 import module.metaWorkflow.util.versioning.Diff;
 import myorg.applicationTier.Authenticate.UserView;
 import myorg.domain.MyOrg;
+
+import org.apache.commons.lang.StringUtils;
+import org.joda.time.DateTime;
 
 public class WorkflowMetaTypeDescription extends WorkflowMetaTypeDescription_Base implements
 	Comparable<WorkflowMetaTypeDescription> {
@@ -31,12 +30,19 @@ public class WorkflowMetaTypeDescription extends WorkflowMetaTypeDescription_Bas
 	getMetaType().addDescription(description);
     }
 
-    
     public String getDiffWithLastVersion() {
 	int version = getVersion();
 	if (version == 1) {
 	    return StringUtils.EMPTY;
 	}
-	return Diff.doDiffX(getMetaType().getDescriptionAtVersion(version-1).getDescription(), getDescription());
+	return getDiffWith(getMetaType().getDescriptionAtVersion(version - 1));
+    }
+
+    public String getDiffWithVersion(int version) {
+	return getDiffWith(getMetaType().getDescriptionAtVersion(version - 1));
+    }
+
+    public String getDiffWith(WorkflowMetaTypeDescription description) {
+	return Diff.doDiffX(getDescription(),description.getDescription());
     }
 }

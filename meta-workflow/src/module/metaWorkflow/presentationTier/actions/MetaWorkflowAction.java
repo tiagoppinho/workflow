@@ -5,6 +5,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import module.metaWorkflow.domain.WorkflowMetaProcess;
 import module.metaWorkflow.domain.WorkflowMetaType;
+import module.metaWorkflow.domain.WorkflowMetaTypeDescription;
 import module.metaWorkflow.util.WorkflowMetaProcessBean;
 import module.metaWorkflow.util.WorkflowMetaTypeBean;
 import module.workflow.domain.WorkflowProcess;
@@ -13,6 +14,7 @@ import myorg.applicationTier.Authenticate.UserView;
 import myorg.domain.MyOrg;
 import myorg.presentationTier.actions.ContextBaseAction;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
@@ -96,6 +98,29 @@ public class MetaWorkflowAction extends ContextBaseAction {
 	request.setAttribute("process", process);
 	request.setAttribute("metaType", process.getMetaType());
 	return forward(request, "/metaWorkflow/viewMetaTypeDescriptionHistory.jsp");
+    }
+
+    public ActionForward doDiff(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
+	    final HttpServletResponse response) {
+
+	String revision1 = request.getParameter("rev1");
+	String revision2 = request.getParameter("rev2");
+	if (!StringUtils.isEmpty(revision1) && !StringUtils.isEmpty(revision2)) {
+	    Integer version1 = Integer.valueOf(revision1);
+	    Integer version2 = Integer.valueOf(revision2);
+
+	    WorkflowMetaProcess process = getDomainObject(request, "processId");
+	    WorkflowMetaTypeDescription descriptionV1 = process.getMetaType().getDescriptionAtVersion(version1);
+	    WorkflowMetaTypeDescription descriptionV2 = process.getMetaType().getDescriptionAtVersion(version2);
+
+	    request.setAttribute("version1", descriptionV1);
+	    request.setAttribute("version2", descriptionV2);
+	    request.setAttribute("diff", descriptionV1.getDiffWith(descriptionV2));
+
+	}
+
+	return viewMetaTypeDescriptionHistory(mapping, form, request, response);
+
     }
 
     public ActionForward addComment(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,

@@ -55,6 +55,8 @@
 
 <div class="dotted roundCorners">
 	
+	<fr:view name="process" layout="viewComments"/>
+
 	<logic:present name="commentBean">
 		<fr:form action='<%= "/metaWorkflow.do?method=addComment&processId=" + processOID %>'>
 			<table class="form">
@@ -75,7 +77,5 @@
 			</table>
 			<html:submit styleClass="inputbutton"><bean:message key="renderers.form.add.name" bundle="RENDERER_RESOURCES"/> </html:submit>
 		</fr:form>
-	</logic:present>
-	<fr:view name="process" layout="viewComments"/>
-	
+	</logic:present>	
 </div>
