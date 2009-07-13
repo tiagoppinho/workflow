@@ -9,16 +9,15 @@ import module.metaWorkflow.util.WorkflowMetaProcessBean;
 import module.metaWorkflow.util.WorkflowMetaTypeBean;
 import module.workflow.domain.WorkflowProcess;
 import module.workflow.presentationTier.actions.ProcessManagement;
+import myorg.applicationTier.Authenticate.UserView;
 import myorg.domain.MyOrg;
 import myorg.presentationTier.actions.ContextBaseAction;
 
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
-import org.joda.time.DateTime;
 
 import pt.ist.fenixWebFramework.renderers.utils.RenderUtils;
-import pt.ist.fenixWebFramework.services.Service;
 import pt.ist.fenixWebFramework.struts.annotations.Mapping;
 
 @Mapping(path = "/metaWorkflow")
@@ -89,7 +88,7 @@ public class MetaWorkflowAction extends ContextBaseAction {
 	request.setAttribute("metaType", process.getMetaType());
 	return forward(request, "/metaWorkflow/editMetaTypeDescription.jsp");
     }
-    
+
     public ActionForward viewMetaTypeDescriptionHistory(final ActionMapping mapping, final ActionForm form,
 	    final HttpServletRequest request, final HttpServletResponse response) {
 
@@ -97,6 +96,17 @@ public class MetaWorkflowAction extends ContextBaseAction {
 	request.setAttribute("process", process);
 	request.setAttribute("metaType", process.getMetaType());
 	return forward(request, "/metaWorkflow/viewMetaTypeDescriptionHistory.jsp");
+    }
+
+    public ActionForward addComment(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
+	    final HttpServletResponse response) {
+
+	final WorkflowMetaProcess process = getDomainObject(request, "processId");
+	String comment = getRenderedObject("comment");
+	process.createComment(UserView.getCurrentUser(), comment);
+
+	RenderUtils.invalidateViewState("comment");
+	return ProcessManagement.forwardToProcess(process);
     }
 
 }

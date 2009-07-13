@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import module.metaWorkflow.activities.ChangeQueue;
 import module.workflow.activities.ActivityInformation;
 import module.workflow.activities.GiveProcess;
@@ -14,7 +16,10 @@ import module.workflow.activities.TakeProcess;
 import module.workflow.activities.WorkflowActivity;
 import module.workflow.domain.GenericFile;
 import module.workflow.domain.WorkflowProcess;
+import module.workflow.presentationTier.actions.ProcessManagement;
+import module.workflow.presentationTier.actions.ProcessManagement.ProcessRequestHandler;
 import myorg.applicationTier.Authenticate.UserView;
+import myorg.util.VariantBean;
 
 import org.joda.time.DateTime;
 
@@ -30,6 +35,21 @@ public class WorkflowMetaProcess extends WorkflowMetaProcess_Base {
 	activityMap.put(StealProcess.class.getSimpleName(), new StealProcess());
 	activityMap.put(GiveProcess.class.getSimpleName(), new GiveProcess());
 	activityMap.put(ChangeQueue.class.getSimpleName(), new ChangeQueue());
+
+	// Registering here the request handler, it should be done in other
+	// place though, such as module init. Although we still do not have
+	// it. So for now it's here.
+
+	ProcessManagement.registerProcessRequestHandler(WorkflowMetaProcess.class,
+		new ProcessRequestHandler<WorkflowMetaProcess>() {
+
+		    @Override
+		    public void handleRequest(WorkflowMetaProcess process, HttpServletRequest request) {
+			request.setAttribute("commentBean", new VariantBean());
+
+		    }
+		});
+
     }
 
     public WorkflowMetaProcess(WorkflowMetaType type, String instanceDescription) {
@@ -69,5 +89,10 @@ public class WorkflowMetaProcess extends WorkflowMetaProcess_Base {
     @Service
     public static WorkflowMetaProcess createNewProcess(WorkflowMetaType metaType, String instanceDescription) {
 	return new WorkflowMetaProcess(metaType, instanceDescription);
+    }
+
+    @Override
+    public boolean isCommentsSupportAvailable() {
+	return false;
     }
 }
