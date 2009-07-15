@@ -1,0 +1,10 @@
+<renderer type="module.metaWorkflow.util.versioning.DiffUtil$Revision" layout="showDiff"
+	class="module.metaWorkflow.presentationTier.renderers.RevisionRenderer">
+
+	<property name="modifiedLineClass" value="infoop4"/>
+	<property name="unmodifiedLine" value="infoop2"/>
+	<property name="removeWord" value="smalltext"/>
+	<property name="addWord" value="bold"/>
+	<property name="allDoc" value="true"/>
+
+</renderer>

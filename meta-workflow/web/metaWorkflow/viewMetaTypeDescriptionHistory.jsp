@@ -29,7 +29,7 @@
 	<logic:iterate id="description" name="metaType" property="orderedDescriptionHistory">
 		<bean:define id="version" name="description" property="version"/>
 		<tr>
-			<td><fr:view name="version"/></td>
+			<td><html:link page="<%="/metaWorkflow.do?method=viewVersion&version=" + version + "&processId=" + processId %>"><fr:view name="version"/></html:link></td>
 			<td><fr:view name="description" property="versionOwner.presentationName"/></td>
 			<td><fr:view name="description" property="date"/></td>
 			<td>
@@ -53,26 +53,39 @@
 </logic:notEmpty>
 
 
+<logic:notEmpty name="historyVersion">
+<div id="rules" class="infoop2" style="-moz-border-radius: 6px; -webkit-border-radius: 6px;">
+		<fr:view name="historyVersion" property="description"/>
+		<p>
+			<em>
+				<span class="aright">
+				<bean:define id="version" name="historyVersion" property="version"/>
+				<bean:define id="versionOwner" name="historyVersion" property="versionOwner.presentationName"/>
+				<bean:define id="date">
+					<fr:view name="historyVersion" property="date"/>
+				</bean:define>
+				
+					<bean:message key="label.metaTypeDescription.by" bundle="META_WORKFLOW_RESOURCES" arg0="<%= version.toString() %>" arg1="<%= versionOwner.toString() %>" arg2="<%= date.toString()%>"/>
+				</span>
+			</em>
+		</p>
+	</div>
+</logic:notEmpty>
+
 <logic:notEmpty name="version1">
-	<table class="tstyle2">
-		<tr>
-			<th><bean:message key="label.metaType.version" bundle="META_WORKFLOW_RESOURCES"/> <fr:view name="version1" property="version"/></th>
-			<th><bean:message key="label.metaType.version" bundle="META_WORKFLOW_RESOURCES"/> <fr:view name="version2" property="version"/></th>
-		</tr>
 	
-		<tr>
-			<td>
-				<fr:view name="version1" property="description"/>
-			</td>
-			<td>
-				<fr:view name="version2" property="description"/>
-			</td>
-		</tr>
-		<tr>
-			<td colspan="2"> 
-				<fr:view name="diff"/>
-			</td>	
-		</tr>
+	<script type="text/javascript">
+		$("input[name='rev1'][value='<fr:view name="version1" property="version"/>']").attr('checked',true);
+		$("input[name='rev2'][value='<fr:view name="version2" property="version"/>']").attr('checked',true);
 		
-	</table>
+	</script>
+	
+	<fr:view name="version1" property="version"/> => <fr:view name="version2" property="version"/>
+	<fr:view name="diff">
+		<fr:layout name="showDiff">
+			<fr:property name="allDoc" value="true"/>
+			<fr:property name="addWord" value="on"/>
+			<fr:property name="removeWord" value="off"/>
+		</fr:layout>
+	</fr:view>
 </logic:notEmpty>

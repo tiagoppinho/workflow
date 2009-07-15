@@ -32,6 +32,18 @@
 	</slot>
 </schema>
 
+<schema name="activityInformation.ChangeRequestor" type="module.workflow.activities.UserInformation">
+	<slot name="user" layout="autoComplete" key="label.changeRequestor"
+		bundle="META_WORKFLOW_RESOURCES">
+		<property name="labelField" value="username" />
+		<property name="format" value="${presentationName}" />
+		<property name="minChars" value="3" />
+		<property name="args"
+			value="provider=myorg.presentationTier.renderers.autoCompleteProvider.UserAutoComplete" />
+		<property name="size" value="40" />
+	</slot>
+</schema>
+
 <schema name="create.meta.process" type="module.metaWorkflow.util.WorkflowMetaProcessBean" bundle="META_WORKFLOW_RESOURCES">
 	<slot name="metaType" layout="menu-select" key="label.metaType" validator="pt.ist.fenixWebFramework.renderers.validators.RequiredValidator">
 		<property name="providerClass" value="module.metaWorkflow.presentationTier.renderers.providers.AvailableWorkflowMetaTypes"/>
@@ -41,6 +53,11 @@
 	<slot name="instanceDescription" layout="longText" key="label.metaProcess.instanceDescription" validator="pt.ist.fenixWebFramework.renderers.validators.RequiredValidator">
 		<property name="rows" value="10"/>
 		<property name="columns" value="80"/>
+	</slot>
+	<slot name="queue" layout="menu-select" key="label.metaProcess.queue">
+		<property name="providerClass" value="module.metaWorkflow.presentationTier.renderers.providers.AvailableQueues"/>
+		<property name="eachLayout" value="values"/>
+		<property name="eachSchema" value="view.queue.name"/>
 	</slot>
 </schema>
 
@@ -55,13 +72,22 @@
 
 <schema name="view.meta.process.details" type="module.metaWorkflow.domain.WorkflowMetaProcess" bundle="META_WORKFLOW_RESOURCES">
 	<slot name="processNumber" key="label.processNumber=" bundle="WORKFLOW_RESOURCES"/>
+	<slot name="open" key="label.metaProcess.open"/>
 	<slot name="instanceDescription" key="label.metaProcess.instanceDescription"/>
 	<slot name="creationDate" key="label.metaProcess.creationDate"/>
 	<slot name="creator.presentationName" key="label.metaProcess.creator"/>
+	<slot name="requestor" key="label.metaprocess.requestor" layout="null-as-label">
+		<property name="subLayout" value="values"/>
+		<property name="subSchema" value="view.requestor.name"/>
+	</slot>
 	<slot name="currentQueue" layout="null-as-label" key="label.metaProcess.currentQueue">
 		<property name="subLayout" value="values"/>
 		<property name="subSchema" value="view.queue.name"/>
 	</slot>
+</schema>
+
+<schema name="view.requestor.name" type="module.metaWorkflow.domain.Requestor" bundle="META_WORKFLOW_RESOURCES">
+	<slot name="name"/>
 </schema>
 
 <schema name="view.queue.name" type="module.metaWorkflow.domain.WorkflowQueue" bundle="META_WORKFLOW_RESOURCES">

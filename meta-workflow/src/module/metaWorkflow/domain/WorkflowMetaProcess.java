@@ -8,9 +8,14 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import module.metaWorkflow.activities.ChangeQueue;
+import module.metaWorkflow.activities.ChangeRequestor;
+import module.metaWorkflow.activities.CloseMetaProcess;
+import module.metaWorkflow.activities.OpenMetaProcess;
 import module.workflow.activities.ActivityInformation;
+import module.workflow.activities.AddObserver;
 import module.workflow.activities.GiveProcess;
 import module.workflow.activities.ReleaseProcess;
+import module.workflow.activities.RemoveObserver;
 import module.workflow.activities.StealProcess;
 import module.workflow.activities.TakeProcess;
 import module.workflow.activities.WorkflowActivity;
@@ -19,6 +24,7 @@ import module.workflow.domain.WorkflowProcess;
 import module.workflow.presentationTier.actions.ProcessManagement;
 import module.workflow.presentationTier.actions.ProcessManagement.ProcessRequestHandler;
 import myorg.applicationTier.Authenticate.UserView;
+import myorg.domain.User;
 import myorg.util.VariantBean;
 
 import org.joda.time.DateTime;
@@ -35,6 +41,11 @@ public class WorkflowMetaProcess extends WorkflowMetaProcess_Base {
 	activityMap.put(StealProcess.class.getSimpleName(), new StealProcess());
 	activityMap.put(GiveProcess.class.getSimpleName(), new GiveProcess());
 	activityMap.put(ChangeQueue.class.getSimpleName(), new ChangeQueue());
+	activityMap.put(CloseMetaProcess.class.getSimpleName(), new CloseMetaProcess());
+	activityMap.put(OpenMetaProcess.class.getSimpleName(), new OpenMetaProcess());
+	activityMap.put(AddObserver.class.getSimpleName(), new AddObserver());
+	activityMap.put(RemoveObserver.class.getSimpleName(), new RemoveObserver());
+	activityMap.put(ChangeRequestor.class.getSimpleName(), new ChangeRequestor());
 
 	// Registering here the request handler, it should be done in other
 	// place though, such as module init. Although we still do not have
@@ -52,13 +63,15 @@ public class WorkflowMetaProcess extends WorkflowMetaProcess_Base {
 
     }
 
-    public WorkflowMetaProcess(WorkflowMetaType type, String instanceDescription) {
+    public WorkflowMetaProcess(WorkflowMetaType type, String instanceDescription, WorkflowQueue queue) {
 	super();
 	setMetaType(type);
-	setProcessNumber(WorkflowMetaProcessIdentifierCounter.getProcessIdentifierCounter().getNextIdentifier());
+	setProcessNumber(type.getNextIdentifier());
 	setCreator(UserView.getCurrentUser());
 	setCreationDate(new DateTime());
 	setInstanceDescription(instanceDescription);
+	open();
+	setCurrentQueue(queue);
     }
 
     @Override
@@ -86,13 +99,46 @@ public class WorkflowMetaProcess extends WorkflowMetaProcess_Base {
 	return getAvailableFileTypes().size() > 0;
     }
 
-    @Service
-    public static WorkflowMetaProcess createNewProcess(WorkflowMetaType metaType, String instanceDescription) {
-	return new WorkflowMetaProcess(metaType, instanceDescription);
-    }
-
     @Override
     public boolean isCommentsSupportAvailable() {
 	return false;
     }
+
+    @Override
+    public void setOpen(Boolean open) {
+	throw new UnsupportedOperationException("Error: use open() and close() methods");
+    }
+
+    public void open() {
+	super.setOpen(Boolean.TRUE);
+    }
+
+    public void close() {
+	super.setOpen(Boolean.FALSE);
+    }
+
+    public boolean isOpen() {
+	return getOpen().booleanValue();
+    }
+
+    @Service
+    public static WorkflowMetaProcess createNewProcess(WorkflowMetaType metaType, String instanceDescription, WorkflowQueue queue) {
+	return new WorkflowMetaProcess(metaType, instanceDescription, queue);
+    }
+
+    @Override
+    public boolean isAccessible(User user) {
+	return getCurrentOwner() == user || getCreator() == user || isUserObserver(user)
+		|| getCurrentQueue().isUserAbleToAccessQueue(user) || isUserAbleToAccessPastQueues(user);
+    }
+
+    private boolean isUserAbleToAccessPastQueues(User user) {
+	for (WorkflowQueue queue : getQueueHistory()) {
+	    if (queue.isUserAbleToAccessQueue(user)) {
+		return true;
+	    }
+	}
+	return false;
+    }
+
 }

@@ -58,7 +58,7 @@ public class MetaWorkflowAction extends ContextBaseAction {
 
 	WorkflowMetaProcessBean processBean = getRenderedObject("processBean");
 	WorkflowMetaProcess process = WorkflowMetaProcess.createNewProcess(processBean.getMetaType(), processBean
-		.getInstanceDescription());
+		.getInstanceDescription(), processBean.getQueue());
 
 	return viewMetaProcess(process);
     }
@@ -120,7 +120,16 @@ public class MetaWorkflowAction extends ContextBaseAction {
 	}
 
 	return viewMetaTypeDescriptionHistory(mapping, form, request, response);
+    }
 
+    public ActionForward viewVersion(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
+	    final HttpServletResponse response) {
+
+	WorkflowMetaProcess process = getDomainObject(request, "processId");
+	Integer version = Integer.valueOf(request.getParameter("version"));
+	request.setAttribute("historyVersion", process.getMetaType().getDescriptionAtVersion(version));
+
+	return viewMetaTypeDescriptionHistory(mapping, form, request, response);
     }
 
     public ActionForward addComment(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,

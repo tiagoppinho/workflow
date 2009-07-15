@@ -1,10 +1,10 @@
 package module.metaWorkflow.domain;
 
-import module.metaWorkflow.util.versioning.Diff;
+import module.metaWorkflow.util.versioning.DiffUtil;
+import module.metaWorkflow.util.versioning.DiffUtil.Revision;
 import myorg.applicationTier.Authenticate.UserView;
 import myorg.domain.MyOrg;
 
-import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 
 public class WorkflowMetaTypeDescription extends WorkflowMetaTypeDescription_Base implements
@@ -30,19 +30,11 @@ public class WorkflowMetaTypeDescription extends WorkflowMetaTypeDescription_Bas
 	getMetaType().addDescription(description);
     }
 
-    public String getDiffWithLastVersion() {
-	int version = getVersion();
-	if (version == 1) {
-	    return StringUtils.EMPTY;
-	}
+    public Revision getDiffWithVersion(int version) {
 	return getDiffWith(getMetaType().getDescriptionAtVersion(version - 1));
     }
 
-    public String getDiffWithVersion(int version) {
-	return getDiffWith(getMetaType().getDescriptionAtVersion(version - 1));
-    }
-
-    public String getDiffWith(WorkflowMetaTypeDescription description) {
-	return Diff.doDiffX(getDescription(),description.getDescription());
+    public Revision getDiffWith(WorkflowMetaTypeDescription description) {
+	return DiffUtil.diff(getDescription(), description.getDescription());
     }
 }

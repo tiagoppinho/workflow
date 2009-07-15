@@ -26,8 +26,25 @@
  class module.metaWorkflow.domain.WorkflowMetaProcess extends module.workflow.domain.WorkflowProcess {
  	String instanceDescription;
  	DateTime creationDate;
+ 	Boolean open;
  }
  
+ class module.metaWorkflow.domain.UserRequestor extends module.metaWorkflow.domain.Requestor {
+ }
+ 
+
+relation RequestorWorkflowMetaProcess {
+	module.metaWorkflow.domain.WorkflowMetaProcess playsRole process {
+		multiplicity *;
+	}
+	module.metaWorkflow.domain.Requestor playsRole requestor;
+}
+ 
+relation UserRequestorUser {
+	myorg.domain.User playsRole user;
+	module.metaWorkflow.domain.Requestor playsRole requestor;
+}
+
  relation WorkflowMetaProcessWorkflowMetaType {
 	module.metaWorkflow.domain.WorkflowMetaProcess playsRole metaProcesses {
 		multiplicity *;
@@ -56,11 +73,6 @@ relation MyOrgWorkflowMetaType {
 	module.metaWorkflow.domain.WorkflowMetaType playsRole metaTypes {
 		multiplicity *;
 	}
-}
-
-relation MyOrgWorkflowMetaProcessIdentifierCounter {
-	myorg.domain.MyOrg playsRole myOrg;
-	module.metaWorkflow.domain.WorkflowMetaProcessIdentifierCounter playsRole workflowMetaProcessIdentifierCounter;
 }
 
 relation MyOrgWorkflowMetaTypeDescription {

@@ -33,12 +33,9 @@ package module.metaWorkflow.domain;
     internalizeWith importFromString();
 }
 
- class WorkflowMetaProcessIdentifierCounter {
- 	int counter;
- }
- 
  class WorkflowMetaType {
  	String name;
+ 	Integer processCounter;
  	Strings suporttedFileClasses;
  }
  
@@ -51,6 +48,15 @@ package module.metaWorkflow.domain;
 class WorkflowQueue {
 	String name;
 } 
+
+class Requestor {
+	String ojbConcreteClass;
+}
+
+class ExternalRequestor extends Requestor {
+	String name;
+	String email;
+}
 
 relation WorkflowMetaTypeDescription {
 	WorkflowMetaType playsRole metaType;

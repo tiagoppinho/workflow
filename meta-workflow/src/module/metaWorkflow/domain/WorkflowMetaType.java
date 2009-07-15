@@ -15,6 +15,7 @@ public class WorkflowMetaType extends WorkflowMetaType_Base {
 	super();
 	setMyOrg(MyOrg.getInstance());
 	setName(name);
+	setProcessCounter(0);
 	addDescription(description, 1);
 	super.setSuporttedFileClasses(new Strings(Collections.EMPTY_LIST));
     }
@@ -81,5 +82,10 @@ public class WorkflowMetaType extends WorkflowMetaType_Base {
     public WorkflowMetaTypeDescription getDescriptionAtVersion(int version) {
 	List<WorkflowMetaTypeDescription> orderedDescriptionHistory = getOrderedDescriptionHistory();
 	return (orderedDescriptionHistory.size() < version) ? null : orderedDescriptionHistory.get(version - 1);
+    }
+
+    public Integer getNextIdentifier() {
+	setProcessCounter(getProcessCounter() + 1);
+	return getProcessCounter();
     }
 }
