@@ -48,6 +48,7 @@ import myorg.domain.exceptions.DomainException;
 import myorg.presentationTier.actions.ContextBaseAction;
 import myorg.util.VariantBean;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
@@ -113,16 +114,18 @@ public class ProcessManagement extends ContextBaseAction {
 	    WorkflowActivity<WorkflowProcess, ActivityInformation<WorkflowProcess>> activity, HttpServletRequest request)
 	    throws Exception {
 	ActivityInformation<WorkflowProcess> activityInformation = activity.getActivityInformation(process);
-	String paremeters = request.getParameter("parameters");
+	String parameters = request.getParameter("parameters");
 	Class<? extends ActivityInformation> activityClass = activityInformation.getClass();
-	for (String parameter : paremeters.split(",")) {
+	if (!StringUtils.isEmpty(parameters)) {
+	    for (String parameter : parameters.split(",")) {
 
-	    Field field = activityClass.getDeclaredField(parameter);
-	    Class<?> type = field.getType();
-	    Object convertedValue = convert(type, request.getParameter(parameter));
-	    Method declaredMethod = getMethod("set" + parameter.substring(0, 1).toUpperCase() + parameter.substring(1),
-		    activityClass, convertedValue.getClass());
-	    declaredMethod.invoke(activityInformation, convertedValue);
+		Field field = activityClass.getDeclaredField(parameter);
+		Class<?> type = field.getType();
+		Object convertedValue = convert(type, request.getParameter(parameter));
+		Method declaredMethod = getMethod("set" + parameter.substring(0, 1).toUpperCase() + parameter.substring(1),
+			activityClass, convertedValue.getClass());
+		declaredMethod.invoke(activityInformation, convertedValue);
+	    }
 	}
 	return activityInformation;
     }
