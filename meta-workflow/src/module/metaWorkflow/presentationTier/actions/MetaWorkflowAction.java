@@ -85,18 +85,16 @@ public class MetaWorkflowAction extends ContextBaseAction {
     public ActionForward editMetaTypeDescription(final ActionMapping mapping, final ActionForm form,
 	    final HttpServletRequest request, final HttpServletResponse response) {
 
-	WorkflowMetaProcess process = getDomainObject(request, "processId");
-	request.setAttribute("process", process);
-	request.setAttribute("metaType", process.getMetaType());
+	WorkflowMetaType type = getDomainObject(request, "metaTypeId");
+	request.setAttribute("metaType", type);
 	return forward(request, "/metaWorkflow/editMetaTypeDescription.jsp");
     }
 
     public ActionForward viewMetaTypeDescriptionHistory(final ActionMapping mapping, final ActionForm form,
 	    final HttpServletRequest request, final HttpServletResponse response) {
 
-	WorkflowMetaProcess process = getDomainObject(request, "processId");
-	request.setAttribute("process", process);
-	request.setAttribute("metaType", process.getMetaType());
+	WorkflowMetaType type = getDomainObject(request, "metaTypeId");
+	request.setAttribute("metaType", type);
 	return forward(request, "/metaWorkflow/viewMetaTypeDescriptionHistory.jsp");
     }
 
@@ -109,9 +107,9 @@ public class MetaWorkflowAction extends ContextBaseAction {
 	    Integer version1 = Integer.valueOf(revision1);
 	    Integer version2 = Integer.valueOf(revision2);
 
-	    WorkflowMetaProcess process = getDomainObject(request, "processId");
-	    WorkflowMetaTypeDescription descriptionV1 = process.getMetaType().getDescriptionAtVersion(version1);
-	    WorkflowMetaTypeDescription descriptionV2 = process.getMetaType().getDescriptionAtVersion(version2);
+	    WorkflowMetaType metaType = getDomainObject(request, "metaTypeId");
+	    WorkflowMetaTypeDescription descriptionV1 = metaType.getDescriptionAtVersion(version1);
+	    WorkflowMetaTypeDescription descriptionV2 = metaType.getDescriptionAtVersion(version2);
 
 	    request.setAttribute("version1", descriptionV1);
 	    request.setAttribute("version2", descriptionV2);
@@ -125,9 +123,9 @@ public class MetaWorkflowAction extends ContextBaseAction {
     public ActionForward viewVersion(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
 	    final HttpServletResponse response) {
 
-	WorkflowMetaProcess process = getDomainObject(request, "processId");
+	WorkflowMetaType metaType = getDomainObject(request, "metaTypeId");
 	Integer version = Integer.valueOf(request.getParameter("version"));
-	request.setAttribute("historyVersion", process.getMetaType().getDescriptionAtVersion(version));
+	request.setAttribute("historyVersion", metaType.getDescriptionAtVersion(version));
 
 	return viewMetaTypeDescriptionHistory(mapping, form, request, response);
     }

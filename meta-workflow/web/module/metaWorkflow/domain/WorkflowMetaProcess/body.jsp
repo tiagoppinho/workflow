@@ -11,7 +11,7 @@
 
 
 <logic:equal name="process" property="open" value="false">
-	<div class="infoop2" style="-moz-border-radius: 6px; -webkit-border-radius: 6px;">
+	<div class="infoop4" style="-moz-border-radius: 6px; -webkit-border-radius: 6px;">
 		<bean:message key="label.message.processIsClosed" bundle="META_WORKFLOW_RESOURCES"/>
 	</div>
 </logic:equal>
@@ -30,9 +30,10 @@
 <%= ContentContextInjectionRewriter.BLOCK_HAS_CONTEXT_PREFIX %>
 <div id="tabs">
 	<ul>
-		<li><%= GenericChecksumRewriter.NO_CHECKSUM_PREFIX %><a href="#tabs-1">Informações</a></li>
-		<li><%= GenericChecksumRewriter.NO_CHECKSUM_PREFIX %><a href="#tabs-2"><bean:message key="label.observers" bundle="META_WORKFLOW_RESOURCES"/></a></li>
-		<li><%= GenericChecksumRewriter.NO_CHECKSUM_PREFIX %><a href="#tabs-3">Regras</a></li>
+		<li><%= GenericChecksumRewriter.NO_CHECKSUM_PREFIX %><a href="#tabs-1"><bean:message key="label.tab.information" bundle="META_WORKFLOW_RESOURCES"/></a></li>
+		<bean:size id="observersCount" name="process" property="observers"/>
+		<li><%= GenericChecksumRewriter.NO_CHECKSUM_PREFIX %><a href="#tabs-2"><bean:message key="label.tab.observers" bundle="META_WORKFLOW_RESOURCES"/> (<fr:view name="observersCount"/>)</a></li>
+		<li><%= GenericChecksumRewriter.NO_CHECKSUM_PREFIX %><a href="#tabs-3"><bean:message key="label.tab.rules" bundle="META_WORKFLOW_RESOURCES"/></a></li>
 	</ul>
 	<div id="tabs-1">
 	<fr:view name="process" schema="view.meta.process.details">
@@ -41,6 +42,15 @@
 		</fr:layout>	
 	</fr:view>	</div>
 	<div id="tabs-2">
+	<logic:empty name="process" property="observers">
+		<em><bean:message key="label.noObserversSpecified" bundle="META_WORKFLOW_RESOURCES"/>.</em>
+		<bean:define id="addObserver">
+			<bean:message key="activity.AddObserver" bundle="WORKFLOW_RESOURCES"/>
+		</bean:define>
+		
+		(<wf:activityLink processName="process" activityName="AddObserver" linkName="<%= addObserver %>" scope="request"/>)
+	</logic:empty>
+	
 	<logic:iterate id="observer" name="process" property="observers">			
 		
 		<bean:define id="userPresentation" name="observer" property="presentationName"/>
@@ -73,10 +83,9 @@
 					<bean:message key="label.metaTypeDescription.by" bundle="META_WORKFLOW_RESOURCES" arg0="<%= version.toString() %>" arg1="<%= versionOwner.toString() %>" arg2="<%= date.toString()%>"/>
 				</span>
 			</em>
-			(<html:link page="<%= "/metaWorkflow.do?method=editMetaTypeDescription&processId=" + processOID %>">
-				<bean:message key="link.edit" bundle="META_WORKFLOW_RESOURCES"/>
-			</html:link>, 
-			<html:link page="<%= "/metaWorkflow.do?method=viewMetaTypeDescriptionHistory&processId=" + processOID %>">
+			<bean:define id="metaTypeId" name="process" property="metaType.OID"/>
+			(
+			<html:link page="<%= "/metaWorkflow.do?method=viewMetaTypeDescriptionHistory&metaTypeId=" + metaTypeId %>">
 				<bean:message key="link.history" bundle="META_WORKFLOW_RESOURCES"/>
 			</html:link>)
 		</p>

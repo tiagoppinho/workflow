@@ -7,14 +7,14 @@
 
 <h2><bean:message key="title.metaType.descriptionHistory" bundle="META_WORKFLOW_RESOURCES"/></h2>
 
-<bean:define id="processId" name="process" property="OID"/>
-
-<html:link page="<%= "/workflowProcessManagement.do?method=viewProcess&processId=" + processId %>">
-	«  <bean:message key="link.backToProcess" bundle="WORKFLOW_RESOURCES"/>
+<html:link page="/metaWorkflow.do?method=manageMetaType">
+	<bean:message key="link.back" bundle="MYORG_RESOURCES"/>
 </html:link>
 
 <logic:notEmpty name="metaType" property="orderedDescriptionHistory">
-	<fr:form id="diffForm" action="<%= "/metaWorkflow.do?method=doDiff&processId=" + processId %>">
+	<bean:define id="metaTypeId" name="metaType" property="OID"/>
+	<fr:form id="diffForm" action="<%= "/metaWorkflow.do?method=doDiff&metaTypeId=" + metaTypeId%>">
+	
 	<html:hidden styleId="rev1" property="rev1" value=""/>
 	<html:hidden styleId="rev2" property="rev2" value=""/>
 
@@ -29,7 +29,7 @@
 	<logic:iterate id="description" name="metaType" property="orderedDescriptionHistory">
 		<bean:define id="version" name="description" property="version"/>
 		<tr>
-			<td><html:link page="<%="/metaWorkflow.do?method=viewVersion&version=" + version + "&processId=" + processId %>"><fr:view name="version"/></html:link></td>
+			<td><html:link page="<%="/metaWorkflow.do?method=viewVersion&version=" + version + "&metaTypeId=" + metaTypeId %>"><fr:view name="version"/></html:link></td>
 			<td><fr:view name="description" property="versionOwner.presentationName"/></td>
 			<td><fr:view name="description" property="date"/></td>
 			<td>
