@@ -95,6 +95,14 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base {
 
     public abstract <T extends WorkflowActivity<? extends WorkflowProcess, ? extends ActivityInformation>> List<T> getActivities();
 
+    public boolean isAccessible(User user) {
+	return true;
+    }
+
+    public boolean isAccessibleToCurrentUser() {
+	return isAccessible(UserView.getCurrentUser());
+    }
+
     @SuppressWarnings("unchecked")
     public <T extends WorkflowProcess, AI extends ActivityInformation<T>> List<WorkflowActivity<T, AI>> getActiveActivities() {
 	List<WorkflowActivity<T, AI>> activities = new ArrayList<WorkflowActivity<T, AI>>();
@@ -313,6 +321,10 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base {
 	return true;
     }
 
+    public boolean isObserverSupportAvailable() {
+	return true;
+    }
+
     public List<Class<? extends GenericFile>> getAvailableFileTypes() {
 	List<Class<? extends GenericFile>> availableClasses = new ArrayList<Class<? extends GenericFile>>();
 	availableClasses.add(GenericFile.class);
@@ -328,5 +340,17 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base {
 	    }
 	}
 	return classes;
+    }
+
+    @Override
+    public void addObservers(User observer) {
+	if (getObservers().contains(observer)) {
+	    throw new DomainException("error.workflowProcess.addingExistingObserver");
+	}
+	super.addObservers(observer);
+    }
+
+    public boolean isUserObserver(User user) {
+	return getObservers().contains(user);
     }
 }

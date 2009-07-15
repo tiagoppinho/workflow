@@ -2,18 +2,12 @@ package module.workflow.activities;
 
 import module.workflow.domain.WorkflowProcess;
 import myorg.domain.User;
-import myorg.util.BundleUtil;
 
 public class TakeProcess<T extends WorkflowProcess> extends WorkflowActivity<T, ActivityInformation<T>> {
 
     @Override
-    public String getLocalizedName() {
-	return BundleUtil.getStringFromResourceBundle(getUsedBundle(), "activity." + getClass().getSimpleName());
-    }
-
-    @Override
     public boolean isActive(T process, User user) {
-	return process.isTicketSupportAvailable() && process.getCurrentOwner() == null;
+	return process.isTicketSupportAvailable() && !process.isUserObserver(user) && process.getCurrentOwner() == null;
     }
 
     @Override

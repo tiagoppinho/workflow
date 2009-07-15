@@ -76,6 +76,15 @@ relation TakeSupport {
 	} 
 }
 
+relation Observers {
+	module.workflow.domain.WorkflowProcess playsRole observedProcesses {
+		multiplicity *;
+	}
+	myorg.domain.User playsRole observers {
+		multiplicity *;
+	}
+}
+
 relation UserLog {
 	myorg.domain.User playsRole activityExecutor;
 	module.workflow.domain.WorkflowLog playsRole userLogs {

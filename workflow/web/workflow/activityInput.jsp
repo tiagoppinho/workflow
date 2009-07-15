@@ -9,7 +9,7 @@
 <bean:define id="processId" name="process" property="OID" />
 <bean:define id="processClassName" name="process" property="class.name" type="java.lang.String"/>
 <bean:define id="name" name="information" property="activityName"/>
-<bean:define id="activityInformationClass" name="information" property="class.simpleName"/>
+<bean:define id="activityInformationClass" name="information" property="activityClass.simpleName"/>
 
 <bean:define id="includeFolder" value="<%= processClassName.replace('.','/')%>"/>
 

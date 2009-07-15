@@ -28,6 +28,7 @@ package module.workflow.activities;
 import module.workflow.domain.WorkflowProcess;
 import myorg.applicationTier.Authenticate.UserView;
 import myorg.domain.User;
+import myorg.util.BundleUtil;
 import pt.ist.fenixWebFramework.services.Service;
 
 /**
@@ -206,7 +207,9 @@ public abstract class WorkflowActivity<P extends WorkflowProcess, AI extends Act
      * 
      * @return The localized activity name used in the interfaces.
      */
-    public abstract String getLocalizedName();
+    public String getLocalizedName() {
+	return BundleUtil.getStringFromResourceBundle(getUsedBundle(), "activity." + getClass().getSimpleName());
+    }
 
     /**
      * This returns the activity bean that might have further fields that are

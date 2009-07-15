@@ -2,23 +2,18 @@ package module.workflow.activities;
 
 import module.workflow.domain.WorkflowProcess;
 import myorg.domain.User;
-import myorg.util.BundleUtil;
 
-public class GiveProcess<T extends WorkflowProcess> extends WorkflowActivity<T, UserInformation<T>> {
-
-    @Override
-    public String getLocalizedName() {
-	return BundleUtil.getStringFromResourceBundle(getUsedBundle(), "activity." + getClass().getSimpleName());
-    }
+public class AddObserver<T extends WorkflowProcess> extends WorkflowActivity<T, UserInformation<T>> {
 
     @Override
-    public boolean isActive(WorkflowProcess process, User user) {
-	return process.isTicketSupportAvailable() && !process.isUserObserver(user) && (process.getCurrentOwner() == null || process.getCurrentOwner() == user);
+    public boolean isActive(T process, User user) {
+	return process.isObserverSupportAvailable() && !process.isUserObserver(user)
+		&& (process.getCurrentOwner() == null || process.getCurrentOwner() == user);
     }
 
     @Override
     protected void process(UserInformation<T> information) {
-	information.getProcess().giveProcess(information.getUser());
+	information.getProcess().addObservers(information.getUser());
     }
 
     public boolean isUserAwarenessNeeded(T process, User user) {

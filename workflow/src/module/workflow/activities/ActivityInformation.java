@@ -33,6 +33,7 @@ import pt.ist.fenixWebFramework.util.DomainReference;
 public class ActivityInformation<P extends WorkflowProcess> implements Serializable {
 
     private DomainReference<P> process;
+    private Class<? extends WorkflowActivity> activityClass;
     private String activityName;
     private String localizedName;
     private boolean forwardFromInput;
@@ -51,6 +52,7 @@ public class ActivityInformation<P extends WorkflowProcess> implements Serializa
 
     public void setActivity(WorkflowActivity<? extends WorkflowProcess, ? extends ActivityInformation> activity) {
 	this.activityName = activity.getName();
+	this.activityClass = activity.getClass();
 	this.localizedName = activity.getLocalizedName();
     }
 
@@ -86,5 +88,9 @@ public class ActivityInformation<P extends WorkflowProcess> implements Serializa
 
     public WorkflowActivity<P, ActivityInformation<P>> getActivity() {
 	return getProcess().getActivity(getActivityName());
+    }
+
+    public Class getActivityClass() {
+	return this.activityClass;
     }
 }
