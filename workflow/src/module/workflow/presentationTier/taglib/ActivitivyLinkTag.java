@@ -20,6 +20,16 @@ public class ActivitivyLinkTag extends BodyTagSupport {
     String activityName;
     String linkName;
     String scope;
+    String id;
+
+    public String getId() {
+	return id;
+    }
+
+    public void setId(String id) {
+	this.id = id;
+    }
+
     Map<String, String> parameterMap = new HashMap<String, String>();
 
     public String getLinkName() {
@@ -70,7 +80,13 @@ public class ActivitivyLinkTag extends BodyTagSupport {
 	WorkflowActivity<WorkflowProcess, ActivityInformation<WorkflowProcess>> activity = process.getActivity(getActivityName());
 	if (activity.isActive(process)) {
 	    try {
-		pageContext.getOut().write("<a href=\"");
+		pageContext.getOut().write("<a ");
+		if (getId() != null) {
+		    pageContext.getOut().write("id=\"");
+		    pageContext.getOut().write(getId());
+		    pageContext.getOut().write("\" ");
+		}
+		pageContext.getOut().write("href=\"");
 		pageContext.getOut().write(getContextPath());
 		pageContext.getOut().write("/workflowProcessManagement.do?method=actionLink&activity=");
 		pageContext.getOut().write(getActivityName());
