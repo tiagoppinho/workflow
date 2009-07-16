@@ -27,6 +27,7 @@ import myorg.applicationTier.Authenticate.UserView;
 import myorg.domain.User;
 import myorg.util.VariantBean;
 
+import org.apache.taglibs.standard.tag.common.core.SetSupport;
 import org.joda.time.DateTime;
 
 import pt.ist.fenixWebFramework.services.Service;
@@ -63,15 +64,18 @@ public class WorkflowMetaProcess extends WorkflowMetaProcess_Base {
 
     }
 
-    public WorkflowMetaProcess(WorkflowMetaType type, String instanceDescription, WorkflowQueue queue) {
+    public WorkflowMetaProcess(WorkflowMetaType type, String subject, String instanceDescription, WorkflowQueue queue,
+	    Requestor requestor) {
 	super();
 	setMetaType(type);
+	setSubject(subject);
 	setProcessNumber(type.getNextIdentifier());
 	setCreator(UserView.getCurrentUser());
 	setCreationDate(new DateTime());
 	setInstanceDescription(instanceDescription);
 	open();
 	setCurrentQueue(queue);
+	setRequestor(requestor);
     }
 
     @Override
@@ -122,17 +126,25 @@ public class WorkflowMetaProcess extends WorkflowMetaProcess_Base {
     }
 
     @Service
-    public static WorkflowMetaProcess createNewProcess(WorkflowMetaType metaType, String instanceDescription, WorkflowQueue queue) {
-	return new WorkflowMetaProcess(metaType, instanceDescription, queue);
+    public static WorkflowMetaProcess createNewProcess(WorkflowMetaType metaType, String subject, String instanceDescription,
+	    WorkflowQueue queue, User user) {
+	Requestor requestor = user.hasRequestor() ? user.getRequestor() : new UserRequestor(user);
+
+	return new WorkflowMetaProcess(metaType, subject, instanceDescription, queue, requestor);
     }
 
     @Override
     public boolean isAccessible(User user) {
-	return getCurrentOwner() == user || getCreator() == user || isUserObserver(user)
-		|| getCurrentQueue().isUserAbleToAccessQueue(user) || isUserAbleToAccessPastQueues(user);
+	return getCurrentOwner() == user || getCreator() == user || isUserObserver(user) || isUserAbleToAccessCurrentQueue(user)
+		|| isUserAbleToAccessPastQueues(user);
     }
 
-    private boolean isUserAbleToAccessPastQueues(User user) {
+    public boolean isUserAbleToAccessCurrentQueue(User user) {
+	WorkflowQueue currentQueue = getCurrentQueue();
+	return currentQueue != null ? currentQueue.isUserAbleToAccessQueue(user) : false;
+    }
+
+    public boolean isUserAbleToAccessPastQueues(User user) {
 	for (WorkflowQueue queue : getQueueHistory()) {
 	    if (queue.isUserAbleToAccessQueue(user)) {
 		return true;

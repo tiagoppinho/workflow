@@ -42,11 +42,22 @@
 		<property name="eachLayout" value="values"/>
 		<property name="eachSchema" value="view.metaType.name"/>
 	</slot>	
+	<slot name="subject" key="label.metaProcess.subject" validator="pt.ist.fenixWebFramework.renderers.validators.RequiredValidator">
+		<property name="size" value="75"/>
+	</slot>	
 	<slot name="instanceDescription" layout="longText" key="label.metaProcess.instanceDescription" validator="pt.ist.fenixWebFramework.renderers.validators.RequiredValidator">
 		<property name="rows" value="10"/>
 		<property name="columns" value="80"/>
 	</slot>
-	<slot name="queue" layout="menu-select" key="label.metaProcess.queue">
+	<slot name="requestor" key="label.metaProcess.requestor" layout="autoComplete">
+		<property name="labelField" value="username" />
+		<property name="format" value="${presentationName}" />
+		<property name="minChars" value="3" />
+		<property name="args"
+			value="provider=myorg.presentationTier.renderers.autoCompleteProvider.UserAutoComplete" />
+		<property name="size" value="40" />
+	</slot>
+	<slot name="queue" layout="menu-select" key="label.metaProcess.queue" validator="pt.ist.fenixWebFramework.renderers.validators.RequiredValidator">
 		<property name="providerClass" value="module.metaWorkflow.presentationTier.renderers.providers.AvailableQueues"/>
 		<property name="eachLayout" value="values"/>
 		<property name="eachSchema" value="view.queue.name"/>
@@ -65,10 +76,11 @@
 <schema name="view.meta.process.details" type="module.metaWorkflow.domain.WorkflowMetaProcess" bundle="META_WORKFLOW_RESOURCES">
 	<slot name="processNumber" key="label.processNumber=" bundle="WORKFLOW_RESOURCES"/>
 	<slot name="open" key="label.metaProcess.open"/>
+	<slot name="subject" key="label.metaProcess.subject"/>
 	<slot name="instanceDescription" key="label.metaProcess.instanceDescription"/>
 	<slot name="creationDate" key="label.metaProcess.creationDate"/>
 	<slot name="creator.presentationName" key="label.metaProcess.creator"/>
-	<slot name="requestor" key="label.metaprocess.requestor" layout="null-as-label">
+	<slot name="requestor" key="label.metaProcess.requestor" layout="null-as-label">
 		<property name="subLayout" value="values"/>
 		<property name="subSchema" value="view.requestor.name"/>
 	</slot>
@@ -92,3 +104,18 @@
 		<property name="columns" value="80"/>
 	</slot>
 </schema>
+
+<schema name="view.queues.details" type="module.metaWorkflow.domain.WorkflowQueue" bundle="META_WORKFLOW_RESOURCES">
+	<slot name="name" key="label.queue.name"/>
+	<slot name="metaType.name" key="label.queue.supportedMetaType"/>
+</schema>
+
+<schema name="create.queue" type="module.metaWorkflow.util.WorkflowQueueBean" bundle="META_WORKFLOW_RESOURCES">
+	<slot name="name" key="label.queue.name"/>
+	<slot name="metaType" key="label.queue.supportedMetaType" layout="menu-select">
+		<property name="providerClass" value="module.metaWorkflow.presentationTier.renderers.providers.AvailableWorkflowMetaTypes"/>
+		<property name="eachLayout" value="values"/>
+		<property name="eachSchema" value="view.metaType.name"/>
+	</slot>
+</schema>
+

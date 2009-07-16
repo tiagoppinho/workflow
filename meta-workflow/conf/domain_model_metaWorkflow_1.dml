@@ -47,7 +47,12 @@ package module.metaWorkflow.domain;
  
 class WorkflowQueue {
 	String name;
+	String ojbConcreteClass;
 } 
+
+class WorkflowUnitQueue extends WorkflowQueue {
+	
+}
 
 class Requestor {
 	String ojbConcreteClass;
@@ -56,6 +61,13 @@ class Requestor {
 class ExternalRequestor extends Requestor {
 	String name;
 	String email;
+}
+
+relation WorkflowQueueWorkflowMetaType {
+	WorkflowQueue playsRole queues {
+		multiplicity *;
+	}
+	WorkflowMetaType playsRole metaType;
 }
 
 relation WorkflowMetaTypeDescription {

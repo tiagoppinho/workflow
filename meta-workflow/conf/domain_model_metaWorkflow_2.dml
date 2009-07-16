@@ -25,6 +25,7 @@
  */
  class module.metaWorkflow.domain.WorkflowMetaProcess extends module.workflow.domain.WorkflowProcess {
  	String instanceDescription;
+ 	String subject;
  	DateTime creationDate;
  	Boolean open;
  }
@@ -32,6 +33,23 @@
  class module.metaWorkflow.domain.UserRequestor extends module.metaWorkflow.domain.Requestor {
  }
  
+ 
+ 
+relation WorkflowMetaTypeAccountabilityType {
+	module.metaWorkflow.domain.WorkflowMetaType playsRole workflowMetaTypes {
+		multiplicity *;
+	}
+	module.organization.domain.AccountabilityType playsRole supportedAccountabilityTypes {
+		multiplicity *;
+	}
+}
+
+relation WorkflowUnitQueueUnit {
+	module.metaWorkflow.domain.WorkflowUnitQueue playsRole queues {
+		multiplicity *;
+	}
+	module.organization.domain.Unit playsRole unit;
+}
 
 relation RequestorWorkflowMetaProcess {
 	module.metaWorkflow.domain.WorkflowMetaProcess playsRole process {

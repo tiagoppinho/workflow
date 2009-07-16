@@ -42,13 +42,15 @@
 		</fr:layout>	
 	</fr:view>	</div>
 	<div id="tabs-2">
-	<logic:empty name="process" property="observers">
-		<em><bean:message key="label.noObserversSpecified" bundle="META_WORKFLOW_RESOURCES"/>.</em>
+	<p>
 		<bean:define id="addObserver">
 			<bean:message key="activity.AddObserver" bundle="WORKFLOW_RESOURCES"/>
 		</bean:define>
-		
-		(<wf:activityLink processName="process" activityName="AddObserver" linkName="<%= addObserver %>" scope="request"/>)
+	
+	<wf:activityLink processName="process" activityName="AddObserver" linkName="<%= addObserver %>" scope="request"/>
+	</p>
+	<logic:empty name="process" property="observers">
+		<em><bean:message key="label.noObserversSpecified" bundle="META_WORKFLOW_RESOURCES"/>.</em>
 	</logic:empty>
 	
 	<logic:iterate id="observer" name="process" property="observers">			
@@ -84,8 +86,7 @@
 				</span>
 			</em>
 			<bean:define id="metaTypeId" name="process" property="metaType.OID"/>
-			(
-			<html:link page="<%= "/metaWorkflow.do?method=viewMetaTypeDescriptionHistory&metaTypeId=" + metaTypeId %>">
+			(<html:link page="<%= "/metaWorkflow.do?method=viewMetaTypeDescriptionHistory&metaTypeId=" + metaTypeId %>">
 				<bean:message key="link.history" bundle="META_WORKFLOW_RESOURCES"/>
 			</html:link>)
 		</p>

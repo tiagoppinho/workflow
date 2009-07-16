@@ -6,8 +6,10 @@ import javax.servlet.http.HttpServletResponse;
 import module.metaWorkflow.domain.WorkflowMetaProcess;
 import module.metaWorkflow.domain.WorkflowMetaType;
 import module.metaWorkflow.domain.WorkflowMetaTypeDescription;
+import module.metaWorkflow.domain.WorkflowQueue;
 import module.metaWorkflow.util.WorkflowMetaProcessBean;
 import module.metaWorkflow.util.WorkflowMetaTypeBean;
+import module.metaWorkflow.util.WorkflowQueueBean;
 import module.workflow.domain.WorkflowProcess;
 import module.workflow.presentationTier.actions.ProcessManagement;
 import myorg.applicationTier.Authenticate.UserView;
@@ -57,8 +59,8 @@ public class MetaWorkflowAction extends ContextBaseAction {
 	    final HttpServletResponse response) {
 
 	WorkflowMetaProcessBean processBean = getRenderedObject("processBean");
-	WorkflowMetaProcess process = WorkflowMetaProcess.createNewProcess(processBean.getMetaType(), processBean
-		.getInstanceDescription(), processBean.getQueue());
+	WorkflowMetaProcess process = WorkflowMetaProcess.createNewProcess(processBean.getMetaType(), processBean.getSubject(),
+		processBean.getInstanceDescription(), processBean.getQueue(), processBean.getRequestor());
 
 	return viewMetaProcess(process);
     }
@@ -70,6 +72,25 @@ public class MetaWorkflowAction extends ContextBaseAction {
 	request.setAttribute("metaTypes", MyOrg.getInstance().getMetaTypes());
 
 	return forward(request, "/metaWorkflow/manageMetaTypes.jsp");
+    }
+
+    public ActionForward manageQueues(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
+	    final HttpServletResponse response) {
+
+	request.setAttribute("bean", new WorkflowQueueBean());
+	request.setAttribute("queues", MyOrg.getInstance().getMetaWorkflowQueues());
+
+	return forward(request, "/metaWorkflow/manageQueues.jsp");
+    }
+
+    public ActionForward createNewQueue(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
+	    final HttpServletResponse response) {
+
+	WorkflowQueueBean bean = getRenderedObject("newQueue");
+	WorkflowQueue.createQueue(bean.getName(), bean.getMetaType());
+
+	RenderUtils.invalidateViewState("newQueue");
+	return manageQueues(mapping, form, request, response);
     }
 
     public ActionForward createNewMetaType(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,

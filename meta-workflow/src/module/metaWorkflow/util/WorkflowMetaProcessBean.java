@@ -4,17 +4,30 @@ import java.io.Serializable;
 
 import module.metaWorkflow.domain.WorkflowMetaType;
 import module.metaWorkflow.domain.WorkflowQueue;
+import myorg.domain.User;
 import pt.ist.fenixWebFramework.util.DomainReference;
 
 public class WorkflowMetaProcessBean implements Serializable {
 
     String instanceDescription;
+    String subject;
+
     DomainReference<WorkflowMetaType> metaType;
     DomainReference<WorkflowQueue> queue;
+    DomainReference<User> requestor;
 
     public WorkflowMetaProcessBean() {
 	setMetaType(null);
 	setQueue(null);
+	setRequestor(null);
+    }
+
+    public String getSubject() {
+	return subject;
+    }
+
+    public void setSubject(String subject) {
+	this.subject = subject;
     }
 
     public String getInstanceDescription() {
@@ -41,4 +54,11 @@ public class WorkflowMetaProcessBean implements Serializable {
 	this.queue = new DomainReference<WorkflowQueue>(queue);
     }
 
+    public User getRequestor() {
+	return requestor.getObject();
+    }
+
+    public void setRequestor(User user) {
+	this.requestor = new DomainReference<User>(user);
+    }
 }
