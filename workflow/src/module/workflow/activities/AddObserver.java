@@ -21,6 +21,11 @@ public class AddObserver<T extends WorkflowProcess> extends WorkflowActivity<T, 
     }
 
     @Override
+    public boolean isVisible() {
+	return false;
+    }
+
+    @Override
     public ActivityInformation<T> getActivityInformation(T process) {
 	return new UserInformation<T>(process, this);
     }
