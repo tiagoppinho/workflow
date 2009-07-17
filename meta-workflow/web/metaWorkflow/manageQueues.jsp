@@ -13,11 +13,19 @@
 	</fr:layout>
 </fr:view>
 
-	<div class="infoop2" style="-moz-border-radius: 6px; -webkit-border-radius: 6px;">
-		<strong><bean:message key="label.queue.create" bundle="META_WORKFLOW_RESOURCES"/></strong>:
-		<fr:edit id="newQueue" name="bean" schema="create.queue" action="/metaWorkflow?method=createNewQueue">
-			<fr:layout name="tabular">
-				<fr:property name="classes" value="form"/>
-			</fr:layout>
-		</fr:edit>
-	</div>
+
+<fr:form action="/metaWorkflowQueueManagement.do">
+	<fr:edit id="queueType" name="bean" slot="queueType">
+		<fr:layout name="menu-select-postback">
+			<fr:property name="providerClass" value="module.metaWorkflow.presentationTier.renderers.providers.AvailableQueueTypes"/>
+			<fr:property name="eachLayout" value="name-resolver"/>
+		</fr:layout>
+		<fr:destination name="postback" path="/metaWorkflowQueueManagement.do?method=selectQueueType"/>
+	</fr:edit>
+</fr:form>
+
+<logic:present name="bean" property="queueType">
+
+	<bean:define id="selectedType" name="bean" property="queueType" type="java.lang.Class"/>
+	<jsp:include page="<%= "/" + selectedType.getName().replaceAll("\\\\.","/") + "/create.jsp" %>"/>
+</logic:present>

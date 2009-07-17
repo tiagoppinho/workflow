@@ -66,7 +66,7 @@ public class MetaWorkflowInterfaceCreation extends ContextBaseAction {
 	ActionNode.createActionNode(virtualHost, homeNode, "/metaWorkflow", "manageMetaType",
 		"resources.MetaWorkflowResources", "link.sideBar.metaWorkflow.manageMetaType", AnyoneGroup.getInstance());
 	
-	ActionNode.createActionNode(virtualHost, homeNode, "/metaWorkflow", "manageQueues",
+	ActionNode.createActionNode(virtualHost, homeNode, "/metaWorkflowQueueManagement", "manageQueues",
 		"resources.MetaWorkflowResources", "link.sideBar.metaWorkflow.manageQueues", AnyoneGroup.getInstance());
 
 	return forwardToMuneConfiguration(request, virtualHost, node);

@@ -50,6 +50,10 @@ class WorkflowQueue {
 	String ojbConcreteClass;
 } 
 
+class WorkflowUserGroupQueue extends WorkflowQueue {
+
+}
+
 class WorkflowUnitQueue extends WorkflowQueue {
 	
 }

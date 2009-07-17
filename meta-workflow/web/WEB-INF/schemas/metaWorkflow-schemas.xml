@@ -8,12 +8,12 @@
 	</slot>
 	<slot name="fileClassNames" key="label.metaType.availableFileTypes" layout="option-select">
 		<property name="providerClass" value="module.metaWorkflow.presentationTier.renderers.providers.FileSubClasses"/>
-		<property name="eachLayout" value="fileTypeNames"/>
+		<property name="eachLayout" value="name-resolver"/>
 		<property name="classes" value="nobullet"/>
 	</slot>
 </schema>
 
-<schema name="activityInformation.ChangeQueueInformation" type="module.metaWorkflow.activities.ChangeQueueInformation" bundle="META_WORKFLOW_RESOURCES">
+<schema name="activityInformation.ChangeQueue" type="module.metaWorkflow.activities.ChangeQueueInformation" bundle="META_WORKFLOW_RESOURCES">
 	<slot name="queue" layout="autoComplete" key="label.changeQueue">
 		<property name="labelField" value="name" />
 		<property name="format" value="${name}" />
@@ -108,6 +108,7 @@
 <schema name="view.queues.details" type="module.metaWorkflow.domain.WorkflowQueue" bundle="META_WORKFLOW_RESOURCES">
 	<slot name="name" key="label.queue.name"/>
 	<slot name="metaType.name" key="label.queue.supportedMetaType"/>
+	<slot name="class" layout="name-resolver" key="label.queue.type"/>
 </schema>
 
 <schema name="create.queue" type="module.metaWorkflow.util.WorkflowQueueBean" bundle="META_WORKFLOW_RESOURCES">

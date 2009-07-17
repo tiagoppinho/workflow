@@ -51,6 +51,16 @@ relation WorkflowUnitQueueUnit {
 	module.organization.domain.Unit playsRole unit;
 }
 
+relation WorkflowUserGroupQueueUser {
+	module.metaWorkflow.domain.WorkflowUserGroupQueue playsRole queues {
+		multiplicity *;
+	}
+	myorg.domain.User playsRole users {
+		multiplicity *;
+	}
+}
+
+
 relation RequestorWorkflowMetaProcess {
 	module.metaWorkflow.domain.WorkflowMetaProcess playsRole process {
 		multiplicity *;

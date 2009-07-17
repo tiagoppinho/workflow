@@ -29,7 +29,7 @@
 				<fr:view name="metaType" property="availableFileTypes" >
 					<fr:layout name="separator-list">
 						<fr:property name="separator" value=","/>
-						<fr:property name="eachLayout" value="fileTypeNames"/>
+						<fr:property name="eachLayout" value="name-resolver"/>
 					</fr:layout>	
 				</fr:view>
 			</logic:notEmpty>

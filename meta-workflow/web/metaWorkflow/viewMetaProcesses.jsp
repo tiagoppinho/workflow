@@ -18,6 +18,7 @@
 			<th> Taken by (?) </th> 
 		</tr>
 		<logic:iterate id="process" name="processes" indexId="i">
+			<logic:equal name="process" property="accessibleToCurrentUser" value="true">
 			<tr>
 			<td>
 				<bean:define id="processId" name="process" property="OID"/>
@@ -49,6 +50,7 @@
 				 </fr:view> 
 			</td>
 			</tr>
+			</logic:equal>
 		</logic:iterate>	
 	</table>
 </div>

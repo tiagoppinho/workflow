@@ -7,6 +7,8 @@ import module.metaWorkflow.domain.WorkflowMetaProcess;
 import module.metaWorkflow.domain.WorkflowMetaType;
 import module.metaWorkflow.domain.WorkflowMetaTypeDescription;
 import module.metaWorkflow.domain.WorkflowQueue;
+import module.metaWorkflow.domain.WorkflowUserGroupQueue;
+import module.metaWorkflow.domain.WorkflowUserGroupQueueBean;
 import module.metaWorkflow.util.WorkflowMetaProcessBean;
 import module.metaWorkflow.util.WorkflowMetaTypeBean;
 import module.metaWorkflow.util.WorkflowQueueBean;
@@ -74,26 +76,7 @@ public class MetaWorkflowAction extends ContextBaseAction {
 	return forward(request, "/metaWorkflow/manageMetaTypes.jsp");
     }
 
-    public ActionForward manageQueues(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
-	    final HttpServletResponse response) {
-
-	request.setAttribute("bean", new WorkflowQueueBean());
-	request.setAttribute("queues", MyOrg.getInstance().getMetaWorkflowQueues());
-
-	return forward(request, "/metaWorkflow/manageQueues.jsp");
-    }
-
-    public ActionForward createNewQueue(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
-	    final HttpServletResponse response) {
-
-	WorkflowQueueBean bean = getRenderedObject("newQueue");
-	WorkflowQueue.createQueue(bean.getName(), bean.getMetaType());
-
-	RenderUtils.invalidateViewState("newQueue");
-	return manageQueues(mapping, form, request, response);
-    }
-
-    public ActionForward createNewMetaType(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
+     public ActionForward createNewMetaType(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
 	    final HttpServletResponse response) {
 
 	WorkflowMetaTypeBean bean = getRenderedObject("newMetaType");
