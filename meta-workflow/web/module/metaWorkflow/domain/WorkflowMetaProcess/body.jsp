@@ -26,11 +26,11 @@
 	});
 	</script>
 
-
-<%= ContentContextInjectionRewriter.BLOCK_HAS_CONTEXT_PREFIX %>
-<div id="tabs">
-	<ul>
-		<li><%= GenericChecksumRewriter.NO_CHECKSUM_PREFIX %><a href="#tabs-1"><bean:message key="label.tab.information" bundle="META_WORKFLOW_RESOURCES"/></a></li>
+<div id="wfprocess">
+	<%= ContentContextInjectionRewriter.BLOCK_HAS_CONTEXT_PREFIX %>
+	<div id="tabs">
+		<ul>
+			<li><%= GenericChecksumRewriter.NO_CHECKSUM_PREFIX %><a href="#tabs-1"><bean:message key="label.tab.information" bundle="META_WORKFLOW_RESOURCES"/></a></li>
 		<bean:size id="observersCount" name="process" property="observers"/>
 		<li><%= GenericChecksumRewriter.NO_CHECKSUM_PREFIX %><a href="#tabs-2"><bean:message key="label.tab.observers" bundle="META_WORKFLOW_RESOURCES"/> (<fr:view name="observersCount"/>)</a></li>
 		<li><%= GenericChecksumRewriter.NO_CHECKSUM_PREFIX %><a href="#tabs-3"><bean:message key="label.tab.rules" bundle="META_WORKFLOW_RESOURCES"/></a></li>
@@ -38,7 +38,7 @@
 	<div id="tabs-1">
 	<fr:view name="process" schema="view.meta.process.details">
 		<fr:layout name="tabular">
-			<fr:property name="columnClasses" value="nowrap aright,"/>
+			<fr:property name="classes" value="tstyle1 thlight thtop thnowrap thright"/>
 		</fr:layout>	
 	</fr:view>	</div>
 	<div id="tabs-2">
@@ -89,37 +89,34 @@
 			(<html:link page="<%= "/metaWorkflow.do?method=viewMetaTypeDescriptionHistory&metaTypeId=" + metaTypeId %>">
 				<bean:message key="link.history" bundle="META_WORKFLOW_RESOURCES"/>
 			</html:link>)
-		</p>
-			</div>
+			</p>
+				</div>
+	</div>
+	<%= ContentContextInjectionRewriter.END_BLOCK_HAS_CONTEXT_PREFIX %>
 </div>
-<%= ContentContextInjectionRewriter.END_BLOCK_HAS_CONTEXT_PREFIX %>
 
+<h3 class="mbottom05"><bean:message key="title.comments" bundle="WORKFLOW_RESOURCES"/></h3>
 
-<strong><bean:message key="title.comments" bundle="WORKFLOW_RESOURCES"/></strong>:
-
-<div class="dotted roundCorners">
-	
-	<fr:view name="process" layout="viewComments"/>
+<div>
+	<fr:view name="process" layout="viewComments">
+		<fr:layout name="viewComments">
+			<fr:property name="commentBlockClasses" value="comment"/>
+		</fr:layout>
+	</fr:view>
 
 	<logic:present name="commentBean">
 		<fr:form action='<%= "/metaWorkflow.do?method=addComment&processId=" + processOID %>'>
-			<table class="form">
-				<tr>
-					<td>
-						<bean:message key="label.addComment" bundle="WORKFLOW_RESOURCES"/>:
-					</td>
-					<td>
-						<fr:edit id="comment" name="commentBean" slot="string" type="java.lang.String" validator="pt.ist.fenixWebFramework.renderers.validators.RequiredValidator">
-							<fr:layout name="longText">
-								<fr:property name="rows" value="6"/>
-								<fr:property name="columns" value="60"/>
-								<fr:property name="classes" value="form"/>
-							</fr:layout>
-						</fr:edit>
-					</td>
-				</tr>
-			</table>
-			<html:submit styleClass="inputbutton"><bean:message key="renderers.form.add.name" bundle="RENDERER_RESOURCES"/> </html:submit>
+			<div class="infoop2" style="-moz-border-radius: 6px; -webkit-border-radius: 6px; padding-left: 120px;">
+				<p class="mbottom05"><bean:message key="label.comment" bundle="WORKFLOW_RESOURCES"/>:</p>
+				<fr:edit id="comment" name="commentBean" slot="string" type="java.lang.String" validator="pt.ist.fenixWebFramework.renderers.validators.RequiredValidator">
+					<fr:layout name="longText">
+						<fr:property name="rows" value="6"/>
+						<fr:property name="columns" value="60"/>
+						<fr:property name="classes" value="form"/>
+					</fr:layout>
+				</fr:edit>
+				<p><html:submit styleClass="inputbutton"><bean:message key="label.addComment" bundle="WORKFLOW_RESOURCES"/></html:submit></p>
+			</div>
 		</fr:form>
 	</logic:present>	
 </div>
