@@ -37,12 +37,12 @@ import java.util.TreeSet;
 
 import module.workflow.activities.ActivityInformation;
 import module.workflow.activities.WorkflowActivity;
-import module.workflow.util.FileTypeNameResolver;
 import module.workflow.util.WorkflowFileUploadBean;
 import myorg.applicationTier.Authenticate.UserView;
 import myorg.domain.MyOrg;
 import myorg.domain.User;
 import myorg.domain.exceptions.DomainException;
+import myorg.util.ClassNameResolver;
 
 import org.apache.commons.collections.Predicate;
 import org.joda.time.DateTime;
@@ -198,7 +198,7 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base {
 	file.fillInNonDefaultFields(bean);
 
 	super.addFiles(file);
-	new FileUploadLog(this, UserView.getCurrentUser(), file.getFilename(), file.getDisplayName(), FileTypeNameResolver
+	new FileUploadLog(this, UserView.getCurrentUser(), file.getFilename(), file.getDisplayName(), ClassNameResolver
 		.getNameFor(file.getClass()));
 	return file;
     }
@@ -282,7 +282,7 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base {
     public void removeFiles(GenericFile file) {
 	super.removeFiles(file);
 	addDeletedFiles(file);
-	new FileRemoveLog(this, UserView.getCurrentUser(), file.getFilename(), file.getDisplayName(), FileTypeNameResolver
+	new FileRemoveLog(this, UserView.getCurrentUser(), file.getFilename(), file.getDisplayName(), ClassNameResolver
 		.getNameFor(file.getClass()));
     }
 
