@@ -53,8 +53,7 @@
 				</p>
 			</logic:empty>
 			
-			<p>
-				<strong><bean:message key="label.otherOperations" bundle="WORKFLOW_RESOURCES"/></strong>
+			<p class="mtop15 mbottom05"><b style="color: #555;"><bean:message key="label.otherOperations" bundle="WORKFLOW_RESOURCES"/></b></p>
 				<ul class="operations">
 					<li>
 						<html:link page="/workflowProcessManagement.do?method=viewLogs" paramId="processId" paramName="process" paramProperty="OID">
@@ -71,7 +70,6 @@
 						</li>
 					</logic:equal>
 				</ul>
-			</p>
 		</td>
 		
 		<logic:equal name="process" property="fileSupportAvailable" value="true">
@@ -81,20 +79,24 @@
 			<td style="width: 45%; border: 1px dotted #aaa; padding: 10px 15px;">
 				<p class="mtop0 mbottom05"><b style="color: #555;"><bean:message key="label.documents" bundle="EXPENDITURE_RESOURCES"/></b></p>
 				<div class="documents mtop0" style="overflow: hidden; width: 400px">
-						<fr:view name="process" layout="processFiles"/>
+						<fr:view name="process">
+							<fr:layout name="processFiles">
+								<fr:property name="classes" value="documents mtop0"/>
+							</fr:layout>
+						</fr:view>
 				</div>
-				<div class="mbottom05">
-						<p>
+				<ul class="operations">
+						<li>
 							<html:link page="/workflowProcessManagement.do?method=fileUpload" paramId="processId" paramName="process" paramProperty="OID">
 								<bean:message key="link.uploadFile" bundle="WORKFLOW_RESOURCES"/>
 							</html:link>
-						</p>
-						<p>
+						</li>
+						<li>
 							<html:link page="/workflowProcessManagement.do?method=viewRemovedFiles" paramId="processId" paramName="process" paramProperty="OID">
 								<bean:message key="link.viewRemovedFiles" bundle="WORKFLOW_RESOURCES"/>
 							</html:link>
-						</p>
-				</div>
+						</li>
+				</ul>
 			</td>
 		</logic:equal>
 	</tr>

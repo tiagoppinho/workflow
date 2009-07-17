@@ -148,7 +148,10 @@ public class CommentRenderer extends OutputRenderer {
 		HtmlComponent renderedDate = RenderKit.getInstance().render(getOutputContext(), comment.getDate());
 
 		HtmlInlineContainer dateContainer = new HtmlInlineContainer();
+		dateContainer.setIndented(false);
+		dateContainer.addChild(new HtmlText("("));
 		dateContainer.addChild(renderedDate);
+		dateContainer.addChild(new HtmlText(")"));
 
 		container.addChild(dateContainer);
 		container.addChild(new HtmlText(": "));

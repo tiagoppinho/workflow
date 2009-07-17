@@ -9,8 +9,10 @@ import myorg.util.ClassNameResolver;
 import pt.ist.fenixWebFramework.renderers.OutputRenderer;
 import pt.ist.fenixWebFramework.renderers.components.HtmlBlockContainer;
 import pt.ist.fenixWebFramework.renderers.components.HtmlComponent;
+import pt.ist.fenixWebFramework.renderers.components.HtmlContainer;
 import pt.ist.fenixWebFramework.renderers.components.HtmlInlineContainer;
 import pt.ist.fenixWebFramework.renderers.components.HtmlLink;
+import pt.ist.fenixWebFramework.renderers.components.HtmlParagraphContainer;
 import pt.ist.fenixWebFramework.renderers.components.HtmlText;
 import pt.ist.fenixWebFramework.renderers.layouts.Layout;
 import pt.ist.fenixWebFramework.renderers.utils.RenderUtils;
@@ -55,7 +57,10 @@ public class WorkflowProcessFiles extends OutputRenderer {
 
 	    private HtmlComponent generate(WorkflowProcess process, Class<? extends GenericFile> fileType) {
 		List<? extends GenericFile> files = process.getFiles(fileType);
-		HtmlInlineContainer container = new HtmlInlineContainer();
+
+		HtmlBlockContainer blockContainer = new HtmlBlockContainer();
+		HtmlParagraphContainer container = new HtmlParagraphContainer();
+		blockContainer.addChild(container);
 
 		container.addChild(new HtmlText(ClassNameResolver.getNameFor(fileType) + ": "));
 		if (files.isEmpty()) {
@@ -83,7 +88,7 @@ public class WorkflowProcessFiles extends OutputRenderer {
 			}
 		    }
 		}
-		return container;
+		return blockContainer;
 
 	    }
 

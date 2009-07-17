@@ -6,7 +6,7 @@
 		value="/workflowProcessManagement.do?method=downloadFile&amp;fileId=${OID}" />
 	<property name="removeFormat"
 		value="/workflowProcessManagement.do?method=removeFile&amp;fileId=${OID}" />
-
+	<property name="imageFile" value=""/>
 </renderer>
 
 <renderer type="module.workflow.domain.WorkflowProcess" layout="viewComments"
