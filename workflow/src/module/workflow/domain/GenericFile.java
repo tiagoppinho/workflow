@@ -25,14 +25,14 @@
 
 package module.workflow.domain;
 
-import module.workflow.util.FileTypeNameResolver;
 import module.workflow.util.WorkflowFileUploadBean;
 import myorg.domain.MyOrg;
+import myorg.util.ClassNameResolver;
 
 public class GenericFile extends GenericFile_Base {
 
     static {
-	FileTypeNameResolver.registerType(GenericFile.class, "resources/WorkflowResources",
+	ClassNameResolver.registerType(GenericFile.class, "resources/WorkflowResources",
 		"label.module.workflow.domain.GenericFile");
     }
 

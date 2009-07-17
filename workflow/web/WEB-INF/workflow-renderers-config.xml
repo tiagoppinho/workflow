@@ -9,10 +9,6 @@
 
 </renderer>
 
-<renderer type="java.lang.Class" layout="fileTypeNames"
-	class="module.workflow.presentationTier.renderers.FileTypeNameRenderer">
-</renderer>
-
 <renderer type="module.workflow.domain.WorkflowProcess" layout="viewComments"
 	class="module.workflow.presentationTier.renderers.CommentRenderer">
 

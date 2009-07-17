@@ -40,7 +40,7 @@
 	</slot>
 	<slot name="selectedInstance" layout="menu-select-postback" key="label.selectedInstance">
 		<property name="providerClass" value="module.workflow.presentationTier.renderers.providers.AvailableFileClassesProvider"/>
-		<property name="eachLayout" value="fileTypeNames"/>
+		<property name="eachLayout" value="name-resolver"/>
 		<property name="nullOptionHidden" value="true"/>
 		<property name="saveOptions" value="true"/>
 	</slot>
