@@ -9,13 +9,15 @@
 <bean:define id="processClassName" name="process" property="class.name" type="java.lang.String"/>
 <bean:define id="includeFolder" value="<%= processClassName.replace('.','/')%>"/>
 
-<jsp:include page='<%= "/" + includeFolder + "/shortBody.jsp" %>'/>
-
-<p>
+<p class="mtop05 mbottom15">
 	<html:link action="/workflowProcessManagement.do?method=viewProcess" paramId="processId" paramName="process" paramProperty="OID">
 		«  <bean:message key="link.backToProcess" bundle="WORKFLOW_RESOURCES"/>
 	</html:link>
 </p>
+
+
+<jsp:include page='<%= "/" + includeFolder + "/shortBody.jsp" %>'/>
+
 
 
 <logic:empty name="operationLogs">
