@@ -24,7 +24,7 @@
 
 <fr:edit name="bean" id="uploadFile" action='<%= "workflowProcessManagement.do?method=upload&processId=" + processOID %>' schema="<%= schema %>">
 	<fr:layout name="tabular">
-		<fr:property name="classes" value="form mtop05"/>
+		<fr:property name="classes" value="form"/>
 		<fr:property name="columnClasses" value=",,tderror"/>
 	</fr:layout>
 	<fr:destination name="cancel" path="<%= urlView %>" />

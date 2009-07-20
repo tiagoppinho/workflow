@@ -78,24 +78,24 @@
 			
 			<td style="width: 45%; border: 1px dotted #aaa; padding: 10px 15px;">
 				<p class="mtop0 mbottom05"><b style="color: #555;"><bean:message key="label.documents" bundle="EXPENDITURE_RESOURCES"/></b></p>
-				<div class="documents mtop0" style="overflow: hidden; width: 400px">
-						<fr:view name="process">
-							<fr:layout name="processFiles">
-								<fr:property name="classes" value="documents mtop0"/>
-							</fr:layout>
-						</fr:view>
+				<div class="documents mtop0 mbottom05" style="overflow: hidden; width: 400px">
+					<fr:view name="process">
+						<fr:layout name="processFiles">
+							<fr:property name="classes" value=""/>
+						</fr:layout>
+					</fr:view>
 				</div>
-				<ul class="operations">
-						<li>
-							<html:link page="/workflowProcessManagement.do?method=fileUpload" paramId="processId" paramName="process" paramProperty="OID">
-								<bean:message key="link.uploadFile" bundle="WORKFLOW_RESOURCES"/>
-							</html:link>
-						</li>
-						<li>
-							<html:link page="/workflowProcessManagement.do?method=viewRemovedFiles" paramId="processId" paramName="process" paramProperty="OID">
-								<bean:message key="link.viewRemovedFiles" bundle="WORKFLOW_RESOURCES"/>
-							</html:link>
-						</li>
+				<ul class="operations mtop1">
+					<li>
+						<html:link page="/workflowProcessManagement.do?method=fileUpload" paramId="processId" paramName="process" paramProperty="OID">
+							<bean:message key="link.uploadFile" bundle="WORKFLOW_RESOURCES"/>
+						</html:link>
+					</li>
+					<li>
+						<html:link page="/workflowProcessManagement.do?method=viewRemovedFiles" paramId="processId" paramName="process" paramProperty="OID">
+							<bean:message key="link.viewRemovedFiles" bundle="WORKFLOW_RESOURCES"/>
+						</html:link>
+					</li>
 				</ul>
 			</td>
 		</logic:equal>

@@ -21,7 +21,7 @@
 	<fr:edit id="activityBean" name="information" action='<%="/workflowProcessManagement.do?method=process&activity=" + name + "&processId=" + processId%>'
 	schema='<%= "activityInformation." + activityInformationClass %>'>
 		<fr:layout name="tabular">
-			
+			<fr:property name="classes" value="form"/>
 		</fr:layout>
 		<fr:destination name="cancel" path='<%="/workflowProcessManagement.do?method=viewProcess&processId=" + processId%>'/>
 	</fr:edit>
