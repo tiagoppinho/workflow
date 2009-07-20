@@ -135,7 +135,7 @@ public class WorkflowMetaProcess extends WorkflowMetaProcess_Base {
 
     @Override
     public boolean isAccessible(User user) {
-	return getCurrentOwner() == user || getCreator() == user || isUserObserver(user) || isUserAbleToAccessCurrentQueue(user)
+	return isTakenByPerson(user) || getCreator() == user || isUserObserver(user) || isUserAbleToAccessCurrentQueue(user)
 		|| isUserAbleToAccessPastQueues(user);
     }
 
