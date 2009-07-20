@@ -9,9 +9,8 @@
 <%@page import="myorg.presentationTier.servlets.filters.contentRewrite.ContentContextInjectionRewriter"%>
 <%@page import="pt.ist.fenixWebFramework.servlets.filters.contentRewrite.GenericChecksumRewriter"%><bean:define id="processOID" name="process" property="OID"/>
 
-
 <logic:equal name="process" property="open" value="false">
-	<div class="infoop4" style="-moz-border-radius: 6px; -webkit-border-radius: 6px;">
+	<div class="infoop4 mtop05 mbottom15">
 		<bean:message key="label.message.processIsClosed" bundle="META_WORKFLOW_RESOURCES"/>
 	</div>
 </logic:equal>
