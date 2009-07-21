@@ -6,10 +6,6 @@ import java.util.TreeSet;
 import module.workflow.domain.WorkflowProcess;
 import module.workflow.domain.WorkflowProcessComment;
 import myorg.domain.User;
-
-import org.joda.time.DateTime;
-
-import pt.ist.fenixWebFramework.rendererExtensions.DateTimeAsDateRenderer;
 import pt.ist.fenixWebFramework.renderers.OutputRenderer;
 import pt.ist.fenixWebFramework.renderers.components.HtmlBlockContainer;
 import pt.ist.fenixWebFramework.renderers.components.HtmlComponent;
@@ -31,7 +27,34 @@ public class CommentRenderer extends OutputRenderer {
     private String photoClasses;
     private String bodyClasses;
     private String photoUrl;
+    private String observerClass;
+    private String observerBundle;
+    private String observerKey;
     private boolean reverseOrder;
+
+    public String getObserverBundle() {
+	return observerBundle;
+    }
+
+    public void setObserverBundle(String observerBundle) {
+	this.observerBundle = observerBundle;
+    }
+
+    public String getObserverKey() {
+	return observerKey;
+    }
+
+    public void setObserverKey(String observerKey) {
+	this.observerKey = observerKey;
+    }
+
+    public String getObserverClass() {
+	return observerClass;
+    }
+
+    public void setObserverClass(String observerClass) {
+	this.observerClass = observerClass;
+    }
 
     public boolean isReverseOrder() {
 	return reverseOrder;
@@ -133,6 +156,13 @@ public class CommentRenderer extends OutputRenderer {
 		HtmlText name = new HtmlText(comment.getCommenter().getPresentationName());
 		name.setClasses(getNameClasses());
 		bodyBlock.addChild(name);
+
+		if (comment.getProcess().isUserObserver(comment.getCommenter())) {
+		    HtmlText observerMarker = new HtmlText(RenderUtils.getFormatedResourceString(getObserverBundle(),
+			    getObserverKey()));
+		    observerMarker.setClasses(getObserverClass());
+		    bodyBlock.addChild(observerMarker);
+		}
 
 		HtmlBlockContainer commentBlock = new HtmlBlockContainer();
 		bodyBlock.addChild(commentBlock);
