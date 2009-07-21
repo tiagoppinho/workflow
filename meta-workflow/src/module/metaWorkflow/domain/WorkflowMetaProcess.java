@@ -26,8 +26,8 @@ import module.workflow.presentationTier.actions.ProcessManagement.ProcessRequest
 import myorg.applicationTier.Authenticate.UserView;
 import myorg.domain.User;
 import myorg.util.VariantBean;
+import myorg.util.lucene.DomainIndexer;
 
-import org.apache.taglibs.standard.tag.common.core.SetSupport;
 import org.joda.time.DateTime;
 
 import pt.ist.fenixWebFramework.services.Service;
@@ -76,6 +76,15 @@ public class WorkflowMetaProcess extends WorkflowMetaProcess_Base {
 	open();
 	setCurrentQueue(queue);
 	setRequestor(requestor);
+
+	Map<String, String> map = new HashMap<String, String>();
+	map.put("subject", subject);
+	map.put("description", instanceDescription);
+	map.put("number", getProcessNumber().toString());
+	map.put("queue", queue.getName());
+	map.put("requestor", requestor.getUser().getPresentationName());
+
+	DomainIndexer.getInstance().indexDomainObject(this, map);
     }
 
     @Override
@@ -123,6 +132,26 @@ public class WorkflowMetaProcess extends WorkflowMetaProcess_Base {
 
     public boolean isOpen() {
 	return getOpen().booleanValue();
+    }
+
+    @Override
+    public List<User> getObservers() {
+	List<User> observers = new ArrayList<User>();
+	observers.addAll(super.getObservers());
+	observers.addAll(getMetaType().getMetaTypeObservers());
+	return observers;
+    }
+
+    public List<User> getMetaTypeObservers() {
+	return getMetaType().getMetaTypeObservers();
+    }
+
+    public List<User> getProcessObservers() {
+	return super.getObservers();
+    }
+
+    public boolean isUserMetaMetaTypeObserver(User user) {
+	return getMetaType().getMetaTypeObservers().contains(user);
     }
 
     @Service

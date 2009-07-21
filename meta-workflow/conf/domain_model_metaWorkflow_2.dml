@@ -130,3 +130,13 @@ relation MyOrgWorkflowQueue {
 		multiplicity *;
 	}
 }
+
+relation MetaTypeObserver {
+
+	myorg.domain.User playsRole metaTypeObservers {
+		multiplicity *;
+	}
+	module.metaWorkflow.domain.WorkflowMetaType playsRole observedMetaTypes {
+		multiplicity *;
+	}
+}

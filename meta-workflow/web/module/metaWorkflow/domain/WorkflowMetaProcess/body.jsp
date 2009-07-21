@@ -52,7 +52,20 @@
 		<em><bean:message key="label.noObserversSpecified" bundle="META_WORKFLOW_RESOURCES"/>.</em>
 	</logic:empty>
 	
-	<logic:iterate id="observer" name="process" property="observers">			
+    
+    <logic:iterate id="observer" name="process" property="metaTypeObservers">			
+		
+		<bean:define id="userPresentation" name="observer" property="presentationName"/>
+		<bean:define id="userID" name="observer" property="OID"/>
+		
+		<p>
+		<span>
+			<fr:view name="userPresentation"/>
+		</span>
+		</p>
+	</logic:iterate>
+    
+	<logic:iterate id="observer" name="process" property="processObservers">			
 		
 		<bean:define id="userPresentation" name="observer" property="presentationName"/>
 		<bean:define id="userID" name="observer" property="OID"/>

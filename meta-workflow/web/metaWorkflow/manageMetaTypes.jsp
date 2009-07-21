@@ -16,6 +16,9 @@
 			</html:link>, 
 			<html:link page="<%= "/metaWorkflow.do?method=viewMetaTypeDescriptionHistory&metaTypeId="+ metaTypeId %>">
 				<bean:message key="link.history" bundle="META_WORKFLOW_RESOURCES"/>
+			</html:link>,
+			<html:link page="<%= "/metaWorkflow.do?method=manageMetaTypeObservers&metaTypeId="+ metaTypeId %>">
+				<bean:message key="link.manageMetaTypeObservers" bundle="META_WORKFLOW_RESOURCES"/>
 			</html:link>)</p>
 		<p><span><strong><bean:message key="label.metaType.currentVersion" bundle="META_WORKFLOW_RESOURCES"/> (v. <fr:view name="description" property="version"/>)</strong></span>: </p>
 		<p><fr:view name="description" property="description"/></p>

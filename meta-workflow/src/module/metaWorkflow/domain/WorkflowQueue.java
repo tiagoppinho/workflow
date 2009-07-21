@@ -1,6 +1,8 @@
 package module.metaWorkflow.domain;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.List;
 
 import module.metaWorkflow.util.WorkflowQueueBean;
 import myorg.applicationTier.Authenticate.UserView;
@@ -42,6 +44,32 @@ public abstract class WorkflowQueue extends WorkflowQueue_Base {
 	super.addMetaProcess(metaProcess);
     }
 
+    private List<WorkflowMetaProcess> filterProcesses(boolean active) {
+	List<WorkflowMetaProcess> processes = new ArrayList<WorkflowMetaProcess>();
+	for (WorkflowMetaProcess process : getMetaProcess()) {
+	    if (process.isOpen() == active) {
+		processes.add(process);
+	    }
+	}
+	return processes;
+    }
+
+    public List<WorkflowMetaProcess> getActiveMetaProcesses() {
+	return filterProcesses(true);
+    }
+
+    public List<WorkflowMetaProcess> getNotActiveMetaProcesses() {
+	return filterProcesses(false);
+    }
+
+    public int getActiveProcessCount() {
+	return getActiveMetaProcesses().size();
+    }
+
+    public int getNotActiveProcessCount() {
+	return getNotActiveMetaProcesses().size();
+    }
+
     protected void fillNonDefaultFields(WorkflowQueueBean bean) {
 	// do nothing
     }
@@ -65,4 +93,5 @@ public abstract class WorkflowQueue extends WorkflowQueue_Base {
 	queue.fillNonDefaultFields(bean);
 	return queue;
     }
+
 }

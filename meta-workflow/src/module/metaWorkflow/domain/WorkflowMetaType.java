@@ -6,6 +6,7 @@ import java.util.List;
 
 import module.workflow.domain.GenericFile;
 import myorg.domain.MyOrg;
+import myorg.domain.User;
 import pt.ist.fenixWebFramework.services.Service;
 import pt.utl.ist.fenix.tools.util.Strings;
 
@@ -87,5 +88,15 @@ public class WorkflowMetaType extends WorkflowMetaType_Base {
     public Integer getNextIdentifier() {
 	setProcessCounter(getProcessCounter() + 1);
 	return getProcessCounter();
+    }
+
+    @Service
+    public void removeObserver(User user) {
+	super.removeMetaTypeObservers(user);
+    }
+
+    @Service
+    public void addObserver(User user) {
+	addMetaTypeObservers(user);
     }
 }
