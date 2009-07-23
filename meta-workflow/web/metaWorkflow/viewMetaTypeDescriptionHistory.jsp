@@ -8,7 +8,7 @@
 <h2><bean:message key="title.metaType.descriptionHistory" bundle="META_WORKFLOW_RESOURCES"/></h2>
 
 <html:link page="/metaWorkflow.do?method=manageMetaType">
-	<bean:message key="link.back" bundle="MYORG_RESOURCES"/>
+	« <bean:message key="link.back" bundle="MYORG_RESOURCES"/>
 </html:link>
 
 <logic:notEmpty name="metaType" property="orderedDescriptionHistory">
@@ -39,6 +39,7 @@
 		</tr>
 	</logic:iterate>
 	</table>
+	
 	<a href="#" onClick="javascript:doDiff();"><bean:message key="label.doDiff" bundle="META_WORKFLOW_RESOURCES"/></a>
 	
 	<script type="text/javascript">

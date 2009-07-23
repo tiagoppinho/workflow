@@ -47,7 +47,7 @@
 	</slot>	
 	<slot name="instanceDescription" layout="longText" key="label.metaProcess.instanceDescription" validator="pt.ist.fenixWebFramework.renderers.validators.RequiredValidator">
 		<property name="rows" value="10"/>
-		<property name="columns" value="80"/>
+		<property name="columns" value="70"/>
 	</slot>
 	<slot name="requestor" key="label.metaProcess.requestor" layout="autoComplete">
 		<property name="labelField" value="username" />

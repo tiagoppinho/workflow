@@ -11,7 +11,6 @@
 <div>
 	<fr:form action="/metaWorkflow.do?method=search">
 		<fr:edit id="searchQuery" name="searchBean" slot="string" type="java.lang.String" />
-	
 		<html:submit>Procurar</html:submit>	
 	</fr:form>
 </div>	
@@ -20,11 +19,11 @@
 	<div class="infoop2 roundCorners">
 		<table>
 			<tr>
-				<th> <bean:message key="label.metaProcess.subject" bundle="META_WORKFLOW_RESOURCES"/> </th>
-				<th> <bean:message key="label.metaProcess.type" bundle="META_WORKFLOW_RESOURCES"/> </th>
-				<th> <bean:message key="label.processNumber" bundle="WORKFLOW_RESOURCES"/> </th>
-				<th> <bean:message key="label.metaProcess.currentQueue" bundle="META_WORKFLOW_RESOURCES"/> </th>
-				<th> <bean:message key="label.metaProcess.requestor" bundle="META_WORKFLOW_RESOURCES"/> </th>
+				<th><bean:message key="label.metaProcess.subject" bundle="META_WORKFLOW_RESOURCES"/></th>
+				<th><bean:message key="label.metaProcess.type" bundle="META_WORKFLOW_RESOURCES"/></th>
+				<th><bean:message key="label.processNumber" bundle="WORKFLOW_RESOURCES"/></th>
+				<th><bean:message key="label.metaProcess.currentQueue" bundle="META_WORKFLOW_RESOURCES"/></th>
+				<th><bean:message key="label.metaProcess.requestor" bundle="META_WORKFLOW_RESOURCES"/></th>
 				<th> Taken by (?) </th> 
 			</tr>
 			<logic:iterate id="process" name="searchResult" indexId="i">
@@ -69,21 +68,24 @@
 
 
 
-<table>
 
+
+
+<table class="mtlist">
 <tr>
-
 <td>
-Processos Activos
-<div class="infoop2 roundCorners">
+
+<h3 class="mtop05 mbottom05">Processos Activos</h3>
+
+<div>
 	<table>
 		<tr>
-			<th> <bean:message key="label.metaProcess.subject" bundle="META_WORKFLOW_RESOURCES"/> </th>
-			<th> <bean:message key="label.metaProcess.type" bundle="META_WORKFLOW_RESOURCES"/> </th>
-			<th> <bean:message key="label.processNumber" bundle="WORKFLOW_RESOURCES"/> </th>
-			<th> <bean:message key="label.metaProcess.currentQueue" bundle="META_WORKFLOW_RESOURCES"/> </th>
-			<th> <bean:message key="label.metaProcess.requestor" bundle="META_WORKFLOW_RESOURCES"/> </th>
-			<th> Taken by (?) </th> 
+			<th><bean:message key="label.metaProcess.subject" bundle="META_WORKFLOW_RESOURCES"/></th>
+			<th><bean:message key="label.metaProcess.type" bundle="META_WORKFLOW_RESOURCES"/></th>
+			<th><bean:message key="label.processNumber" bundle="WORKFLOW_RESOURCES"/></th>
+			<th><bean:message key="label.metaProcess.currentQueue" bundle="META_WORKFLOW_RESOURCES"/></th>
+			<th><bean:message key="label.metaProcess.requestor" bundle="META_WORKFLOW_RESOURCES"/></th>
+			<th>Taken by (?)</th> 
 		</tr>
 		<logic:iterate id="process" name="processes" indexId="i">
 			<logic:equal name="process" property="accessibleToCurrentUser" value="true">
@@ -124,17 +126,18 @@ Processos Activos
 </div>
 
 <logic:present name="user">
-Os meus processos
 
-<div class="infoop2 roundCorners">
+<h3 class="mbottom05">Os meus processos</h3>
+
+<div>
 	<table>
 		<tr>
-			<th> <bean:message key="label.metaProcess.subject" bundle="META_WORKFLOW_RESOURCES"/> </th>
-			<th> <bean:message key="label.metaProcess.type" bundle="META_WORKFLOW_RESOURCES"/> </th>
-			<th> <bean:message key="label.processNumber" bundle="WORKFLOW_RESOURCES"/> </th>
-			<th> <bean:message key="label.metaProcess.currentQueue" bundle="META_WORKFLOW_RESOURCES"/> </th>
-			<th> <bean:message key="label.metaProcess.requestor" bundle="META_WORKFLOW_RESOURCES"/> </th>
-			<th> Taken by (?) </th> 
+			<th><bean:message key="label.metaProcess.subject" bundle="META_WORKFLOW_RESOURCES"/></th>
+			<th><bean:message key="label.metaProcess.type" bundle="META_WORKFLOW_RESOURCES"/></th>
+			<th><bean:message key="label.processNumber" bundle="WORKFLOW_RESOURCES"/></th>
+			<th><bean:message key="label.metaProcess.currentQueue" bundle="META_WORKFLOW_RESOURCES"/></th>
+			<th><bean:message key="label.metaProcess.requestor" bundle="META_WORKFLOW_RESOURCES"/></th>
+			<th>Taken by (?)</th> 
 		</tr>
 		<logic:iterate id="process" name="user" property="metaProcesses" indexId="i">
 			<logic:equal name="process" property="accessibleToCurrentUser" value="true">
@@ -176,15 +179,18 @@ Os meus processos
 </logic:present>
 
 </td>
-<td>
 
-Queues
-<div class="infoop2 roundCorners">
+
+<td style="padding-left: 1em;">
+
+<h3 class="mtop05 mbottom05">Filas</h3>
+
+<div>
 	<table>
 		<tr>
-			<th> <bean:message key="label.queue" bundle="META_WORKFLOW_RESOURCES"/> </th>
-			<th> <bean:message key="label.queue.openProcesses" bundle="META_WORKFLOW_RESOURCES"/> </th>
-			<th> <bean:message key="label.queue.closeProcesses" bundle="META_WORKFLOW_RESOURCES"/> </th>
+			<th><bean:message key="label.queue" bundle="META_WORKFLOW_RESOURCES"/></th>
+			<th><bean:message key="label.queue.openProcesses" bundle="META_WORKFLOW_RESOURCES"/></th>
+			<th><bean:message key="label.queue.closeProcesses" bundle="META_WORKFLOW_RESOURCES"/></th>
 		</tr>
 		<logic:present name="user">
 			<logic:iterate id="queue" name="user" property="queues" indexId="i">

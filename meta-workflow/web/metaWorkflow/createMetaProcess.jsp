@@ -7,12 +7,11 @@
 
 <h2><bean:message key="label.create.metaProcess" bundle="META_WORKFLOW_RESOURCES"/></h2>
 
-<div class="infoop2" style="-moz-border-radius: 6px; -webkit-border-radius: 6px;">
-	<fr:edit id="processBean" name="workflowBean" schema="create.meta.process" action="/metaWorkflow.do?method=createMetaProcess">
-		<fr:layout name="tabular">
-			<fr:property name="classes" value="form"/>
-		</fr:layout>
-	</fr:edit>
-</div>
+<fr:edit id="processBean" name="workflowBean" schema="create.meta.process" action="/metaWorkflow.do?method=createMetaProcess">
+	<fr:layout name="tabular">
+		<fr:property name="classes" value="form"/>
+		<fr:property name="columnClasses" value=",,tderror"/>
+	</fr:layout>
+</fr:edit>
 
 
