@@ -127,7 +127,7 @@
 
 <h3 class="mbottom05"><bean:message key="title.comments" bundle="WORKFLOW_RESOURCES"/></h3>
 
-<div class="addcomment">
+<div>
 	<fr:view name="process" layout="viewComments">
 		<fr:layout name="viewComments">
 			<fr:property name="commentBlockClasses" value="comment"/>
@@ -136,7 +136,7 @@
 
 	<logic:present name="commentBean">
 		<fr:form action='<%= "/metaWorkflow.do?method=addComment&processId=" + processOID %>'>
-			<div style="-moz-border-radius-bottomleft: 6px; -moz-border-radius-bottomright: 6px; -webkit-border-bottom-left-radius: 6px; -webkit-border-bottom-right-radius: 6px; padding-left: 120px;">
+			<div class="addcomment" style="-moz-border-radius-bottomleft: 6px; -moz-border-radius-bottomright: 6px; -webkit-border-bottom-left-radius: 6px; -webkit-border-bottom-right-radius: 6px; padding-left: 130px;">
 				<p class="mbottom05"><bean:message key="label.comment" bundle="WORKFLOW_RESOURCES"/>:</p>
 				<fr:edit id="comment" name="commentBean" slot="string" type="java.lang.String" validator="pt.ist.fenixWebFramework.renderers.validators.RequiredValidator">
 					<fr:layout name="longText">
