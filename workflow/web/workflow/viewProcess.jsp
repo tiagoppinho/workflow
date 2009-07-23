@@ -24,60 +24,70 @@
 <table class="structural">
 	<tr>
 		<td style="width: 50%; padding-right: 1em; border: 1px dotted #aaa; padding: 10px 15px;">
-			<p class="mtop0 mbottom05"><b style="color: #555;"><bean:message key="label.activities" bundle="WORKFLOW_RESOURCES"/></b></p>
+			<p class="mtop0 mbottom05">
+				<b><bean:message key="label.activities" bundle="WORKFLOW_RESOURCES"/></b>
+			</p>
+			
 			<ul class="operations mtop0">
-			<logic:iterate id="activity" name="process" property="activeActivities">
-				<logic:equal name="activity" property="visible" value="true">
-					<bean:define id="name" name="activity" property="name" />
-					<li>
-					<bean:define id="activityName" name="activity" property="localizedName"/>
-					<html:link styleId="<%= name.toString() %>"
-						page='<%="/workflowProcessManagement.do?method=process&activity=" + name + "&processId=" + processId%>'>
-						<fr:view name="activityName"/>
-						<logic:equal name="activity" property="confirmationNeeded" value="true">
-							<bean:define id="message" name="activity" property="localizedConfirmationMessage"/>
-							  <script type="text/javascript"> 
-					   				linkConfirmationHook('<%= name %>', '<%= message %>','<%= activityName %>'); 
-					 		</script> 
-						</logic:equal>
-					</html:link>
-					</li>
-				</logic:equal>
-			</logic:iterate>
+				<logic:iterate id="activity" name="process" property="activeActivities">
+					<logic:equal name="activity" property="visible" value="true">
+						<bean:define id="name" name="activity" property="name" />
+						<li>
+						<bean:define id="activityName" name="activity" property="localizedName"/>
+						<html:link styleId="<%= name.toString() %>"
+							page='<%="/workflowProcessManagement.do?method=process&activity=" + name + "&processId=" + processId%>'>
+							<fr:view name="activityName"/>
+							<logic:equal name="activity" property="confirmationNeeded" value="true">
+								<bean:define id="message" name="activity" property="localizedConfirmationMessage"/>
+								  <script type="text/javascript"> 
+						   				linkConfirmationHook('<%= name %>', '<%= message %>','<%= activityName %>'); 
+						 		</script> 
+							</logic:equal>
+						</html:link>
+						</li>
+					</logic:equal>
+				</logic:iterate>
 			</ul>
+			
 			<logic:empty name="process" property="activeActivities">
-				<p>
+				<p class="mvert05">
 					<em>
 						<bean:message key="messages.info.noOperatesAvailabeATM" bundle="WORKFLOW_RESOURCES"/>.
 					</em>
 				</p>
 			</logic:empty>
 			
-			<p class="mtop15 mbottom05"><b style="color: #555;"><bean:message key="label.otherOperations" bundle="WORKFLOW_RESOURCES"/></b></p>
-				<ul class="operations">
-					<li>
-						<html:link page="/workflowProcessManagement.do?method=viewLogs" paramId="processId" paramName="process" paramProperty="OID">
-							<bean:message key="link.viewLogs" bundle="WORKFLOW_RESOURCES"/>
-						</html:link>
+			<p class="mtop15 mbottom05">
+				<b><bean:message key="label.otherOperations" bundle="WORKFLOW_RESOURCES"/></b>
+			</p>
+			<ul class="operations mbottom05">
+				<li>
+					<html:link page="/workflowProcessManagement.do?method=viewLogs" paramId="processId" paramName="process" paramProperty="OID">
+						<bean:message key="link.viewLogs" bundle="WORKFLOW_RESOURCES"/>
+					</html:link>
+				</li>
+			
+				<logic:equal name="process" property="commentsSupportAvailable" value="true">
+					<bean:size id="comments"  name="process" property="comments"/>
+					<li> 
+						<html:link page="/workflowProcessManagement.do?method=viewComments" paramId="processId" paramName="process" paramProperty="OID">
+							<bean:message key="link.comments" bundle="WORKFLOW_RESOURCES"/> (<%= comments %>)
+						</html:link>	
 					</li>
-				
-					<logic:equal name="process" property="commentsSupportAvailable" value="true">
-						<bean:size id="comments"  name="process" property="comments"/>
-						<li> 
-							<html:link page="/workflowProcessManagement.do?method=viewComments" paramId="processId" paramName="process" paramProperty="OID">
-								<bean:message key="link.comments" bundle="WORKFLOW_RESOURCES"/> (<%= comments %>)
-							</html:link>	
-						</li>
-					</logic:equal>
-				</ul>
+				</logic:equal>
+			</ul>
 		</td>
 		
 		<logic:equal name="process" property="fileSupportAvailable" value="true">
-				
-		<td style="width: 2%;"></td>
-			
+	
+			<td style="width: 2%;"></td>
+	
 			<td style="width: 45%; border: 1px dotted #aaa; padding: 10px 15px;">
-				<p class="mtop0 mbottom05"><b style="color: #555;"><bean:message key="label.documents" bundle="EXPENDITURE_RESOURCES"/></b></p>
+			
+				<p class="mtop0 mbottom05">
+					<b><bean:message key="label.documents" bundle="EXPENDITURE_RESOURCES"/></b>
+				</p>
+				
 				<div class="documents mtop0 mbottom05" style="overflow: hidden; width: 400px">
 					<fr:view name="process">
 						<fr:layout name="processFiles">
@@ -85,6 +95,7 @@
 						</fr:layout>
 					</fr:view>
 				</div>
+				
 				<ul class="operations mtop1">
 					<li>
 						<html:link page="/workflowProcessManagement.do?method=fileUpload" paramId="processId" paramName="process" paramProperty="OID">
@@ -97,7 +108,9 @@
 						</html:link>
 					</li>
 				</ul>
+			
 			</td>
+
 		</logic:equal>
 	</tr>
 </table>
