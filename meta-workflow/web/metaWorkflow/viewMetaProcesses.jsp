@@ -75,7 +75,7 @@
 <tr>
 <td>
 
-<h3 class="mtop05 mbottom05">Processos Activos</h3>
+<h3 class="mtop05 mbottom075">Processos Activos</h3>
 
 <div>
 	<table>
@@ -127,7 +127,7 @@
 
 <logic:present name="user">
 
-<h3 class="mbottom05">Os meus processos</h3>
+<h3 class="mtop15 mbottom075">Os meus processos</h3>
 
 <div>
 	<table>
@@ -183,7 +183,7 @@
 
 <td style="padding-left: 1em;">
 
-<h3 class="mtop05 mbottom05">Filas</h3>
+<h3 class="mtop05 mbottom075">Filas</h3>
 
 <div>
 	<table>
