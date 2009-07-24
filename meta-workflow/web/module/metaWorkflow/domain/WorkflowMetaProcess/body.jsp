@@ -85,7 +85,7 @@
 						</span>
 					</li>
 				</logic:iterate>
-			</ul>	
+			</ul>
 			
 
 			

@@ -7,9 +7,11 @@
 
 <h2><bean:message key="title.metaType.descriptionHistory" bundle="META_WORKFLOW_RESOURCES"/></h2>
 
-<html:link page="/metaWorkflow.do?method=manageMetaType">
-	« <bean:message key="link.back" bundle="MYORG_RESOURCES"/>
-</html:link>
+<p class="mvert05">
+	<html:link page="/metaWorkflow.do?method=manageMetaType">
+		« <bean:message key="link.back" bundle="MYORG_RESOURCES"/>
+	</html:link>
+</p>
 
 <logic:notEmpty name="metaType" property="orderedDescriptionHistory">
 	<bean:define id="metaTypeId" name="metaType" property="OID"/>
@@ -25,7 +27,6 @@
 		<th><bean:message key="label.metaType.date" bundle="META_WORKFLOW_RESOURCES"/></th>
 		<th></th>
 	</tr>
-
 	<logic:iterate id="description" name="metaType" property="orderedDescriptionHistory">
 		<bean:define id="version" name="description" property="version"/>
 		<tr>
@@ -40,7 +41,7 @@
 	</logic:iterate>
 	</table>
 	
-	<a href="#" onClick="javascript:doDiff();"><bean:message key="label.doDiff" bundle="META_WORKFLOW_RESOURCES"/></a>
+	<p class="mtop0"><a href="#" onClick="javascript:doDiff();"><bean:message key="label.doDiff" bundle="META_WORKFLOW_RESOURCES"/></a></p>
 	
 	<script type="text/javascript">
 		function doDiff() {
@@ -55,17 +56,18 @@
 
 
 <logic:notEmpty name="historyVersion">
-<div id="rules" class="infoop2" style="-moz-border-radius: 6px; -webkit-border-radius: 6px;">
-		<fr:view name="historyVersion" property="description"/>
+<div id="rules" class="infoop2 mtop15" style="-moz-border-radius: 6px; -webkit-border-radius: 6px;">
+		<div class="mvert05">
+			<fr:view name="historyVersion" property="description"/>
+		</div>
 		<p>
 			<em>
 				<span class="aright">
-				<bean:define id="version" name="historyVersion" property="version"/>
-				<bean:define id="versionOwner" name="historyVersion" property="versionOwner.presentationName"/>
-				<bean:define id="date">
-					<fr:view name="historyVersion" property="date"/>
-				</bean:define>
-				
+					<bean:define id="version" name="historyVersion" property="version"/>
+					<bean:define id="versionOwner" name="historyVersion" property="versionOwner.presentationName"/>
+					<bean:define id="date">
+						<fr:view name="historyVersion" property="date"/>
+					</bean:define>
 					<bean:message key="label.metaTypeDescription.by" bundle="META_WORKFLOW_RESOURCES" arg0="<%= version.toString() %>" arg1="<%= versionOwner.toString() %>" arg2="<%= date.toString()%>"/>
 				</span>
 			</em>
