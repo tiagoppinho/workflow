@@ -85,7 +85,7 @@
 			<td style="width: 45%; border: 1px dotted #aaa; padding: 10px 15px;">
 			
 				<p class="mtop0 mbottom05">
-					<b><bean:message key="label.documents" bundle="EXPENDITURE_RESOURCES"/></b>
+					<b><bean:message key="label.documents" bundle="WORKFLOW_RESOURCES"/></b>
 				</p>
 				
 				<div class="documents mtop0 mbottom05" style="overflow: hidden; width: 400px">
