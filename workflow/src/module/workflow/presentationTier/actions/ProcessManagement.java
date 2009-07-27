@@ -39,7 +39,7 @@ import javax.servlet.http.HttpServletResponse;
 import module.workflow.activities.ActivityException;
 import module.workflow.activities.ActivityInformation;
 import module.workflow.activities.WorkflowActivity;
-import module.workflow.domain.GenericFile;
+import module.workflow.domain.ProcessFile;
 import module.workflow.domain.WorkflowProcess;
 import module.workflow.domain.WorkflowProcessComment;
 import module.workflow.util.WorkflowFileUploadBean;
@@ -292,14 +292,14 @@ public class ProcessManagement extends ContextBaseAction {
     public ActionForward downloadFile(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
 	    final HttpServletResponse response) throws IOException {
 
-	final GenericFile file = getDomainObject(request, "fileId");
-	return download(response, file.getFilename(), file.getContent().getContent().getBytes(), file.getContentType());
+	final ProcessFile file = getDomainObject(request, "fileId");
+	return download(response, file.getFilename(), file.getContent(), file.getContentType());
     }
 
     public ActionForward removeFile(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
 	    final HttpServletResponse response) {
 
-	final GenericFile file = getDomainObject(request, "fileId");
+	final ProcessFile file = getDomainObject(request, "fileId");
 	final WorkflowProcess process = file.getProcess();
 	process.removeFiles(file);
 

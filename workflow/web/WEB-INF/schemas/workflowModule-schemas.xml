@@ -28,7 +28,7 @@
 	<slot name="activityExecutor.presentationName" key="label.activityExecutor"/>
 </schema>
 
-<schema name="addFile-GenericFile"
+<schema name="addFile-ProcessFile"
 		type="module.workflow.util.WorkflowFileUploadBean"
 		bundle="WORKFLOW_RESOURCES">
 	<slot name="displayName" key="label.filename">
@@ -45,4 +45,5 @@
 		<property name="saveOptions" value="true"/>
 	</slot>
 </schema>
+
 

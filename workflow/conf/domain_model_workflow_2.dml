@@ -24,6 +24,24 @@
  * 
  */
  
+ 
+class module.workflow.domain.ProcessFile extends module.fileSupport.domain.GenericFile { }
+ 
+relation WorkflowProcessFile {
+	module.workflow.domain.WorkflowProcess playsRole process;
+	module.workflow.domain.ProcessFile playsRole files {
+		multiplicity *;
+	}
+}
+
+
+relation ProcessFileDeletion {
+	module.workflow.domain.WorkflowProcess playsRole processWithDeleteFile;
+	module.workflow.domain.ProcessFile playsRole deletedFiles {
+		multiplicity *;
+	}
+}
+ 
 relation MyOrgGenericProcess {
 	myorg.domain.MyOrg playsRole myOrg;
 	module.workflow.domain.WorkflowProcess playsRole processes {
@@ -41,13 +59,6 @@ relation MyOrgProcessComment {
 relation MyOrgGenericLog {
 	myorg.domain.MyOrg playsRole myOrg;
 	module.workflow.domain.WorkflowLog playsRole processLogs {
-		multiplicity *;
-	}
-}
-
-relation MyOrgProcessFile {
-	myorg.domain.MyOrg playsRole myOrg;
-	module.workflow.domain.GenericFile playsRole processFiles {
 		multiplicity *;
 	}
 }

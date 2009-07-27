@@ -68,17 +68,6 @@ class WorkflowProcessComment {
 	DateTime date;
 } 
 
-class GenericFile {
-	String ojbConcreteClass;
-	String filename;
-	String displayName;
-	String contentType;
-}
-
-class FileContent {
-	ByteArray content;
-}
-
 relation WorkflowProcessActivityLog {
 	WorkflowLog playsRole executionLogs {
 		multiplicity *;
@@ -93,21 +82,3 @@ relation WorkflowProcessWorkflowProcessComment {
 	WorkflowProcess playsRole process;
 }
 
-relation ProcessFile {
-	WorkflowProcess playsRole process;
-	GenericFile playsRole files {
-		multiplicity *;
-	}
-}
-
-relation FileContent {
-	GenericFile playsRole file;
-	FileContent playsRole content;
-}
-
-relation ProcessFileDeletion {
-	WorkflowProcess playsRole processWithDeleteFile;
-	GenericFile playsRole deletedFiles {
-		multiplicity *;
-	}
-}

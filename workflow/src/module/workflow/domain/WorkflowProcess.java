@@ -184,7 +184,7 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base {
     }
 
     @Service
-    public <T extends GenericFile> T addFile(Class<T> instanceToCreate, String displayName, String filename,
+    public <T extends ProcessFile> T addFile(Class<T> instanceToCreate, String displayName, String filename,
 	    byte[] consumeInputStream, WorkflowFileUploadBean bean) throws Exception {
 	Constructor<T> fileConstructor = instanceToCreate.getConstructor(String.class, String.class, byte[].class);
 	T file = null;
@@ -204,7 +204,7 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base {
     }
 
     @Override
-    public void addFiles(GenericFile file) {
+    public void addFiles(ProcessFile file) {
 	if (file.validUpload(this)) {
 	    super.addFiles(file);
 	}
@@ -279,7 +279,7 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base {
 
     @Override
     @Service
-    public void removeFiles(GenericFile file) {
+    public void removeFiles(ProcessFile file) {
 	super.removeFiles(file);
 	addDeletedFiles(file);
 	new FileRemoveLog(this, UserView.getCurrentUser(), file.getFilename(), file.getDisplayName(), ClassNameResolver
@@ -325,16 +325,16 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base {
 	return true;
     }
 
-    public List<Class<? extends GenericFile>> getAvailableFileTypes() {
-	List<Class<? extends GenericFile>> availableClasses = new ArrayList<Class<? extends GenericFile>>();
-	availableClasses.add(GenericFile.class);
+    public List<Class<? extends ProcessFile>> getAvailableFileTypes() {
+	List<Class<? extends ProcessFile>> availableClasses = new ArrayList<Class<? extends ProcessFile>>();
+	availableClasses.add(ProcessFile.class);
 	return availableClasses;
     }
 
     @SuppressWarnings("unchecked")
-    public <T extends GenericFile> List<T> getFiles(Class<T> selectedClass) {
+    public <T extends ProcessFile> List<T> getFiles(Class<T> selectedClass) {
 	List<T> classes = new ArrayList<T>();
-	for (GenericFile file : getFiles()) {
+	for (ProcessFile file : getFiles()) {
 	    if (file.getClass() == selectedClass) {
 		classes.add((T) file);
 	    }

@@ -3,14 +3,12 @@ package module.workflow.presentationTier.renderers;
 import java.util.Iterator;
 import java.util.List;
 
-import module.workflow.domain.GenericFile;
+import module.workflow.domain.ProcessFile;
 import module.workflow.domain.WorkflowProcess;
 import myorg.util.ClassNameResolver;
 import pt.ist.fenixWebFramework.renderers.OutputRenderer;
 import pt.ist.fenixWebFramework.renderers.components.HtmlBlockContainer;
 import pt.ist.fenixWebFramework.renderers.components.HtmlComponent;
-import pt.ist.fenixWebFramework.renderers.components.HtmlContainer;
-import pt.ist.fenixWebFramework.renderers.components.HtmlInlineContainer;
 import pt.ist.fenixWebFramework.renderers.components.HtmlLink;
 import pt.ist.fenixWebFramework.renderers.components.HtmlParagraphContainer;
 import pt.ist.fenixWebFramework.renderers.components.HtmlText;
@@ -48,15 +46,15 @@ public class WorkflowProcessFiles extends OutputRenderer {
 
 		HtmlBlockContainer container = new HtmlBlockContainer();
 
-		for (Class<? extends GenericFile> fileType : process.getAvailableFileTypes()) {
+		for (Class<? extends ProcessFile> fileType : process.getAvailableFileTypes()) {
 		    container.addChild(generate(process, fileType));
 		}
 
 		return container;
 	    }
 
-	    private HtmlComponent generate(WorkflowProcess process, Class<? extends GenericFile> fileType) {
-		List<? extends GenericFile> files = process.getFiles(fileType);
+	    private HtmlComponent generate(WorkflowProcess process, Class<? extends ProcessFile> fileType) {
+		List<? extends ProcessFile> files = process.getFiles(fileType);
 
 		HtmlBlockContainer blockContainer = new HtmlBlockContainer();
 		HtmlParagraphContainer container = new HtmlParagraphContainer();
@@ -66,10 +64,10 @@ public class WorkflowProcessFiles extends OutputRenderer {
 		if (files.isEmpty()) {
 		    container.addChild(new HtmlText("-"));
 		} else {
-		    Iterator<? extends GenericFile> iterator = files.iterator();
+		    Iterator<? extends ProcessFile> iterator = files.iterator();
 
 		    while (iterator.hasNext()) {
-			GenericFile file = iterator.next();
+			ProcessFile file = iterator.next();
 
 			HtmlLink downloadLink = new HtmlLink();
 			downloadLink.setBody(new HtmlText(file.getDisplayName()));
