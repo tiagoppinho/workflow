@@ -4,7 +4,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import module.workflow.domain.GenericFile;
+import module.fileSupport.domain.GenericFile;
+import module.workflow.domain.ProcessFile;
 import myorg.domain.MyOrg;
 import myorg.domain.User;
 import pt.ist.fenixWebFramework.services.Service;
@@ -65,11 +66,11 @@ public class WorkflowMetaType extends WorkflowMetaType_Base {
 	return Collections.unmodifiableList(list);
     }
 
-    public List<Class<? extends GenericFile>> getAvailableFileTypes() {
-	List<Class<? extends GenericFile>> classes = new ArrayList<Class<? extends GenericFile>>();
+    public List<Class<? extends ProcessFile>> getAvailableFileTypes() {
+	List<Class<? extends ProcessFile>> classes = new ArrayList<Class<? extends ProcessFile>>();
 	for (String fileClass : getSuporttedFileClasses()) {
 	    try {
-		Class<? extends GenericFile> clazz = (Class<? extends GenericFile>) Class.forName(fileClass);
+		Class<? extends ProcessFile> clazz = (Class<? extends ProcessFile>) Class.forName(fileClass);
 		classes.add(clazz);
 	    } catch (ClassNotFoundException e) {
 		e.printStackTrace();

@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import module.workflow.domain.GenericFile;
+import module.fileSupport.domain.GenericFile;
 
 public class WorkflowMetaTypeBean implements Serializable {
 

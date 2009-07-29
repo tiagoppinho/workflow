@@ -1,6 +1,6 @@
 package module.metaWorkflow.presentationTier.renderers.providers;
 
-import module.workflow.domain.GenericFile;
+import module.fileSupport.domain.GenericFile;
 import myorg.presentationTier.renderers.providers.AbstractDomainClassProvider;
 
 public class FileSubClasses extends AbstractDomainClassProvider {

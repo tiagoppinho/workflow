@@ -19,7 +19,7 @@ import module.workflow.activities.RemoveObserver;
 import module.workflow.activities.StealProcess;
 import module.workflow.activities.TakeProcess;
 import module.workflow.activities.WorkflowActivity;
-import module.workflow.domain.GenericFile;
+import module.workflow.domain.ProcessFile;
 import module.workflow.domain.WorkflowProcess;
 import module.workflow.presentationTier.actions.ProcessManagement;
 import module.workflow.presentationTier.actions.ProcessManagement.ProcessRequestHandler;
@@ -103,7 +103,7 @@ public class WorkflowMetaProcess extends WorkflowMetaProcess_Base {
     }
 
     @Override
-    public List<Class<? extends GenericFile>> getAvailableFileTypes() {
+    public List<Class<? extends ProcessFile>> getAvailableFileTypes() {
 	return getMetaType().getAvailableFileTypes();
     }
 
