@@ -3,9 +3,8 @@
 <%@ taglib uri="/WEB-INF/struts-html.tld" prefix="html"%>
 <%@ taglib uri="/WEB-INF/struts-logic.tld" prefix="logic"%>
 <%@ taglib uri="/WEB-INF/fenix-renderers.tld" prefix="fr"%>
-
-
-<h2><bean:message key="title.removedFiles" bundle="WORKFLOW_RESOURCES"/></h2>
+<%@page import="module.workflow.presentationTier.WorkflowLayoutContext"%>
+<%@page import="myorg.presentationTier.actions.ContextBaseAction"%><h2><bean:message key="title.removedFiles" bundle="WORKFLOW_RESOURCES"/></h2>
 
 
 <p class="mtop05 mbottom15">
@@ -15,10 +14,11 @@
 </p>
 
 
-<bean:define id="processClassName" name="process" property="class.name" type="java.lang.String"/>
-<bean:define id="includeFolder" value="<%= processClassName.replace('.','/')%>"/>
+<%
+	final WorkflowLayoutContext layoutContext = (WorkflowLayoutContext) ContextBaseAction.getContext(request);
+%>
 
-<jsp:include page='<%= "/" + includeFolder + "/shortBody.jsp" %>'/>
+<jsp:include page='<%= layoutContext.getWorkflowShortBody() %>'/>
 
 <ul class="mtop15">
 	<logic:iterate id="file" name="process" property="deletedFiles">

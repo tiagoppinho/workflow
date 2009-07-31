@@ -4,10 +4,9 @@
 <%@ taglib uri="/WEB-INF/struts-logic.tld" prefix="logic" %>
 <%@ taglib uri="/WEB-INF/fenix-renderers.tld" prefix="fr" %>
 
-<h2><bean:message key="title.viewLogs" bundle="WORKFLOW_RESOURCES"/></h2>
 
-<bean:define id="processClassName" name="process" property="class.name" type="java.lang.String"/>
-<bean:define id="includeFolder" value="<%= processClassName.replace('.','/')%>"/>
+<%@page import="module.workflow.presentationTier.WorkflowLayoutContext"%>
+<%@page import="myorg.presentationTier.actions.ContextBaseAction"%><h2><bean:message key="title.viewLogs" bundle="WORKFLOW_RESOURCES"/></h2>
 
 <p class="mtop05 mbottom15">
 	<html:link action="/workflowProcessManagement.do?method=viewProcess" paramId="processId" paramName="process" paramProperty="OID">
@@ -16,7 +15,11 @@
 </p>
 
 
-<jsp:include page='<%= "/" + includeFolder + "/shortBody.jsp" %>'/>
+<%
+	final WorkflowLayoutContext layoutContext = (WorkflowLayoutContext) ContextBaseAction.getContext(request);
+%>
+
+<jsp:include page='<%= layoutContext.getWorkflowShortBody() %>'/>
 
 
 

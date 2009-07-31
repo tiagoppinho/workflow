@@ -3,20 +3,27 @@
 <%@ taglib uri="/WEB-INF/struts-html.tld" prefix="html"%>
 <%@ taglib uri="/WEB-INF/struts-logic.tld" prefix="logic"%>
 <%@ taglib uri="/WEB-INF/fenix-renderers.tld" prefix="fr"%>
+<%@page import="myorg.presentationTier.LayoutContext"%>
+<%@page import="module.workflow.presentationTier.WorkflowLayoutContext"%>
+<%@page import="myorg.presentationTier.actions.ContextBaseAction"%><script src="<%= request.getContextPath() + "/javaScript/jquery.alerts.js"%>" type="text/javascript"></script> 
 
-<script src="<%= request.getContextPath() + "/javaScript/jquery.alerts.js"%>" type="text/javascript"></script> 
 <script src="<%= request.getContextPath() + "/javaScript/alertHandlers.js"%>" type="text/javascript"></script> 
  
 <bean:define id="processId" name="process" property="OID" />
 <bean:define id="processClassName" name="process" property="class.name" type="java.lang.String"/>
 <bean:define id="includeFolder" value="<%= processClassName.replace('.','/')%>"/>
 
-<jsp:include page='<%= "/" + includeFolder + "/header.jsp" %>'/>
+
+<%
+	final WorkflowLayoutContext layoutContext = (WorkflowLayoutContext) ContextBaseAction.getContext(request);
+%>
+
+<jsp:include page='<%=  layoutContext.getWorkflowHead() %>'/>
 
  
 <logic:present name="process" property="currentOwner">
 	<bean:define id="ownerName" name="process" property="currentOwner.presentationName"/>
-	<div class="infoop4">
+	<div class="highlightBox">
 		<bean:message key="message.info.currentOwnerIs" bundle="WORKFLOW_RESOURCES" arg0="<%= ownerName.toString() %>"/>
 	</div>
 </logic:present>
@@ -119,7 +126,7 @@
 	<bean:define id="unreadComments" name="process" property="unreadCommentsForCurrentUser"/>
 	<logic:notEmpty name="unreadComments">
 		<bean:size id="count" name="unreadComments"/>
-			<div class="infoop4 mtop05 mbottom15">
+			<div class="highlightBox mtop05 mbottom15">
 			<p class="mvert025">
 				<logic:greaterThan name="count" value="1">
 					<bean:message key="label.unreadComments.info.moreThanOne" arg0="<%= count.toString() %>" bundle="WORKFLOW_RESOURCES"/>
@@ -136,4 +143,4 @@
 	</logic:notEmpty>
 </logic:equal>
 
-<jsp:include page='<%= "/" + includeFolder + "/body.jsp" %>'/>
+<jsp:include page='<%=  layoutContext.getWorkflowBody() %>'/>

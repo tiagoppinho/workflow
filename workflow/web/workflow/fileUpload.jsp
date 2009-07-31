@@ -3,20 +3,24 @@
 <%@ taglib uri="/WEB-INF/struts-bean.tld" prefix="bean" %>
 <%@ taglib uri="/WEB-INF/struts-logic.tld" prefix="logic" %>
 <%@ taglib uri="/WEB-INF/fenix-renderers.tld" prefix="fr" %>
+<%@page import="module.workflow.presentationTier.WorkflowLayoutContext"%>
+<%@page import="myorg.presentationTier.actions.ContextBaseAction"%>
 
 <h2><bean:message key="title.uploadFile" bundle="WORKFLOW_RESOURCES"/></h2>
 
 <bean:define id="process" name="process" toScope="request"/>
 <bean:define id="processOID" name="process" property="OID" toScope="request"/>
 
-<bean:define id="processClassName" name="process" property="class.name" type="java.lang.String"/>
-<bean:define id="includeFolder" value="<%= processClassName.replace('.','/')%>"/>
 <bean:define id="selectedInstance" name="bean" property="selectedInstance.simpleName"/>
 
 <bean:define id="schema" value="<%= "addFile-" + selectedInstance%>" toScope="request"/>
 
 
-<jsp:include page='<%= "/" + includeFolder + "/shortBody.jsp" %>'/>
+<%
+	final WorkflowLayoutContext layoutContext = (WorkflowLayoutContext) ContextBaseAction.getContext(request);
+%>
+
+<jsp:include page='<%= layoutContext.getWorkflowShortBody() %>'/>
 
 <bean:define id="urlView">/workflowProcessManagement.do?method=viewProcess&amp;processId=<bean:write name="process" property="OID"/></bean:define>
 <bean:define id="urlPostBack">/workflowProcessManagement.do?method=uploadPostBack&amp;processId=<bean:write name="process" property="OID"/></bean:define>

@@ -37,11 +37,15 @@ import java.util.TreeSet;
 
 import module.workflow.activities.ActivityInformation;
 import module.workflow.activities.WorkflowActivity;
+import module.workflow.presentationTier.WorkflowLayoutContext;
 import module.workflow.util.WorkflowFileUploadBean;
 import myorg.applicationTier.Authenticate.UserView;
 import myorg.domain.MyOrg;
 import myorg.domain.User;
 import myorg.domain.exceptions.DomainException;
+import myorg.domain.index.IndexDocument;
+import myorg.domain.index.interfaces.Indexable;
+import myorg.domain.index.interfaces.Searchable;
 import myorg.util.ClassNameResolver;
 
 import org.apache.commons.collections.Predicate;
@@ -51,7 +55,11 @@ import org.joda.time.Interval;
 import pt.ist.fenixWebFramework.services.Service;
 import pt.ist.fenixframework.pstm.IllegalWriteException;
 
-public abstract class WorkflowProcess extends WorkflowProcess_Base {
+public abstract class WorkflowProcess extends WorkflowProcess_Base implements Searchable, Indexable {
+
+    private static final String comments = "comments";
+    private static final String commentors = "commentors";
+    private static final String numberKey = "number";
 
     public WorkflowProcess() {
 	super();
@@ -101,6 +109,10 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base {
 
     public boolean isAccessibleToCurrentUser() {
 	return isAccessible(UserView.getCurrentUser());
+    }
+
+    public WorkflowLayoutContext getLayout() {
+	return WorkflowLayoutContext.getDefaultWorkflowLayoutContext(this);
     }
 
     @SuppressWarnings("unchecked")
@@ -352,5 +364,32 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base {
 
     public boolean isUserObserver(User user) {
 	return getObservers().contains(user);
+    }
+
+    @Override
+    public Set<Indexable> getObjectsToIndex() {
+	return Collections.singleton((Indexable) this);
+    }
+
+    @Override
+    public IndexDocument getDocumentToIndex() {
+	IndexDocument document = new IndexDocument(this);
+
+	document.indexField(numberKey, this.getProcessNumber().toString());
+
+	StringBuffer commentsBuffer = new StringBuffer();
+	StringBuffer commentorsBuffer = new StringBuffer();
+	for (WorkflowProcessComment comment : getComments()) {
+	    commentsBuffer.append(comment.getComment());
+	    commentsBuffer.append(" ");
+	    commentorsBuffer.append(comment.getCommenter().getPresentationName());
+	    commentorsBuffer.append(" ");
+
+	}
+
+	document.indexField(comments, commentsBuffer.toString());
+	document.indexField(commentors, commentorsBuffer.toString());
+
+	return document;
     }
 }

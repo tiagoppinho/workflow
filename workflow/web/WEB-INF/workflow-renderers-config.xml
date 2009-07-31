@@ -3,16 +3,16 @@
 	class="module.workflow.presentationTier.renderers.WorkflowProcessFiles">
 
 	<property name="downloadFormat"
-		value="/workflowProcessManagement.do?method=downloadFile&amp;fileId=${OID}" />
+		value="/workflowProcessManagement.do?method=downloadFile&amp;fileId=${OID}&amp;processId=${process.OID}" />
 	<property name="removeFormat"
-		value="/workflowProcessManagement.do?method=removeFile&amp;fileId=${OID}" />
+		value="/workflowProcessManagement.do?method=removeFile&amp;fileId=${OID}&amp;processId=${process.OID}" />
 	<property name="imageFile" value=""/>
 </renderer>
 
 <renderer type="module.workflow.domain.WorkflowProcess" layout="viewComments"
 	class="module.workflow.presentationTier.renderers.CommentRenderer">
 
-	  <property name="commentBlockClasses" value="comment infoop2 roundCorners"/>
+	  <property name="commentBlockClasses" value="comment dataBox roundCorners"/>
 	  <property name="nameClasses" value="bold"/>
 	  <property name="photoClasses" value="photoHolder"/>
 	  <property name="bodyClasses" value="aleft"/>

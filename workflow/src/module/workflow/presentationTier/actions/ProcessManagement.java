@@ -45,6 +45,7 @@ import module.workflow.domain.WorkflowProcessComment;
 import module.workflow.util.WorkflowFileUploadBean;
 import myorg.applicationTier.Authenticate.UserView;
 import myorg.domain.exceptions.DomainException;
+import myorg.presentationTier.Context;
 import myorg.presentationTier.actions.ContextBaseAction;
 import myorg.util.VariantBean;
 
@@ -71,6 +72,7 @@ public class ProcessManagement extends ContextBaseAction {
 	return viewProcess(process, request);
     }
 
+    @SuppressWarnings("unchecked")
     public ActionForward viewProcess(WorkflowProcess process, final HttpServletRequest request) {
 
 	request.setAttribute("process", process);
@@ -86,7 +88,8 @@ public class ProcessManagement extends ContextBaseAction {
 
 	ActionForward forward = new ActionForward();
 	forward.setRedirect(true);
-	String realPath = "/workflowProcessManagement.do?method=viewProcess&processId=" + process.getOID();
+	String realPath = "/workflowProcessManagement.do?method=viewProcess&processId=" + process.getOID() + "&" + CONTEXT_PATH
+		+ "=" + getContext(request).getPath();
 	forward.setPath(realPath + "&" + GenericChecksumRewriter.CHECKSUM_ATTRIBUTE_NAME + "="
 		+ GenericChecksumRewriter.calculateChecksum(request.getContextPath() + realPath));
 	return forward;
@@ -337,5 +340,11 @@ public class ProcessManagement extends ContextBaseAction {
 
     public static interface ProcessRequestHandler<T extends WorkflowProcess> {
 	public void handleRequest(T process, HttpServletRequest request);
+    }
+
+    @Override
+    public Context createContext(String contextPathString, HttpServletRequest request) {
+	WorkflowProcess process = getProcess(request);
+	return process.getLayout();
     }
 }

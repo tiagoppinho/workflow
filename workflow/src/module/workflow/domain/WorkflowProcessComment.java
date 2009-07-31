@@ -25,14 +25,18 @@
 
 package module.workflow.domain;
 
+import java.util.Collections;
 import java.util.Comparator;
+import java.util.Set;
 
 import myorg.domain.MyOrg;
 import myorg.domain.User;
+import myorg.domain.index.interfaces.Indexable;
+import myorg.domain.index.interfaces.Searchable;
 
 import org.joda.time.DateTime;
 
-public class WorkflowProcessComment extends WorkflowProcessComment_Base {
+public class WorkflowProcessComment extends WorkflowProcessComment_Base implements Searchable {
 
     public final static Comparator<WorkflowProcessComment> COMPARATOR = new Comparator<WorkflowProcessComment>() {
 
@@ -61,5 +65,10 @@ public class WorkflowProcessComment extends WorkflowProcessComment_Base {
 
     public boolean isUnreadBy(User user) {
 	return !getReaders().contains(user);
+    }
+
+    @Override
+    public Set<Indexable> getObjectsToIndex() {
+	return Collections.singleton((Indexable) getProcess());
     }
 }
