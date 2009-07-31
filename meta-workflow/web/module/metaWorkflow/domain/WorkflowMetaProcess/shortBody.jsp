@@ -5,7 +5,7 @@
 <%@ taglib uri="/WEB-INF/fenix-renderers.tld" prefix="fr" %>
 
 
-<div class="infoop2 roundCorners">
+<div class="dataBox roundCorners">
 	<fr:view name="process" schema="view.meta.process.details">
 		<fr:layout name="tabular">
 			<fr:property name="classes" value="tstyle1"/>

@@ -59,11 +59,18 @@ public class MetaWorkflowInterfaceCreation extends ContextBaseAction {
 	final Node homeNode = ActionNode.createActionNode(virtualHost, node, "/metaWorkflow", "metaProcessHome",
 		"resources.MetaWorkflowResources", "link.topBar.MetaWorkflow", AnyoneGroup.getInstance());
 	    
-	
+
 	ActionNode.createActionNode(virtualHost, homeNode, "/metaWorkflow", "prepareCreateProcess",
 		"resources.MetaWorkflowResources", "link.sideBar.metaWorkflow.createProcess", AnyoneGroup.getInstance());
 	
-	ActionNode.createActionNode(virtualHost, homeNode, "/metaWorkflow", "manageMetaType",
+	ActionNode.createActionNode(virtualHost, homeNode, "/metaWorkflow", "metaProcessHome",
+		"resources.MetaWorkflowResources", "link.sideBar.metaWorkflow.dashBoard", AnyoneGroup.getInstance());
+	
+	ActionNode.createActionNode(virtualHost, homeNode, "/metaWorkflow", "search",
+		"resources.MetaWorkflowResources", "link.sideBar.metaWorkflow.search", AnyoneGroup.getInstance());
+	
+	
+	ActionNode.createActionNode(virtualHost, homeNode, "/metaTypeManagement", "manageMetaType",
 		"resources.MetaWorkflowResources", "link.sideBar.metaWorkflow.manageMetaType", AnyoneGroup.getInstance());
 	
 	ActionNode.createActionNode(virtualHost, homeNode, "/metaWorkflowQueueManagement", "manageQueues",

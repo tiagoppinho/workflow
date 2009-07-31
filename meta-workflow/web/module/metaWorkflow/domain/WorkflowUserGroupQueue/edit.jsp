@@ -4,32 +4,20 @@
 <%@ taglib uri="/WEB-INF/struts-logic.tld" prefix="logic" %>
 <%@ taglib uri="/WEB-INF/fenix-renderers.tld" prefix="fr"%>
 
+		
+<bean:define id="queueId" name="bean" property="queue.OID"/>
+		
 <fr:form id="form" action="/metaWorkflowQueueManagement.do">
-<html:hidden  property="method" value="createNewQueue"/>
-<fr:edit id="newQueue" name="bean" visible="false"/>
+<html:hidden  property="method" value="editQueue"/>
+<html:hidden property="queueId" value="<%= queueId.toString() %>"/>
+<fr:edit id="queue" name="bean" visible="false"/>
 
-	
-<table class="mtop15">
+
+
+<table>
 	<tr>
 		<th><bean:message key="label.queue.name" bundle="META_WORKFLOW_RESOURCES"/></th>
-		<td colspan="2"><fr:edit name="bean" slot="name" >
-				<fr:layout>
-					<fr:property name="size" value="40"/>
-				</fr:layout>
-			</fr:edit>
-		</td>
-	</tr>
-	<tr>
-		<th><bean:message key="label.queue.supportedMetaType" bundle="META_WORKFLOW_RESOURCES"/></th>
-		<td colspan="2">
-			<fr:edit name="bean" slot="metaType">
-				<fr:layout name="menu-select">
-						<fr:property name="providerClass" value="module.metaWorkflow.presentationTier.renderers.providers.AvailableWorkflowMetaTypes"/>
-						<fr:property name="eachLayout" value="values"/>
-						<fr:property name="eachSchema" value="view.metaType.name"/>
-				</fr:layout>
-			</fr:edit>
-		</td>
+		<td colspan="2"><fr:edit name="bean" slot="name"/></td>
 	</tr>
 	<tr>
 		<th>
@@ -57,13 +45,20 @@
 			<p>
 				<strong> <bean:message key="label.workflowQueue.addedUsers" bundle="META_WORKFLOW_RESOURCES"/>:</strong>
 			</p>
-			
+	
 			<logic:notEmpty name="bean" property="users">
-				<ul>
+				<table class="structural mbottom05">
 					<logic:iterate id="userAdded" name="bean" property="users" >
-						<li><fr:view name="userAdded" property="presentationName"/></li>
+						<bean:define id="userId" name="userAdded" property="OID"/>
+						
+						<tr>
+							<td><fr:view name="userAdded" property="presentationName"/></td>
+							<td>(<html:link page="<%= "/metaWorkflowQueueManagement.do?method=removeUser&queueId=" + queueId + "&userId=" + userId%>"> 
+								<bean:message key="link.remove" bundle="MYORG_RESOURCES"/>
+							</html:link>)</td>
+						</tr>
 					</logic:iterate>
-				</ul>
+				</table>
 			</logic:notEmpty>
 			<logic:empty name="bean" property="users">
 				<em><bean:message key="label.workflowQueue.noAddedUsers" bundle="META_WORKFLOW_RESOURCES"/></em>
@@ -71,15 +66,18 @@
 		</td>
 	</tr>
 </table>
+			
+
 
 <script type="text/javascript">
 	$("#addUser").click(function(){
-		$("#form > input[name='method']").attr('value','oneMoreUserInQueueInCreation');
+		$("#form > input[name='method']").attr('value','oneMoreUserInQueueInEdition');
 		$("#form").submit();
 	});
 </script>
+			
 <html:submit styleClass="inputbutton"><bean:message key="renderers.form.submit.name" bundle="RENDERER_RESOURCES"/></html:submit>
 <html:cancel styleClass="inputbutton"><bean:message key="renderers.form.cancel.name" bundle="RENDERER_RESOURCES"/></html:cancel>
-
 </fr:form>
+
 		

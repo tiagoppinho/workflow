@@ -21,20 +21,28 @@ import module.workflow.activities.TakeProcess;
 import module.workflow.activities.WorkflowActivity;
 import module.workflow.domain.ProcessFile;
 import module.workflow.domain.WorkflowProcess;
+import module.workflow.presentationTier.WorkflowLayoutContext;
 import module.workflow.presentationTier.actions.ProcessManagement;
 import module.workflow.presentationTier.actions.ProcessManagement.ProcessRequestHandler;
 import myorg.applicationTier.Authenticate.UserView;
 import myorg.domain.User;
+import myorg.domain.index.IndexDocument;
 import myorg.util.VariantBean;
-import myorg.util.lucene.DomainIndexer;
 
 import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
 
 import pt.ist.fenixWebFramework.services.Service;
 
 public class WorkflowMetaProcess extends WorkflowMetaProcess_Base {
 
     public static Map<String, WorkflowActivity<? extends WorkflowProcess, ? extends ActivityInformation>> activityMap = new HashMap<String, WorkflowActivity<? extends WorkflowProcess, ? extends ActivityInformation>>();
+    private static final String subjectKey;
+    private static final String descriptionKey;
+
+    private static final String queueKey;
+    private static final String requestorKey;
+    private static final String creatorKey;
 
     static {
 	activityMap.put(TakeProcess.class.getSimpleName(), new TakeProcess());
@@ -62,6 +70,14 @@ public class WorkflowMetaProcess extends WorkflowMetaProcess_Base {
 		    }
 		});
 
+	// Index names
+
+	subjectKey = "subject";
+	descriptionKey = "description";
+	queueKey = "queue";
+	requestorKey = "requestor";
+	creatorKey = "creator";
+
     }
 
     public WorkflowMetaProcess(WorkflowMetaType type, String subject, String instanceDescription, WorkflowQueue queue,
@@ -69,22 +85,26 @@ public class WorkflowMetaProcess extends WorkflowMetaProcess_Base {
 	super();
 	setMetaType(type);
 	setSubject(subject);
-	setProcessNumber(type.getNextIdentifier());
+	setProcessNumber(new LocalDate().getYear() + "-" + type.getNextIdentifier());
 	setCreator(UserView.getCurrentUser());
 	setCreationDate(new DateTime());
 	setInstanceDescription(instanceDescription);
 	open();
 	setCurrentQueue(queue);
 	setRequestor(requestor);
+    }
 
-	Map<String, String> map = new HashMap<String, String>();
-	map.put("subject", subject);
-	map.put("description", instanceDescription);
-	map.put("number", getProcessNumber().toString());
-	map.put("queue", queue.getName());
-	map.put("requestor", requestor.getUser().getPresentationName());
-
-	DomainIndexer.getInstance().indexDomainObject(this, map);
+    @Override
+    public WorkflowLayoutContext getLayout() {
+	WorkflowLayoutContext context = super.getLayout();
+	if (getMetaType().hasSpecificLayout()) {
+	    WorkflowMetaTypeSpecificLayout specificLayout = getMetaType().getSpecificLayout();
+	    context.setWorkflowBody(specificLayout.getBody());
+	    context.setWorkflowHead(specificLayout.getHeader());
+	    context.setWorkflowShortBody(specificLayout.getShortBody());
+	}
+	context.setHead("/metaWorkflow/layoutHead.jsp");
+	return context;
     }
 
     @Override
@@ -154,14 +174,6 @@ public class WorkflowMetaProcess extends WorkflowMetaProcess_Base {
 	return getMetaType().getMetaTypeObservers().contains(user);
     }
 
-    @Service
-    public static WorkflowMetaProcess createNewProcess(WorkflowMetaType metaType, String subject, String instanceDescription,
-	    WorkflowQueue queue, User user) {
-	Requestor requestor = user.hasRequestor() ? user.getRequestor() : new UserRequestor(user);
-
-	return new WorkflowMetaProcess(metaType, subject, instanceDescription, queue, requestor);
-    }
-
     @Override
     public boolean isAccessible(User user) {
 	return isTakenByPerson(user) || getCreator() == user || isUserObserver(user) || isUserAbleToAccessCurrentQueue(user)
@@ -180,6 +192,26 @@ public class WorkflowMetaProcess extends WorkflowMetaProcess_Base {
 	    }
 	}
 	return false;
+    }
+
+    @Override
+    public IndexDocument getDocumentToIndex() {
+	IndexDocument document = super.getDocumentToIndex();
+	document.indexField(subjectKey, this.getSubject());
+	document.indexField(descriptionKey, this.getInstanceDescription());
+
+	document.indexField(queueKey, getCurrentQueue().getName());
+	document.indexField(requestorKey, getRequestor().getUser().getPresentationName());
+	document.indexField(creatorKey, getCreator().getPresentationName());
+
+	return document;
+    }
+
+    @Service
+    public static WorkflowMetaProcess createNewProcess(String subject, String instanceDescription, WorkflowQueue queue, User user) {
+	Requestor requestor = user.hasRequestor() ? user.getRequestor() : new UserRequestor(user);
+
+	return new WorkflowMetaProcess(queue.getMetaType(), subject, instanceDescription, queue, requestor);
     }
 
 }

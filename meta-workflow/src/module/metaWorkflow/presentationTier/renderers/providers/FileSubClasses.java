@@ -1,13 +1,13 @@
 package module.metaWorkflow.presentationTier.renderers.providers;
 
-import module.fileSupport.domain.GenericFile;
+import module.workflow.domain.ProcessFile;
 import myorg.presentationTier.renderers.providers.AbstractDomainClassProvider;
 
 public class FileSubClasses extends AbstractDomainClassProvider {
 
     @Override
     protected Class getSuperClass() {
-	return GenericFile.class;
+	return ProcessFile.class;
     }
 
     @Override

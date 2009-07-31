@@ -8,4 +8,8 @@ public class ExternalRequestor extends ExternalRequestor_Base {
 	setEmail(email);
     }
 
+    @Override
+    public String getShortName() {
+	return getName();
+    }
 }

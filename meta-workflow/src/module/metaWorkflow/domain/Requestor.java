@@ -11,4 +11,5 @@ public abstract class Requestor extends Requestor_Base {
 
     public abstract String getEmail();
 
+    public abstract String getShortName();
 }

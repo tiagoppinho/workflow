@@ -1,190 +1,84 @@
-
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib uri="/WEB-INF/struts-html.tld" prefix="html" %>
 <%@ taglib uri="/WEB-INF/struts-bean.tld" prefix="bean" %>
 <%@ taglib uri="/WEB-INF/struts-logic.tld" prefix="logic" %>
 <%@ taglib uri="/WEB-INF/fenix-renderers.tld" prefix="fr"%>
 
-<h2><bean:message key="label.create.metaProcess" bundle="META_WORKFLOW_RESOURCES"/></h2>
-
-
-<div>
-	<fr:form action="/metaWorkflow.do?method=search">
-		<fr:edit id="searchQuery" name="searchBean" slot="string" type="java.lang.String" />
-		<html:submit>Procurar</html:submit>	
-	</fr:form>
-</div>	
-
-
-
-<logic:notEmpty name="searchResult">
-<table class="mtlist">
-<tr>
-<td>
-<h3 class="mtop15 mbottom075">Resultados da pesquisa por <em>'Pellentesque'</em></h3>
-	<table>
-		<tr>
-			<th><bean:message key="label.metaProcess.subject" bundle="META_WORKFLOW_RESOURCES"/></th>
-			<th><bean:message key="label.metaProcess.type" bundle="META_WORKFLOW_RESOURCES"/></th>
-			<th><bean:message key="label.processNumber" bundle="WORKFLOW_RESOURCES"/></th>
-			<th><bean:message key="label.metaProcess.currentQueue" bundle="META_WORKFLOW_RESOURCES"/></th>
-			<th><bean:message key="label.metaProcess.requestor" bundle="META_WORKFLOW_RESOURCES"/></th>
-			<th>Taken by (?)</th> 
-		</tr>
-		<logic:iterate id="process" name="searchResult" indexId="i">
-			<logic:equal name="process" property="accessibleToCurrentUser" value="true">
-			<tr>
-			<td>
-				<bean:define id="processId" name="process" property="OID"/>
-				<html:link page="<%= "/workflowProcessManagement.do?method=viewProcess&processId=" +  processId %>" > 
-					<fr:view name="process" property="subject"/>
-				</html:link>
-			</td>
-			<td><fr:view name="process" property="metaType.name"/></td>
-			<td><fr:view name="process" property="processNumber"/></td>
-			<td class="acenter">
-				<fr:view name="process" property="currentQueue" type="module.metaWorkflow.domain.WorkflowQueue">
-					<fr:layout name="null-as-label">
-						<fr:property name="subLayout" value="values"/>
-						<fr:property name="subSchema" value="view.queue.name"/>
-					</fr:layout>
-				 </fr:view> 
-			</td>
-			<td class="acenter">
-				<fr:view name="process" property="requestor" type="module.metaWorkflow.domain.Requestor">
-					<fr:layout name="null-as-label">
-						<fr:property name="subLayout" value="values"/>
-						<fr:property name="subSchema" value="view.requestor.name"/>
-					</fr:layout>
-				 </fr:view> 
-			</td>
-			<td class="acenter">
-				<fr:view name="process" property="currentOwner" type="myorg.domain.User">
-					<fr:layout name="null-as-label">
-						<fr:property name="subLayout" value="values"/>
-						<fr:property name="subSchema" value="view.user.presentationName"/>
-					</fr:layout>
-				 </fr:view> 
-			</td>
-			</tr>
-			</logic:equal>
-		</logic:iterate>	
-	</table>
-</td>
-</tr>
-</table>
-</logic:notEmpty>
-
-
-
-
-
-
-<table class="mtlist">
-<tr>
-<td>
-
-<h3 class="mtop05 mbottom075">Processos Activos</h3>
-
-<div>
-	<table>
-		<tr>
-			<th><bean:message key="label.metaProcess.subject" bundle="META_WORKFLOW_RESOURCES"/></th>
-			<th><bean:message key="label.metaProcess.type" bundle="META_WORKFLOW_RESOURCES"/></th>
-			<th><bean:message key="label.processNumber" bundle="WORKFLOW_RESOURCES"/></th>
-			<th><bean:message key="label.metaProcess.currentQueue" bundle="META_WORKFLOW_RESOURCES"/></th>
-			<th><bean:message key="label.metaProcess.requestor" bundle="META_WORKFLOW_RESOURCES"/></th>
-			<th>Taken by (?)</th> 
-		</tr>
-		<logic:iterate id="process" name="processes" indexId="i">
-			<logic:equal name="process" property="accessibleToCurrentUser" value="true">
-			<tr>
-			<td>
-				<bean:define id="processId" name="process" property="OID"/>
-				<html:link page="<%= "/workflowProcessManagement.do?method=viewProcess&processId=" +  processId %>" > 
-					<fr:view name="process" property="subject"/>
-				</html:link>
-				</td>
-			<td><fr:view name="process" property="metaType.name"/></td>
-			<td><fr:view name="process" property="processNumber"/></td>
-			<td class="acenter"> <fr:view name="process" property="currentQueue" type="module.metaWorkflow.domain.WorkflowQueue">
-					<fr:layout name="null-as-label">
-						<fr:property name="subLayout" value="values"/>
-						<fr:property name="subSchema" value="view.queue.name"/>
-					</fr:layout>
-				 </fr:view> 
-			</td>
-			<td class="acenter"> <fr:view name="process" property="requestor" type="module.metaWorkflow.domain.Requestor">
-					<fr:layout name="null-as-label">
-						<fr:property name="subLayout" value="values"/>
-						<fr:property name="subSchema" value="view.requestor.name"/>
-					</fr:layout>
-				 </fr:view> 
-			</td>
-			<td class="acenter"> <fr:view name="process" property="currentOwner" type="myorg.domain.User">
-					<fr:layout name="null-as-label">
-						<fr:property name="subLayout" value="values"/>
-						<fr:property name="subSchema" value="view.user.presentationName"/>
-					</fr:layout>
-				 </fr:view> 
-			</td>
-			</tr>
-			</logic:equal>
-		</logic:iterate>	
-	</table>
-</div>
+<h2><bean:message key="title.dashboard" bundle="META_WORKFLOW_RESOURCES"/></h2>
 
 <logic:present name="user">
-
-<h3 class="mtop15 mbottom075">Os meus processos</h3>
-
-<div>
-	<table>
+	<table class="structural">
 		<tr>
-			<th><bean:message key="label.metaProcess.subject" bundle="META_WORKFLOW_RESOURCES"/></th>
-			<th><bean:message key="label.metaProcess.type" bundle="META_WORKFLOW_RESOURCES"/></th>
-			<th><bean:message key="label.processNumber" bundle="WORKFLOW_RESOURCES"/></th>
-			<th><bean:message key="label.metaProcess.currentQueue" bundle="META_WORKFLOW_RESOURCES"/></th>
-			<th><bean:message key="label.metaProcess.requestor" bundle="META_WORKFLOW_RESOURCES"/></th>
-			<th>Taken by (?)</th> 
-		</tr>
-		<logic:iterate id="process" name="user" property="metaProcesses" indexId="i">
-			<logic:equal name="process" property="accessibleToCurrentUser" value="true">
-			<tr>
 			<td>
-				<bean:define id="processId" name="process" property="OID"/>
-				<html:link page="<%= "/workflowProcessManagement.do?method=viewProcess&processId=" +  processId %>" > 
-					<fr:view name="process" property="subject"/>
-				</html:link>
+				<logic:present name="displayProcesses">
+					<bean:message key="label.activeProcesses" bundle="META_WORKFLOW_RESOURCES"/> | 
+					<html:link page="/metaWorkflow.do?method=viewOwnProcesses">
+						<bean:message key="label.myProcesses" bundle="META_WORKFLOW_RESOURCES"/>
+					</html:link>
+				</logic:present>
+					
+				<logic:present name="myProcess">	
+					<html:link page="/metaWorkflow.do?method=metaProcessHome">
+						<bean:message key="label.activeProcesses" bundle="META_WORKFLOW_RESOURCES"/> 
+					</html:link>
+					| 
+					<bean:message key="label.myProcesses" bundle="META_WORKFLOW_RESOURCES"/>
+				</logic:present>
 				</td>
-			<td><fr:view name="process" property="metaType.name"/></td>
-			<td><fr:view name="process" property="processNumber"/></td>
-			<td class="acenter"> <fr:view name="process" property="currentQueue" type="module.metaWorkflow.domain.WorkflowQueue">
-					<fr:layout name="null-as-label">
-						<fr:property name="subLayout" value="values"/>
-						<fr:property name="subSchema" value="view.queue.name"/>
-					</fr:layout>
-				 </fr:view> 
+			<td>
+				<span style="float: right;">
+					<fr:form action="/metaWorkflow.do?method=search">
+							<fr:edit id="searchQuery" name="searchBean" slot="string" type="java.lang.String">
+								<fr:layout>
+									<fr:property name="size" value="40"/>
+								</fr:layout>
+							</fr:edit>
+							<html:submit styleClass="inputbutton"><bean:message key="link.search" bundle="MYORG_RESOURCES"/></html:submit>	
+					</fr:form>
+				</span>
 			</td>
-			<td class="acenter"> <fr:view name="process" property="requestor" type="module.metaWorkflow.domain.Requestor">
-					<fr:layout name="null-as-label">
-						<fr:property name="subLayout" value="values"/>
-						<fr:property name="subSchema" value="view.requestor.name"/>
-					</fr:layout>
-				 </fr:view> 
-			</td>
-			<td class="acenter"> <fr:view name="process" property="currentOwner" type="myorg.domain.User">
-					<fr:layout name="null-as-label">
-						<fr:property name="subLayout" value="values"/>
-						<fr:property name="subSchema" value="view.user.presentationName"/>
-					</fr:layout>
-				 </fr:view> 
-			</td>
-			</tr>
-			</logic:equal>
-		</logic:iterate>	
+		</tr>
 	</table>
-</div>
+
+<table class="structural">
+<tr>
+<td>
+
+<logic:present name="displayProcesses">
+	<h3 class="mtop05 mbottom075"><bean:message key="label.activeProcesses" bundle="META_WORKFLOW_RESOURCES"/></h3>
+
+	<logic:notEmpty name="displayProcesses">
+		<div>
+			<fr:view name="displayProcesses" schema="view.metaProcesses.list">
+				<fr:layout name="tabular">
+					<fr:property name="classes" value="table"/>
+				</fr:layout>
+			</fr:view>
+		</div>
+	</logic:notEmpty>
+	
+	<logic:empty name="displayProcesses">
+		<em><bean:message key="label.queue.noProcessesForFilter" bundle="META_WORKFLOW_RESOURCES"/></em>
+	</logic:empty>
+	
+</logic:present>
+
+<logic:present name="myProcess">
+	<h3 class="mtop05 mbottom075"><bean:message key="label.myProcesses" bundle="META_WORKFLOW_RESOURCES"/></h3>
+	
+	<logic:notEmpty name="myProcess">
+		<div>
+			<fr:view name="myProcess" schema="view.metaProcesses.list.withState">
+				<fr:layout name="tabular">
+					<fr:property name="classes" value="table"/>
+				</fr:layout>
+			</fr:view>
+		</div>
+	</logic:notEmpty>
+	
+	<logic:empty name="myProcess">
+		<em><bean:message key="label.queue.noProcessesForFilter" bundle="META_WORKFLOW_RESOURCES"/></em>
+	</logic:empty>
 </logic:present>
 
 </td>
@@ -192,40 +86,42 @@
 
 <td style="padding-left: 1em;">
 
-<h3 class="mtop05 mbottom075">Filas</h3>
+<logic:notEmpty name="availableQueues">
+	<h3 class="mtop05 mbottom075"><bean:message key="label.queues" bundle="META_WORKFLOW_RESOURCES"/></h3>
+	
+	<div>
+		<table class="table">
+			<tr>
+				<th><bean:message key="label.queue" bundle="META_WORKFLOW_RESOURCES"/></th>
+				<th><bean:message key="label.queue.openProcesses" bundle="META_WORKFLOW_RESOURCES"/></th>
+				<th><bean:message key="label.queue.closeProcesses" bundle="META_WORKFLOW_RESOURCES"/></th>
+			</tr>
+				<logic:iterate id="queue" name="availableQueues" indexId="i">
+					<tr>
+					<td>
+						<bean:define id="queueId" name="queue" property="OID"/>
+						<html:link page="<%= "/metaWorkflow.do?method=viewProcessInQueue&queueId=" +  queueId %>" > 
+							<fr:view name="queue" property="name"/>
+						</html:link>
+						</td>
+						<td>
+							<html:link page="<%= "/metaWorkflow.do?method=viewProcessInQueue&active=true&queueId=" +  queueId %>" > 
+								<fr:view name="queue" property="activeProcessCount"/>
+							</html:link>
+						</td>
+						<td>
+							<html:link page="<%= "/metaWorkflow.do?method=viewProcessInQueue&active=false&queueId=" +  queueId %>" > 
+								<fr:view name="queue" property="notActiveProcessCount"/>
+							</html:link>
+						</td>
+					</tr>
+				</logic:iterate>	
+		</table>
+	</div>
+</logic:notEmpty>
 
-<div>
-	<table>
-		<tr>
-			<th><bean:message key="label.queue" bundle="META_WORKFLOW_RESOURCES"/></th>
-			<th><bean:message key="label.queue.openProcesses" bundle="META_WORKFLOW_RESOURCES"/></th>
-			<th><bean:message key="label.queue.closeProcesses" bundle="META_WORKFLOW_RESOURCES"/></th>
-		</tr>
-		<logic:present name="user">
-			<logic:iterate id="queue" name="user" property="queues" indexId="i">
-				<tr>
-				<td>
-					<bean:define id="queueId" name="queue" property="OID"/>
-					<html:link page="<%= "/metaWorkflow.do?method=viewProcessInQueue&queueId=" +  queueId %>" > 
-						<fr:view name="queue" property="name"/>
-					</html:link>
-					</td>
-					<td>
-						<fr:view name="queue" property="activeProcessCount"/>
-					</td>
-					<td>
-						<fr:view name="queue" property="notActiveProcessCount"/>
-					</td>
-				</tr>
-			</logic:iterate>	
-		</logic:present>
-		<logic:notPresent name="user">
-			<tr><td> - </td></tr>
-		</logic:notPresent>
-	</table>
-</div>
 </td>
 </tr>
 </table>
 
-
+</logic:present>

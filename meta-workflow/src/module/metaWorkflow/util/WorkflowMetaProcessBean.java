@@ -12,12 +12,10 @@ public class WorkflowMetaProcessBean implements Serializable {
     String instanceDescription;
     String subject;
 
-    DomainReference<WorkflowMetaType> metaType;
     DomainReference<WorkflowQueue> queue;
     DomainReference<User> requestor;
 
     public WorkflowMetaProcessBean() {
-	setMetaType(null);
 	setQueue(null);
 	setRequestor(null);
     }
@@ -36,14 +34,6 @@ public class WorkflowMetaProcessBean implements Serializable {
 
     public void setInstanceDescription(String instanceDescription) {
 	this.instanceDescription = instanceDescription;
-    }
-
-    public WorkflowMetaType getMetaType() {
-	return metaType.getObject();
-    }
-
-    public void setMetaType(WorkflowMetaType metaType) {
-	this.metaType = new DomainReference<WorkflowMetaType>(metaType);
     }
 
     public WorkflowQueue getQueue() {

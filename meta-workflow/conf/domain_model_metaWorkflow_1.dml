@@ -35,8 +35,19 @@ package module.metaWorkflow.domain;
 
  class WorkflowMetaType {
  	String name;
+ 	String requestHandler;
  	Integer processCounter;
  	Strings suporttedFileClasses;
+ }
+ 
+ class WorkflowMetaTypeSpecificLayout {
+ 	String body;
+ 	String shortBody;
+ 	String header;
+ }
+ 
+ class WorkflowMetaTypeSpecificActivity {
+ 	String activityClass;	
  }
  
  class WorkflowMetaTypeDescription {
@@ -81,4 +92,15 @@ relation WorkflowMetaTypeDescription {
 	}
 }
 
+relation WorkflowMetaTypeWorkflowMetaTypeSpecificLayout {
+	WorkflowMetaType playsRole metaType;
+	WorkflowMetaTypeSpecificLayout playsRole specificLayout;
+}
+
+relation WorkflowMetaTypeWorkflowMetaTypeSpecificActivity {
+	WorkflowMetaType playsRole metaType;
+	WorkflowMetaTypeSpecificActivity playsRole specificActivities {
+		multiplicity *;
+	}
+}
 

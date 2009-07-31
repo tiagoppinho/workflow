@@ -4,6 +4,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
+import module.metaWorkflow.presentationTier.WorkflowQueueLayoutContext;
 import module.metaWorkflow.util.WorkflowQueueBean;
 import myorg.applicationTier.Authenticate.UserView;
 import myorg.domain.MyOrg;
@@ -73,9 +74,13 @@ public abstract class WorkflowQueue extends WorkflowQueue_Base {
     protected void fillNonDefaultFields(WorkflowQueueBean bean) {
 	// do nothing
     }
-
+    
+    public void edit(WorkflowQueueBean bean) {
+	//do nothing
+    }
+    
     @Service
-    public static WorkflowQueue createQueue(Class<? extends WorkflowQueue> queueType, WorkflowUserGroupQueueBean bean) {
+    public static WorkflowQueue createQueue(Class<? extends WorkflowQueue> queueType, WorkflowQueueBean bean) {
 	WorkflowQueue queue = null;
 	try {
 	    Class<? extends WorkflowQueue> queueClass = (Class<? extends WorkflowQueue>) Class.forName(queueType.getName());
@@ -94,4 +99,22 @@ public abstract class WorkflowQueue extends WorkflowQueue_Base {
 	return queue;
     }
 
+    /*
+     * This is now the brute force implementation but we should change it to a
+     * better one.
+     */
+    public static List<WorkflowQueue> getQueuesForUser(User user) {
+	List<WorkflowQueue> queues = new ArrayList<WorkflowQueue>();
+	for (WorkflowQueue queue : MyOrg.getInstance().getMetaWorkflowQueues()) {
+	    if (queue.isUserAbleToAccessQueue(user)) {
+		queues.add(queue);
+	    }
+	}
+	return queues;
+
+    }
+
+    public WorkflowQueueLayoutContext getDefaultContext() {
+	return WorkflowQueueLayoutContext.getDefaultLayout(this);
+    }
 }

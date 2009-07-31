@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import module.fileSupport.domain.GenericFile;
+import module.organization.domain.OrganizationalModel;
 import module.workflow.domain.ProcessFile;
 import myorg.domain.MyOrg;
 import myorg.domain.User;
@@ -13,11 +13,12 @@ import pt.utl.ist.fenix.tools.util.Strings;
 
 public class WorkflowMetaType extends WorkflowMetaType_Base {
 
-    public WorkflowMetaType(String name, String description) {
+    public WorkflowMetaType(String name, String description, OrganizationalModel model) {
 	super();
 	setMyOrg(MyOrg.getInstance());
 	setName(name);
 	setProcessCounter(0);
+	setOrganizationalModel(model);
 	addDescription(description, 1);
 	super.setSuporttedFileClasses(new Strings(Collections.EMPTY_LIST));
     }
@@ -37,14 +38,36 @@ public class WorkflowMetaType extends WorkflowMetaType_Base {
 	return Collections.max(getDescriptions());
     }
 
-    @Service
-    public static void createNewMetaType(String name, String description, List<Class<? extends GenericFile>> classNames) {
-	WorkflowMetaType type = new WorkflowMetaType(name, description);
+    public void setFileClasses(List<Class<? extends ProcessFile>> classNames) {
 	List<String> fileTypes = new ArrayList<String>();
 	for (Class clazz : classNames) {
 	    fileTypes.add(clazz.getName());
 	}
-	type.setSuporttedFileClasses(fileTypes);
+	setSuporttedFileClasses(fileTypes);
+    }
+
+    public List<Class<? extends ProcessFile>> getFileClasses() {
+	List<Class<? extends ProcessFile>> fileClasses = new ArrayList<Class<? extends ProcessFile>>();
+	for (String className : getSuporttedFileClasses()) {
+	    Class<? extends ProcessFile> clazz = null;
+	    try {
+		clazz = (Class<? extends ProcessFile>) Class.forName(className);
+	    } catch (ClassNotFoundException e) {
+		e.printStackTrace();
+	    }
+	    if (clazz != null) {
+		fileClasses.add(clazz);
+	    }
+
+	}
+	return fileClasses;
+    }
+
+    @Service
+    public static void createNewMetaType(String name, String description, OrganizationalModel model,
+	    List<Class<? extends ProcessFile>> classNames) {
+	WorkflowMetaType type = new WorkflowMetaType(name, description, model);
+	type.setFileClasses(classNames);
     }
 
     public void addDescription(String description) {

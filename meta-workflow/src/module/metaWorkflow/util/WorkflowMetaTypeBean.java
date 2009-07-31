@@ -4,20 +4,31 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import module.fileSupport.domain.GenericFile;
+import module.organization.domain.OrganizationalModel;
+import module.workflow.domain.ProcessFile;
+import pt.ist.fenixWebFramework.util.DomainReference;
 
 public class WorkflowMetaTypeBean implements Serializable {
 
-    String name;
-    String description;
-    List<Class<? extends GenericFile>> classNames;
-    
-    public List<Class<? extends GenericFile>> getFileClassNames() {
-        return classNames;
+    private String name;
+    private String description;
+    private List<Class<? extends ProcessFile>> classNames;
+    private DomainReference<OrganizationalModel> organizationModel;
+
+    public OrganizationalModel getOrganizationModel() {
+	return organizationModel.getObject();
     }
 
-    public void setFileClassNames(List<Class<? extends GenericFile>> classNames) {
-        this.classNames = classNames;
+    public void setOrganizationModel(OrganizationalModel organizationModel) {
+	this.organizationModel = new DomainReference<OrganizationalModel>(organizationModel);
+    }
+
+    public List<Class<? extends ProcessFile>> getFileClassNames() {
+	return classNames;
+    }
+
+    public void setFileClassNames(List<Class<? extends ProcessFile>> classNames) {
+	this.classNames = classNames;
     }
 
     public WorkflowMetaTypeBean() {
@@ -27,7 +38,8 @@ public class WorkflowMetaTypeBean implements Serializable {
     public WorkflowMetaTypeBean(String name, String description) {
 	setName(name);
 	setDescription(description);
-	setFileClassNames(new ArrayList<Class<? extends GenericFile>>());
+	setFileClassNames(new ArrayList<Class<? extends ProcessFile>>());
+	setOrganizationModel(null);
     }
 
     public String getName() {

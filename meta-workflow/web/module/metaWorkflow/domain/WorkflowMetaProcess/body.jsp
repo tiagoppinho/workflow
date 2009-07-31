@@ -10,7 +10,7 @@
 <%@page import="pt.ist.fenixWebFramework.servlets.filters.contentRewrite.GenericChecksumRewriter"%><bean:define id="processOID" name="process" property="OID"/>
 
 <logic:equal name="process" property="open" value="false">
-	<div class="infoop4 mtop05 mbottom15">
+	<div class="highlightBox mtop05 mbottom15">
 		<bean:message key="label.message.processIsClosed" bundle="META_WORKFLOW_RESOURCES"/>
 	</div>
 </logic:equal>
@@ -26,15 +26,16 @@
 	</script>
 
 <div id="wfprocess">
-	<%= ContentContextInjectionRewriter.BLOCK_HAS_CONTEXT_PREFIX %>
+	
 	<div id="tabs">
+		<%= ContentContextInjectionRewriter.BLOCK_HAS_CONTEXT_PREFIX %>
 		<ul>
 			<li><%= GenericChecksumRewriter.NO_CHECKSUM_PREFIX %><a href="#tabs-1"><bean:message key="label.tab.information" bundle="META_WORKFLOW_RESOURCES"/></a></li>
 			<bean:size id="observersCount" name="process" property="observers"/>
 			<li><%= GenericChecksumRewriter.NO_CHECKSUM_PREFIX %><a href="#tabs-2"><bean:message key="label.tab.observers" bundle="META_WORKFLOW_RESOURCES"/> (<fr:view name="observersCount"/>)</a></li>
 			<li><%= GenericChecksumRewriter.NO_CHECKSUM_PREFIX %><a href="#tabs-3"><bean:message key="label.tab.rules" bundle="META_WORKFLOW_RESOURCES"/></a></li>
 		</ul>
-		
+		<%= ContentContextInjectionRewriter.END_BLOCK_HAS_CONTEXT_PREFIX %>
 		<div id="tabs-1">
 			<fr:view name="process" schema="view.meta.process.details">
 				<fr:layout name="tabular">
@@ -50,7 +51,7 @@
 			</logic:empty>
 
 			<logic:notEmpty name="process" property="metaTypeObservers">
-				<p class="mvert05">Observadores de todos os processos deste metatipo:</p>
+				<p class="mvert05"><bean:message key="label.metaTypeObservers" bundle="META_WORKFLOW_RESOURCES"/>:</p>
 			</logic:notEmpty>
 
 			<ul class="mvert05">
@@ -66,7 +67,7 @@
 			</ul>
 
 			<logic:notEmpty name="process" property="processObservers">
-				<p class="mtop1 mbottom05">Observadores deste processo:</p>
+				<p class="mtop1 mbottom05"><bean:message key="label.processObservers" bundle="META_WORKFLOW_RESOURCES"/>:</p>
 			</logic:notEmpty>
 			
 			<ul class="mvert05">
@@ -85,7 +86,7 @@
 						</span>
 					</li>
 				</logic:iterate>
-			</ul>
+			</ul>	
 			
 
 			
@@ -116,13 +117,12 @@
 					</span>
 				</em>
 				<bean:define id="metaTypeId" name="process" property="metaType.OID"/>
-				(<html:link page="<%= "/metaWorkflow.do?method=viewMetaTypeDescriptionHistory&metaTypeId=" + metaTypeId %>">
+				(<html:link page="<%= "/metaWorkflow.do?method=viewMetaTypeDescriptionHistory&processId="+ processOID + "&metaTypeId=" + metaTypeId %>">
 					<bean:message key="link.history" bundle="META_WORKFLOW_RESOURCES"/>
 				</html:link>)
 			</p>
 		</div>
 	</div>
-	<%= ContentContextInjectionRewriter.END_BLOCK_HAS_CONTEXT_PREFIX %>
 </div>
 
 <h3 class="mbottom05"><bean:message key="title.comments" bundle="WORKFLOW_RESOURCES"/></h3>

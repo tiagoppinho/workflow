@@ -2,7 +2,9 @@ package module.metaWorkflow.domain;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import module.metaWorkflow.util.WorkflowQueueBean;
 import myorg.domain.User;
@@ -10,12 +12,12 @@ import pt.ist.fenixWebFramework.util.DomainReference;
 
 public class WorkflowUserGroupQueueBean extends WorkflowQueueBean implements Serializable {
 
-    private List<DomainReference<User>> users;
+    private Set<DomainReference<User>> users;
     private DomainReference<User> userToAdd;
 
     public WorkflowUserGroupQueueBean() {
 	super();
-	users = new ArrayList<DomainReference<User>>();
+	users = new HashSet<DomainReference<User>>();
 	setUserToAdd(null);
     }
 
@@ -37,5 +39,12 @@ public class WorkflowUserGroupQueueBean extends WorkflowQueueBean implements Ser
 
     public void setUserToAdd(User user) {
 	this.userToAdd = new DomainReference<User>(user);
+    }
+
+    @Override
+    protected void fillQueueFields(WorkflowQueue queue) {
+	for (User user : ((WorkflowUserGroupQueue) queue).getUsers()) {
+	    users.add(new DomainReference<User>(user));
+	}
     }
 }

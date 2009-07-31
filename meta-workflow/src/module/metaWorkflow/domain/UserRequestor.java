@@ -20,4 +20,9 @@ public class UserRequestor extends UserRequestor_Base {
 	return getUser().getPresentationName();
     }
 
+    @Override
+    public String getShortName() {
+	return getUser().getShortPresentationName();
+    }
+
 }

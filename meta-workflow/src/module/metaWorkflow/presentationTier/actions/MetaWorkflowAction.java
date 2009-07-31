@@ -9,17 +9,17 @@ import module.metaWorkflow.domain.WorkflowMetaProcess;
 import module.metaWorkflow.domain.WorkflowMetaType;
 import module.metaWorkflow.domain.WorkflowMetaTypeDescription;
 import module.metaWorkflow.domain.WorkflowQueue;
+import module.metaWorkflow.domain.search.SearchMetaWorkflowProcess;
 import module.metaWorkflow.util.WorkflowMetaProcessBean;
-import module.metaWorkflow.util.WorkflowMetaTypeBean;
 import module.workflow.domain.WorkflowProcess;
 import module.workflow.presentationTier.actions.ProcessManagement;
 import myorg.applicationTier.Authenticate.UserView;
-import myorg.domain.MyOrg;
 import myorg.domain.User;
 import myorg.presentationTier.actions.ContextBaseAction;
 import myorg.util.VariantBean;
 import myorg.util.lucene.DomainIndexer;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Predicate;
 import org.apache.commons.lang.StringUtils;
 import org.apache.struts.action.ActionForm;
@@ -36,6 +36,7 @@ public class MetaWorkflowAction extends ContextBaseAction {
 	request.setAttribute("searchBean", new VariantBean());
 	final User currentUser = UserView.getCurrentUser();
 	request.setAttribute("user", currentUser);
+	request.setAttribute("availableQueues", WorkflowQueue.getQueuesForUser(currentUser));
 
 	return forward(request, "/metaWorkflow/viewMetaProcesses.jsp");
     }
@@ -44,7 +45,7 @@ public class MetaWorkflowAction extends ContextBaseAction {
 	    final HttpServletResponse response) {
 
 	final User currentUser = UserView.getCurrentUser();
-	request.setAttribute("processes", WorkflowProcess.getAllProcesses(WorkflowMetaProcess.class, new Predicate() {
+	request.setAttribute("displayProcesses", WorkflowProcess.getAllProcesses(WorkflowMetaProcess.class, new Predicate() {
 
 	    @Override
 	    public boolean evaluate(Object arg0) {
@@ -57,31 +58,74 @@ public class MetaWorkflowAction extends ContextBaseAction {
 
     }
 
+    public ActionForward viewOwnProcesses(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
+	    final HttpServletResponse response) {
+
+	final User currentUser = UserView.getCurrentUser();
+	request.setAttribute("myProcess", currentUser.getMetaProcesses());
+
+	return viewMetaProcessList(request);
+
+    }
+
     public ActionForward viewProcessInQueue(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
 	    final HttpServletResponse response) {
 	WorkflowQueue queue = getDomainObject(request, "queueId");
-	request.setAttribute("processes", queue.getActiveMetaProcesses());
-	return viewMetaProcessList(request);
+	final String active = request.getParameter("active");
+	final Boolean state = active != null ? Boolean.valueOf(active) : null;
+
+	request.setAttribute("queue", queue);
+	request.setAttribute("displayProcesses", CollectionUtils.select(queue.getMetaProcess(), new Predicate() {
+
+	    @Override
+	    public boolean evaluate(Object arg0) {
+		return state == null || state == ((WorkflowMetaProcess) arg0).isOpen();
+	    }
+
+	}));
+	return forward(request, "/metaWorkflow/viewProcessesInQueue.jsp");
     }
 
     public ActionForward search(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
 	    final HttpServletResponse response) {
 
 	String searchQuery = getRenderedObject("searchQuery");
-	List<WorkflowMetaProcess> searchResults = DomainIndexer.getInstance().search(WorkflowMetaProcess.class, searchQuery);
+	if (searchQuery != null) {
+	    List<WorkflowMetaProcess> searchResults = DomainIndexer.getInstance().search(WorkflowMetaProcess.class, searchQuery);
+	    request.setAttribute("searchResult", searchResults);
+	}
+	request.setAttribute("searchBean", new VariantBean());
+	return forward(request, "/metaWorkflow/search.jsp");
 
-	request.setAttribute("searchResult", searchResults);
+    }
 
-	return metaProcessHome(mapping, form, request, response);
+    public ActionForward advancedSearch(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
+	    final HttpServletResponse response) {
+
+	SearchMetaWorkflowProcess searchBean = getRenderedObject("advancedSearch");
+	if (searchBean == null) {
+	    searchBean = new SearchMetaWorkflowProcess();
+	} else {
+	    request.setAttribute("searchResult", searchBean.search());
+	}
+	RenderUtils.invalidateViewState("advancedSearch");
+	request.setAttribute("advancedSearchBean", searchBean);
+
+	return forward(request, "/metaWorkflow/search.jsp");
 
     }
 
     public ActionForward prepareCreateProcess(final ActionMapping mapping, final ActionForm form,
 	    final HttpServletRequest request, final HttpServletResponse response) {
 
-	WorkflowMetaProcessBean processBean = new WorkflowMetaProcessBean();
+	WorkflowMetaProcessBean processBean = getRenderedObject("processBean");
+	if (processBean == null) {
+	    processBean = new WorkflowMetaProcessBean();
+	}
+
 	request.setAttribute("workflowBean", processBean);
 
+	RenderUtils.invalidateViewState("processBean");
 	return forward(request, "/metaWorkflow/createMetaProcess.jsp");
     }
 
@@ -101,45 +145,20 @@ public class MetaWorkflowAction extends ContextBaseAction {
 	    final HttpServletResponse response) {
 
 	WorkflowMetaProcessBean processBean = getRenderedObject("processBean");
-	WorkflowMetaProcess process = WorkflowMetaProcess.createNewProcess(processBean.getMetaType(), processBean.getSubject(),
-		processBean.getInstanceDescription(), processBean.getQueue(), processBean.getRequestor());
+	WorkflowMetaProcess process = WorkflowMetaProcess.createNewProcess(processBean.getSubject(), processBean
+		.getInstanceDescription(), processBean.getQueue(), processBean.getRequestor());
 
 	return viewMetaProcess(process);
-    }
-
-    public ActionForward manageMetaType(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
-	    final HttpServletResponse response) {
-
-	request.setAttribute("bean", new WorkflowMetaTypeBean());
-	request.setAttribute("metaTypes", MyOrg.getInstance().getMetaTypes());
-
-	return forward(request, "/metaWorkflow/manageMetaTypes.jsp");
-    }
-
-    public ActionForward createNewMetaType(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
-	    final HttpServletResponse response) {
-
-	WorkflowMetaTypeBean bean = getRenderedObject("newMetaType");
-	WorkflowMetaType.createNewMetaType(bean.getName(), bean.getDescription(), bean.getFileClassNames());
-
-	RenderUtils.invalidateViewState("newMetaType");
-	return manageMetaType(mapping, form, request, response);
-    }
-
-    public ActionForward editMetaTypeDescription(final ActionMapping mapping, final ActionForm form,
-	    final HttpServletRequest request, final HttpServletResponse response) {
-
-	WorkflowMetaType type = getDomainObject(request, "metaTypeId");
-	request.setAttribute("metaType", type);
-	return forward(request, "/metaWorkflow/editMetaTypeDescription.jsp");
     }
 
     public ActionForward viewMetaTypeDescriptionHistory(final ActionMapping mapping, final ActionForm form,
 	    final HttpServletRequest request, final HttpServletResponse response) {
 
-	WorkflowMetaType type = getDomainObject(request, "metaTypeId");
-	request.setAttribute("metaType", type);
-	return forward(request, "/metaWorkflow/viewMetaTypeDescriptionHistory.jsp");
+	WorkflowMetaProcess process = getDomainObject(request, "processId");
+	request.setAttribute("process", process);
+	request.setAttribute("metaType", process.getMetaType());
+
+	return forward(request, "/metaWorkflow/viewMetaTypeVersionInProcess.jsp");
     }
 
     public ActionForward doDiff(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,

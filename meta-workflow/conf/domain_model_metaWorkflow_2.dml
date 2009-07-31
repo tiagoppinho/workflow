@@ -51,6 +51,16 @@ relation WorkflowUnitQueueUnit {
 	module.organization.domain.Unit playsRole unit;
 }
 
+relation WorkflowUnitQueueAccountabilityType {
+	module.metaWorkflow.domain.WorkflowUnitQueue playsRole usedQueues {
+		multiplicity *;
+	}
+	module.organization.domain.AccountabilityType playsRole accountabilityTypes {
+		multiplicity *;
+	}
+}
+
+
 relation WorkflowUserGroupQueueUser {
 	module.metaWorkflow.domain.WorkflowUserGroupQueue playsRole queues {
 		multiplicity *;
@@ -73,7 +83,15 @@ relation UserRequestorUser {
 	module.metaWorkflow.domain.Requestor playsRole requestor;
 }
 
- relation WorkflowMetaProcessWorkflowMetaType {
+relation WorkflowMetaTypeOrganizationModel {
+	module.metaWorkflow.domain.WorkflowMetaType playsRole metaType {
+		multiplicity *;
+	}
+	module.organization.domain.OrganizationalModel playsRole organizationalModel;
+}
+
+
+relation WorkflowMetaProcessWorkflowMetaType {
 	module.metaWorkflow.domain.WorkflowMetaProcess playsRole metaProcesses {
 		multiplicity *;
 	}

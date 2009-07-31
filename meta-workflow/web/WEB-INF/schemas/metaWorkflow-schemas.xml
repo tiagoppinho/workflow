@@ -2,9 +2,13 @@
 	<slot name="name" key="label.metaType.name" validator="pt.ist.fenixWebFramework.renderers.validators.RequiredValidator">
 		<property name="size" value="40"/>
 	</slot>
+	<slot name="organizationModel" key="label.organizational.structure" layout="menu-select" bundle="ORGANIZATION_RESOURCES" validator="pt.ist.fenixWebFramework.renderers.validators.RequiredValidator">
+		<property name="providerClass" value="module.organization.presentationTier.renderers.providers.OrganizationalModelProvider"/>
+		<property name="eachLayout" value="values"/>
+	</slot>
 	<slot name="description" key="label.metaType.description" layout="longText" validator="pt.ist.fenixWebFramework.renderers.validators.RequiredValidator">
 		<property name="rows" value="20"/>
-		<property name="columns" value="80"/>
+		<property name="columns" value="65"/>
 	</slot>
 	<slot name="fileClassNames" key="label.metaType.availableFileTypes" layout="option-select">
 		<property name="providerClass" value="module.metaWorkflow.presentationTier.renderers.providers.FileSubClasses"/>
@@ -19,7 +23,7 @@
 		<property name="format" value="${name}" />
 		<property name="minChars" value="3" />
 		<property name="args"
-			value="provider=module.metaWorkflow.presentationTier.renderers.autoCompleteProviders.WorkflowQueueAutoComplete" />
+			value="provider=module.metaWorkflow.presentationTier.renderers.autoCompleteProviders.WorkflowQueueAutoComplete,metaTypeId=${process.metaType.OID}" />
 		<property name="size" value="40" />
 	</slot>
 </schema>
@@ -37,17 +41,17 @@
 </schema>
 
 <schema name="create.meta.process" type="module.metaWorkflow.util.WorkflowMetaProcessBean" bundle="META_WORKFLOW_RESOURCES">
-	<slot name="metaType" layout="menu-select" key="label.metaType" validator="pt.ist.fenixWebFramework.renderers.validators.RequiredValidator">
-		<property name="providerClass" value="module.metaWorkflow.presentationTier.renderers.providers.AvailableWorkflowMetaTypes"/>
+	<slot name="queue" layout="menu-select" key="label.metaProcess.queue" validator="pt.ist.fenixWebFramework.renderers.validators.RequiredValidator" help="label.metaProcess.requestor">
+		<property name="providerClass" value="module.metaWorkflow.presentationTier.renderers.providers.CurrentUserQueues"/>
 		<property name="eachLayout" value="values"/>
-		<property name="eachSchema" value="view.metaType.name"/>
-	</slot>	
+		<property name="eachSchema" value="view.queue.name"/>
+	</slot>
 	<slot name="subject" key="label.metaProcess.subject" validator="pt.ist.fenixWebFramework.renderers.validators.RequiredValidator">
 		<property name="size" value="75"/>
 	</slot>	
 	<slot name="instanceDescription" layout="longText" key="label.metaProcess.instanceDescription" validator="pt.ist.fenixWebFramework.renderers.validators.RequiredValidator">
 		<property name="rows" value="10"/>
-		<property name="columns" value="70"/>
+		<property name="columns" value="65"/>
 	</slot>
 	<slot name="requestor" key="label.metaProcess.requestor" layout="autoComplete">
 		<property name="labelField" value="username" />
@@ -55,18 +59,23 @@
 		<property name="minChars" value="3" />
 		<property name="args"
 			value="provider=myorg.presentationTier.renderers.autoCompleteProvider.UserAutoComplete" />
-		<property name="size" value="40" />
-	</slot>
-	<slot name="queue" layout="menu-select" key="label.metaProcess.queue" validator="pt.ist.fenixWebFramework.renderers.validators.RequiredValidator">
-		<property name="providerClass" value="module.metaWorkflow.presentationTier.renderers.providers.AvailableQueues"/>
-		<property name="eachLayout" value="values"/>
-		<property name="eachSchema" value="view.queue.name"/>
+		<property name="size" value="75" />
 	</slot>
 </schema>
 
 <schema name="view.metaType.name" type="module.metaWorkflow.domain.WorkflowMetaType" bundle="META_WORKFLOW_RESOURCES">
 	<slot name="name" key="label.metaType.name"/>
 </schema>
+
+<schema name="view.metaType.list" type="module.metaWorkflow.domain.WorkflowMetaType" bundle="META_WORKFLOW_RESOURCES">
+	<slot name="name" key="label.metaType.name"/>
+	<slot name="organizationalModel.name" key="label.organizational.structure" bundle="ORGANIZATION_RESOURCES"/>
+	<slot name="availableFileTypes"  layout="separator-list" key="label.metaType.availableFileTypes">
+		<property name="separator" value=", "/>
+		<property name="eachLayout" value="name-resolver"/>
+	</slot>
+</schema>
+
 
 <schema name="view.meta.process" type="module.metaWorkflow.domain.WorkflowMetaProcess" bundle="META_WORKFLOW_RESOURCES">
 	<slot name="metaType.name" key="label.metaType.name"/>
@@ -94,14 +103,87 @@
 	<slot name="name"/>
 </schema>
 
+<schema name="view.requestor.shortName" type="module.metaWorkflow.domain.Requestor" bundle="META_WORKFLOW_RESOURCES">
+	<slot name="shortName"/>
+</schema>
+
 <schema name="view.queue.name" type="module.metaWorkflow.domain.WorkflowQueue" bundle="META_WORKFLOW_RESOURCES">
 	<slot name="name"/>
 </schema>
 
-<schema name="edit.metaTypeDescription" type="module.metaWorkflow.domain.WorkflowMetaTypeDescription" bundle="META_WORKFLOW_RESOURCES">
-	<slot name="description" key="label.metaType.description" layout="longText" validator="pt.ist.fenixWebFramework.renderers.validators.RequiredValidator">
+<schema name="edit.metaTypeDescription" type="module.metaWorkflow.domain.WorkflowMetaType" bundle="META_WORKFLOW_RESOURCES">
+	<slot name="currentDescription.description" key="label.metaType.description" layout="longText" validator="pt.ist.fenixWebFramework.renderers.validators.RequiredValidator">
 		<property name="rows" value="20"/>
-		<property name="columns" value="80"/>
+		<property name="columns" value="65"/>
+	</slot>
+	<slot name="organizationalModel" key="label.organizational.structure" layout="menu-select" bundle="ORGANIZATION_RESOURCES" validator="pt.ist.fenixWebFramework.renderers.validators.RequiredValidator">
+		<property name="providerClass" value="module.organization.presentationTier.renderers.providers.OrganizationalModelProvider"/>
+		<property name="eachLayout" value="values"/>
+	</slot>
+	<slot name="fileClasses" key="label.metaType.availableFileTypes" layout="option-select">
+		<property name="providerClass" value="module.metaWorkflow.presentationTier.renderers.providers.FileSubClasses"/>
+		<property name="eachLayout" value="name-resolver"/>
+		<property name="classes" value="nobullet"/>
+	</slot>
+</schema>
+
+<schema name="create.queue" type="module.metaWorkflow.util.WorkflowQueueBean" bundle="META_WORKFLOW_RESOURCES">
+	<slot name="name" key="label.queue.name" validator="pt.ist.fenixWebFramework.renderers.validators.RequiredValidator">
+		<property name="size" value="40"/>
+	</slot>
+	<slot name="metaType" key="label.queue.supportedMetaType" layout="menu-select-postback" validator="pt.ist.fenixWebFramework.renderers.validators.RequiredValidator">
+		<property name="providerClass" value="module.metaWorkflow.presentationTier.renderers.providers.AvailableWorkflowMetaTypes"/>
+		<property name="eachLayout" value="values"/>
+		<property name="eachSchema" value="view.metaType.name"/>
+	</slot>
+</schema>
+
+<schema name="create.unitQueue" extends="create.queue" type="module.metaWorkflow.domain.WorkflowUnitQueueBean" bundle="META_WORKFLOW_RESOURCES">
+	<slot name="accountabilityTypes" layout="option-select" key="label.accountabilityTypes" bundle="ORGANIZATION_RESOURCES">
+		<property name="providerClass" value="module.metaWorkflow.presentationTier.renderers.providers.AccountabilityTypeForGivenMetaType"/>
+		<property name="eachLayout" value="values"/>
+		<property name="eachSchema" value="module.organization.domain.AccountabilityType.name"/>
+		<property name="emptyMessageKey" value="label.workflowQueue.emptyTypes"/>
+		<property name="emptyMessageBundle" value="META_WORKFLOW_RESOURCES"/>
+	</slot>
+	<slot name="unit" layout="autoComplete" key="label.unit" bundle="ORGANIZATION_RESOURCES">
+		<property name="labelField" value="partyName" />
+		<property name="format" value="${partyName}" />
+		<property name="minChars" value="3" />
+		<property name="args" value="provider=module.organization.presentationTier.renderers.providers.UnitAutoCompleteProvider" />
+		<property name="size" value="40" />
+	</slot>
+</schema>
+
+<schema name="search.advanced.metaWorkflow" type="module.metaWorkflow.domain.search.SearchMetaWorkflowProcess" bundle="META_WORKFLOW_RESOURCES">
+	<slot name="creator" key="label.metaProcess.creator" layout="autoComplete">
+		<property name="labelField" value="presentationName" />
+		<property name="format" value="${presentationName}" />
+		<property name="minChars" value="3" />
+		<property name="args"
+			value="provider=myorg.presentationTier.renderers.autoCompleteProvider.UserAutoComplete" />
+		<property name="size" value="40" />
+	</slot>
+	<slot name="requestor" key="label.metaProcess.requestor" layout="autoComplete">
+		<property name="labelField" value="presentationName" />
+		<property name="format" value="${presentationName}" />
+		<property name="minChars" value="3" />
+		<property name="args"
+			value="provider=myorg.presentationTier.renderers.autoCompleteProvider.UserAutoComplete" />
+		<property name="size" value="40" />
+	</slot>
+	<slot name="metaType" key="label.metaType" layout="menu-select">
+		<property name="providerClass" value="module.metaWorkflow.presentationTier.renderers.providers.AvailableWorkflowMetaTypes"/>
+		<property name="eachLayout" value="values"/>
+		<property name="eachSchema" value="view.metaType.name"/>
+	</slot>
+	<slot name="queue" layout="autoComplete" key="label.queue">
+		<property name="labelField" value="name" />
+		<property name="format" value="${name}" />
+		<property name="minChars" value="3" />
+		<property name="args"
+			value="provider=module.metaWorkflow.presentationTier.renderers.autoCompleteProviders.WorkflowQueueAutoComplete" />
+		<property name="size" value="40" />
 	</slot>
 </schema>
 
@@ -111,12 +193,50 @@
 	<slot name="class" layout="name-resolver" key="label.queue.type"/>
 </schema>
 
-<schema name="create.queue" type="module.metaWorkflow.util.WorkflowQueueBean" bundle="META_WORKFLOW_RESOURCES">
-	<slot name="name" key="label.queue.name"/>
-	<slot name="metaType" key="label.queue.supportedMetaType" layout="menu-select">
-		<property name="providerClass" value="module.metaWorkflow.presentationTier.renderers.providers.AvailableWorkflowMetaTypes"/>
-		<property name="eachLayout" value="values"/>
-		<property name="eachSchema" value="view.metaType.name"/>
+
+<schema name="view.metaProcesses.list" type="module.metaWorkflow.domain.WorkflowMetaProcess" bundle="META_WORKFLOW_RESOURCES">
+	<slot name="subject" layout="link" key="label.metaProcess.subject">
+		<property name="useParent" value="true"/>
+		<property name="linkFormat" value="/workflowProcessManagement.do?method=viewProcess&amp;processId=${OID}"/>
+	</slot>
+	<slot name="metaType.name" key="label.metaProcess.type"/>
+	<slot name="processNumber" key="label.processNumber" bundle="WORKFLOW_RESOURCES"/>
+	<slot name="currentQueue" layout="null-as-label" key="label.metaProcess.currentQueue">
+		<property name="subLayout" value="values"/>
+		<property name="subSchema" value="view.queue.name"/>
+	</slot>
+	<slot name="requestor" layout="null-as-label" key="label.metaProcess.requestor">
+		<property name="subLayout" value="values"/>
+		<property name="subSchema" value="view.requestor.shortName"/>
+	</slot>
+	<slot name="currentOwner" layout="null-as-label">
+		<property name="subLayout" value="values"/>
+		<property name="subSchema" value="view.user.shortPresentationName"/>
 	</slot>
 </schema>
 
+<schema name="view.metaProcesses.list.withState" type="module.metaWorkflow.domain.WorkflowMetaProcess" bundle="META_WORKFLOW_RESOURCES">
+	<slot name="subject" layout="link" key="label.metaProcess.subject">
+		<property name="useParent" value="true"/>
+		<property name="linkFormat" value="/workflowProcessManagement.do?method=viewProcess&amp;processId=${OID}"/>
+	</slot>
+	<slot name="metaType.name" key="label.metaProcess.type"/>
+	<slot name="processNumber" key="label.processNumber" bundle="WORKFLOW_RESOURCES"/>
+	<slot name="currentQueue" layout="null-as-label" key="label.metaProcess.currentQueue">
+		<property name="subLayout" value="values"/>
+		<property name="subSchema" value="view.queue.name"/>
+	</slot>
+	<slot name="open" layout="null-as-label" key="label.metaProcess.active"/>
+	<slot name="requestor" layout="null-as-label" key="label.metaProcess.requestor">
+		<property name="subLayout" value="values"/>
+		<property name="subSchema" value="view.requestor.shortName"/>
+	</slot>
+	<slot name="currentOwner" layout="null-as-label">
+		<property name="subLayout" value="values"/>
+		<property name="subSchema" value="view.user.shortPresentationName"/>
+	</slot>
+</schema>
+
+<schema name="view.metaProcesses.list.inQueueContext" extends="view.metaProcesses.list.withState" type="module.metaWorkflow.domain.WorkflowMetaProcess" bundle="META_WORKFLOW_RESOURCES">
+	<remove name="currentQueue"/>
+</schema>
