@@ -184,7 +184,6 @@ public class CommentRenderer extends OutputRenderer {
 		dateContainer.addChild(new HtmlText(")"));
 
 		container.addChild(dateContainer);
-		container.addChild(new HtmlText(": "));
 		container.addChild(new HtmlText(comment.getComment()));
 
 		return container;
