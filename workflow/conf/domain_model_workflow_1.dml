@@ -42,7 +42,7 @@ valueType pt.utl.ist.fenix.tools.util.Strings as Strings {
 
 class WorkflowProcess {
 	String ojbConcreteClass;
-	Integer processNumber;
+	String processNumber;
 }
 
 class WorkflowLog {
