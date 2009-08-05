@@ -49,6 +49,7 @@ import myorg.domain.index.interfaces.Searchable;
 import myorg.util.ClassNameResolver;
 
 import org.apache.commons.collections.Predicate;
+import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
 
@@ -375,7 +376,9 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
     public IndexDocument getDocumentToIndex() {
 	IndexDocument document = new IndexDocument(this);
 
-	document.indexField(numberKey, this.getProcessNumber().toString());
+	if (!StringUtils.isEmpty(this.getProcessNumber())) {
+	    document.indexField(numberKey, this.getProcessNumber());
+	}
 
 	StringBuffer commentsBuffer = new StringBuffer();
 	StringBuffer commentorsBuffer = new StringBuffer();
