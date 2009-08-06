@@ -5,11 +5,11 @@
 <%@ taglib uri="/WEB-INF/fenix-renderers.tld" prefix="fr"%>
 
 		
-<bean:define id="queueId" name="bean" property="queue.OID"/>
+<bean:define id="queueId" name="bean" property="queue.externalId" type="java.lang.String"/>
 		
 <fr:form id="form" action="/metaWorkflowQueueManagement.do">
 <html:hidden  property="method" value="editQueue"/>
-<html:hidden property="queueId" value="<%= queueId.toString() %>"/>
+<html:hidden property="queueId" value="<%= queueId %>"/>
 <fr:edit id="queue" name="bean" visible="false"/>
 
 
@@ -49,7 +49,7 @@
 			<logic:notEmpty name="bean" property="users">
 				<table class="structural mbottom05">
 					<logic:iterate id="userAdded" name="bean" property="users" >
-						<bean:define id="userId" name="userAdded" property="OID"/>
+						<bean:define id="userId" name="userAdded" property="externalId" type="java.lang.String"/>
 						
 						<tr>
 							<td><fr:view name="userAdded" property="presentationName"/></td>

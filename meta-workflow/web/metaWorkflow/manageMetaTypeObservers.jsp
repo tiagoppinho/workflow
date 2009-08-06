@@ -12,12 +12,12 @@
 	<bean:message key="link.back" bundle="MYORG_RESOURCES"/>
 </html:link>
 
-<bean:define id="metaTypeID" name="metaType" property="OID"/>
+<bean:define id="metaTypeID" name="metaType" property="externalId" type="java.lang.String"/>
 
 <logic:iterate id="observer" name="metaType" property="metaTypeObservers">			
 		
 		<bean:define id="userPresentation" name="observer" property="presentationName"/>
-		<bean:define id="userID" name="observer" property="OID"/>
+		<bean:define id="userID" name="observer" property="externalId" type="java.lang.String"/>
 		
 		<p>
 		<span>
@@ -26,7 +26,7 @@
 				<bean:message bundle="MYORG_RESOURCES" key="link.remove"/>
 			</html:link>
 			<script type="text/javaScript">
-			 linkConfirmationHook("<%= "remove-" + userID.toString() %>", '<bean:message key="label.confirm.removal" bundle="META_WORKFLOW_RESOURCES" arg0="<%= userPresentation.toString() %>"/>', ' <bean:message key="title.removeObserver" bundle="META_WORKFLOW_RESOURCES"/>');
+			 linkConfirmationHook("<%= "remove-" + userID %>", '<bean:message key="label.confirm.removal" bundle="META_WORKFLOW_RESOURCES" arg0="<%= userPresentation.toString() %>"/>', ' <bean:message key="title.removeObserver" bundle="META_WORKFLOW_RESOURCES"/>');
 			</script>
 		</span>
 		</p>

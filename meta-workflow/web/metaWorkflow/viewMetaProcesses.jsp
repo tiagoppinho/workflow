@@ -99,7 +99,7 @@
 				<logic:iterate id="queue" name="availableQueues" indexId="i">
 					<tr>
 					<td>
-						<bean:define id="queueId" name="queue" property="OID"/>
+						<bean:define id="queueId" name="queue" property="externalId" type="java.lang.String"/>
 						<html:link page="<%= "/metaWorkflow.do?method=viewProcessInQueue&queueId=" +  queueId %>" > 
 							<fr:view name="queue" property="name"/>
 						</html:link>

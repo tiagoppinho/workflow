@@ -78,7 +78,7 @@
 					<logic:equal name="process" property="accessibleToCurrentUser" value="true">
 					<tr>
 					<td>
-						<bean:define id="processId" name="process" property="OID"/>
+						<bean:define id="processId" name="process" property="externalId" type="java.lang.String"/>
 						<html:link page="<%= "/workflowProcessManagement.do?method=viewProcess&processId=" +  processId %>" > 
 							<fr:view name="process" property="subject"/>
 						</html:link>

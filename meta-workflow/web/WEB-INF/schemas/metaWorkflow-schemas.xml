@@ -23,7 +23,7 @@
 		<property name="format" value="${name}" />
 		<property name="minChars" value="3" />
 		<property name="args"
-			value="provider=module.metaWorkflow.presentationTier.renderers.autoCompleteProviders.WorkflowQueueAutoComplete,metaTypeId=${process.metaType.OID}" />
+			value="provider=module.metaWorkflow.presentationTier.renderers.autoCompleteProviders.WorkflowQueueAutoComplete,metaTypeId=${process.metaType.externalId}" />
 		<property name="size" value="40" />
 	</slot>
 </schema>
@@ -197,7 +197,7 @@
 <schema name="view.metaProcesses.list" type="module.metaWorkflow.domain.WorkflowMetaProcess" bundle="META_WORKFLOW_RESOURCES">
 	<slot name="subject" layout="link" key="label.metaProcess.subject">
 		<property name="useParent" value="true"/>
-		<property name="linkFormat" value="/workflowProcessManagement.do?method=viewProcess&amp;processId=${OID}"/>
+		<property name="linkFormat" value="/workflowProcessManagement.do?method=viewProcess&amp;processId=${externalId}"/>
 	</slot>
 	<slot name="metaType.name" key="label.metaProcess.type"/>
 	<slot name="processNumber" key="label.processNumber" bundle="WORKFLOW_RESOURCES"/>
@@ -218,7 +218,7 @@
 <schema name="view.metaProcesses.list.withState" type="module.metaWorkflow.domain.WorkflowMetaProcess" bundle="META_WORKFLOW_RESOURCES">
 	<slot name="subject" layout="link" key="label.metaProcess.subject">
 		<property name="useParent" value="true"/>
-		<property name="linkFormat" value="/workflowProcessManagement.do?method=viewProcess&amp;processId=${OID}"/>
+		<property name="linkFormat" value="/workflowProcessManagement.do?method=viewProcess&amp;processId=${externalId}"/>
 	</slot>
 	<slot name="metaType.name" key="label.metaProcess.type"/>
 	<slot name="processNumber" key="label.processNumber" bundle="WORKFLOW_RESOURCES"/>

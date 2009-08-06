@@ -7,7 +7,7 @@
 
 
 <%@page import="myorg.presentationTier.servlets.filters.contentRewrite.ContentContextInjectionRewriter"%>
-<%@page import="pt.ist.fenixWebFramework.servlets.filters.contentRewrite.GenericChecksumRewriter"%><bean:define id="processOID" name="process" property="OID"/>
+<%@page import="pt.ist.fenixWebFramework.servlets.filters.contentRewrite.GenericChecksumRewriter"%><bean:define id="processOID" name="process" property="externalId" type="java.lang.String"/>
 
 <logic:equal name="process" property="open" value="false">
 	<div class="highlightBox mtop05 mbottom15">
@@ -57,7 +57,7 @@
 			<ul class="mvert05">
 				<logic:iterate id="observer" name="process" property="metaTypeObservers">		
 					<bean:define id="userPresentation" name="observer" property="presentationName"/>
-					<bean:define id="userID" name="observer" property="OID"/>
+					<bean:define id="userID" name="observer" property="externalId" type="java.lang.String"/>
 					<li class="mvert025">
 						<span>
 							<fr:view name="userPresentation"/>
@@ -73,15 +73,15 @@
 			<ul class="mvert05">
 				<logic:iterate id="observer" name="process" property="processObservers">			
 					<bean:define id="userPresentation" name="observer" property="presentationName"/>
-					<bean:define id="userID" name="observer" property="OID"/>
+					<bean:define id="userID" name="observer" property="externalId" type="java.lang.String"/>
 					<li class="mvert025">
 						<span>
 							<fr:view name="userPresentation"/>
 							<wf:activityLink id="<%= "remove-" + userID %>" processName="process" activityName="RemoveObserver" linkName="<%= linkRemoveLabel %>" scope="request">
-								<wf:activityLinkParameter parameter="user" value="<%= userID.toString() %>"/>
+								<wf:activityLinkParameter parameter="user" value="<%= userID %>"/>
 							</wf:activityLink>					
 							<script type="text/javaScript">
-							 linkConfirmationHook("<%= "remove-" + userID.toString() %>", '<bean:message key="label.confirm.removal" bundle="META_WORKFLOW_RESOURCES" arg0="<%= userPresentation.toString() %>"/>', ' <bean:message key="title.removeObserver" bundle="META_WORKFLOW_RESOURCES"/>');
+							 linkConfirmationHook("<%= "remove-" + userID %>", '<bean:message key="label.confirm.removal" bundle="META_WORKFLOW_RESOURCES" arg0="<%= userPresentation.toString() %>"/>', ' <bean:message key="title.removeObserver" bundle="META_WORKFLOW_RESOURCES"/>');
 							</script>
 						</span>
 					</li>
@@ -116,7 +116,7 @@
 						<bean:message key="label.metaTypeDescription.by" bundle="META_WORKFLOW_RESOURCES" arg0="<%= version.toString() %>" arg1="<%= versionOwner.toString() %>" arg2="<%= date.toString()%>"/>
 					</span>
 				</em>
-				<bean:define id="metaTypeId" name="process" property="metaType.OID"/>
+				<bean:define id="metaTypeId" name="process" property="metaType.externalId" type="java.lang.String"/>
 				(<html:link page="<%= "/metaWorkflow.do?method=viewMetaTypeDescriptionHistory&processId="+ processOID + "&metaTypeId=" + metaTypeId %>">
 					<bean:message key="link.history" bundle="META_WORKFLOW_RESOURCES"/>
 				</html:link>)

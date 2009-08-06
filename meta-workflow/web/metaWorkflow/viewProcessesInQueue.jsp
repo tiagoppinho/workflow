@@ -17,7 +17,7 @@
 </ul>
 
 <bean:define id="state" value='<%=  request.getParameter("active") != null ? request.getParameter("active").toString() : "all" %>'/>
-<bean:define id="queueId" name="queue" property="OID"/>
+<bean:define id="queueId" name="queue" property="externalId" type="java.lang.String"/>
 
 <span>
 	<logic:equal name="state" value="all">

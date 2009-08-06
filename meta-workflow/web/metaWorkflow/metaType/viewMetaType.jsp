@@ -91,7 +91,7 @@
 	<bean:message key="title.metaType.descriptionHistory" bundle="META_WORKFLOW_RESOURCES"/>
 </h3>
 
-		<bean:define id="metaTypeId" name="metaType" property="OID"/>
+		<bean:define id="metaTypeId" name="metaType" property="externalId" type="java.lang.String"/>
 		<fr:form id="diffForm" action="<%= "/metaTypeManagement.do?method=doDiff&metaTypeId=" + metaTypeId%>">
 		
 		<html:hidden styleId="rev1" property="rev1" value=""/>

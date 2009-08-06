@@ -9,7 +9,7 @@ import module.metaWorkflow.domain.WorkflowMetaType;
 import module.metaWorkflow.domain.WorkflowQueue;
 import myorg.domain.MyOrg;
 import myorg.presentationTier.renderers.autoCompleteProvider.AutoCompleteProvider;
-import pt.ist.fenixframework.pstm.Transaction;
+import pt.ist.fenixframework.pstm.AbstractDomainObject;
 import pt.utl.ist.fenix.tools.util.StringNormalizer;
 
 public class WorkflowQueueAutoComplete implements AutoCompleteProvider {
@@ -32,10 +32,7 @@ public class WorkflowQueueAutoComplete implements AutoCompleteProvider {
     }
 
     private WorkflowMetaType getWorkflowMetaType(String oid) {
-	if (oid == null) {
-	    return null;
-	}
-	return Transaction.getObjectForOID(Long.valueOf(oid).longValue());
+	return AbstractDomainObject.fromExternalId(oid);
     }
 
     private boolean hasMatch(String[] input, String queueNameParts) {

@@ -8,8 +8,8 @@
 	<bean:message key="title.metaType.descriptionHistory" bundle="META_WORKFLOW_RESOURCES"/>
 </h2>
 
-<bean:define id="processId" name="process" property="OID"/>
-<bean:define id="metaTypeId" name="metaType" property="OID"/>
+<bean:define id="processId" name="process" property="externalId" type="java.lang.String"/>
+<bean:define id="metaTypeId" name="metaType" property="externalId" type="java.lang.String"/>
 
 <ul>
 	<li>
