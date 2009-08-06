@@ -22,10 +22,12 @@ public class ActivitivyLinkTag extends BodyTagSupport {
     String scope;
     String id;
 
+    @Override
     public String getId() {
 	return id;
     }
 
+    @Override
     public void setId(String id) {
 	this.id = id;
     }
@@ -91,7 +93,7 @@ public class ActivitivyLinkTag extends BodyTagSupport {
 		pageContext.getOut().write("/workflowProcessManagement.do?method=actionLink&activity=");
 		pageContext.getOut().write(getActivityName());
 		pageContext.getOut().write("&processId=");
-		pageContext.getOut().write(String.valueOf(process.getOID()));
+		pageContext.getOut().write(process.getExternalId());
 		pageContext.getOut().write("&parameters=");
 		pageContext.getOut().write(getParameters());
 		pageContext.getOut().write(getParameterString());

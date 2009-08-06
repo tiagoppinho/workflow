@@ -9,7 +9,7 @@
 
 <script src="<%= request.getContextPath() + "/javaScript/alertHandlers.js"%>" type="text/javascript"></script> 
  
-<bean:define id="processId" name="process" property="OID" />
+<bean:define id="processId" name="process" property="externalId"  type="java.lang.String"/>
 <bean:define id="processClassName" name="process" property="class.name" type="java.lang.String"/>
 <bean:define id="includeFolder" value="<%= processClassName.replace('.','/')%>"/>
 
@@ -69,7 +69,7 @@
 			</p>
 			<ul class="operations mbottom05">
 				<li>
-					<html:link page="/workflowProcessManagement.do?method=viewLogs" paramId="processId" paramName="process" paramProperty="OID">
+					<html:link page="/workflowProcessManagement.do?method=viewLogs" paramId="processId" paramName="process" paramProperty="externalId">
 						<bean:message key="link.viewLogs" bundle="WORKFLOW_RESOURCES"/>
 					</html:link>
 				</li>
@@ -77,7 +77,7 @@
 				<logic:equal name="process" property="commentsSupportAvailable" value="true">
 					<bean:size id="comments"  name="process" property="comments"/>
 					<li> 
-						<html:link page="/workflowProcessManagement.do?method=viewComments" paramId="processId" paramName="process" paramProperty="OID">
+						<html:link page="/workflowProcessManagement.do?method=viewComments" paramId="processId" paramName="process" paramProperty="externalId">
 							<bean:message key="link.comments" bundle="WORKFLOW_RESOURCES"/> (<%= comments %>)
 						</html:link>	
 					</li>
@@ -105,12 +105,12 @@
 				
 				<ul class="operations mtop1">
 					<li>
-						<html:link page="/workflowProcessManagement.do?method=fileUpload" paramId="processId" paramName="process" paramProperty="OID">
+						<html:link page="/workflowProcessManagement.do?method=fileUpload" paramId="processId" paramName="process" paramProperty="externalId">
 							<bean:message key="link.uploadFile" bundle="WORKFLOW_RESOURCES"/>
 						</html:link>
 					</li>
 					<li>
-						<html:link page="/workflowProcessManagement.do?method=viewRemovedFiles" paramId="processId" paramName="process" paramProperty="OID">
+						<html:link page="/workflowProcessManagement.do?method=viewRemovedFiles" paramId="processId" paramName="process" paramProperty="externalId">
 							<bean:message key="link.viewRemovedFiles" bundle="WORKFLOW_RESOURCES"/>
 						</html:link>
 					</li>
@@ -135,7 +135,7 @@
 					<bean:message key="label.unreadComments.info" arg0="<%= count.toString() %>" bundle="WORKFLOW_RESOURCES"/>
 				</logic:equal>
 				
-				<html:link page="/workflowProcessManagement.do?method=viewComments" paramId="processId" paramName="process" paramProperty="OID">
+				<html:link page="/workflowProcessManagement.do?method=viewComments" paramId="processId" paramName="process" paramProperty="externalId">
 					<bean:message key="link.view.unreadComments" bundle="WORKFLOW_RESOURCES"/> »
 				</html:link>
 			</p>

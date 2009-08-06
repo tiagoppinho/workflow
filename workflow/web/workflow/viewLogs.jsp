@@ -9,7 +9,7 @@
 <%@page import="myorg.presentationTier.actions.ContextBaseAction"%><h2><bean:message key="title.viewLogs" bundle="WORKFLOW_RESOURCES"/></h2>
 
 <p class="mtop05 mbottom15">
-	<html:link action="/workflowProcessManagement.do?method=viewProcess" paramId="processId" paramName="process" paramProperty="OID">
+	<html:link action="/workflowProcessManagement.do?method=viewProcess" paramId="processId" paramName="process" paramProperty="externalId">
 		«  <bean:message key="link.backToProcess" bundle="WORKFLOW_RESOURCES"/>
 	</html:link>
 </p>

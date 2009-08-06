@@ -8,7 +8,7 @@
 
 
 <p class="mtop05 mbottom15">
-	<html:link page="/workflowProcessManagement.do?method=viewProcess" paramId="processId" paramName="process" paramProperty="OID">
+	<html:link page="/workflowProcessManagement.do?method=viewProcess" paramId="processId" paramName="process" paramProperty="externalId">
 		« <bean:message key="link.backToProcess" bundle="WORKFLOW_RESOURCES"/>
 	</html:link>
 </p>
@@ -23,7 +23,7 @@
 <ul class="mtop15">
 	<logic:iterate id="file" name="process" property="deletedFiles">
 		<li>
-			<bean:define id="fileId" name="file" property="OID"/>
+			<bean:define id="fileId" name="file" property="externalId" type="java.lang.String"/>
 			<fr:view name="file" property="displayName"/> <html:link page='<%= "/workflowProcessManagement.do?method=downloadFile&fileId=" + fileId %>'><bean:message key="link.downloadFile" bundle="WORKFLOW_RESOURCES"/></html:link> 
 		</li>
 	</logic:iterate>

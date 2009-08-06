@@ -18,7 +18,7 @@
 <jsp:include page='<%= layoutContext.getWorkflowShortBody() %>'/>
 
 <p>
-	<html:link page="/workflowProcessManagement.do?method=viewProcess" paramId="processId" paramName="process" paramProperty="OID">
+	<html:link page="/workflowProcessManagement.do?method=viewProcess" paramId="processId" paramName="process" paramProperty="externalId">
 		« <bean:message key="link.backToProcess" bundle="WORKFLOW_RESOURCES"/>
 	</html:link>
 </p>
@@ -41,7 +41,7 @@
 	</div>
 </logic:notEmpty>
 
-<bean:define id="processOid" name="process" property="OID"/>
+<bean:define id="processOid" name="process" property="externalId" type="java.lang.String"/>
 
 
 <fr:form action='<%= "/workflowProcessManagement.do?method=addComment&processId=" + processOid%>'>

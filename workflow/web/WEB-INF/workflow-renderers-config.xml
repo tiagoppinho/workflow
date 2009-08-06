@@ -3,9 +3,9 @@
 	class="module.workflow.presentationTier.renderers.WorkflowProcessFiles">
 
 	<property name="downloadFormat"
-		value="/workflowProcessManagement.do?method=downloadFile&amp;fileId=${OID}&amp;processId=${process.OID}" />
+		value="/workflowProcessManagement.do?method=downloadFile&amp;fileId=${externalId}&amp;processId=${process.externalId}" />
 	<property name="removeFormat"
-		value="/workflowProcessManagement.do?method=removeFile&amp;fileId=${OID}&amp;processId=${process.OID}" />
+		value="/workflowProcessManagement.do?method=removeFile&amp;fileId=${externalId}&amp;processId=${process.externalId}" />
 	<property name="imageFile" value=""/>
 </renderer>
 

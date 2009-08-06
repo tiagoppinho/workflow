@@ -58,7 +58,7 @@ import pt.ist.fenixWebFramework.renderers.utils.RenderUtils;
 import pt.ist.fenixWebFramework.servlets.filters.contentRewrite.GenericChecksumRewriter;
 import pt.ist.fenixWebFramework.struts.annotations.Mapping;
 import pt.ist.fenixWebFramework.util.DomainReference;
-import pt.ist.fenixframework.pstm.Transaction;
+import pt.ist.fenixframework.pstm.AbstractDomainObject;
 
 @Mapping(path = "/workflowProcessManagement")
 public class ProcessManagement extends ContextBaseAction {
@@ -88,8 +88,8 @@ public class ProcessManagement extends ContextBaseAction {
 
 	ActionForward forward = new ActionForward();
 	forward.setRedirect(true);
-	String realPath = "/workflowProcessManagement.do?method=viewProcess&processId=" + process.getOID() + "&" + CONTEXT_PATH
-		+ "=" + getContext(request).getPath();
+	String realPath = "/workflowProcessManagement.do?method=viewProcess&processId=" + process.getExternalId() + "&"
+		+ CONTEXT_PATH + "=" + getContext(request).getPath();
 	forward.setPath(realPath + "&" + GenericChecksumRewriter.CHECKSUM_ATTRIBUTE_NAME + "="
 		+ GenericChecksumRewriter.calculateChecksum(request.getContextPath() + realPath));
 	return forward;
@@ -157,7 +157,7 @@ public class ProcessManagement extends ContextBaseAction {
 
     private Object convert(Class<?> type, String parameterValue) throws Exception {
 	if (DomainReference.class == type) {
-	    return Transaction.getObjectForOID(Long.valueOf(parameterValue).longValue());
+	    return AbstractDomainObject.fromExternalId(parameterValue);
 	}
 	if (type == Integer.class) {
 	    return Integer.parseInt(parameterValue);
@@ -330,7 +330,7 @@ public class ProcessManagement extends ContextBaseAction {
     }
 
     public static ActionForward forwardToProcess(final WorkflowProcess process) {
-	return new ActionForward("/workflowProcessManagement.do?method=viewProcess&processId=" + process.getOID());
+	return new ActionForward("/workflowProcessManagement.do?method=viewProcess&processId=" + process.getExternalId());
     }
 
     public static <T extends WorkflowProcess> void registerProcessRequestHandler(Class<T> workflowProcessClass,
