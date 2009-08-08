@@ -9,8 +9,6 @@
 
 	<fr:edit id="processBean" name="workflowBean" schema="create.meta.process" action="/metaWorkflow.do?method=createMetaProcess">
 		<fr:layout name="tabular">
-			<fr:property name="classes" value="form"/>
-			<fr:property name="columnClasses" value=",,tderror"/>
 		</fr:layout>
 	<fr:destination name="postBack" path="/metaWorkflow.do?method=prepareCreateProcess"/>
 	<fr:destination name="cancel" path="/metaWorkflow.do?method=metaProcessHome"/>

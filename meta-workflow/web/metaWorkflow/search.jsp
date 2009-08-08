@@ -60,9 +60,15 @@
 
 
 	
+	<logic:present name="searchResult">
+		<h3 class="mtop15 mbottom075"><bean:message key="label.searchResults" bundle="META_WORKFLOW_RESOURCES"/></h3>
+	
+	<logic:empty name="searchResult">
+		<em><bean:message key="label.noSearchResults" bundle="META_WORKFLOW_RESOURCES"/></em>
+	</logic:empty>
 	
 	<logic:notEmpty name="searchResult">
-		<h3 class="mtop15 mbottom075"><bean:message key="label.searchResults" bundle="META_WORKFLOW_RESOURCES"/></h3>
+	
 		<div>
 			<table class="table">
 				<tr>
@@ -113,3 +119,4 @@
 			</table>
 		</div>
 	</logic:notEmpty>
+	</logic:present>

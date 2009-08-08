@@ -6,6 +6,10 @@
 
 <h2><bean:message key="title.dashboard" bundle="META_WORKFLOW_RESOURCES"/></h2>
 
+<html:link page="/dashBoardManagement.do?method=doTest">
+Teste
+</html:link>
+
 <logic:present name="user">
 	<table class="structural">
 		<tr>
@@ -99,7 +103,7 @@
 				<logic:iterate id="queue" name="availableQueues" indexId="i">
 					<tr>
 					<td>
-						<bean:define id="queueId" name="queue" property="externalId" type="java.lang.String"/>
+						<bean:define id="queueId" name="queue" property="OID"/>
 						<html:link page="<%= "/metaWorkflow.do?method=viewProcessInQueue&queueId=" +  queueId %>" > 
 							<fr:view name="queue" property="name"/>
 						</html:link>

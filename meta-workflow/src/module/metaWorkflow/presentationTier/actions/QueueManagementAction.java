@@ -75,7 +75,7 @@ public class QueueManagementAction extends ContextBaseAction {
 	RenderUtils.invalidateViewState();
 
 	Class<? extends WorkflowQueue> queueType = bean.getQueueType();
-	request.setAttribute("creationPage",WorkflowQueueLayoutContext.getBootstrapFor(queueType));
+	request.setAttribute("creationPage", WorkflowQueueLayoutContext.getBootstrapFor(queueType));
 	request.setAttribute("bean", bean);
 
 	return forward(request, "/metaWorkflow/queues/createQueue.jsp");
@@ -95,7 +95,7 @@ public class QueueManagementAction extends ContextBaseAction {
 	}
 
 	request.setAttribute("bean", bean);
-	request.setAttribute("creationPage",WorkflowQueueLayoutContext.getBootstrapFor(selectedType));
+	request.setAttribute("creationPage", WorkflowQueueLayoutContext.getBootstrapFor(selectedType));
 
 	return forward(request, "/metaWorkflow/queues/createQueue.jsp");
     }
@@ -126,10 +126,9 @@ public class QueueManagementAction extends ContextBaseAction {
 	WorkflowUserGroupQueueBean bean = getRenderedObject("newQueue");
 	addUserInBean(request, bean);
 
-	request.setAttribute("creationPage",WorkflowQueueLayoutContext.getBootstrapFor(bean.getQueueType()));
+	request.setAttribute("creationPage", WorkflowQueueLayoutContext.getBootstrapFor(bean.getQueueType()));
 	request.setAttribute("bean", bean);
-	
-	
+
 	return forward(request, "/metaWorkflow/queues/createQueue.jsp");
     }
 
@@ -170,7 +169,9 @@ public class QueueManagementAction extends ContextBaseAction {
 
 	WorkflowQueue queue = getDomainObject(request, "queueId");
 	if (queue != null) {
-	    return queue.getDefaultContext();
+	    WorkflowQueueLayoutContext queueContext = queue.getDefaultContext();
+	    queueContext.setElements(contextPathString);
+	    return queueContext;
 	}
 	return super.createContext(contextPathString, request);
     }

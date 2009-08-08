@@ -8,8 +8,13 @@
 	<html:hidden  property="method" value="createNewQueue"/>
 	<fr:edit id="newQueue" name="bean" visible="false"/>
 	
+<bean:define id="schema" value="create.queue"/>
+<logic:present name="bean" property="metaType">
+	<bean:define id="schema" value="create.unitQueue"/>
+</logic:present>
 
-	<fr:edit name="bean" schema="create.unitQueue">
+
+	<fr:edit name="bean" schema="<%= schema %>">
 		<fr:destination name="postBack" path="/metaWorkflowQueueManagement.do?method=doPostback"/>
 		<fr:destination name="cancel" path="/metaWorkflowQueueManagement.do?method=manageQueues"/>
 	</fr:edit>

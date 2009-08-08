@@ -56,11 +56,6 @@ public class WorkflowUnitQueue extends WorkflowUnitQueue_Base {
 	    }
 	}
 
-	// TODO: This should go to the user, get it's person
-	// and understand if the available accountability types
-	// in metaType matches any accountability type in relation
-	// person <=> unit
-
 	return false;
     }
 

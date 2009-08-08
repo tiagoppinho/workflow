@@ -41,25 +41,25 @@
 </schema>
 
 <schema name="create.meta.process" type="module.metaWorkflow.util.WorkflowMetaProcessBean" bundle="META_WORKFLOW_RESOURCES">
-	<slot name="queue" layout="menu-select" key="label.metaProcess.queue" validator="pt.ist.fenixWebFramework.renderers.validators.RequiredValidator" help="label.metaProcess.requestor">
+	<slot name="queue" layout="menu-select" key="label.metaProcess.queue" validator="pt.ist.fenixWebFramework.renderers.validators.RequiredValidator" help="label.metaProcess.info.initialQueue">
 		<property name="providerClass" value="module.metaWorkflow.presentationTier.renderers.providers.CurrentUserQueues"/>
 		<property name="eachLayout" value="values"/>
 		<property name="eachSchema" value="view.queue.name"/>
 	</slot>
-	<slot name="subject" key="label.metaProcess.subject" validator="pt.ist.fenixWebFramework.renderers.validators.RequiredValidator">
-		<property name="size" value="75"/>
+	<slot name="subject" key="label.metaProcess.subject" validator="pt.ist.fenixWebFramework.renderers.validators.RequiredValidator" help="label.metaProcess.info.subject">
+		<property name="size" value="60"/>
 	</slot>	
-	<slot name="instanceDescription" layout="longText" key="label.metaProcess.instanceDescription" validator="pt.ist.fenixWebFramework.renderers.validators.RequiredValidator">
-		<property name="rows" value="10"/>
-		<property name="columns" value="65"/>
-	</slot>
-	<slot name="requestor" key="label.metaProcess.requestor" layout="autoComplete">
+		<slot name="requestor" key="label.metaProcess.requestor" layout="autoComplete">
 		<property name="labelField" value="username" />
 		<property name="format" value="${presentationName}" />
 		<property name="minChars" value="3" />
 		<property name="args"
 			value="provider=myorg.presentationTier.renderers.autoCompleteProvider.UserAutoComplete" />
-		<property name="size" value="75" />
+		<property name="size" value="60" />
+	</slot>
+	<slot name="instanceDescription" layout="longText" key="label.metaProcess.instanceDescription" validator="pt.ist.fenixWebFramework.renderers.validators.RequiredValidator" help="label.metaProcess.info.description">
+		<property name="rows" value="10"/>
+		<property name="columns" value="60"/>
 	</slot>
 </schema>
 
@@ -139,6 +139,7 @@
 </schema>
 
 <schema name="create.unitQueue" extends="create.queue" type="module.metaWorkflow.domain.WorkflowUnitQueueBean" bundle="META_WORKFLOW_RESOURCES">
+	<slot name="metaType.organizationalModel.name" key="label.organizational.structure" bundle="ORGANIZATION_RESOURCES" read-only="true"/>
 	<slot name="accountabilityTypes" layout="option-select" key="label.accountabilityTypes" bundle="ORGANIZATION_RESOURCES">
 		<property name="providerClass" value="module.metaWorkflow.presentationTier.renderers.providers.AccountabilityTypeForGivenMetaType"/>
 		<property name="eachLayout" value="values"/>
@@ -147,10 +148,10 @@
 		<property name="emptyMessageBundle" value="META_WORKFLOW_RESOURCES"/>
 	</slot>
 	<slot name="unit" layout="autoComplete" key="label.unit" bundle="ORGANIZATION_RESOURCES">
-		<property name="labelField" value="partyName" />
+		<property name="labelField" value="partyName.content" />
 		<property name="format" value="${partyName}" />
 		<property name="minChars" value="3" />
-		<property name="args" value="provider=module.organization.presentationTier.renderers.providers.UnitAutoCompleteProvider" />
+		<property name="args" value="provider=module.organization.presentationTier.renderers.providers.UnitsForOrganizationalStructureAutoComplete,modelId=${metaType.organizationalModel.oid}" />
 		<property name="size" value="40" />
 	</slot>
 </schema>
