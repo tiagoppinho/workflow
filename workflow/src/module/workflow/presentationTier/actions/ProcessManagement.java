@@ -42,6 +42,7 @@ import module.workflow.activities.WorkflowActivity;
 import module.workflow.domain.ProcessFile;
 import module.workflow.domain.WorkflowProcess;
 import module.workflow.domain.WorkflowProcessComment;
+import module.workflow.presentationTier.WorkflowLayoutContext;
 import module.workflow.util.WorkflowFileUploadBean;
 import myorg.applicationTier.Authenticate.UserView;
 import myorg.domain.exceptions.DomainException;
@@ -345,6 +346,8 @@ public class ProcessManagement extends ContextBaseAction {
     @Override
     public Context createContext(String contextPathString, HttpServletRequest request) {
 	WorkflowProcess process = getProcess(request);
-	return process.getLayout();
+	WorkflowLayoutContext layout = process.getLayout();
+	layout.setElements(contextPathString);
+	return layout;
     }
 }
