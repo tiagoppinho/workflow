@@ -2,8 +2,8 @@ package module.metaWorkflow.domain;
 
 import module.metaWorkflow.util.versioning.DiffUtil;
 import module.metaWorkflow.util.versioning.DiffUtil.Revision;
+import module.workflow.domain.WorkflowSystem;
 import myorg.applicationTier.Authenticate.UserView;
-import myorg.domain.MyOrg;
 
 import org.joda.time.DateTime;
 
@@ -16,7 +16,7 @@ public class WorkflowMetaTypeDescription extends WorkflowMetaTypeDescription_Bas
 	super.setDescription(description);
 	super.setDate(new DateTime());
 	super.setVersion(version);
-	super.setMyOrg(MyOrg.getInstance());
+	super.setWorkflowSystem(WorkflowSystem.getInstance());
 	super.setVersionOwner(UserView.getCurrentUser());
     }
 

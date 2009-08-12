@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletResponse;
 import module.metaWorkflow.domain.WorkflowMetaType;
 import module.metaWorkflow.domain.WorkflowMetaTypeDescription;
 import module.metaWorkflow.util.WorkflowMetaTypeBean;
+import module.workflow.domain.WorkflowSystem;
 import myorg.domain.MyOrg;
 import myorg.presentationTier.actions.ContextBaseAction;
 
@@ -23,7 +24,7 @@ public class MetaTypeManagement extends ContextBaseAction {
     public ActionForward manageMetaType(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
 	    final HttpServletResponse response) {
 
-	request.setAttribute("metaTypes", MyOrg.getInstance().getMetaTypes());
+	request.setAttribute("metaTypes", WorkflowSystem.getInstance().getMetaTypes());
 	return forward(request, "/metaWorkflow/metaType/manageMetaTypes.jsp");
     }
 

@@ -6,6 +6,7 @@ import java.util.List;
 
 import module.organization.domain.OrganizationalModel;
 import module.workflow.domain.ProcessFile;
+import module.workflow.domain.WorkflowSystem;
 import myorg.domain.MyOrg;
 import myorg.domain.User;
 import pt.ist.fenixWebFramework.services.Service;
@@ -15,10 +16,10 @@ public class WorkflowMetaType extends WorkflowMetaType_Base {
 
     public WorkflowMetaType(String name, String description, OrganizationalModel model) {
 	super();
-	setMyOrg(MyOrg.getInstance());
-	setName(name);
-	setProcessCounter(0);
-	setOrganizationalModel(model);
+	super.setWorkflowSystem(WorkflowSystem.getInstance());
+	super.setName(name);
+	super.setProcessCounter(0);
+	super.setOrganizationalModel(model);
 	addDescription(description, 1);
 	super.setSuporttedFileClasses(new Strings(Collections.EMPTY_LIST));
     }

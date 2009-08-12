@@ -78,6 +78,9 @@ class ExternalRequestor extends Requestor {
 	String email;
 }
 
+class MetaWorkflowInitializer {
+}
+
 relation WorkflowQueueWorkflowMetaType {
 	WorkflowQueue playsRole queues {
 		multiplicity *;
@@ -102,5 +105,10 @@ relation WorkflowMetaTypeWorkflowMetaTypeSpecificActivity {
 	WorkflowMetaTypeSpecificActivity playsRole specificActivities {
 		multiplicity *;
 	}
+}
+
+relation WorkflowInitializerMyOrg {
+	MetaWorkflowInitializer playsRole metaWorkflowInitializer;
+	.myorg.domain.MyOrg playsRole myOrg;
 }
 

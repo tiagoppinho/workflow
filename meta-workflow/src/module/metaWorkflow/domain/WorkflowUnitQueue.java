@@ -1,19 +1,13 @@
 package module.metaWorkflow.domain;
 
-import pt.ist.fenixWebFramework.services.Service;
 import module.metaWorkflow.util.WorkflowQueueBean;
 import module.organization.domain.Party;
 import module.organization.domain.Person;
 import module.organization.domain.Unit;
 import myorg.domain.User;
-import myorg.util.ClassNameResolver;
+import pt.ist.fenixWebFramework.services.Service;
 
 public class WorkflowUnitQueue extends WorkflowUnitQueue_Base {
-
-    static {
-	ClassNameResolver.registerType(WorkflowUnitQueue.class, "resources/MetaWorkflowResources",
-		"label.module.metaWorkflow.domain.WorkflowUnitQueue");
-    }
 
     public WorkflowUnitQueue(String name, WorkflowMetaType metaType) {
 	super();

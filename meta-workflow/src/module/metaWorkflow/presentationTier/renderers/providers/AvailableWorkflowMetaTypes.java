@@ -1,6 +1,6 @@
 package module.metaWorkflow.presentationTier.renderers.providers;
 
-import myorg.domain.MyOrg;
+import module.workflow.domain.WorkflowSystem;
 import pt.ist.fenixWebFramework.renderers.DataProvider;
 import pt.ist.fenixWebFramework.renderers.components.converters.Converter;
 
@@ -13,7 +13,7 @@ public class AvailableWorkflowMetaTypes implements DataProvider {
 
     @Override
     public Object provide(Object arg0, Object arg1) {
-	return MyOrg.getInstance().getMetaTypesSet();
+	return WorkflowSystem.getInstance().getMetaTypesSet();
     }
 
 }

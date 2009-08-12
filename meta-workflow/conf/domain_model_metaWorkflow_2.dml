@@ -114,15 +114,15 @@ relation QueueHistory {
 	}
 }
 
-relation MyOrgWorkflowMetaType {
-	myorg.domain.MyOrg playsRole myOrg;
+relation WorkflowSystemWorkflowMetaType {
+	module.workflow.domain.WorkflowSystem playsRole workflowSystem;
 	module.metaWorkflow.domain.WorkflowMetaType playsRole metaTypes {
 		multiplicity *;
 	}
 }
 
-relation MyOrgWorkflowMetaTypeDescription {
-	myorg.domain.MyOrg playsRole myOrg;
+relation WorkflowSystemWorkflowMetaTypeDescription {
+	module.workflow.domain.WorkflowSystem playsRole workflowSystem;
 	module.metaWorkflow.domain.WorkflowMetaTypeDescription playsRole metaTypeDescriptions {
 		multiplicity *;
 	}
@@ -142,8 +142,8 @@ relation UserWorkflowMetaProcess {
 	}
 }
 
-relation MyOrgWorkflowQueue {
-	myorg.domain.MyOrg playsRole myOrg;
+relation WorkflowSystemWorkflowQueue {
+	module.workflow.domain.WorkflowSystem playsRole workflowSystem;
 	module.metaWorkflow.domain.WorkflowQueue playsRole metaWorkflowQueues {
 		multiplicity *;
 	}

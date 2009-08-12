@@ -8,6 +8,7 @@ import module.metaWorkflow.domain.WorkflowUserGroupQueue;
 import module.metaWorkflow.domain.WorkflowUserGroupQueueBean;
 import module.metaWorkflow.presentationTier.WorkflowQueueLayoutContext;
 import module.metaWorkflow.util.WorkflowQueueBean;
+import module.workflow.domain.WorkflowSystem;
 import myorg.domain.MyOrg;
 import myorg.domain.User;
 import myorg.presentationTier.Context;
@@ -26,7 +27,7 @@ public class QueueManagementAction extends ContextBaseAction {
     public ActionForward manageQueues(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
 	    final HttpServletResponse response) {
 
-	request.setAttribute("queues", MyOrg.getInstance().getMetaWorkflowQueues());
+	request.setAttribute("queues", WorkflowSystem.getInstance().getMetaWorkflowQueues());
 
 	return forward(request, "/metaWorkflow/queues/manageQueues.jsp");
     }
@@ -149,7 +150,7 @@ public class QueueManagementAction extends ContextBaseAction {
 
 	bean.setUserToAdd(null);
 	request.setAttribute("bean", bean);
-	request.setAttribute("queues", MyOrg.getInstance().getMetaWorkflowQueues());
+	request.setAttribute("queues", WorkflowSystem.getInstance().getMetaWorkflowQueues());
 
 	RenderUtils.invalidateViewState("users");
     }

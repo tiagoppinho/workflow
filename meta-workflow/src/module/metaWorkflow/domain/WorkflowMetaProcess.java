@@ -56,20 +56,6 @@ public class WorkflowMetaProcess extends WorkflowMetaProcess_Base {
 	activityMap.put(RemoveObserver.class.getSimpleName(), new RemoveObserver());
 	activityMap.put(ChangeRequestor.class.getSimpleName(), new ChangeRequestor());
 
-	// Registering here the request handler, it should be done in other
-	// place though, such as module init. Although we still do not have
-	// it. So for now it's here.
-
-	ProcessManagement.registerProcessRequestHandler(WorkflowMetaProcess.class,
-		new ProcessRequestHandler<WorkflowMetaProcess>() {
-
-		    @Override
-		    public void handleRequest(WorkflowMetaProcess process, HttpServletRequest request) {
-			request.setAttribute("commentBean", new VariantBean());
-
-		    }
-		});
-
 	// Index names
 
 	subjectKey = "subject";

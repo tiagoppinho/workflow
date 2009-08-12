@@ -10,6 +10,7 @@ import java.util.Set;
 import module.metaWorkflow.presentationTier.WorkflowQueueLayoutContext;
 import module.metaWorkflow.util.WorkflowQueueBean;
 import module.organization.domain.Unit;
+import module.workflow.domain.WorkflowSystem;
 import myorg.applicationTier.Authenticate.UserView;
 import myorg.domain.MyOrg;
 import myorg.domain.User;
@@ -21,8 +22,8 @@ public abstract class WorkflowQueue extends WorkflowQueue_Base {
 
     public WorkflowQueue() {
 	super();
-	setMyOrg(MyOrg.getInstance());
-	setOjbConcreteClass(this.getClass().getName());
+	super.setWorkflowSystem(WorkflowSystem.getInstance());
+	super.setOjbConcreteClass(this.getClass().getName());
     }
 
     public WorkflowQueue(String name, WorkflowMetaType metaType) {

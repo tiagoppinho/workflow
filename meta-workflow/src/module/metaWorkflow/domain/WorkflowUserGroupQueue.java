@@ -2,18 +2,11 @@ package module.metaWorkflow.domain;
 
 import java.util.List;
 
-import pt.ist.fenixWebFramework.services.Service;
-
 import module.metaWorkflow.util.WorkflowQueueBean;
 import myorg.domain.User;
-import myorg.util.ClassNameResolver;
+import pt.ist.fenixWebFramework.services.Service;
 
 public class WorkflowUserGroupQueue extends WorkflowUserGroupQueue_Base {
-
-    static {
-	ClassNameResolver.registerType(WorkflowUserGroupQueue.class, "resources/MetaWorkflowResources",
-		"label.module.metaWorkflow.domain.WorkflowUserGroupQueue");
-    }
 
     public WorkflowUserGroupQueue(String name, WorkflowMetaType metaType) {
 	init(metaType, name);
