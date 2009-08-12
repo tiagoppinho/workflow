@@ -40,7 +40,6 @@ import module.workflow.activities.WorkflowActivity;
 import module.workflow.presentationTier.WorkflowLayoutContext;
 import module.workflow.util.WorkflowFileUploadBean;
 import myorg.applicationTier.Authenticate.UserView;
-import myorg.domain.MyOrg;
 import myorg.domain.User;
 import myorg.domain.exceptions.DomainException;
 import myorg.domain.index.IndexDocument;
@@ -65,13 +64,13 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
     public WorkflowProcess() {
 	super();
 	setOjbConcreteClass(getClass().getName());
-	setMyOrg(MyOrg.getInstance());
+	setWorkflowSystem(WorkflowSystem.getInstance());
     }
 
     @SuppressWarnings("unchecked")
     public static <T extends WorkflowProcess> Set<T> getAllProcesses(Class<T> processClass) {
 	Set<T> classes = new HashSet<T>();
-	for (WorkflowProcess process : MyOrg.getInstance().getProcessesSet()) {
+	for (WorkflowProcess process : WorkflowSystem.getInstance().getProcessesSet()) {
 	    if (processClass.isAssignableFrom(process.getClass())) {
 		classes.add((T) process);
 	    }
@@ -82,7 +81,7 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
     @SuppressWarnings("unchecked")
     public static <T extends WorkflowProcess> Set<T> getAllProcesses(Class<T> processClass, Predicate predicate) {
 	Set<T> classes = new HashSet<T>();
-	for (WorkflowProcess process : MyOrg.getInstance().getProcessesSet()) {
+	for (WorkflowProcess process : WorkflowSystem.getInstance().getProcessesSet()) {
 	    if (processClass.isAssignableFrom(process.getClass()) && predicate.evaluate(process)) {
 		classes.add((T) process);
 	    }

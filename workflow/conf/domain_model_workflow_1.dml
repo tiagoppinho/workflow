@@ -40,6 +40,9 @@ valueType pt.utl.ist.fenix.tools.util.Strings as Strings {
     internalizeWith importFromString();
 }
 
+class WorkflowSystem {
+}
+
 class WorkflowProcess {
 	String ojbConcreteClass;
 	String processNumber;
@@ -67,6 +70,27 @@ class WorkflowProcessComment {
 	String comment;
 	DateTime date;
 } 
+
+relation WorkflowflowSystemWorkflowProcess {
+	WorkflowSystem playsRole workflowSystem;
+	WorkflowProcess playsRole processes {
+		multiplicity *;
+	}
+}
+
+relation WorkflowflowSystemComment {
+	WorkflowSystem playsRole workflowSystem;
+	WorkflowProcessComment playsRole processComments {
+		multiplicity *;
+	}
+}
+
+relation WorkflowflowSystemWorkflowLog {
+	WorkflowSystem playsRole workflowSystem;
+	WorkflowLog playsRole processLogs {
+		multiplicity *;
+	}
+}
 
 relation WorkflowProcessActivityLog {
 	WorkflowLog playsRole executionLogs {

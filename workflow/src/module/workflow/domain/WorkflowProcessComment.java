@@ -29,7 +29,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Set;
 
-import myorg.domain.MyOrg;
 import myorg.domain.User;
 import myorg.domain.index.interfaces.Indexable;
 import myorg.domain.index.interfaces.Searchable;
@@ -60,7 +59,7 @@ public class WorkflowProcessComment extends WorkflowProcessComment_Base implemen
 	setCommenter(commenter);
 	setDate(new DateTime());
 	setProcess(process);
-	setMyOrg(MyOrg.getInstance());
+	setWorkflowSystem(WorkflowSystem.getInstance());
     }
 
     public boolean isUnreadBy(User user) {
