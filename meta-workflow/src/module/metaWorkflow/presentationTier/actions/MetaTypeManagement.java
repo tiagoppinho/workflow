@@ -6,10 +6,12 @@ import javax.servlet.http.HttpServletResponse;
 import module.metaWorkflow.domain.WorkflowMetaType;
 import module.metaWorkflow.domain.WorkflowMetaTypeDescription;
 import module.metaWorkflow.util.WorkflowMetaTypeBean;
+import module.workflow.domain.WorkflowQueue;
 import module.workflow.domain.WorkflowSystem;
 import myorg.domain.MyOrg;
 import myorg.presentationTier.actions.ContextBaseAction;
 
+import org.apache.commons.collections.Predicate;
 import org.apache.commons.lang.StringUtils;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
@@ -93,6 +95,45 @@ public class MetaTypeManagement extends ContextBaseAction {
 	request.setAttribute("historyVersion", metaType.getDescriptionAtVersion(version));
 
 	return viewMetaType(mapping, form, request, response);
+    }
+
+    public ActionForward manageQueues(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
+	    final HttpServletResponse response) {
+
+	WorkflowMetaType metaType = getDomainObject(request, "metaTypeId");
+	request.setAttribute("metaType", metaType);
+	request.setAttribute("presentQueues", metaType.getQueues());
+	request.setAttribute("possibleQueues", WorkflowQueue.getQueues(new Predicate() {
+
+	    @Override
+	    public boolean evaluate(Object arg0) {
+		return ((WorkflowQueue) arg0).getMetaType() == null;
+	    }
+	}));
+
+	return forward(request, "/metaWorkflow/metaType/manageAssociatedQueues.jsp");
+    }
+
+    public ActionForward addQueue(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
+	    final HttpServletResponse response) {
+
+	WorkflowMetaType metaType = getDomainObject(request, "metaTypeId");
+	WorkflowQueue queue = getDomainObject(request, "queueId");
+
+	metaType.addQueues(queue);
+
+	return manageQueues(mapping, form, request, response);
+    }
+
+    public ActionForward removeQueue(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
+	    final HttpServletResponse response) {
+
+	WorkflowMetaType metaType = getDomainObject(request, "metaTypeId");
+	WorkflowQueue queue = getDomainObject(request, "queueId");
+
+	metaType.removeQueues(queue);
+
+	return manageQueues(mapping, form, request, response);
     }
 
 }

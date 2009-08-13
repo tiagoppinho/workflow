@@ -3,8 +3,10 @@ package module.metaWorkflow.util;
 import java.util.HashMap;
 import java.util.Map;
 
-import module.metaWorkflow.domain.WorkflowQueue;
+import module.workflow.domain.WorkflowQueue;
 import myorg.util.BundleUtil;
+
+// SWITCH MODULE
 
 public class QueueNameResolver {
 

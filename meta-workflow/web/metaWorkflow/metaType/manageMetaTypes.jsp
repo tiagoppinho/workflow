@@ -28,5 +28,10 @@
 		<fr:property name="key(edit)" value="link.edit"/>
 		<fr:property name="order(edit)" value="2"/>
 		
+		<fr:property name="linkFormat(queues)" value="/metaTypeManagement.do?method=manageQueues&metaTypeId=${externalId}"/>
+		<fr:property name="bundle(queues)" value="META_WORKFLOW_RESOURCES"/>
+		<fr:property name="key(queues)" value="link.manageQueuesInMetaType"/>
+		<fr:property name="order(queues)" value="3"/>
+		
 	</fr:layout>
 </fr:view>	

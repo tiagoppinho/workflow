@@ -2,6 +2,7 @@ package module.metaWorkflow.domain;
 
 import javax.servlet.http.HttpServletRequest;
 
+import module.workflow.domain.WorkflowUserGroupQueue;
 import module.workflow.presentationTier.actions.ProcessManagement;
 import module.workflow.presentationTier.actions.ProcessManagement.ProcessRequestHandler;
 import myorg.domain.ModuleInitializer;

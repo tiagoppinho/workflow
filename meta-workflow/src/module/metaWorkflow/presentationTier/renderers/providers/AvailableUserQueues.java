@@ -2,13 +2,13 @@ package module.metaWorkflow.presentationTier.renderers.providers;
 
 import java.util.Collections;
 
-import module.metaWorkflow.domain.WorkflowQueue;
+import module.metaWorkflow.domain.WorkflowMetaType;
 import myorg.applicationTier.Authenticate.UserView;
 import myorg.domain.User;
 import pt.ist.fenixWebFramework.renderers.DataProvider;
 import pt.ist.fenixWebFramework.renderers.components.converters.Converter;
 
-public class CurrentUserQueues implements DataProvider {
+public class AvailableUserQueues implements DataProvider {
 
     @Override
     public Converter getConverter() {
@@ -22,6 +22,6 @@ public class CurrentUserQueues implements DataProvider {
 	    return Collections.EMPTY_LIST;
 	}
 
-	return WorkflowQueue.getQueuesForUser(user);
+	return WorkflowMetaType.getAllQueuesForUser(user);
     }
 }

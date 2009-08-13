@@ -2,8 +2,7 @@ package module.metaWorkflow.util;
 
 import java.io.Serializable;
 
-import module.metaWorkflow.domain.WorkflowMetaType;
-import module.metaWorkflow.domain.WorkflowQueue;
+import module.workflow.domain.WorkflowQueue;
 import myorg.domain.User;
 import pt.ist.fenixWebFramework.util.DomainReference;
 
@@ -12,8 +11,8 @@ public class WorkflowMetaProcessBean implements Serializable {
     String instanceDescription;
     String subject;
 
-    DomainReference<WorkflowQueue> queue;
-    DomainReference<User> requestor;
+    WorkflowQueue queue;
+    User requestor;
 
     public WorkflowMetaProcessBean() {
 	setQueue(null);
@@ -37,18 +36,18 @@ public class WorkflowMetaProcessBean implements Serializable {
     }
 
     public WorkflowQueue getQueue() {
-	return queue.getObject();
+	return queue;
     }
 
     public void setQueue(WorkflowQueue queue) {
-	this.queue = new DomainReference<WorkflowQueue>(queue);
+	this.queue = queue;
     }
 
     public User getRequestor() {
-	return requestor.getObject();
+	return requestor;
     }
 
     public void setRequestor(User user) {
-	this.requestor = new DomainReference<User>(user);
+	this.requestor = user;
     }
 }

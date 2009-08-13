@@ -1,22 +1,26 @@
 package module.metaWorkflow.domain;
 
-import module.metaWorkflow.util.WorkflowQueueBean;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+
 import module.organization.domain.Party;
 import module.organization.domain.Person;
 import module.organization.domain.Unit;
+import module.workflow.util.WorkflowQueueBean;
 import myorg.domain.User;
 import pt.ist.fenixWebFramework.services.Service;
 
 public class WorkflowUnitQueue extends WorkflowUnitQueue_Base {
 
-    public WorkflowUnitQueue(String name, WorkflowMetaType metaType) {
+    public WorkflowUnitQueue(String name) {
 	super();
-	init(metaType, name);
+	setName(name);
     }
 
-    public WorkflowUnitQueue(Unit unit, WorkflowMetaType metaType, String name) {
+    public WorkflowUnitQueue(Unit unit, String name) {
 	super();
-	init(metaType, name);
+	setName(name);
 	setUnit(unit);
     }
 
@@ -53,4 +57,11 @@ public class WorkflowUnitQueue extends WorkflowUnitQueue_Base {
 	return false;
     }
 
+    public static Set<WorkflowUnitQueue> getQueuesFor(Collection<Unit> units) {
+	Set<WorkflowUnitQueue> queues = new HashSet<WorkflowUnitQueue>();
+	for (Unit unit : units) {
+	    queues.addAll(unit.getQueues());
+	}
+	return queues;
+    }
 }

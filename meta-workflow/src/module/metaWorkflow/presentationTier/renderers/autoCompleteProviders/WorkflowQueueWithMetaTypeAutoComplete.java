@@ -6,20 +6,19 @@ import java.util.Map;
 import java.util.Set;
 
 import module.metaWorkflow.domain.WorkflowMetaType;
-import module.metaWorkflow.domain.WorkflowQueue;
-import module.workflow.domain.WorkflowSystem;
+import module.workflow.domain.WorkflowQueue;
 import myorg.presentationTier.renderers.autoCompleteProvider.AutoCompleteProvider;
 import pt.ist.fenixframework.pstm.AbstractDomainObject;
 import pt.utl.ist.fenix.tools.util.StringNormalizer;
 
-public class WorkflowQueueAutoComplete implements AutoCompleteProvider {
+public class WorkflowQueueWithMetaTypeAutoComplete implements AutoCompleteProvider {
 
     @Override
     public Collection getSearchResults(Map<String, String> argsMap, String value, int maxCount) {
 	Set<WorkflowQueue> queues = new HashSet<WorkflowQueue>();
 	WorkflowMetaType type = getWorkflowMetaType(argsMap.get("metaTypeId"));
 
-	Collection<WorkflowQueue> lookUpQueues = type == null ? WorkflowSystem.getInstance().getMetaWorkflowQueues() : type.getQueues();
+	Collection<WorkflowQueue> lookUpQueues = type.getQueues();
 	String[] values = StringNormalizer.normalize(value).toLowerCase().split(" ");
 	for (WorkflowQueue queue : lookUpQueues) {
 	    final String normalizedQueueName = StringNormalizer.normalize(queue.getName()).toLowerCase();

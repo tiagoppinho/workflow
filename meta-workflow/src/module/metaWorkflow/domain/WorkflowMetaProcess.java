@@ -5,9 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
-
-import module.metaWorkflow.activities.ChangeQueue;
+import module.metaWorkflow.activities.ChangeMetaQueue;
 import module.metaWorkflow.activities.ChangeRequestor;
 import module.metaWorkflow.activities.CloseMetaProcess;
 import module.metaWorkflow.activities.OpenMetaProcess;
@@ -21,13 +19,12 @@ import module.workflow.activities.TakeProcess;
 import module.workflow.activities.WorkflowActivity;
 import module.workflow.domain.ProcessFile;
 import module.workflow.domain.WorkflowProcess;
+import module.workflow.domain.WorkflowQueue;
 import module.workflow.presentationTier.WorkflowLayoutContext;
-import module.workflow.presentationTier.actions.ProcessManagement;
-import module.workflow.presentationTier.actions.ProcessManagement.ProcessRequestHandler;
 import myorg.applicationTier.Authenticate.UserView;
 import myorg.domain.User;
+import myorg.domain.exceptions.DomainException;
 import myorg.domain.index.IndexDocument;
-import myorg.util.VariantBean;
 
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
@@ -49,7 +46,7 @@ public class WorkflowMetaProcess extends WorkflowMetaProcess_Base {
 	activityMap.put(ReleaseProcess.class.getSimpleName(), new ReleaseProcess());
 	activityMap.put(StealProcess.class.getSimpleName(), new StealProcess());
 	activityMap.put(GiveProcess.class.getSimpleName(), new GiveProcess());
-	activityMap.put(ChangeQueue.class.getSimpleName(), new ChangeQueue());
+	activityMap.put(ChangeMetaQueue.class.getSimpleName(), new ChangeMetaQueue());
 	activityMap.put(CloseMetaProcess.class.getSimpleName(), new CloseMetaProcess());
 	activityMap.put(OpenMetaProcess.class.getSimpleName(), new OpenMetaProcess());
 	activityMap.put(AddObserver.class.getSimpleName(), new AddObserver());
@@ -101,11 +98,15 @@ public class WorkflowMetaProcess extends WorkflowMetaProcess_Base {
     }
 
     @Override
-    public void setCurrentQueue(WorkflowQueue currentQueue) {
+    public void setCurrentQueue(WorkflowQueue queue) {
+	WorkflowQueue currentQueue = getCurrentQueue();
+	if (currentQueue != null && currentQueue.getMetaType() != queue.getMetaType()) {
+	    throw new DomainException("error.queue.has.different.metaType");
+	}
 	if (getCurrentQueue() != null) {
 	    addQueueHistory(getCurrentQueue());
 	}
-	super.setCurrentQueue(currentQueue);
+	super.setCurrentQueue(queue);
     }
 
     @Override
@@ -198,6 +199,11 @@ public class WorkflowMetaProcess extends WorkflowMetaProcess_Base {
 	Requestor requestor = user.hasRequestor() ? user.getRequestor() : new UserRequestor(user);
 
 	return new WorkflowMetaProcess(queue.getMetaType(), subject, instanceDescription, queue, requestor);
+    }
+
+    @Override
+    public boolean isActive() {
+	return isOpen();
     }
 
 }

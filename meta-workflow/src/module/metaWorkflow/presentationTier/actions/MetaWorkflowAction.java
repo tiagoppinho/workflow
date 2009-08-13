@@ -8,10 +8,10 @@ import javax.servlet.http.HttpServletResponse;
 import module.metaWorkflow.domain.WorkflowMetaProcess;
 import module.metaWorkflow.domain.WorkflowMetaType;
 import module.metaWorkflow.domain.WorkflowMetaTypeDescription;
-import module.metaWorkflow.domain.WorkflowQueue;
 import module.metaWorkflow.domain.search.SearchMetaWorkflowProcess;
 import module.metaWorkflow.util.WorkflowMetaProcessBean;
 import module.workflow.domain.WorkflowProcess;
+import module.workflow.domain.WorkflowQueue;
 import module.workflow.presentationTier.actions.ProcessManagement;
 import myorg.applicationTier.Authenticate.UserView;
 import myorg.domain.User;
@@ -36,7 +36,7 @@ public class MetaWorkflowAction extends ContextBaseAction {
 	request.setAttribute("searchBean", new VariantBean());
 	final User currentUser = UserView.getCurrentUser();
 	request.setAttribute("user", currentUser);
-	request.setAttribute("availableQueues", WorkflowQueue.getQueuesForUser(currentUser));
+	request.setAttribute("availableQueues", WorkflowMetaType.getAllQueuesForUser(currentUser));
 
 	return forward(request, "/metaWorkflow/viewMetaProcesses.jsp");
     }
@@ -75,7 +75,7 @@ public class MetaWorkflowAction extends ContextBaseAction {
 	final Boolean state = active != null ? Boolean.valueOf(active) : null;
 
 	request.setAttribute("queue", queue);
-	request.setAttribute("displayProcesses", CollectionUtils.select(queue.getMetaProcess(), new Predicate() {
+	request.setAttribute("displayProcesses", CollectionUtils.select(queue.getProcess(), new Predicate() {
 
 	    @Override
 	    public boolean evaluate(Object arg0) {

@@ -2,13 +2,17 @@ package module.metaWorkflow.domain;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import module.organization.domain.OrganizationalModel;
 import module.workflow.domain.ProcessFile;
+import module.workflow.domain.WorkflowQueue;
 import module.workflow.domain.WorkflowSystem;
 import myorg.domain.MyOrg;
 import myorg.domain.User;
+import myorg.domain.exceptions.DomainException;
 import pt.ist.fenixWebFramework.services.Service;
 import pt.utl.ist.fenix.tools.util.Strings;
 
@@ -123,5 +127,39 @@ public class WorkflowMetaType extends WorkflowMetaType_Base {
     @Service
     public void addObserver(User user) {
 	addMetaTypeObservers(user);
+    }
+
+    @Override
+    @Service
+    public void addQueues(WorkflowQueue queues) {
+	if (queues.getMetaType() != null) {
+	    throw new DomainException("error.queue.already.has.metaType");
+	}
+
+	super.addQueues(queues);
+    }
+
+    @Override
+    @Service
+    public void removeQueues(WorkflowQueue queues) {
+	super.removeQueues(queues);
+    }
+
+    public Set<WorkflowQueue> getQueuesForUser(User user) {
+	Set<WorkflowQueue> queuesForUser = new HashSet<WorkflowQueue>();
+	for (WorkflowQueue queue : getQueues()) {
+	    if (queue.isUserAbleToAccessQueue(user)) {
+		queuesForUser.add(queue);
+	    }
+	}
+	return queuesForUser;
+    }
+
+    public static Set<WorkflowQueue> getAllQueuesForUser(User user) {
+	Set<WorkflowQueue> queuesForUser = new HashSet<WorkflowQueue>();
+	for (WorkflowMetaType type : WorkflowSystem.getInstance().getMetaTypes()) {
+	    queuesForUser.addAll(type.getQueuesForUser(user));
+	}
+	return queuesForUser;
     }
 }

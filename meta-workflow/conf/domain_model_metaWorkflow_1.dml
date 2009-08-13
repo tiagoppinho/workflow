@@ -55,19 +55,6 @@ package module.metaWorkflow.domain;
  	int version;
  	DateTime date;
  }
- 
-class WorkflowQueue {
-	String name;
-	String ojbConcreteClass;
-} 
-
-class WorkflowUserGroupQueue extends WorkflowQueue {
-
-}
-
-class WorkflowUnitQueue extends WorkflowQueue {
-	
-}
 
 class Requestor {
 	String ojbConcreteClass;
@@ -81,11 +68,8 @@ class ExternalRequestor extends Requestor {
 class MetaWorkflowInitializer {
 }
 
-relation WorkflowQueueWorkflowMetaType {
-	WorkflowQueue playsRole queues {
-		multiplicity *;
-	}
-	WorkflowMetaType playsRole metaType;
+class WorkflowUnitQueue extends .module.workflow.domain.WorkflowQueue {
+	
 }
 
 relation WorkflowMetaTypeDescription {

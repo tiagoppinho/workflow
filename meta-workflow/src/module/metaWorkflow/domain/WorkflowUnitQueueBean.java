@@ -3,7 +3,8 @@ package module.metaWorkflow.domain;
 import java.util.ArrayList;
 import java.util.List;
 
-import module.metaWorkflow.util.WorkflowQueueBean;
+import module.workflow.domain.WorkflowQueue;
+import module.workflow.util.WorkflowQueueBean;
 import module.organization.domain.AccountabilityType;
 import module.organization.domain.Unit;
 import pt.ist.fenixWebFramework.util.DomainReference;

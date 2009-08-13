@@ -30,19 +30,10 @@
  	Boolean open;
  }
  
+
  class module.metaWorkflow.domain.UserRequestor extends module.metaWorkflow.domain.Requestor {
  }
  
- 
- 
-relation WorkflowMetaTypeAccountabilityType {
-	module.metaWorkflow.domain.WorkflowMetaType playsRole workflowMetaTypes {
-		multiplicity *;
-	}
-	module.organization.domain.AccountabilityType playsRole supportedAccountabilityTypes {
-		multiplicity *;
-	}
-}
 
 relation WorkflowUnitQueueUnit {
 	module.metaWorkflow.domain.WorkflowUnitQueue playsRole queues {
@@ -61,15 +52,22 @@ relation WorkflowUnitQueueAccountabilityType {
 }
 
 
-relation WorkflowUserGroupQueueUser {
-	module.metaWorkflow.domain.WorkflowUserGroupQueue playsRole queues {
+ 
+ relation WorkflowQueueWorkflowMetaType {
+	module.workflow.domain.WorkflowQueue playsRole queues {
 		multiplicity *;
 	}
-	myorg.domain.User playsRole users {
+	module.metaWorkflow.domain.WorkflowMetaType playsRole metaType;
+}
+ 
+relation WorkflowMetaTypeAccountabilityType {
+	module.metaWorkflow.domain.WorkflowMetaType playsRole workflowMetaTypes {
+		multiplicity *;
+	}
+	module.organization.domain.AccountabilityType playsRole supportedAccountabilityTypes {
 		multiplicity *;
 	}
 }
-
 
 relation RequestorWorkflowMetaProcess {
 	module.metaWorkflow.domain.WorkflowMetaProcess playsRole process {
@@ -98,22 +96,6 @@ relation WorkflowMetaProcessWorkflowMetaType {
 	module.metaWorkflow.domain.WorkflowMetaType playsRole metaType;
 }
 
-relation WorkflowMetaProcessWorkflowQueue {
-	module.metaWorkflow.domain.WorkflowMetaProcess playsRole metaProcess {
-		multiplicity *;
-	}	
-	module.metaWorkflow.domain.WorkflowQueue playsRole currentQueue;
-}
-
-relation QueueHistory {
-	module.metaWorkflow.domain.WorkflowMetaProcess playsRole processesHistory {
-		multiplicity *;
-	}	
-	module.metaWorkflow.domain.WorkflowQueue playsRole queueHistory {
-		multiplicity *;
-	}
-}
-
 relation WorkflowSystemWorkflowMetaType {
 	module.workflow.domain.WorkflowSystem playsRole workflowSystem;
 	module.metaWorkflow.domain.WorkflowMetaType playsRole metaTypes {
@@ -138,13 +120,6 @@ relation UserWorkflowMetaTypeDescription {
 relation UserWorkflowMetaProcess {
 	myorg.domain.User playsRole creator;
 	module.metaWorkflow.domain.WorkflowMetaProcess playsRole metaProcesses {
-		multiplicity *;
-	}
-}
-
-relation WorkflowSystemWorkflowQueue {
-	module.workflow.domain.WorkflowSystem playsRole workflowSystem;
-	module.metaWorkflow.domain.WorkflowQueue playsRole metaWorkflowQueues {
 		multiplicity *;
 	}
 }

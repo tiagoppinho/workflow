@@ -5,53 +5,51 @@ import java.util.Set;
 
 import module.metaWorkflow.domain.WorkflowMetaProcess;
 import module.metaWorkflow.domain.WorkflowMetaType;
-import module.metaWorkflow.domain.WorkflowQueue;
 import module.workflow.domain.WorkflowProcess;
+import module.workflow.domain.WorkflowQueue;
 import myorg.applicationTier.Authenticate.UserView;
 import myorg.domain.User;
 import myorg.domain.util.Search;
 
 import org.apache.commons.collections.Predicate;
 
-import pt.ist.fenixWebFramework.util.DomainReference;
-
 public class SearchMetaWorkflowProcess extends Search<WorkflowMetaProcess> {
 
-    private DomainReference<User> requestor;
-    private DomainReference<User> creator;
-    private DomainReference<WorkflowMetaType> metaType;
-    private DomainReference<WorkflowQueue> queue;
+    private User requestor;
+    private User creator;
+    private WorkflowMetaType metaType;
+    private WorkflowQueue queue;
 
     public User getRequestor() {
-	return requestor.getObject();
+        return requestor;
     }
 
     public void setRequestor(User requestor) {
-	this.requestor = new DomainReference<User>(requestor);
+        this.requestor = requestor;
     }
 
     public User getCreator() {
-	return creator.getObject();
+        return creator;
     }
 
     public void setCreator(User creator) {
-	this.creator = new DomainReference<User>(creator);
+        this.creator = creator;
     }
 
     public WorkflowMetaType getMetaType() {
-	return metaType.getObject();
+        return metaType;
     }
 
     public void setMetaType(WorkflowMetaType metaType) {
-	this.metaType = new DomainReference<WorkflowMetaType>(metaType);
+        this.metaType = metaType;
     }
 
     public WorkflowQueue getQueue() {
-	return queue.getObject();
+        return queue;
     }
 
     public void setQueue(WorkflowQueue queue) {
-	this.queue = new DomainReference<WorkflowQueue>(queue);
+        this.queue = queue;
     }
 
     public SearchMetaWorkflowProcess() {

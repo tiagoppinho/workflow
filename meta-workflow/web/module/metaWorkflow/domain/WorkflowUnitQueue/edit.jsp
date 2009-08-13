@@ -5,14 +5,14 @@
 <%@ taglib uri="/WEB-INF/fenix-renderers.tld" prefix="fr"%>
 
 		
-<fr:form id="form" action="/metaWorkflowQueueManagement.do">
+<fr:form id="form" action="/workflowQueueManagement.do">
 <html:hidden  property="method" value="editQueue"/>
 <fr:edit id="queue" name="bean" visible="false"/>
 
 
 	<table>
 		<tr>
-			<th><bean:message key="label.queue.name" bundle="META_WORKFLOW_RESOURCES"/></th>
+			<th><bean:message key="label.queue.name" bundle="WORKFLOW_RESOURCES"/></th>
 			<td><fr:edit name="bean" slot="name"/></td>
 		</tr>
 		<tr>
@@ -22,11 +22,11 @@
 			<td>
 				<fr:edit id="accountabilityTypes" name="bean" slot="accountabilityTypes">
 					<fr:layout name="option-select">
-						<fr:property name="providerClass" value="module.metaWorkflow.presentationTier.renderers.providers.AccountabilityTypeForGivenMetaType"/>
+						<fr:property name="providerClass" value="module.organization.presentationTier.renderers.providers.AccountabilityTypesProvider"/>
 						<fr:property name="eachLayout" value="values"/>
 						<fr:property name="eachSchema" value="module.organization.domain.AccountabilityType.name"/>
 					</fr:layout>
-					<fr:destination name="cancel" path="/metaWorkflowQueueManagement.do?method=manageQueues"/>
+					<fr:destination name="cancel" path="/workflowQueueManagement.do?method=manageQueues"/>
 				</fr:edit>
 			</td>
 		</tr>
