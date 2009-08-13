@@ -85,3 +85,12 @@ relation UserLog {
 		multiplicity *;
 	} 
 }
+
+relation WorkflowUserGroupQueueUser {
+	module.workflow.domain.WorkflowUserGroupQueue playsRole queues {
+		multiplicity *;
+	}
+	myorg.domain.User playsRole users {
+		multiplicity *;
+	}
+}

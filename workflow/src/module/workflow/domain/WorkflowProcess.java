@@ -103,6 +103,8 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
 
     public abstract <T extends WorkflowActivity<? extends WorkflowProcess, ? extends ActivityInformation>> List<T> getActivities();
 
+    public abstract boolean isActive();
+
     public boolean isAccessible(User user) {
 	return true;
     }

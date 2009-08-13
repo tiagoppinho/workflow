@@ -71,6 +71,15 @@ class WorkflowProcessComment {
 	DateTime date;
 } 
 
+class WorkflowQueue {
+	String name;
+	String ojbConcreteClass;
+} 
+
+class WorkflowUserGroupQueue extends WorkflowQueue {
+
+}
+
 relation WorkflowflowSystemWorkflowProcess {
 	WorkflowSystem playsRole workflowSystem;
 	WorkflowProcess playsRole processes {
@@ -106,3 +115,25 @@ relation WorkflowProcessWorkflowProcessComment {
 	WorkflowProcess playsRole process;
 }
 
+relation WorkflowProcessWorkflowQueue {
+	WorkflowProcess playsRole process {
+		multiplicity *;
+	}	
+	WorkflowQueue playsRole currentQueue;
+}
+
+relation QueueHistory {
+	WorkflowProcess playsRole processesHistory {
+		multiplicity *;
+	}	
+	WorkflowQueue playsRole queueHistory {
+		multiplicity *;
+	}
+}
+
+relation WorkflowSystemWorkflowQueue {
+	WorkflowSystem playsRole workflowSystem;
+	WorkflowQueue playsRole workflowQueues {
+		multiplicity *;
+	}
+}

@@ -22,6 +22,17 @@
 	</slot>
 </schema>
 
+<schema name="activityInformation.ChangeQueue" type="module.workflow.activities.ChangeQueueInformation" bundle="META_WORKFLOW_RESOURCES">
+	<slot name="queue" layout="autoComplete" key="label.changeQueue">
+		<property name="labelField" value="name" />
+		<property name="format" value="${name}" />
+		<property name="minChars" value="3" />
+		<property name="args"
+			value="provider=module.workflow.presentationTier.renderers.autoCompleteProviders.WorkflowQueueAutoComplete" />
+		<property name="size" value="40" />
+	</slot>
+</schema>
+
 <schema name="viewLogs" type="module.workflow.domain.WorkflowLog" bundle="WORKFLOW_RESOURCES">
 	<slot name="whenOperationWasRan" key="label.whenOperationWasRan"/>
 	<slot name="description" key="label.description"/>
@@ -46,4 +57,17 @@
 	</slot>
 </schema>
 
+<schema name="create.queue" type="module.workflow.util.WorkflowQueueBean" bundle="WORKFLOW_RESOURCES">
+	<slot name="name" key="label.queue.name" validator="pt.ist.fenixWebFramework.renderers.validators.RequiredValidator">
+		<property name="size" value="40"/>
+	</slot>
+</schema>
 
+<schema name="view.queue.name" type="module.workflow.domain.WorkflowQueue" bundle="WORKFLOW_RESOURCES">
+	<slot name="name"/>
+</schema>
+
+<schema name="view.queues.details" type="module.workflow.domain.WorkflowQueue" bundle="WORKFLOW_RESOURCES">
+	<slot name="name" key="label.queue.name"/>
+	<slot name="class" layout="name-resolver" key="label.queue.type"/>
+</schema>
