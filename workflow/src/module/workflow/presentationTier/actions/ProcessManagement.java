@@ -123,7 +123,7 @@ public class ProcessManagement extends ContextBaseAction {
 	if (!StringUtils.isEmpty(parameters)) {
 	    for (String parameter : parameters.split(",")) {
 
-		Field field = activityClass.getDeclaredField(parameter);
+		Field field = getField(activityClass, parameter);
 		Class<?> type = field.getType();
 		Object convertedValue = convert(type, request.getParameter(parameter));
 		Method declaredMethod = getMethod("set" + parameter.substring(0, 1).toUpperCase() + parameter.substring(1),
@@ -134,11 +134,24 @@ public class ProcessManagement extends ContextBaseAction {
 	return activityInformation;
     }
 
+    private Field getField(Class activityClass, String parameter) throws SecurityException, NoSuchFieldException {
+	if (activityClass == null) {
+	    throw new NoSuchFieldException();
+	}
+	Field field;
+	try {
+	    field = activityClass.getDeclaredField(parameter);
+	} catch (final NoSuchFieldException ex) {
+	    field = null;
+	}
+	return field == null ? getField(activityClass.getSuperclass(), parameter) : field;
+    }
+
     private Method getMethod(String methodName, Class<? extends ActivityInformation> activityClass,
 	    Class<? extends Object> argumentClass) {
 	Method method = null;
 	try {
-	    method = activityClass.getDeclaredMethod(methodName, argumentClass);
+	    method = activityClass.getMethod(methodName, argumentClass);
 	} catch (NoSuchMethodException e) {
 	    /*
 	     * There's the chance that we just had a mismatch about the argument
@@ -146,7 +159,7 @@ public class ProcessManagement extends ContextBaseAction {
 	     * we were looking for a subclass. So in order to try to recover
 	     * we'll try to look for a method with the name 'methodName'.
 	     */
-	    for (Method declaredMethod : activityClass.getDeclaredMethods()) {
+	    for (Method declaredMethod : activityClass.getMethods()) {
 		if (declaredMethod.getName().equals(methodName)) {
 		    method = declaredMethod;
 		    break;
@@ -157,6 +170,9 @@ public class ProcessManagement extends ContextBaseAction {
     }
 
     private Object convert(Class<?> type, String parameterValue) throws Exception {
+	if (AbstractDomainObject.class.isAssignableFrom(type)) {
+	    return AbstractDomainObject.fromExternalId(parameterValue);
+	}
 	if (DomainReference.class == type) {
 	    return AbstractDomainObject.fromExternalId(parameterValue);
 	}
