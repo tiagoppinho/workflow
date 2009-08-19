@@ -170,7 +170,7 @@
 		<property name="subLayout" value="values"/>
 		<property name="subSchema" value="view.requestor.shortName"/>
 	</slot>
-	<slot name="currentOwner" layout="null-as-label">
+	<slot name="currentOwner" layout="null-as-label" key="label.metaProcess.currentOwner">
 		<property name="subLayout" value="values"/>
 		<property name="subSchema" value="view.user.shortPresentationName"/>
 	</slot>

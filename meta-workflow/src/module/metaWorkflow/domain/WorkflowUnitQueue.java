@@ -9,8 +9,10 @@ import module.organization.domain.Person;
 import module.organization.domain.Unit;
 import module.workflow.util.WorkflowQueueBean;
 import myorg.domain.User;
+import myorg.util.ClassNameBundle;
 import pt.ist.fenixWebFramework.services.Service;
 
+@ClassNameBundle(bundle="resources/MetaWorkflowResources")
 public class WorkflowUnitQueue extends WorkflowUnitQueue_Base {
 
     public WorkflowUnitQueue(String name) {

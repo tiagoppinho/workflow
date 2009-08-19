@@ -2,12 +2,12 @@ package module.metaWorkflow.domain;
 
 import javax.servlet.http.HttpServletRequest;
 
-import module.workflow.domain.WorkflowUserGroupQueue;
+import module.dashBoard.WidgetRegister;
+import module.metaWorkflow.widgets.EasyAccessWidget;
 import module.workflow.presentationTier.actions.ProcessManagement;
 import module.workflow.presentationTier.actions.ProcessManagement.ProcessRequestHandler;
 import myorg.domain.ModuleInitializer;
 import myorg.domain.MyOrg;
-import myorg.util.ClassNameResolver;
 import myorg.util.VariantBean;
 import pt.ist.fenixWebFramework.services.Service;
 
@@ -54,6 +54,8 @@ public class MetaWorkflowInitializer extends MetaWorkflowInitializer_Base implem
 
     @Override
     public void init(MyOrg root) {
+	WidgetRegister.registerWidget(EasyAccessWidget.class);
+
 	ProcessManagement.registerProcessRequestHandler(WorkflowMetaProcess.class,
 		new ProcessRequestHandler<WorkflowMetaProcess>() {
 
@@ -63,10 +65,5 @@ public class MetaWorkflowInitializer extends MetaWorkflowInitializer_Base implem
 
 		    }
 		});
-
-	ClassNameResolver.registerType(WorkflowUnitQueue.class, "resources/MetaWorkflowResources",
-		"label.module.metaWorkflow.domain.WorkflowUnitQueue");
-	ClassNameResolver.registerType(WorkflowUserGroupQueue.class, "resources/MetaWorkflowResources",
-		"label.module.metaWorkflow.domain.WorkflowUserGroupQueue");
     }
 }

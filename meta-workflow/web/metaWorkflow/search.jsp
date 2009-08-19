@@ -78,7 +78,7 @@
 					<th><bean:message key="label.metaProcess.currentQueue" bundle="META_WORKFLOW_RESOURCES"/></th>
 					<th><bean:message key="label.metaProcess.active" bundle="META_WORKFLOW_RESOURCES"/></th>
 					<th><bean:message key="label.metaProcess.requestor" bundle="META_WORKFLOW_RESOURCES"/></th>
-					<th>Taken by (?)</th> 
+					<th><bean:message key="label.metaProcess.currentOwner" bundle="META_WORKFLOW_RESOURCES"/></th> 
 				</tr>
 				<logic:iterate id="process" name="searchResult" indexId="i">
 					<logic:equal name="process" property="accessibleToCurrentUser" value="true">
@@ -91,7 +91,7 @@
 						</td>
 					<td> <fr:view name="process" property="metaType.name"/></td>
 					<td> <fr:view name="process" property="processNumber"/></td>
-					<td class="acenter"> <fr:view name="process" property="currentQueue" type="module.metaWorkflow.domain.WorkflowQueue">
+					<td class="acenter"> <fr:view name="process" property="currentQueue" type="module.workflow.domain.WorkflowQueue">
 							<fr:layout name="null-as-label">
 								<fr:property name="subLayout" value="values"/>
 								<fr:property name="subSchema" value="view.queue.name"/>
