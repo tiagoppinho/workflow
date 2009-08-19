@@ -1,14 +1,10 @@
 package module.workflow.domain;
 
 import module.workflow.util.WorkflowFileUploadBean;
-import myorg.util.ClassNameResolver;
+import myorg.util.ClassNameBundle;
 
+@ClassNameBundle(bundle="resources/WorkflowResources")
 public class ProcessFile extends ProcessFile_Base {
-
-    static {
-	ClassNameResolver.registerType(ProcessFile.class, "resources/WorkflowResources",
-		"label.module.workflow.domain.ProcessFile");
-    }
 
     public ProcessFile() {
 	super();
@@ -27,4 +23,7 @@ public class ProcessFile extends ProcessFile_Base {
 	return true;
     }
 
+    public boolean isParsableType() {
+	return getFilename().toLowerCase().endsWith(".pdf");
+    }
 }

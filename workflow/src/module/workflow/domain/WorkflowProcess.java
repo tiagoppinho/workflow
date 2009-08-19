@@ -45,7 +45,7 @@ import myorg.domain.exceptions.DomainException;
 import myorg.domain.index.IndexDocument;
 import myorg.domain.index.interfaces.Indexable;
 import myorg.domain.index.interfaces.Searchable;
-import myorg.util.ClassNameResolver;
+import myorg.util.BundleUtil;
 
 import org.apache.commons.collections.Predicate;
 import org.apache.commons.lang.StringUtils;
@@ -212,8 +212,8 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
 	file.fillInNonDefaultFields(bean);
 
 	super.addFiles(file);
-	new FileUploadLog(this, UserView.getCurrentUser(), file.getFilename(), file.getDisplayName(), ClassNameResolver
-		.getNameFor(file.getClass()));
+	new FileUploadLog(this, UserView.getCurrentUser(), file.getFilename(), file.getDisplayName(), BundleUtil
+		.getLocalizedNamedFroClass(file.getClass()));
 	return file;
     }
 
@@ -296,8 +296,8 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
     public void removeFiles(ProcessFile file) {
 	super.removeFiles(file);
 	addDeletedFiles(file);
-	new FileRemoveLog(this, UserView.getCurrentUser(), file.getFilename(), file.getDisplayName(), ClassNameResolver
-		.getNameFor(file.getClass()));
+	new FileRemoveLog(this, UserView.getCurrentUser(), file.getFilename(), file.getDisplayName(), BundleUtil
+		.getLocalizedNamedFroClass(file.getClass()));
     }
 
     public List<WorkflowProcessComment> getUnreadCommentsForCurrentUser() {
@@ -381,8 +381,8 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
 	    document.indexField(numberKey, this.getProcessNumber());
 	}
 
-	StringBuffer commentsBuffer = new StringBuffer();
-	StringBuffer commentorsBuffer = new StringBuffer();
+	StringBuilder commentsBuffer = new StringBuilder();
+	StringBuilder commentorsBuffer = new StringBuilder();
 	for (WorkflowProcessComment comment : getComments()) {
 	    commentsBuffer.append(comment.getComment());
 	    commentsBuffer.append(" ");
@@ -394,6 +394,7 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
 	document.indexField(comments, commentsBuffer.toString());
 	document.indexField(commentors, commentorsBuffer.toString());
 
+	FileIndexer.indexFilesInProcess(document, this);
 	return document;
     }
 }

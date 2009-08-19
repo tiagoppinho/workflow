@@ -5,7 +5,7 @@ import java.util.List;
 
 import module.workflow.domain.ProcessFile;
 import module.workflow.domain.WorkflowProcess;
-import myorg.util.ClassNameResolver;
+import myorg.util.BundleUtil;
 import pt.ist.fenixWebFramework.renderers.OutputRenderer;
 import pt.ist.fenixWebFramework.renderers.components.HtmlBlockContainer;
 import pt.ist.fenixWebFramework.renderers.components.HtmlComponent;
@@ -60,7 +60,7 @@ public class WorkflowProcessFiles extends OutputRenderer {
 		HtmlParagraphContainer container = new HtmlParagraphContainer();
 		blockContainer.addChild(container);
 
-		container.addChild(new HtmlText(ClassNameResolver.getNameFor(fileType) + ": "));
+		container.addChild(new HtmlText(BundleUtil.getLocalizedNamedFroClass(fileType) + ": "));
 		if (files.isEmpty()) {
 		    container.addChild(new HtmlText("-"));
 		} else {

@@ -4,8 +4,10 @@ import java.util.List;
 
 import module.workflow.util.WorkflowQueueBean;
 import myorg.domain.User;
+import myorg.util.ClassNameBundle;
 import pt.ist.fenixWebFramework.services.Service;
 
+@ClassNameBundle(bundle = "resources/WorkflowResources")
 public class WorkflowUserGroupQueue extends WorkflowUserGroupQueue_Base {
 
     public WorkflowUserGroupQueue(String name) {
