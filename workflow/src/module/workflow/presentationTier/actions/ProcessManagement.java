@@ -54,7 +54,6 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
-import org.apache.struts.util.RequestUtils;
 
 import pt.ist.fenixWebFramework.renderers.utils.RenderUtils;
 import pt.ist.fenixWebFramework.servlets.filters.contentRewrite.GenericChecksumRewriter;
@@ -94,9 +93,6 @@ public class ProcessManagement extends ContextBaseAction {
 		+ CONTEXT_PATH + "=" + getContext(request).getPath();
 	forward.setPath(realPath + "&" + GenericChecksumRewriter.CHECKSUM_ATTRIBUTE_NAME + "="
 		+ GenericChecksumRewriter.calculateChecksum(request.getContextPath() + realPath));
-	System.out.println("[PATH]: " + forward.getPath());
-	System.out.println("[Context]: " + request.getContextPath());
-	System.out.println("[Servername]: " + RequestUtils.requestToServerStringBuffer(request).toString());
 	return forward;
     }
 
