@@ -220,8 +220,9 @@ public class ProcessManagement extends ContextBaseAction {
 	return forwardProcessForInput(activity, request, information);
     }
 
-    private <T extends WorkflowProcess> ActionForward forwardProcessForInput(
-	    WorkflowActivity<T, ActivityInformation<T>> activity, HttpServletRequest request, ActivityInformation<T> information) {
+    private static <T extends WorkflowProcess> ActionForward forwardProcessForInput(
+	    WorkflowActivity activity,
+	    HttpServletRequest request, ActivityInformation<T> information) {
 	request.setAttribute("information", information);
 	if (activity.isDefaultInputInterfaceUsed()) {
 	    return forward(request, "/workflow/activityInput.jsp");
@@ -353,6 +354,11 @@ public class ProcessManagement extends ContextBaseAction {
     public static ActionForward forwardToActivity(final WorkflowProcess process, final WorkflowActivity activity) {
 	return new ActionForward("/workflowProcessManagement.do?method=process&processId=" + process.getExternalId()
 		+ "&activity=" + activity.getClass().getSimpleName());
+    }
+
+    public static ActionForward performActivityPostback(ActivityInformation<? extends WorkflowProcess> information,
+	    HttpServletRequest request) {
+	return forwardProcessForInput(information.getActivity(), request, information);
     }
 
     public static <T extends WorkflowProcess> void registerProcessRequestHandler(Class<T> workflowProcessClass,
