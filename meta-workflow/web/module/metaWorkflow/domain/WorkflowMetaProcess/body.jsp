@@ -25,7 +25,7 @@
 	});
 	</script>
 
-<div id="wfprocess">
+<div>
 	
 	<div id="tabs">
 		<%= ContentContextInjectionRewriter.BLOCK_HAS_CONTEXT_PREFIX %>
