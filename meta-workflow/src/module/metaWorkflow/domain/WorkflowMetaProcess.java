@@ -86,7 +86,7 @@ public class WorkflowMetaProcess extends WorkflowMetaProcess_Base {
 	    context.setWorkflowHead(specificLayout.getHeader());
 	    context.setWorkflowShortBody(specificLayout.getShortBody());
 	}
-	context.setHead("/metaWorkflow/layoutHead.jsp");
+	context.addHead("/metaWorkflow/layoutHead.jsp");
 	return context;
     }
 
