@@ -150,7 +150,7 @@
 		<property name="format" value="${name}" />
 		<property name="minChars" value="3" />
 		<property name="args"
-			value="provider=module.metaWorkflow.presentationTier.renderers.autoCompleteProviders.WorkflowQueueAutoComplete" />
+			value="provider=module.workflow.presentationTier.renderers.autoCompleteProviders.WorkflowQueueAutoComplete" />
 		<property name="size" value="40" />
 	</slot>
 </schema>
