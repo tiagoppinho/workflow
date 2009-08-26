@@ -12,7 +12,6 @@ public class WorkflowLayoutContext extends LayoutContext {
     private String workflowBody;
     private String workflowShortBody;
     private String workflowHead;
-    private String oldHead;
 
     public WorkflowLayoutContext() {
 	super();
@@ -44,20 +43,6 @@ public class WorkflowLayoutContext extends LayoutContext {
 
     public void setWorkflowHead(String workflowHead) {
 	this.workflowHead = workflowHead;
-    }
-
-    public String getOldHead() {
-	return oldHead;
-    }
-
-    public void setOldHead(String oldHead) {
-	this.oldHead = oldHead;
-    }
-
-    @Override
-    public void setHead(String head) {
-	setOldHead(getHead());
-	super.setHead(head);
     }
 
     public static WorkflowLayoutContext getDefaultWorkflowLayoutContext(WorkflowProcess process) {
