@@ -3,7 +3,9 @@ package module.metaWorkflow.domain;
 import javax.servlet.http.HttpServletRequest;
 
 import module.dashBoard.WidgetRegister;
+import module.metaWorkflow.presentationTier.actions.OrganizationModelPluginAction.QueueView;
 import module.metaWorkflow.widgets.EasyAccessWidget;
+import module.organization.presentationTier.actions.OrganizationModelAction;
 import module.workflow.presentationTier.actions.ProcessManagement;
 import module.workflow.presentationTier.actions.ProcessManagement.ProcessRequestHandler;
 import myorg.domain.ModuleInitializer;
@@ -65,5 +67,7 @@ public class MetaWorkflowInitializer extends MetaWorkflowInitializer_Base implem
 
 		    }
 		});
+
+	OrganizationModelAction.partyViewHookManager.register(new QueueView());
     }
 }
