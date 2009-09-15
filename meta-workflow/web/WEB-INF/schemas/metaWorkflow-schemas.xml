@@ -187,7 +187,7 @@
 	</slot>
 	<slot name="unit" layout="autoComplete" key="label.unit" bundle="ORGANIZATION_RESOURCES">
 		<property name="labelField" value="partyName.content" />
-		<property name="format" value="${partyName}" />
+		<property name="format" value="${presentationName}" />
 		<property name="minChars" value="3" />
 		<property name="args" value="provider=module.organization.presentationTier.renderers.providers.UnitAutoCompleteProvider" />
 		<property name="size" value="40" />

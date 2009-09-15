@@ -49,14 +49,9 @@ public class WorkflowUnitQueue extends WorkflowUnitQueue_Base {
 	    return false;
 	}
 
-	Person person = user.getPerson();
-	for (Party party : getUnit().getChildren(getAccountabilityTypes())) {
-	    if (person == party) {
-		return true;
-	    }
-	}
-
-	return false;
+	final Person person = user.getPerson();
+	final Unit unit = getUnit();
+	return unit.hasChildAccountabilityIncludingAncestry(getAccountabilityTypes(), person);
     }
 
     public static Set<WorkflowUnitQueue> getQueuesFor(Collection<Unit> units) {
