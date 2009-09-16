@@ -56,7 +56,7 @@ public class MetaWorkflowInterfaceCreation extends ContextBaseAction {
 	final VirtualHost virtualHost = getDomainObject(request, "virtualHostToManageId");
 	final Node node = getDomainObject(request, "parentOfNodesToManageId");
 
-	final Node homeNode = ActionNode.createActionNode(virtualHost, node, "/metaWorkflow", "metaProcessHome",
+	final Node homeNode = ActionNode.createActionNode(virtualHost, node, "/metaWorkflow", "viewOpenProcessesInMyQueues",
 		"resources.MetaWorkflowResources", "link.topBar.MetaWorkflow", AnyoneGroup.getInstance());
 	    
 

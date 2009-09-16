@@ -41,7 +41,24 @@ public class MetaWorkflowAction extends ContextBaseAction {
 	return forward(request, "/metaWorkflow/viewMetaProcesses.jsp");
     }
 
-    public ActionForward metaProcessHome(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
+    public ActionForward viewOpenProcessesInMyQueues(final ActionMapping mapping, final ActionForm form,
+	    final HttpServletRequest request, final HttpServletResponse response) {
+
+	final User currentUser = UserView.getCurrentUser();
+	request.setAttribute("openProcesses", WorkflowProcess.getAllProcesses(WorkflowMetaProcess.class, new Predicate() {
+
+	    @Override
+	    public boolean evaluate(Object arg0) {
+		WorkflowMetaProcess workflowMetaProcess = (WorkflowMetaProcess) arg0;
+		return workflowMetaProcess.isOpen() && workflowMetaProcess.getCurrentQueue().isUserAbleToAccessQueue(currentUser);
+	    }
+	}));
+
+	return viewMetaProcessList(request);
+
+    }
+
+    public ActionForward viewAllOpenProcesses(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
 	    final HttpServletResponse response) {
 
 	final User currentUser = UserView.getCurrentUser();

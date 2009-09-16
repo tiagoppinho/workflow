@@ -15,6 +15,10 @@ Teste
 		<tr>
 			<td>
 				<logic:present name="displayProcesses">
+					<html:link page="/metaWorkflow.do?method=viewOpenProcessesInMyQueues">
+						<bean:message key="label.processInMyQueues" bundle="META_WORKFLOW_RESOURCES"/> 
+					</html:link>
+					|
 					<bean:message key="label.activeProcesses" bundle="META_WORKFLOW_RESOURCES"/> | 
 					<html:link page="/metaWorkflow.do?method=viewOwnProcesses">
 						<bean:message key="label.myProcesses" bundle="META_WORKFLOW_RESOURCES"/>
@@ -22,11 +26,26 @@ Teste
 				</logic:present>
 					
 				<logic:present name="myProcess">	
-					<html:link page="/metaWorkflow.do?method=metaProcessHome">
+					<html:link page="/metaWorkflow.do?method=viewOpenProcessesInMyQueues">
+						<bean:message key="label.processInMyQueues" bundle="META_WORKFLOW_RESOURCES"/> 
+					</html:link>
+					|
+					<html:link page="/metaWorkflow.do?method=viewAllOpenProcesses">
 						<bean:message key="label.activeProcesses" bundle="META_WORKFLOW_RESOURCES"/> 
 					</html:link>
 					| 
 					<bean:message key="label.myProcesses" bundle="META_WORKFLOW_RESOURCES"/>
+				</logic:present>
+				
+				<logic:present name="openProcesses">	
+						<bean:message key="label.processInMyQueues" bundle="META_WORKFLOW_RESOURCES"/>  |
+						<html:link page="/metaWorkflow.do?method=viewAllOpenProcesses">
+							<bean:message key="label.activeProcesses" bundle="META_WORKFLOW_RESOURCES"/> 
+						</html:link>
+						|
+						<html:link page="/metaWorkflow.do?method=viewOwnProcesses">
+							<bean:message key="label.myProcesses" bundle="META_WORKFLOW_RESOURCES"/>
+						</html:link>
 				</logic:present>
 				</td>
 			<td>
@@ -81,6 +100,24 @@ Teste
 	</logic:notEmpty>
 	
 	<logic:empty name="myProcess">
+		<em><bean:message key="label.queue.noProcessesForFilter" bundle="META_WORKFLOW_RESOURCES"/></em>
+	</logic:empty>
+</logic:present>
+
+<logic:present name="openProcesses">
+	<h3 class="mtop05 mbottom075"><bean:message key="label.processInMyQueues" bundle="META_WORKFLOW_RESOURCES"/></h3>
+	
+	<logic:notEmpty name="openProcesses">
+		<div>
+			<fr:view name="openProcesses" schema="view.metaProcesses.list">
+				<fr:layout name="tabular">
+					<fr:property name="classes" value="table"/>
+				</fr:layout>
+			</fr:view>
+		</div>
+	</logic:notEmpty>
+	
+	<logic:empty name="openProcesses">
 		<em><bean:message key="label.queue.noProcessesForFilter" bundle="META_WORKFLOW_RESOURCES"/></em>
 	</logic:empty>
 </logic:present>
