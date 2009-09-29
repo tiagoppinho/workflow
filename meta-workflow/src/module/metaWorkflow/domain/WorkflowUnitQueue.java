@@ -1,12 +1,15 @@
 package module.metaWorkflow.domain;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
-import module.organization.domain.Party;
 import module.organization.domain.Person;
 import module.organization.domain.Unit;
+import module.workflow.domain.WorkflowQueue;
+import module.workflow.domain.WorkflowSystem;
 import module.workflow.util.WorkflowQueueBean;
 import myorg.domain.User;
 import myorg.util.ClassNameBundle;
@@ -58,6 +61,16 @@ public class WorkflowUnitQueue extends WorkflowUnitQueue_Base {
 	Set<WorkflowUnitQueue> queues = new HashSet<WorkflowUnitQueue>();
 	for (Unit unit : units) {
 	    queues.addAll(unit.getQueues());
+	}
+	return queues;
+    }
+    
+    public static Collection<WorkflowUnitQueue> readAll() {
+	List<WorkflowUnitQueue> queues = new ArrayList<WorkflowUnitQueue>();
+	for (WorkflowQueue queue : WorkflowSystem.getInstance().getWorkflowQueues()) {
+	    if (queue instanceof WorkflowUnitQueue) {
+		queues.add((WorkflowUnitQueue) queue);
+	    }
 	}
 	return queues;
     }
