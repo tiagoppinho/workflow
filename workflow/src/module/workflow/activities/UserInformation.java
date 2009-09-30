@@ -1,8 +1,8 @@
 package module.workflow.activities;
 
-import pt.ist.fenixWebFramework.util.DomainReference;
 import module.workflow.domain.WorkflowProcess;
 import myorg.domain.User;
+import pt.ist.fenixWebFramework.util.DomainReference;
 
 public class UserInformation<T extends WorkflowProcess> extends ActivityInformation<T> {
 

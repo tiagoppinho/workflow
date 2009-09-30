@@ -6,12 +6,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.collections.Predicate;
-
 import module.workflow.presentationTier.WorkflowQueueLayoutContext;
 import module.workflow.util.WorkflowQueueBean;
 import myorg.applicationTier.Authenticate.UserView;
 import myorg.domain.User;
+
+import org.apache.commons.collections.Predicate;
+
 import pt.ist.fenixWebFramework.services.Service;
 import pt.ist.fenixframework.pstm.IllegalWriteException;
 
