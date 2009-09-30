@@ -20,7 +20,7 @@ public class EasyAccessWidget extends WidgetController {
     @Override
     public void doView(WidgetRequest request) {
 	request.setAttribute("bean", new VariantBean());
-    }
+     }
 
     @Override
     public ActionForward doSubmit(WidgetRequest request) {

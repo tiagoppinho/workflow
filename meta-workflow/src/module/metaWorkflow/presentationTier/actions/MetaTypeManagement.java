@@ -8,7 +8,6 @@ import module.metaWorkflow.domain.WorkflowMetaTypeDescription;
 import module.metaWorkflow.util.WorkflowMetaTypeBean;
 import module.workflow.domain.WorkflowQueue;
 import module.workflow.domain.WorkflowSystem;
-import myorg.domain.MyOrg;
 import myorg.presentationTier.actions.ContextBaseAction;
 
 import org.apache.commons.collections.Predicate;

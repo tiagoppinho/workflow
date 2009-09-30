@@ -10,7 +10,6 @@ import module.organization.domain.OrganizationalModel;
 import module.workflow.domain.ProcessFile;
 import module.workflow.domain.WorkflowQueue;
 import module.workflow.domain.WorkflowSystem;
-import myorg.domain.MyOrg;
 import myorg.domain.User;
 import myorg.domain.exceptions.DomainException;
 import pt.ist.fenixWebFramework.services.Service;

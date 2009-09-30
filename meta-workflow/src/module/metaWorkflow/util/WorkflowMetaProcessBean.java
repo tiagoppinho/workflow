@@ -4,7 +4,6 @@ import java.io.Serializable;
 
 import module.workflow.domain.WorkflowQueue;
 import myorg.domain.User;
-import pt.ist.fenixWebFramework.util.DomainReference;
 
 public class WorkflowMetaProcessBean implements Serializable {
 
