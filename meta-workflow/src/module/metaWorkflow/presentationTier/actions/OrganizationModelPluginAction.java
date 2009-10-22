@@ -21,7 +21,7 @@ public class OrganizationModelPluginAction extends ContextBaseAction {
 
 	@Override
 	public String getViewName() {
-	    return "queueView";
+	    return "03_queueView";
 	}
 
 	@Override
@@ -29,6 +29,10 @@ public class OrganizationModelPluginAction extends ContextBaseAction {
 	    return BundleUtil.getStringFromResourceBundle("resources.MetaWorkflowResources", "label.queueView");
 	}
 
+	@Override
+	public boolean isAvailableFor(final Party party) {
+	    return party != null && party.isUnit();
+	}
     }
 
 }
