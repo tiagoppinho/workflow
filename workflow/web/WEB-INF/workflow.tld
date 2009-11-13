@@ -43,8 +43,43 @@
           <rtexprvalue>true</rtexprvalue>
       </attribute>
       <attribute>
-          <name>linkName</name>
-          <required>true</required>
+          <name>paramName0</name>
+          <required>false</required>
+          <rtexprvalue>true</rtexprvalue>
+      </attribute>
+        <attribute>
+          <name>paramValue0</name>
+          <required>false</required>
+          <rtexprvalue>true</rtexprvalue>
+      </attribute>
+        <attribute>
+          <name>paramName1</name>
+          <required>false</required>
+          <rtexprvalue>true</rtexprvalue>
+      </attribute>
+        <attribute>
+          <name>paramValue1</name>
+          <required>false</required>
+          <rtexprvalue>true</rtexprvalue>
+      </attribute>
+        <attribute>
+          <name>paramName2</name>
+          <required>false</required>
+          <rtexprvalue>true</rtexprvalue>
+      </attribute>
+        <attribute>
+          <name>paramValue2</name>
+          <required>false</required>
+          <rtexprvalue>true</rtexprvalue>
+      </attribute>
+        <attribute>
+          <name>paramName3</name>
+          <required>false</required>
+          <rtexprvalue>true</rtexprvalue>
+      </attribute>
+       <attribute>
+          <name>paramValue3</name>
+          <required>false</required>
           <rtexprvalue>true</rtexprvalue>
       </attribute>
       <attribute>
@@ -55,25 +90,6 @@
        <attribute>
           <name>id</name>
           <required>false</required>
-          <rtexprvalue>true</rtexprvalue>
-      </attribute>
-  </tag>
-  
-   <tag>
-      <name>activityLinkParameter</name>
-      <tagclass>module.workflow.presentationTier.taglib.ActivityLinkParameterTag</tagclass>
-      <bodycontent>empty</bodycontent>
-      <info>
-         Parameter used by activityLink tag
-      </info>
-      <attribute>
-          <name>parameter</name>
-          <required>true</required>
-          <rtexprvalue>true</rtexprvalue>
-      </attribute>
-      <attribute>
-          <name>value</name>
-          <required>true</required>
           <rtexprvalue>true</rtexprvalue>
       </attribute>
   </tag>

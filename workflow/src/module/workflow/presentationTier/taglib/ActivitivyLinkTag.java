@@ -16,11 +16,25 @@ import module.workflow.domain.WorkflowProcess;
 
 public class ActivitivyLinkTag extends BodyTagSupport {
 
-    String processName;
-    String activityName;
-    String linkName;
-    String scope;
-    String id;
+    private String processName;
+    private String activityName;
+    private String linkName;
+    private String scope;
+    private String id;
+
+    private String paramName0;
+    private String paramValue0;
+
+    private String paramName1;
+    private String paramValue1;
+
+    private String paramName2;
+    private String paramValue2;
+
+    private String paramName3;
+    private String paramValue3;
+
+    private Map<String, String> parameterMap = new HashMap<String, String>();
 
     @Override
     public String getId() {
@@ -32,19 +46,12 @@ public class ActivitivyLinkTag extends BodyTagSupport {
 	this.id = id;
     }
 
-    Map<String, String> parameterMap = new HashMap<String, String>();
-
     public String getLinkName() {
 	return linkName;
     }
 
     public void setLinkName(String linkName) {
 	this.linkName = linkName;
-    }
-
-    @Override
-    public int doStartTag() throws JspException {
-	return EVAL_BODY_INCLUDE;
     }
 
     public String getProcessName() {
@@ -57,6 +64,70 @@ public class ActivitivyLinkTag extends BodyTagSupport {
 
     public String getActivityName() {
 	return activityName;
+    }
+
+    public String getParamName0() {
+	return paramName0;
+    }
+
+    public void setParamName0(String paramName0) {
+	this.paramName0 = paramName0;
+    }
+
+    public String getParamValue0() {
+	return paramValue0;
+    }
+
+    public void setParamValue0(String paramValue0) {
+	this.paramValue0 = paramValue0;
+    }
+
+    public String getParamName1() {
+	return paramName1;
+    }
+
+    public void setParamName1(String paramName1) {
+	this.paramName1 = paramName1;
+    }
+
+    public String getParamValue1() {
+	return paramValue1;
+    }
+
+    public void setParamValue1(String paramValue1) {
+	this.paramValue1 = paramValue1;
+    }
+
+    public String getParamName2() {
+	return paramName2;
+    }
+
+    public void setParamName2(String paramName2) {
+	this.paramName2 = paramName2;
+    }
+
+    public String getParamValue2() {
+	return paramValue2;
+    }
+
+    public void setParamValue2(String paramValue2) {
+	this.paramValue2 = paramValue2;
+    }
+
+    public String getParamName3() {
+	return paramName3;
+    }
+
+    public void setParamName3(String paramName3) {
+	this.paramName3 = paramName3;
+    }
+
+    public String getParamValue3() {
+	return paramValue3;
+    }
+
+    public void setParamValue3(String paramValue3) {
+	this.paramValue3 = paramValue3;
     }
 
     public void setActivityName(String activityName) {
@@ -76,8 +147,24 @@ public class ActivitivyLinkTag extends BodyTagSupport {
 	return httpServletRequest.getContextPath();
     }
 
+    protected void generateParameterMap() {
+	if (paramName0 != null) {
+	    setParameter(paramName0, paramValue0);
+	}
+	if (paramName1 != null) {
+	    setParameter(paramName1, paramValue1);
+	}
+	if (paramName2 != null) {
+	    setParameter(paramName2, paramValue2);
+	}
+	if (paramName3 != null) {
+	    setParameter(paramName3, paramValue3);
+	}
+    }
+
     @Override
-    public int doEndTag() throws JspException {
+    public int doStartTag() throws JspException {
+	generateParameterMap();
 	WorkflowProcess process = getWorkflowProcess();
 	WorkflowActivity<WorkflowProcess, ActivityInformation<WorkflowProcess>> activity = process.getActivity(getActivityName());
 	if (activity.isActive(process)) {
@@ -98,17 +185,21 @@ public class ActivitivyLinkTag extends BodyTagSupport {
 		pageContext.getOut().write(getParameters());
 		pageContext.getOut().write(getParameterString());
 		pageContext.getOut().write("\">");
-		if (getLinkName() != null) {
-		    pageContext.getOut().write(getLinkName());
-		} else {
-		    pageContext.getOut().write(activity.getLocalizedName());
-		}
-		pageContext.getOut().write("</a>");
 	    } catch (Exception e) {
 		e.printStackTrace();
 	    }
 	}
 
+	return EVAL_BODY_INCLUDE;
+    }
+
+    @Override
+    public int doEndTag() throws JspException {
+	try {
+	    pageContext.getOut().write("</a>");
+	} catch (IOException e) {
+	    e.printStackTrace();
+	}
 	return super.doAfterBody();
 
     }
