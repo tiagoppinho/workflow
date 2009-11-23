@@ -201,13 +201,17 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
 
     @Service
     public void createComment(User user, CommentBean bean) {
-	new WorkflowProcessComment(this, user, bean.getComment());
+	String comment = bean.getComment();
+	new WorkflowProcessComment(this, user, comment);
+	for (User notifyUser : bean.getPeopleToNotify()) {
+	    notifyUserDueToComment(notifyUser, comment);
+	}
     }
 
     /*
      * TODO: Make this method abstract after the refactorization
      */
-    public void notifyPersonDueToComment(User user, String comment) {
+    public void notifyUserDueToComment(User user, String comment) {
 	// do nothing by default
     }
 
