@@ -48,7 +48,6 @@ import myorg.applicationTier.Authenticate.UserView;
 import myorg.domain.exceptions.DomainException;
 import myorg.presentationTier.Context;
 import myorg.presentationTier.actions.ContextBaseAction;
-import myorg.util.VariantBean;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.struts.action.ActionForm;
@@ -243,7 +242,7 @@ public class ProcessManagement extends ContextBaseAction {
 
 	process.markCommentsAsReadForUser(UserView.getCurrentUser());
 	request.setAttribute("comments", comments);
-	request.setAttribute("bean", new VariantBean());
+	request.setAttribute("bean", new CommentBean(process));
 
 	return forward(request, "/workflow/viewComments.jsp");
     }
@@ -252,8 +251,10 @@ public class ProcessManagement extends ContextBaseAction {
 	    final HttpServletResponse response) {
 
 	final WorkflowProcess process = getProcess(request);
-	String comment = getRenderedObject("comment");
-	process.createComment(UserView.getCurrentUser(), comment);
+
+	CommentBean bean = getRenderedObject("comment");
+
+	process.createComment(UserView.getCurrentUser(), bean);
 
 	RenderUtils.invalidateViewState("comment");
 	return viewComments(mapping, form, request, response);

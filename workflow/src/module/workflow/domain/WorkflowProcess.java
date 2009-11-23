@@ -28,6 +28,7 @@ package module.workflow.domain;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -38,6 +39,7 @@ import java.util.TreeSet;
 import module.workflow.activities.ActivityInformation;
 import module.workflow.activities.WorkflowActivity;
 import module.workflow.presentationTier.WorkflowLayoutContext;
+import module.workflow.presentationTier.actions.CommentBean;
 import module.workflow.util.WorkflowFileUploadBean;
 import myorg.applicationTier.Authenticate.UserView;
 import myorg.domain.User;
@@ -68,26 +70,24 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
     }
 
     @SuppressWarnings("unchecked")
-    public static <T extends WorkflowProcess> Set<T> getAllProcesses(Class<T> processClass) {
+    protected static <T extends WorkflowProcess> Set<T> filter(Class<T> processClass, Predicate predicate,
+	    Collection<? extends WorkflowProcess> processes) {
 	Set<T> classes = new HashSet<T>();
-	for (WorkflowProcess process : WorkflowSystem.getInstance().getProcessesSet()) {
-	    if (processClass.isAssignableFrom(process.getClass())) {
+	for (WorkflowProcess process : processes) {
+	    if (processClass.isAssignableFrom(process.getClass()) && (predicate == null || predicate.evaluate(process))) {
 		classes.add((T) process);
 	    }
 	}
+
 	return classes;
     }
 
-    @SuppressWarnings("unchecked")
-    public static <T extends WorkflowProcess> Set<T> getAllProcesses(Class<T> processClass, Predicate predicate) {
-	Set<T> classes = new HashSet<T>();
-	for (WorkflowProcess process : WorkflowSystem.getInstance().getProcessesSet()) {
-	    if (processClass.isAssignableFrom(process.getClass()) && predicate.evaluate(process)) {
-		classes.add((T) process);
-	    }
-	}
+    public static <T extends WorkflowProcess> Set<T> getAllProcesses(Class<T> processClass) {
+	return filter(processClass, null, WorkflowSystem.getInstance().getProcessesSet());
+    }
 
-	return classes;
+    public static <T extends WorkflowProcess> Set<T> getAllProcesses(Class<T> processClass, Predicate predicate) {
+	return filter(processClass, predicate, WorkflowSystem.getInstance().getProcessesSet());
     }
 
     public <T extends WorkflowProcess, AI extends ActivityInformation<T>> WorkflowActivity<T, AI> getActivity(String activityName) {
@@ -104,6 +104,13 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
     public abstract <T extends WorkflowActivity<? extends WorkflowProcess, ? extends ActivityInformation>> List<T> getActivities();
 
     public abstract boolean isActive();
+
+    /*
+     * TODO make this abstract when expenditures refactorization ends
+     */
+    public User getProcessCreator() {
+	return null;
+    }
 
     public boolean isAccessible(User user) {
 	return true;
@@ -193,8 +200,23 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
     }
 
     @Service
-    public void createComment(User user, String comment) {
-	new WorkflowProcessComment(this, user, comment);
+    public void createComment(User user, CommentBean bean) {
+	new WorkflowProcessComment(this, user, bean.getComment());
+    }
+
+    /*
+     * TODO: Make this method abstract after the refactorization
+     */
+    public void notifyPersonDueToComment(User user, String comment) {
+	// do nothing by default
+    }
+
+    public Set<User> getProcessWorkers() {
+	Set<User> users = new HashSet<User>();
+	for (WorkflowLog log : getExecutionLogs()) {
+	    users.add(log.getActivityExecutor());
+	}
+	return users;
     }
 
     @Service

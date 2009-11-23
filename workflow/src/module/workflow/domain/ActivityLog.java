@@ -32,6 +32,10 @@ import myorg.util.BundleUtil;
 
 public class ActivityLog extends ActivityLog_Base {
 
+    protected ActivityLog() {
+	super();
+    }
+
     public ActivityLog(WorkflowProcess process, User person, String operationName, String... argumentsDescription) {
 	super();
 	init(process, person, argumentsDescription);

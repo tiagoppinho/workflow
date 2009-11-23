@@ -43,15 +43,17 @@
 
 <bean:define id="processOid" name="process" property="externalId" type="java.lang.String"/>
 
-
 <fr:form action='<%= "/workflowProcessManagement.do?method=addComment&processId=" + processOid%>'>
+	 
+	<fr:edit id="comment" name="bean" visible="false"/>
+
 	<table class="form">
 		<tr>
 			<td>
 				<bean:message key="label.addComment" bundle="WORKFLOW_RESOURCES"/>:
 			</td>
 			<td>
-				<fr:edit id="comment" name="bean" slot="string" type="java.lang.String" validator="pt.ist.fenixWebFramework.renderers.validators.RequiredValidator">
+				<fr:edit id="comment-text" name="bean" slot="comment" type="java.lang.String" validator="pt.ist.fenixWebFramework.renderers.validators.RequiredValidator">
 					<fr:layout name="longText">
 						<fr:property name="rows" value="6"/>
 						<fr:property name="columns" value="60"/>
@@ -60,6 +62,24 @@
 				</fr:edit>
 			</td>
 		</tr>
+			<tr>
+			<td>
+				<bean:message key="label.notifyPeopleByEmail" bundle="WORKFLOW_RESOURCES"/>:
+			</td>
+			<td>
+				<fr:edit id="peopleToNotify" name="bean" slot="peopleToNotify">
+					<fr:layout name="option-select">
+						<fr:property name="providerClass" value="module.workflow.presentationTier.renderers.providers.CommentersForProcess"/>
+						<fr:property name="eachLayout" value="values"/>
+						<fr:property name="eachSchema" value="viewPeopleInList"/> 
+						<fr:property name="saveOptions" value="true"/>
+						<fr:property name="selectAllShown" value="true"/>
+						<fr:property name="classes" value="nobullet"/>
+					</fr:layout>
+				</fr:edit>
+			</td>
+		</tr>
 	</table>
 	<html:submit styleClass="inputbutton"><bean:message key="renderers.form.add.name" bundle="RENDERER_RESOURCES"/> </html:submit>
 </fr:form>
+
