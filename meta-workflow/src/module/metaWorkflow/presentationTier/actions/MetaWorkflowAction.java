@@ -26,7 +26,6 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
-import pt.ist.expenditureTrackingSystem.domain.dto.CommentBean;
 import pt.ist.fenixWebFramework.renderers.utils.RenderUtils;
 import pt.ist.fenixWebFramework.struts.annotations.Mapping;
 
@@ -59,8 +58,8 @@ public class MetaWorkflowAction extends ContextBaseAction {
 
     }
 
-    public ActionForward viewAllOpenProcesses(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
-	    final HttpServletResponse response) {
+    public ActionForward viewAllOpenProcesses(final ActionMapping mapping, final ActionForm form,
+	    final HttpServletRequest request, final HttpServletResponse response) {
 
 	final User currentUser = UserView.getCurrentUser();
 	request.setAttribute("displayProcesses", WorkflowProcess.getAllProcesses(WorkflowMetaProcess.class, new Predicate() {
@@ -249,8 +248,9 @@ public class MetaWorkflowAction extends ContextBaseAction {
 
 	final WorkflowMetaProcess process = getDomainObject(request, "processId");
 	String comment = getRenderedObject("comment");
-	if (true) throw new Error("The next line needs to be reimplemented...");
-	//process.createComment(UserView.getCurrentUser(), comment);
+	if (true)
+	    throw new Error("The next line needs to be reimplemented...");
+	// process.createComment(UserView.getCurrentUser(), comment);
 
 	RenderUtils.invalidateViewState("comment");
 	return ProcessManagement.forwardToProcess(process);
