@@ -423,4 +423,5 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
 	FileIndexer.indexFilesInProcess(document, this);
 	return document;
     }
+
 }
