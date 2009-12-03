@@ -58,6 +58,10 @@ class ActivityLog extends WorkflowLog {
 	String operation;
 }
 
+class ImmutableLog extends WorkflowLog {
+	String description;
+}
+
 class FileUploadLog extends WorkflowLog {
 
 }
