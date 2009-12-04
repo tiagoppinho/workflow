@@ -26,4 +26,12 @@ public class ProcessFile extends ProcessFile_Base {
     public boolean isParsableType() {
 	return getFilename().toLowerCase().endsWith(".pdf");
     }
+
+    @Override
+    public void delete() {
+	removeProcess();
+	removeProcessWithDeleteFile();
+        super.delete();
+    }
+
 }
