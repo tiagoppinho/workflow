@@ -1,25 +1,21 @@
 package module.workflow.util;
 
+import module.workflow.domain.ProcessFile;
 import module.workflow.domain.WorkflowProcess;
 import myorg.util.FileUploadBean;
-import pt.ist.fenixWebFramework.util.DomainReference;
 
 public class WorkflowFileUploadBean extends FileUploadBean {
 
-    private DomainReference<WorkflowProcess> process;
-    private Class selectedInstance;
+    private WorkflowProcess process;
+    private Class<? extends ProcessFile> selectedInstance;
     private boolean instanceLock;
 
-    public Class getSelectedInstance() {
+    public Class<? extends ProcessFile> getSelectedInstance() {
 	return selectedInstance;
     }
 
-    public void setSelectedInstance(Class selectedInstance) {
+    public void setSelectedInstance(Class<? extends ProcessFile> selectedInstance) {
 	this.selectedInstance = selectedInstance;
-    }
-
-    public void setProcess(DomainReference<WorkflowProcess> process) {
-	this.process = process;
     }
 
     public boolean isInstanceLock() {
@@ -30,7 +26,7 @@ public class WorkflowFileUploadBean extends FileUploadBean {
 	this.instanceLock = instanceLock;
     }
 
-    public void setProcess(WorkflowProcess process, Class selectedInstance) {
+    public void setProcess(WorkflowProcess process, Class<? extends ProcessFile> selectedInstance) {
 	setProcess(process);
 	setSelectedInstance(selectedInstance);
 	this.instanceLock = true;
@@ -42,11 +38,11 @@ public class WorkflowFileUploadBean extends FileUploadBean {
     }
 
     public <T extends WorkflowProcess> T getProcess() {
-	return (T) this.process.getObject();
+	return (T) this.process;
     }
 
     public void setProcess(WorkflowProcess process) {
-	this.process = new DomainReference<WorkflowProcess>(process);
+	this.process = process;
     }
 
 }

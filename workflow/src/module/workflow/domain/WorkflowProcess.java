@@ -245,9 +245,7 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
 
     @Override
     public void addFiles(ProcessFile file) {
-	if (!file.validUpload(this)) {
-	    throw new DomainException("error.message.file.not.accepted");
-	}
+	file.validateUpload(this);
 	super.addFiles(file);
     }
 

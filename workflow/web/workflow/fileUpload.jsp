@@ -3,6 +3,7 @@
 <%@ taglib uri="/WEB-INF/struts-bean.tld" prefix="bean" %>
 <%@ taglib uri="/WEB-INF/struts-logic.tld" prefix="logic" %>
 <%@ taglib uri="/WEB-INF/fenix-renderers.tld" prefix="fr" %>
+
 <%@page import="module.workflow.presentationTier.WorkflowLayoutContext"%>
 <%@page import="myorg.presentationTier.actions.ContextBaseAction"%>
 
@@ -25,6 +26,11 @@
 <bean:define id="urlView">/workflowProcessManagement.do?method=viewProcess&amp;processId=<bean:write name="process" property="externalId"/></bean:define>
 <bean:define id="urlPostBack">/workflowProcessManagement.do?method=uploadPostBack&amp;processId=<bean:write name="process" property="externalId"/></bean:define>
 
+<logic:present name="errorMessage">
+	<div class="errorBox">
+		<fr:view name="errorMessage"/>
+	</div>
+</logic:present>
 
 <fr:edit name="bean" id="uploadFile" action='<%= "workflowProcessManagement.do?method=upload&processId=" + processOID %>' schema="<%= schema %>">
 	<fr:layout name="tabular">

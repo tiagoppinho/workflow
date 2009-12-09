@@ -40,9 +40,11 @@ import module.workflow.activities.ActivityException;
 import module.workflow.activities.ActivityInformation;
 import module.workflow.activities.WorkflowActivity;
 import module.workflow.domain.ProcessFile;
+import module.workflow.domain.ProcessFileValidationException;
 import module.workflow.domain.WorkflowProcess;
 import module.workflow.domain.WorkflowProcessComment;
 import module.workflow.presentationTier.WorkflowLayoutContext;
+import module.workflow.util.FileUploadBeanResolver;
 import module.workflow.util.WorkflowFileUploadBean;
 import myorg.applicationTier.Authenticate.UserView;
 import myorg.domain.exceptions.DomainException;
@@ -219,8 +221,7 @@ public class ProcessManagement extends ContextBaseAction {
 	return forwardProcessForInput(activity, request, information);
     }
 
-    private static <T extends WorkflowProcess> ActionForward forwardProcessForInput(
-	    WorkflowActivity activity,
+    private static <T extends WorkflowProcess> ActionForward forwardProcessForInput(WorkflowActivity activity,
 	    HttpServletRequest request, ActivityInformation<T> information) {
 	request.setAttribute("information", information);
 	if (activity.isDefaultInputInterfaceUsed()) {
@@ -264,8 +265,9 @@ public class ProcessManagement extends ContextBaseAction {
 	    final HttpServletResponse response) {
 
 	final WorkflowProcess process = getProcess(request);
-	WorkflowFileUploadBean bean = new WorkflowFileUploadBean(process);
-	bean.setSelectedInstance(process.getAvailableFileTypes().get(0));
+	Class<? extends ProcessFile> selectedInstance = process.getAvailableFileTypes().get(0);
+	WorkflowFileUploadBean bean = FileUploadBeanResolver.getBeanForProcessFile(process, selectedInstance);
+	bean.setSelectedInstance(selectedInstance);
 
 	request.setAttribute("bean", bean);
 	request.setAttribute("process", process);
@@ -274,15 +276,19 @@ public class ProcessManagement extends ContextBaseAction {
     }
 
     public ActionForward upload(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
-	    final HttpServletResponse response) throws IOException {
+	    final HttpServletResponse response) throws Exception {
 	WorkflowFileUploadBean bean = getRenderedObject("uploadFile");
 	final WorkflowProcess process = getProcess(request);
 
 	try {
 	    process.addFile(bean.getSelectedInstance(), bean.getDisplayName(), bean.getFilename(), consumeInputStream(bean
 		    .getInputStream()), bean);
-	} catch (Exception e) {
-	    e.printStackTrace();
+	} catch (ProcessFileValidationException e) {
+	    RenderUtils.invalidateViewState("uploadFile");
+	    request.setAttribute("bean", bean);
+	    request.setAttribute("process", process);
+	    request.setAttribute("errorMessage", e.getLocalizedMessage());
+	    return forward(request, "/workflow/fileUpload.jsp");
 	}
 
 	return viewProcess(process, request);
@@ -290,9 +296,14 @@ public class ProcessManagement extends ContextBaseAction {
     }
 
     public ActionForward uploadPostBack(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
-	    final HttpServletResponse response) throws IOException {
+	    final HttpServletResponse response) {
 	WorkflowFileUploadBean bean = getRenderedObject("uploadFile");
 	final WorkflowProcess process = getProcess(request);
+	Class<? extends ProcessFile> selectedInstance = bean.getSelectedInstance();
+	bean = FileUploadBeanResolver.getBeanForProcessFile(process, selectedInstance);
+	bean.setSelectedInstance(selectedInstance);
+
+	RenderUtils.invalidateViewState("uploadFile");
 
 	request.setAttribute("bean", bean);
 	request.setAttribute("process", process);
