@@ -53,12 +53,21 @@ public abstract class WorkflowActivity<P extends WorkflowProcess, AI extends Act
      * 
      * @param process
      * @return true if the user that is executing the activity is the current
-     *         owner of the process.
+     *         owner of the process or the process has no owner at all.
      */
     protected boolean isCurrentUserProcessOwner(P process) {
-	final User currentOwner = process.getCurrentOwner();
-	final User loggedPerson = getLoggedPerson();
-	return currentOwner == null || (loggedPerson != null && loggedPerson == currentOwner);
+	return process.getCurrentOwner() == null || isProcessTakenByCurrentUser(process);
+    }
+
+    /**
+     * 
+     * @param process
+     * @param user
+     * @return true if the user is the current owner of the process or the
+     *         activity has no owner at all.
+     */
+    protected boolean isUserProcessOwner(P process, User user) {
+	return process.getCurrentOwner() == null || isProcessTakenByUser(process, user);
     }
 
     /**
@@ -77,9 +86,19 @@ public abstract class WorkflowActivity<P extends WorkflowProcess, AI extends Act
      *         activity
      */
     protected boolean isProcessTakenByCurrentUser(P process) {
-	final User loggedPerson = getLoggedPerson();
+	return isProcessTakenByUser(process, getLoggedPerson());
+    }
+
+    /**
+     * 
+     * @param process
+     * @param user
+     * @return true if the process is taken by the user
+     * 
+     */
+    protected boolean isProcessTakenByUser(P process, User user) {
 	User taker = process.getCurrentOwner();
-	return taker != null && loggedPerson != null && taker == loggedPerson;
+	return taker != null && taker == user;
     }
 
     /**
@@ -249,12 +268,12 @@ public abstract class WorkflowActivity<P extends WorkflowProcess, AI extends Act
 
     /**
      * This is used when a activity needs confirmation. Holds the confirmation
-     * message.
+     * message. By default the label is activity.confirmation.CLASS_NAME
      * 
      * @return Localized confirmation message
      */
     public String getLocalizedConfirmationMessage() {
-	return "";
+	return BundleUtil.getStringFromResourceBundle(getUsedBundle(), "activity.confirmation." + getClass().getName());
     }
 
     /**
