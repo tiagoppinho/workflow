@@ -43,7 +43,7 @@
 						<bean:define id="activityName" name="activity" property="localizedName"/>
 						<html:link styleId="<%= name.toString() %>"
 							page='<%="/workflowProcessManagement.do?method=process&activity=" + name + "&processId=" + processId%>'>
-							<fr:view name="activityName"/>
+							<fr:view name="activityName" layout="html"/>
 							<logic:equal name="activity" property="confirmationNeeded" value="true">
 								<bean:define id="message" name="activity" property="localizedConfirmationMessage"/>
 								  <script type="text/javascript"> 
