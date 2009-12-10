@@ -185,6 +185,13 @@ public class ActivitivyLinkTag extends BodyTagSupport {
 		pageContext.getOut().write(getParameters());
 		pageContext.getOut().write(getParameterString());
 		pageContext.getOut().write("\">");
+
+		if (activity.isConfirmationNeeded()) {
+		    pageContext.getOut().write(
+			    "<script type=\"text/javascript\">linkConfirmationHook('" + getId() + "', '"
+				    + activity.getLocalizedConfirmationMessage() + "','" + activity.getLocalizedName() + "');</script>");
+
+		}
 	    } catch (Exception e) {
 		e.printStackTrace();
 	    }
