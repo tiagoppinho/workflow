@@ -112,7 +112,7 @@ public class ProcessManagement extends ContextBaseAction {
 	WorkflowProcess process = getProcess(request);
 	WorkflowActivity<WorkflowProcess, ActivityInformation<WorkflowProcess>> activity = getActivity(process, request);
 	ActivityInformation<WorkflowProcess> information = populateInformation(process, activity, request);
-	return doLifeCycle(information, process, activity, request);
+	return executeActivity(process, request, activity, information);
     }
 
     private ActivityInformation<WorkflowProcess> populateInformation(WorkflowProcess process,
