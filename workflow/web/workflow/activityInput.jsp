@@ -11,7 +11,7 @@
 <bean:define id="activityInformationClass" name="information" property="activityClass.simpleName"/>
 
 
-<h2><fr:view name="information" property="localizedName"/></h2>
+<h2><fr:view name="information" property="localizedName" layout="html"/></h2>
 
 <%
 	final WorkflowLayoutContext layoutContext = (WorkflowLayoutContext) ContextBaseAction.getContext(request);
@@ -24,6 +24,7 @@
 schema='<%= "activityInformation." + activityInformationClass %>'>
 	<fr:layout name="tabular">
 		<fr:property name="classes" value="form"/>
+		<fr:property name="columnClasses" value=",,tderror"/>
 	</fr:layout>
 	<fr:destination name="cancel" path='<%="/workflowProcessManagement.do?method=viewProcess&processId=" + processId%>'/>
 </fr:edit>
