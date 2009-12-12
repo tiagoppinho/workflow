@@ -189,24 +189,31 @@ public class ActivitivyLinkTag extends BodyTagSupport {
 		if (activity.isConfirmationNeeded()) {
 		    pageContext.getOut().write(
 			    "<script type=\"text/javascript\">linkConfirmationHook('" + getId() + "', '"
-				    + activity.getLocalizedConfirmationMessage() + "','" + activity.getLocalizedName() + "');</script>");
+				    + activity.getLocalizedConfirmationMessage() + "','" + activity.getLocalizedName()
+				    + "');</script>");
 
 		}
 	    } catch (Exception e) {
 		e.printStackTrace();
 	    }
+	    return EVAL_BODY_INCLUDE;
 	}
 
-	return EVAL_BODY_INCLUDE;
+	return SKIP_BODY;
     }
 
     @Override
     public int doEndTag() throws JspException {
-	try {
-	    pageContext.getOut().write("</a>");
-	} catch (IOException e) {
-	    e.printStackTrace();
+	WorkflowProcess process = getWorkflowProcess();
+	WorkflowActivity<WorkflowProcess, ActivityInformation<WorkflowProcess>> activity = process.getActivity(getActivityName());
+	if (activity.isActive(process)) {
+	    try {
+		pageContext.getOut().write("</a>");
+	    } catch (IOException e) {
+		e.printStackTrace();
+	    }
 	}
+	release();
 	return super.doAfterBody();
 
     }
@@ -265,5 +272,22 @@ public class ActivitivyLinkTag extends BodyTagSupport {
 
     public WorkflowProcess getWorkflowProcess() {
 	return (WorkflowProcess) getObject(getProcessName(), pageContext, getScope());
+    }
+
+    @Override
+    public void release() {
+	parameterMap.clear();
+	paramName0 = null;
+	paramValue0 = null;
+	paramName1 = null;
+	paramValue1 = null;
+	paramName2 = null;
+	paramValue2 = null;
+	paramName3 = null;
+	paramValue3 = null;
+	processName = null;
+	activityName = null;
+	linkName = null;
+	id = null;
     }
 }
