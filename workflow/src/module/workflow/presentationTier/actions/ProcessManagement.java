@@ -213,7 +213,8 @@ public class ProcessManagement extends ContextBaseAction {
 		addMessage(request, e.getMessage());
 	    } catch (DomainException e) {
 		addMessage(request, e.getMessage());
-		return forwardProcessForInput(activity, request, information);
+		return information.isForwardedFromInput() ? forwardProcessForInput(activity, request, information) : viewProcess(
+			process, request);
 	    }
 	    return forwardToProcessPage(process, request);
 	}
