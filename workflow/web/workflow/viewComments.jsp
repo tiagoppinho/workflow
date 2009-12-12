@@ -29,16 +29,11 @@
 
 
 <logic:notEmpty name="comments">
-	<div class="mvert2">
-	<logic:iterate id="comment" name="comments">
-		<div class="comment">
-			<p>
-				<span><fr:view name="comment" property="commenter.presentationName"/></span> <fr:view name="comment" property="date"/>
-			</p>
-			<div class="body"><fr:view name="comment" property="comment" layout="null-as-label" type="java.lang.String"/></div>
-		</div>
-	</logic:iterate>
-	</div>
+	<fr:view name="process" >
+		<fr:layout name="viewComments">
+			<fr:property name="commentBlockClasses" value="comment"/>
+		</fr:layout>
+	</fr:view>
 </logic:notEmpty>
 
 <bean:define id="processOid" name="process" property="externalId" type="java.lang.String"/>
@@ -71,7 +66,7 @@
 					<fr:layout name="option-select">
 						<fr:property name="providerClass" value="module.workflow.presentationTier.renderers.providers.CommentersForProcess"/>
 						<fr:property name="eachLayout" value="values"/>
-						<fr:property name="eachSchema" value="viewPeopleInList"/> 
+						<fr:property name="eachSchema" value="showUsers"/> 
 						<fr:property name="saveOptions" value="true"/>
 						<fr:property name="selectAllShown" value="true"/>
 						<fr:property name="classes" value="nobullet"/>

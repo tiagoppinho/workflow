@@ -35,7 +35,7 @@
 
 <schema name="viewLogs" type="module.workflow.domain.WorkflowLog" bundle="WORKFLOW_RESOURCES">
 	<slot name="whenOperationWasRan" key="label.whenOperationWasRan"/>
-	<slot name="description" key="label.description"/>
+	<slot name="description" key="label.description" layout="html"/>
 	<slot name="activityExecutor.presentationName" key="label.activityExecutor"/>
 </schema>
 
@@ -70,4 +70,10 @@
 <schema name="view.queues.details" type="module.workflow.domain.WorkflowQueue" bundle="WORKFLOW_RESOURCES">
 	<slot name="name" key="label.queue.name"/>
 	<slot name="class" layout="name-resolver" key="label.queue.type"/>
+</schema>
+
+<schema name="showUsers"
+		type="myorg.domain.User"
+		bundle="WORKFLOW_RESOURCES">
+	<slot name="presentationName"/>
 </schema>
