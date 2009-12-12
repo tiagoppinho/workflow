@@ -140,8 +140,13 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
 
     @SuppressWarnings("unchecked")
     public boolean hasAnyAvailableActivitity() {
+	return hasAnyAvailableActivity(false);
+    }
+
+    @SuppressWarnings("unchecked")
+    public boolean hasAnyAvailableActivity(boolean checkForUserAwareness) {
 	for (WorkflowActivity activity : getActivities()) {
-	    if (activity.isActive(this)) {
+	    if (activity.isActive(this) && (!checkForUserAwareness || activity.isUserAwarenessNeeded(this))) {
 		return true;
 	    }
 	}
