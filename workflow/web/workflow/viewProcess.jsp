@@ -13,7 +13,13 @@
 <bean:define id="processClassName" name="process" property="class.name" type="java.lang.String"/>
 <bean:define id="includeFolder" value="<%= processClassName.replace('.','/')%>"/>
 
-
+<logic:messagesPresent property="message" message="true">
+	<div class="error1">
+		<html:messages id="errorMessage" property="message" message="true"> 
+			<span><bean:write name="errorMessage"/></span>
+		</html:messages>
+	</div>
+</logic:messagesPresent>
 <%
 	final WorkflowLayoutContext layoutContext = (WorkflowLayoutContext) ContextBaseAction.getContext(request);
 %>

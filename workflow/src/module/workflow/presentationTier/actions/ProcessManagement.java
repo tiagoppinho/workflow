@@ -258,7 +258,7 @@ public class ProcessManagement extends ContextBaseAction {
 
 	process.createComment(UserView.getCurrentUser(), bean);
 
-	RenderUtils.invalidateViewState("comment");
+	RenderUtils.invalidateViewState();
 	return viewComments(mapping, form, request, response);
     }
 

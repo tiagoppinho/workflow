@@ -140,7 +140,7 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
 
     @SuppressWarnings("unchecked")
     public boolean hasAnyAvailableActivitity() {
-	return hasAnyAvailableActivity(false);
+	return hasAnyAvailableActivity(true);
     }
 
     @SuppressWarnings("unchecked")
@@ -208,7 +208,7 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
     public void createComment(User user, CommentBean bean) {
 	String comment = bean.getComment();
 	new WorkflowProcessComment(this, user, comment);
-	for (User notifyUser : bean.getPeopleToNotify()) {
+	for (User notifyUser : bean.getUsersToNotify()) {
 	    notifyUserDueToComment(notifyUser, comment);
 	}
     }
@@ -218,6 +218,10 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
      */
     public void notifyUserDueToComment(User user, String comment) {
 	// do nothing by default
+    }
+
+    public boolean isSystemAbleToNotifyUser(User user) {
+	return true;
     }
 
     public Set<User> getProcessWorkers() {

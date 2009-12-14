@@ -35,7 +35,7 @@
 
 <schema name="viewLogs" type="module.workflow.domain.WorkflowLog" bundle="WORKFLOW_RESOURCES">
 	<slot name="whenOperationWasRan" key="label.whenOperationWasRan"/>
-	<slot name="description" key="label.description" layout="html"/>
+	<slot name="description" layout="html" key="label.description"/>
 	<slot name="activityExecutor.presentationName" key="label.activityExecutor"/>
 </schema>
 
@@ -73,7 +73,7 @@
 </schema>
 
 <schema name="showUsers"
-		type="myorg.domain.User"
+		type="module.workflow.presentationTier.actions.UserNotificationBean"
 		bundle="WORKFLOW_RESOURCES">
-	<slot name="presentationName"/>
+	<slot name="user.presentationName"/>
 </schema>

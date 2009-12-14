@@ -65,8 +65,7 @@
 				<fr:edit id="peopleToNotify" name="bean" slot="peopleToNotify">
 					<fr:layout name="option-select">
 						<fr:property name="providerClass" value="module.workflow.presentationTier.renderers.providers.CommentersForProcess"/>
-						<fr:property name="eachLayout" value="values"/>
-						<fr:property name="eachSchema" value="showUsers"/> 
+						<fr:property name="eachLayout" value="viewCommenters"/>
 						<fr:property name="saveOptions" value="true"/>
 						<fr:property name="selectAllShown" value="true"/>
 						<fr:property name="classes" value="nobullet"/>
@@ -78,3 +77,9 @@
 	<html:submit styleClass="inputbutton"><bean:message key="renderers.form.add.name" bundle="RENDERER_RESOURCES"/> </html:submit>
 </fr:form>
 
+
+<script type="text/javascript">
+jQuery.each($(".unableToNotify"), function() {
+	$(this).parent("span").parent("span").parent("label").siblings("input").attr('disabled','true');
+});
+</script>

@@ -15,7 +15,7 @@
 
 
 
-<h2><fr:view name="information" property="localizedName"/></h2>
+<h2><fr:view name="information" property="localizedName" layout="html"/></h2>
 
 
 <%

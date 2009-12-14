@@ -16,9 +16,14 @@
 	  <property name="nameClasses" value="bold"/>
 	  <property name="photoClasses" value="photoHolder"/>
 	  <property name="bodyClasses" value="aleft"/>
-	  <property name="photoUrl" value="https://fenix.ist.utl.pt/publico/viewHomepage.do?method=retrieveByUUID&amp;contentContextPath_PATH=/homepage&amp;uuid=${username}"/>
+	  <property name="photoUrl" value="https://fenix.ist.utl.pt/publico/retrievePersonalPhoto.do?method=retrieveByIstId&amp;contentContextPath_PATH=/homepage&amp;istId=${username}"/>
 	  <property name="reverseOrder" value="false"/>
 	  <property name="observerBundle" value="WORKFLOW_RESOURCES"/>
 	  <property name="observerKey" value="label.marker.observer"/>
 	  <property name="observerClass" value="observerClass"/>
+</renderer>
+
+<renderer type="module.workflow.presentationTier.actions.UserNotificationBean" layout="viewCommenters"
+	class="module.workflow.presentationTier.renderers.NotifyUsers">
+	  <property name="unableToNotifyClasses" value="unableToNotify"/>
 </renderer>

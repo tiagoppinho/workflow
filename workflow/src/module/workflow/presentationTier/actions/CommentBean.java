@@ -1,6 +1,7 @@
 package module.workflow.presentationTier.actions;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -11,7 +12,7 @@ public class CommentBean implements Serializable {
 
     private WorkflowProcess process;
     private String comment;
-    private List<User> peopleToNotify;
+    private List<UserNotificationBean> peopleToNotify;
 
     public CommentBean(WorkflowProcess process) {
 	this.process = process;
@@ -34,11 +35,21 @@ public class CommentBean implements Serializable {
 	this.comment = comment;
     }
 
-    public List<User> getPeopleToNotify() {
-	return peopleToNotify;
+    public List<User> getUsersToNotify() {
+	List<User> users = new ArrayList<User>();
+	for (UserNotificationBean bean : this.peopleToNotify) {
+	    if (bean.isAbleToNotify()) {
+		users.add(bean.getUser());
+	    }
+	}
+	return users;
     }
 
-    public void setPeopleToNotify(List<User> peopleToNotify) {
+    public List<UserNotificationBean> getPeopleToNotify() {
+	return this.peopleToNotify;
+    }
+
+    public void setPeopleToNotify(List<UserNotificationBean> peopleToNotify) {
 	this.peopleToNotify = peopleToNotify;
     }
 }
