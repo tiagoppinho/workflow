@@ -26,7 +26,7 @@
 
 <jsp:include page='<%=  layoutContext.getWorkflowHead() %>'/>
 
- 
+<div id="processControl"> 
 <logic:present name="process" property="currentOwner">
 	<bean:define id="ownerName" name="process" property="currentOwner.presentationName"/>
 	<div class="highlightBox">
@@ -34,9 +34,10 @@
 	</div>
 </logic:present>
 
-<table class="structural">
+<div style="float: left; width: 100%">
+<table style="width: 100%; margin: 1em 0;">
 	<tr>
-		<td style="width: 50%; padding-right: 1em; border: 1px dotted #aaa; padding: 10px 15px;">
+		<td style="border: 1px dotted #aaa; padding: 10px 15px; width: 48%; vertical-align: top;">
 			<p class="mtop0 mbottom05">
 				<b><bean:message key="label.activities" bundle="WORKFLOW_RESOURCES"/></b>
 			</p>
@@ -93,15 +94,15 @@
 		
 		<logic:equal name="process" property="fileSupportAvailable" value="true">
 	
-			<td style="width: 2%;"></td>
+			<td style="border: none; width: 2%; padding: 0;"></td>
 	
-			<td style="width: 45%; border: 1px dotted #aaa; padding: 10px 15px;">
+			<td style="border: 1px dotted #aaa; padding: 10px 15px; width: 48%; vertical-align: top;">
 			
 				<p class="mtop0 mbottom05">
 					<b><bean:message key="label.documents" bundle="WORKFLOW_RESOURCES"/></b>
 				</p>
 				
-				<div class="documents mtop0 mbottom05" style="overflow: hidden; width: 400px">
+				<div class="documents mtop0 mbottom05" style="overflow: hidden; ">
 					<fr:view name="process">
 						<fr:layout name="processFiles">
 							<fr:property name="classes" value=""/>
@@ -127,6 +128,8 @@
 		</logic:equal>
 	</tr>
 </table>
+</div>
+<div style="clear: left;"></div>
 
 <logic:equal name="process" property="commentsSupportAvailable" value="true">
 	<bean:define id="unreadComments" name="process" property="unreadCommentsForCurrentUser"/>
@@ -148,5 +151,6 @@
 		</div>
 	</logic:notEmpty>
 </logic:equal>
+</div>
 
 <jsp:include page='<%=  layoutContext.getWorkflowBody() %>'/>
