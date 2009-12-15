@@ -7,19 +7,15 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.PageContext;
-import javax.servlet.jsp.tagext.BodyTagSupport;
 
 import module.workflow.activities.ActivityInformation;
 import module.workflow.activities.WorkflowActivity;
 import module.workflow.domain.WorkflowProcess;
 
-public class ActivitivyLinkTag extends BodyTagSupport {
+public class ActivitivyLinkTag extends WorkflowBodyTag {
 
-    private String processName;
-    private String activityName;
     private String linkName;
-    private String scope;
+
     private String id;
 
     private String paramName0;
@@ -54,18 +50,6 @@ public class ActivitivyLinkTag extends BodyTagSupport {
 
     public void setLinkName(String linkName) {
 	this.linkName = linkName;
-    }
-
-    public String getProcessName() {
-	return processName;
-    }
-
-    public void setProcessName(String processName) {
-	this.processName = processName;
-    }
-
-    public String getActivityName() {
-	return activityName;
     }
 
     public String getParamName0() {
@@ -132,10 +116,6 @@ public class ActivitivyLinkTag extends BodyTagSupport {
 	this.paramValue3 = paramValue3;
     }
 
-    public void setActivityName(String activityName) {
-	this.activityName = activityName;
-    }
-
     public void setParameter(String parameterName, String value) {
 	parameterMap.put(parameterName, value);
     }
@@ -168,7 +148,7 @@ public class ActivitivyLinkTag extends BodyTagSupport {
     public int doStartTag() throws JspException {
 	generateParameterMap();
 	WorkflowProcess process = getWorkflowProcess();
-	WorkflowActivity<WorkflowProcess, ActivityInformation<WorkflowProcess>> activity = process.getActivity(getActivityName());
+	WorkflowActivity<WorkflowProcess, ActivityInformation<WorkflowProcess>> activity = getActivity();
 	if (activity.isActive(process)) {
 	    try {
 		pageContext.getOut().write("<a ");
@@ -205,9 +185,9 @@ public class ActivitivyLinkTag extends BodyTagSupport {
     }
 
     /*
-     * This hack is needed so even if we close the tag on the line below the content
-     * no white spaces are added to the output creating a nasty link underline on white
-     * spaces.
+     * This hack is needed so even if we close the tag on the line below the
+     * content no white spaces are added to the output creating a nasty link
+     * underline on white spaces.
      */
     @Override
     public int doAfterBody() throws JspException {
@@ -262,37 +242,6 @@ public class ActivitivyLinkTag extends BodyTagSupport {
 	return buffer.toString();
     }
 
-    public String getScope() {
-	return (this.scope);
-    }
-
-    public void setScope(String scope) {
-	this.scope = scope;
-    }
-
-    public static int getPageScope(final String scope) {
-	if (scope == null) {
-	    return -1;
-	} else if (scope.equalsIgnoreCase("page")) {
-	    return PageContext.PAGE_SCOPE;
-	} else if (scope.equalsIgnoreCase("request")) {
-	    return PageContext.REQUEST_SCOPE;
-	} else if (scope.equalsIgnoreCase("session")) {
-	    return PageContext.SESSION_SCOPE;
-	} else {
-	    return -1;
-	}
-    }
-
-    public static Object getObject(final String name, final PageContext pageContext, final String scope) {
-	final int pageScope = getPageScope(scope);
-	return pageScope == -1 ? pageContext.getAttribute(name) : pageContext.getAttribute(name, pageScope);
-    }
-
-    public WorkflowProcess getWorkflowProcess() {
-	return (WorkflowProcess) getObject(getProcessName(), pageContext, getScope());
-    }
-
     @Override
     public void release() {
 	parameterMap.clear();
@@ -305,9 +254,8 @@ public class ActivitivyLinkTag extends BodyTagSupport {
 	paramValue2 = null;
 	paramName3 = null;
 	paramValue3 = null;
-	processName = null;
-	activityName = null;
 	linkName = null;
 	id = null;
+	super.release();
     }
 }
