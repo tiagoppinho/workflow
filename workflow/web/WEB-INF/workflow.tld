@@ -94,4 +94,28 @@
       </attribute>
   </tag>
   
+  <tag>
+      <name>activityName</name>
+      <tagclass>module.workflow.presentationTier.taglib.ActivityNameTag</tagclass>
+      <bodycontent>JSP</bodycontent>
+      <info>
+          Generates the name of the process
+      </info>
+      <attribute>
+          <name>processName</name>
+          <required>true</required>
+          <rtexprvalue>true</rtexprvalue>
+      </attribute>
+      <attribute>
+          <name>activityName</name>
+          <required>true</required>
+          <rtexprvalue>true</rtexprvalue>
+      </attribute>
+      <attribute>
+      <name>scope</name>
+          <required>false</required>
+          <rtexprvalue>true</rtexprvalue>
+      </attribute>
+   </tag>
+  
   </taglib>
