@@ -36,6 +36,8 @@ public class ActivitivyLinkTag extends BodyTagSupport {
 
     private Map<String, String> parameterMap = new HashMap<String, String>();
 
+    private StringBuilder content = new StringBuilder();
+
     @Override
     public String getId() {
 	return id;
@@ -196,10 +198,25 @@ public class ActivitivyLinkTag extends BodyTagSupport {
 	    } catch (Exception e) {
 		e.printStackTrace();
 	    }
-	    return EVAL_BODY_INCLUDE;
+	    return EVAL_BODY_BUFFERED;
 	}
 
 	return SKIP_BODY;
+    }
+
+    /*
+     * This hack is needed so even if we close the tag on the line below the content
+     * no white spaces are added to the output creating a nasty link underline on white
+     * spaces.
+     */
+    @Override
+    public int doAfterBody() throws JspException {
+	if (bodyContent != null) {
+	    String value = bodyContent.getString().trim();
+	    if (value.length() > 0)
+		content.append(value);
+	}
+	return (SKIP_BODY);
     }
 
     @Override
@@ -208,7 +225,9 @@ public class ActivitivyLinkTag extends BodyTagSupport {
 	WorkflowActivity<WorkflowProcess, ActivityInformation<WorkflowProcess>> activity = process.getActivity(getActivityName());
 	if (activity.isActive(process)) {
 	    try {
-		pageContext.getOut().write("</a>");
+		content.trimToSize();
+		content.append("</a>");
+		pageContext.getOut().write(content.toString());
 	    } catch (IOException e) {
 		e.printStackTrace();
 	    }
@@ -277,6 +296,7 @@ public class ActivitivyLinkTag extends BodyTagSupport {
     @Override
     public void release() {
 	parameterMap.clear();
+	content = new StringBuilder();
 	paramName0 = null;
 	paramValue0 = null;
 	paramName1 = null;
