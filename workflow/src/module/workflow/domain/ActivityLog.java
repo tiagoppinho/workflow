@@ -25,6 +25,7 @@
 
 package module.workflow.domain;
 
+import pt.utl.ist.fenix.tools.util.Strings;
 import module.workflow.activities.ActivityInformation;
 import module.workflow.activities.WorkflowActivity;
 import myorg.domain.User;
@@ -47,7 +48,8 @@ public class ActivityLog extends ActivityLog_Base {
 	WorkflowActivity<WorkflowProcess, ActivityInformation<WorkflowProcess>> activity = getProcess().getActivity(
 		getOperation());
 
-	if (getDescriptionArguments() != null) {
+	Strings arguments = getDescriptionArguments();
+	if (arguments != null && !arguments.isEmpty()) {
 	    return BundleUtil.getFormattedStringFromResourceBundle(activity.getUsedBundle(), "label.description."
 		    + activity.getClass().getName(), getDescriptionArguments().toArray(new String[] {}));
 	} else {

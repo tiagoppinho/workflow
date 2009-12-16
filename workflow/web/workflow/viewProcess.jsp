@@ -16,7 +16,7 @@
 <logic:messagesPresent property="message" message="true">
 	<div class="error1">
 		<html:messages id="errorMessage" property="message" message="true"> 
-			<span><bean:write name="errorMessage"/></span>
+			<span><fr:view name="errorMessage"/></span>
 		</html:messages>
 	</div>
 </logic:messagesPresent>

@@ -212,7 +212,8 @@ public class ProcessManagement extends ContextBaseAction {
 	    } catch (ActivityException e) {
 		addMessage(request, e.getMessage());
 	    } catch (DomainException e) {
-		addMessage(request, e.getMessage());
+		addLocalizedMessage(request, e.getLocalizedMessage());
+		RenderUtils.invalidateViewState();
 		return information.isForwardedFromInput() ? forwardProcessForInput(activity, request, information) : viewProcess(
 			process, request);
 	    }

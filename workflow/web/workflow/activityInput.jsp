@@ -19,6 +19,13 @@
 
 <jsp:include page='<%= layoutContext.getWorkflowShortBody() %>'/>
 
+<logic:messagesPresent property="message" message="true">
+	<div class="error1">
+		<html:messages id="errorMessage" property="message" message="true"> 
+			<span><fr:view name="errorMessage"/></span>
+		</html:messages>
+	</div>
+</logic:messagesPresent>
 
 <fr:edit id="activityBean" name="information" action='<%="/workflowProcessManagement.do?method=process&activity=" + name + "&processId=" + processId%>'
 schema='<%= "activityInformation." + activityInformationClass %>'>
