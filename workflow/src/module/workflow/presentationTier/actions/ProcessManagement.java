@@ -289,7 +289,7 @@ public class ProcessManagement extends ContextBaseAction {
 	    RenderUtils.invalidateViewState("uploadFile");
 	    request.setAttribute("bean", bean);
 	    request.setAttribute("process", process);
-	    request.setAttribute("errorMessage", e.getLocalizedMessage());
+	    addLocalizedMessage(request, e.getLocalizedMessage());
 	    return forward(request, "/workflow/fileUpload.jsp");
 	}
 

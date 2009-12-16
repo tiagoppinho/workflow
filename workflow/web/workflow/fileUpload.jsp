@@ -26,11 +26,13 @@
 <bean:define id="urlView">/workflowProcessManagement.do?method=viewProcess&amp;processId=<bean:write name="process" property="externalId"/></bean:define>
 <bean:define id="urlPostBack">/workflowProcessManagement.do?method=uploadPostBack&amp;processId=<bean:write name="process" property="externalId"/></bean:define>
 
-<logic:present name="errorMessage">
-	<div class="errorBox">
-		<fr:view name="errorMessage"/>
+<logic:messagesPresent property="message" message="true">
+	<div class="error1">
+		<html:messages id="errorMessage" property="message" message="true"> 
+			<span><fr:view name="errorMessage"/></span>
+		</html:messages>
 	</div>
-</logic:present>
+</logic:messagesPresent>
 
 <fr:edit name="bean" id="uploadFile" action='<%= "workflowProcessManagement.do?method=upload&processId=" + processOID %>' schema="<%= schema %>">
 	<fr:layout name="tabular">
