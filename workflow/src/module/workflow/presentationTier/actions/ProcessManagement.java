@@ -286,7 +286,7 @@ public class ProcessManagement extends ContextBaseAction {
 	    process.addFile(bean.getSelectedInstance(), bean.getDisplayName(), bean.getFilename(), consumeInputStream(bean
 		    .getInputStream()), bean);
 	} catch (ProcessFileValidationException e) {
-	    RenderUtils.invalidateViewState("uploadFile");
+	    // RenderUtils.invalidateViewState("uploadFile");
 	    request.setAttribute("bean", bean);
 	    request.setAttribute("process", process);
 	    addLocalizedMessage(request, e.getLocalizedMessage());
