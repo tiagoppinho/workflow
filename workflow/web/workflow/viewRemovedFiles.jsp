@@ -24,7 +24,7 @@
 	<logic:iterate id="file" name="process" property="deletedFiles">
 		<li>
 			<bean:define id="fileId" name="file" property="externalId" type="java.lang.String"/>
-			<fr:view name="file" property="displayName"/> <html:link page='<%= "/workflowProcessManagement.do?method=downloadFile&fileId=" + fileId %>'><bean:message key="link.downloadFile" bundle="WORKFLOW_RESOURCES"/></html:link> 
+			<fr:view name="file" property="displayName"/> <html:link page='<%= "/workflowProcessManagement.do?method=downloadFile&fileId=" + fileId %>' paramId="processId" paramName="process" paramProperty="externalId"><bean:message key="link.downloadFile" bundle="WORKFLOW_RESOURCES"/></html:link> 
 		</li>
 	</logic:iterate>
 </ul>
