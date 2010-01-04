@@ -259,10 +259,11 @@ public abstract class WorkflowActivity<P extends WorkflowProcess, AI extends Act
      * Determines if a given activity needs confirmation to be ran. If returns
      * true the interface will first display a confirmation message with a
      * confirm/cancel buttons for the user to acknowledge the operation.
-     * 
+     *
+     * @param process
      * @return by default false
      */
-    public boolean isConfirmationNeeded() {
+    public boolean isConfirmationNeeded(P process) {
 	return false;
     }
 

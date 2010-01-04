@@ -168,7 +168,7 @@ public class ActivitivyLinkTag extends WorkflowBodyTag {
 		pageContext.getOut().write(getParameterString());
 		pageContext.getOut().write("\">");
 
-		if (activity.isConfirmationNeeded()) {
+		if (activity.isConfirmationNeeded(process)) {
 		    pageContext.getOut().write(
 			    "<script type=\"text/javascript\">linkConfirmationHook('" + getId() + "', '"
 				    + activity.getLocalizedConfirmationMessage() + "','" + activity.getLocalizedName()

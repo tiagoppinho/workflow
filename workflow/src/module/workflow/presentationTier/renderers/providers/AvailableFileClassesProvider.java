@@ -17,7 +17,7 @@ public class AvailableFileClassesProvider implements DataProvider {
 
 	WorkflowFileUploadBean bean = (WorkflowFileUploadBean) source;
 	WorkflowProcess process = bean.getProcess();
-	return process.getAvailableFileTypes();
+	return process.getUploadableFileTypes();
     }
 
 }

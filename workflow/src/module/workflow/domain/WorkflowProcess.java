@@ -153,6 +153,15 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
 	return false;
     }
 
+    public boolean hasAnyAvailableActivity(User user, boolean checkForUserAwareness) {
+	for (WorkflowActivity activity : getActivities()) {
+	    if (activity.isActive(this, user) && (!checkForUserAwareness || activity.isUserAwarenessNeeded(this))) {
+		return true;
+	    }
+	}
+	return false;
+    }
+
     public DateTime getDateFromLastActivity() {
 	List<WorkflowLog> logs = new ArrayList<WorkflowLog>();
 	logs.addAll(getExecutionLogs());
@@ -376,6 +385,10 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
 	List<Class<? extends ProcessFile>> availableClasses = new ArrayList<Class<? extends ProcessFile>>();
 	availableClasses.add(ProcessFile.class);
 	return availableClasses;
+    }
+
+    public List<Class<? extends ProcessFile>> getUploadableFileTypes() {
+	return getAvailableFileTypes();
     }
 
     @SuppressWarnings("unchecked")
