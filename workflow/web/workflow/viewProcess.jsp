@@ -3,6 +3,8 @@
 <%@ taglib uri="/WEB-INF/struts-html.tld" prefix="html"%>
 <%@ taglib uri="/WEB-INF/struts-logic.tld" prefix="logic"%>
 <%@ taglib uri="/WEB-INF/fenix-renderers.tld" prefix="fr"%>
+<%@ taglib uri="/WEB-INF/workflow.tld" prefix="wf"%>
+
 <%@page import="myorg.presentationTier.LayoutContext"%>
 <%@page import="module.workflow.presentationTier.WorkflowLayoutContext"%>
 <%@page import="myorg.presentationTier.actions.ContextBaseAction"%><script src="<%= request.getContextPath() + "/javaScript/jquery.alerts.js"%>" type="text/javascript"></script> 
@@ -45,19 +47,11 @@
 			<ul class="operations mtop0">
 				<logic:iterate id="activity" name="process" property="activeActivities">
 					<logic:equal name="activity" property="visible" value="true">
-						<bean:define id="name" name="activity" property="name" />
+						<bean:define id="name" name="activity" property="class.simpleName" type="java.lang.String"/>
 						<li>
-						<bean:define id="activityName" name="activity" property="localizedName"/>
-						<html:link styleId="<%= name.toString() %>"
-							page='<%="/workflowProcessManagement.do?method=process&activity=" + name + "&processId=" + processId%>'>
-							<fr:view name="activityName" layout="html"/>
-							<logic:equal name="activity" property="confirmationNeeded" value="true">
-								<bean:define id="message" name="activity" property="localizedConfirmationMessage"/>
-								  <script type="text/javascript"> 
-						   				linkConfirmationHook('<%= name %>', '<%= message %>','<%= activityName %>'); 
-						 		</script> 
-							</logic:equal>
-						</html:link>
+							<wf:activityLink id="<%= name %>" processName="process" activityName="<%= name %>" scope="request">
+								<wf:activityName processName="process" activityName="<%= name %>" scope="request"/>
+							</wf:activityLink>
 						</li>
 					</logic:equal>
 				</logic:iterate>

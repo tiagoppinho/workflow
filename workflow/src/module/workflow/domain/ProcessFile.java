@@ -36,6 +36,10 @@ public class ProcessFile extends ProcessFile_Base {
 	return getFilename().toLowerCase().endsWith(".pdf");
     }
 
+    public boolean isPossibleToArchieve() {
+	return true;
+    }
+
     @Override
     public void delete() {
 	removeProcess();

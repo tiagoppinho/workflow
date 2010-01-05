@@ -74,12 +74,14 @@ public class WorkflowProcessFiles extends OutputRenderer {
 			downloadLink.setUrl(RenderUtils.getFormattedProperties(getDownloadFormat(), file));
 			container.addChild(downloadLink);
 
-			HtmlLink removeLink = new HtmlLink();
-			removeLink.setBody(new HtmlText("("
-				+ RenderUtils.getResourceString("WORKFLOW_RESOURCES", "link.removeFile") + ")"));
-			removeLink.setUrl(RenderUtils.getFormattedProperties(getRemoveFormat(), file));
+			if (file.isPossibleToArchieve()) {
+			    HtmlLink removeLink = new HtmlLink();
+			    removeLink.setBody(new HtmlText("("
+				    + RenderUtils.getResourceString("WORKFLOW_RESOURCES", "link.removeFile") + ")"));
+			    removeLink.setUrl(RenderUtils.getFormattedProperties(getRemoveFormat(), file));
 
-			container.addChild(removeLink);
+			    container.addChild(removeLink);
+			}
 
 			if (iterator.hasNext()) {
 			    container.addChild(new HtmlText(", "));

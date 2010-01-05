@@ -336,6 +336,9 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
     @Override
     @Service
     public void removeFiles(ProcessFile file) {
+	if (!file.isPossibleToArchieve()) {
+	    throw new DomainException("error.invalidOperation.tryingToRemoveFileWhenIsNotPossible", DomainException.getResourceFor("resources/AcquisitionResources"));
+	}
 	super.removeFiles(file);
 	addDeletedFiles(file);
 	new FileRemoveLog(this, UserView.getCurrentUser(), file.getFilename(), file.getDisplayName(), BundleUtil
