@@ -32,6 +32,14 @@ public class ProcessFile extends ProcessFile_Base {
 
     }
 
+    /*
+     * After validation and adding the file this is called
+     */
+    public void postProcess(WorkflowFileUploadBean bean) {
+	
+    }
+
+    
     public boolean isParsableType() {
 	return getFilename().toLowerCase().endsWith(".pdf");
     }

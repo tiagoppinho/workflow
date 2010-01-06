@@ -256,6 +256,7 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
 	file.fillInNonDefaultFields(bean);
 
 	addFiles(file);
+	file.postProcess(bean);
 	new FileUploadLog(this, UserView.getCurrentUser(), file.getFilename(), file.getDisplayName(), BundleUtil
 		.getLocalizedNamedFroClass(file.getClass()));
 	return file;
@@ -337,7 +338,8 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
     @Service
     public void removeFiles(ProcessFile file) {
 	if (!file.isPossibleToArchieve()) {
-	    throw new DomainException("error.invalidOperation.tryingToRemoveFileWhenIsNotPossible", DomainException.getResourceFor("resources/AcquisitionResources"));
+	    throw new DomainException("error.invalidOperation.tryingToRemoveFileWhenIsNotPossible", DomainException
+		    .getResourceFor("resources/AcquisitionResources"));
 	}
 	super.removeFiles(file);
 	addDeletedFiles(file);
