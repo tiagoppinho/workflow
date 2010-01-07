@@ -206,4 +206,13 @@ public class WorkflowMetaProcess extends WorkflowMetaProcess_Base {
 	return isOpen();
     }
 
+    @Override
+    public User getProcessCreator() {
+	return getCreator();
+    }
+    
+    @Override
+    public void notifyUserDueToComment(User user, String comment) {
+	// This has still to be implemented.
+    }
 }
