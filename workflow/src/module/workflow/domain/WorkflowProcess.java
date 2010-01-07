@@ -105,12 +105,7 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
 
     public abstract boolean isActive();
 
-    /*
-     * TODO make this abstract when expenditures refactorization ends
-     */
-    public User getProcessCreator() {
-	return null;
-    }
+    public abstract User getProcessCreator();
 
     public boolean isAccessible(User user) {
 	return true;
@@ -222,12 +217,7 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
 	}
     }
 
-    /*
-     * TODO: Make this method abstract after the refactorization
-     */
-    public void notifyUserDueToComment(User user, String comment) {
-	// do nothing by default
-    }
+    public abstract void notifyUserDueToComment(User user, String comment);
 
     public boolean isSystemAbleToNotifyUser(User user) {
 	return true;
