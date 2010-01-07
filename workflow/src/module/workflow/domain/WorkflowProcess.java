@@ -146,7 +146,7 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
     @SuppressWarnings("unchecked")
     public boolean hasAnyAvailableActivity(boolean checkForUserAwareness) {
 	for (WorkflowActivity activity : getActivities()) {
-	    if (activity.isActive(this) && (!checkForUserAwareness || activity.isUserAwarenessNeeded(this))) {
+	    if ((!checkForUserAwareness || activity.isUserAwarenessNeeded(this)) && activity.isActive(this)) {
 		return true;
 	    }
 	}
@@ -155,7 +155,7 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
 
     public boolean hasAnyAvailableActivity(User user, boolean checkForUserAwareness) {
 	for (WorkflowActivity activity : getActivities()) {
-	    if (activity.isActive(this, user) && (!checkForUserAwareness || activity.isUserAwarenessNeeded(this))) {
+	    if ((!checkForUserAwareness || activity.isUserAwarenessNeeded(this, user)) && activity.isActive(this, user)) {
 		return true;
 	    }
 	}
@@ -255,6 +255,7 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
 	}
 	file.fillInNonDefaultFields(bean);
 
+	file.preProcess(bean);
 	addFiles(file);
 	file.postProcess(bean);
 	new FileUploadLog(this, UserView.getCurrentUser(), file.getFilename(), file.getDisplayName(), BundleUtil

@@ -32,18 +32,39 @@ public class ProcessFile extends ProcessFile_Base {
 
     }
 
-    /*
-     * After validation and adding the file this is called
+    /**
+     * Before validation and adding the file this method is called. The default
+     * behavior is doing nothing.
+     * 
+     * @param bean
+     *            the bean that contains all the data used to create this file.
      */
-    public void postProcess(WorkflowFileUploadBean bean) {
-	
+    public void preProcess(WorkflowFileUploadBean bean) {
+
     }
 
-    
+    /**
+     * After validation and adding the file this method is called. The default
+     * behavior is doing nothing.
+     * 
+     * @param bean
+     *            the bean that contains all the data used to create this file.
+     */
+    public void postProcess(WorkflowFileUploadBean bean) {
+
+    }
+
     public boolean isParsableType() {
 	return getFilename().toLowerCase().endsWith(".pdf");
     }
 
+    /**
+     * Tells if the file is able to be archieved or not at the given time the
+     * method is called. (This will renderer a remove link on the interface when
+     * returns true).
+     * 
+     * By default it returns true
+     */
     public boolean isPossibleToArchieve() {
 	return true;
     }

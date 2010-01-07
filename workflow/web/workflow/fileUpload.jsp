@@ -23,9 +23,6 @@
 
 <jsp:include page='<%= layoutContext.getWorkflowShortBody() %>'/>
 
-<bean:define id="urlView">/workflowProcessManagement.do?method=viewProcess&amp;processId=<bean:write name="process" property="externalId"/></bean:define>
-<bean:define id="urlPostBack">/workflowProcessManagement.do?method=uploadPostBack&amp;processId=<bean:write name="process" property="externalId"/></bean:define>
-
 <logic:messagesPresent property="message" message="true">
 	<div class="error1">
 		<html:messages id="errorMessage" property="message" message="true"> 
@@ -34,11 +31,21 @@
 	</div>
 </logic:messagesPresent>
 
-<fr:edit name="bean" id="uploadFile" action='<%= "workflowProcessManagement.do?method=upload&processId=" + processOID %>' schema="<%= schema %>">
-	<fr:layout name="tabular">
-		<fr:property name="classes" value="form"/>
-		<fr:property name="columnClasses" value=",,tderror"/>
-	</fr:layout>
-	<fr:destination name="cancel" path="<%= urlView %>" />
-	<fr:destination name="postBack"  path="<%= urlPostBack %>"/>
-</fr:edit>
+<logic:equal name="bean" property="defaultUploadInterfaceUsed" value="true">
+	<bean:define id="urlView">/workflowProcessManagement.do?method=viewProcess&amp;processId=<bean:write name="process" property="externalId"/></bean:define>
+	<bean:define id="urlPostBack">/workflowProcessManagement.do?method=uploadPostBack&amp;processId=<bean:write name="process" property="externalId"/></bean:define>
+	
+	<fr:edit name="bean" id="uploadFile" action='<%= "workflowProcessManagement.do?method=upload&processId=" + processOID %>' schema="<%= schema %>">
+		<fr:layout name="tabular">
+			<fr:property name="classes" value="form"/>
+			<fr:property name="columnClasses" value=",,tderror"/>
+		</fr:layout>
+		<fr:destination name="cancel" path="<%= urlView %>" />
+		<fr:destination name="postBack"  path="<%= urlPostBack %>"/>
+	</fr:edit>
+</logic:equal>
+
+<logic:equal name="bean" property="defaultUploadInterfaceUsed" value="false">
+	<bean:define id="jspToInclude" name="interface" type="java.lang.String"/>
+	<jsp:include page="<%= jspToInclude %>"/>
+</logic:equal>

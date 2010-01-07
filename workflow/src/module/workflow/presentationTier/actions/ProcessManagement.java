@@ -263,6 +263,14 @@ public class ProcessManagement extends ContextBaseAction {
 	return viewComments(mapping, form, request, response);
     }
 
+    private ActionForward forwardToUpload(HttpServletRequest request, WorkflowFileUploadBean bean) {
+
+	if (!bean.isDefaultUploadInterfaceUsed()) {
+	    request.setAttribute("interface", "/" + bean.getSelectedInstance().getName().replace('.', '/') + "-upload.jsp");
+	}
+	return forward(request, "/workflow/fileUpload.jsp");
+    }
+
     public ActionForward fileUpload(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
 	    final HttpServletResponse response) {
 
@@ -274,7 +282,7 @@ public class ProcessManagement extends ContextBaseAction {
 	request.setAttribute("bean", bean);
 	request.setAttribute("process", process);
 
-	return forward(request, "/workflow/fileUpload.jsp");
+	return forwardToUpload(request, bean);
     }
 
     public ActionForward upload(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
@@ -286,11 +294,10 @@ public class ProcessManagement extends ContextBaseAction {
 	    process.addFile(bean.getSelectedInstance(), bean.getDisplayName(), bean.getFilename(), consumeInputStream(bean
 		    .getInputStream()), bean);
 	} catch (ProcessFileValidationException e) {
-	    // RenderUtils.invalidateViewState("uploadFile");
 	    request.setAttribute("bean", bean);
 	    request.setAttribute("process", process);
 	    addLocalizedMessage(request, e.getLocalizedMessage());
-	    return forward(request, "/workflow/fileUpload.jsp");
+	    return forwardToUpload(request, bean);
 	}
 
 	return viewProcess(process, request);
@@ -310,7 +317,7 @@ public class ProcessManagement extends ContextBaseAction {
 	request.setAttribute("bean", bean);
 	request.setAttribute("process", process);
 
-	return forward(request, "/workflow/fileUpload.jsp");
+	return forwardToUpload(request, bean);
     }
 
     public ActionForward viewLogs(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,

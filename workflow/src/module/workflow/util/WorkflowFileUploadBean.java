@@ -45,4 +45,17 @@ public class WorkflowFileUploadBean extends FileUploadBean {
 	this.process = process;
     }
 
+    /**
+     * Tells if this given file type uses the default upload interface (hence
+     * only needing the developer to define a schema for it's type) or rather
+     * uses a developer defined JSP. If it's the latest case the JSP will be
+     * looked under "/" + getClass().getName().replaceAll('.','/') +
+     * "-upload.jsp"
+     * 
+     * By default it returns true
+     */
+    public boolean isDefaultUploadInterfaceUsed() {
+	return true;
+    }
+
 }
