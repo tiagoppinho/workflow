@@ -304,18 +304,33 @@ public class ProcessManagement extends ContextBaseAction {
 
     }
 
-    public ActionForward uploadPostBack(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
-	    final HttpServletResponse response) {
-	WorkflowFileUploadBean bean = getRenderedObject("uploadFile");
-	final WorkflowProcess process = getProcess(request);
-	Class<? extends ProcessFile> selectedInstance = bean.getSelectedInstance();
-	bean = FileUploadBeanResolver.getBeanForProcessFile(process, selectedInstance);
-	bean.setSelectedInstance(selectedInstance);
+    private WorkflowFileUploadBean fileUploadRoundTrip(Class<? extends ProcessFile> selectedInstance,
+	    final HttpServletRequest request) {
 
-	RenderUtils.invalidateViewState("uploadFile");
+	final WorkflowProcess process = getProcess(request);
+	WorkflowFileUploadBean bean = FileUploadBeanResolver.getBeanForProcessFile(process, selectedInstance);
+	bean.setSelectedInstance(selectedInstance);
 
 	request.setAttribute("bean", bean);
 	request.setAttribute("process", process);
+
+	return bean;
+    }
+
+    public ActionForward uploadPostBack(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
+	    final HttpServletResponse response) {
+	WorkflowFileUploadBean bean = getRenderedObject("uploadFile");
+	bean = fileUploadRoundTrip(bean.getSelectedInstance(), request);
+
+	RenderUtils.invalidateViewState("uploadFile");
+
+	return forwardToUpload(request, bean);
+    }
+
+    public ActionForward invalidFileUpload(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
+	    final HttpServletResponse response) {
+	WorkflowFileUploadBean bean = getRenderedObject("uploadFile");
+	bean = fileUploadRoundTrip(bean.getSelectedInstance(), request);
 
 	return forwardToUpload(request, bean);
     }
