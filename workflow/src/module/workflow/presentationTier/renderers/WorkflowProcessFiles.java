@@ -3,6 +3,8 @@ package module.workflow.presentationTier.renderers;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
+
 import module.workflow.domain.ProcessFile;
 import module.workflow.domain.WorkflowProcess;
 import myorg.util.BundleUtil;
@@ -70,7 +72,11 @@ public class WorkflowProcessFiles extends OutputRenderer {
 			ProcessFile file = iterator.next();
 
 			HtmlLink downloadLink = new HtmlLink();
-			downloadLink.setBody(new HtmlText(file.getDisplayName()));
+			String filename = file.getDisplayName();
+			if (StringUtils.isEmpty(filename)) {
+			    filename = file.getFilename();
+			}
+			downloadLink.setBody(new HtmlText(filename));
 			downloadLink.setUrl(RenderUtils.getFormattedProperties(getDownloadFormat(), file));
 			container.addChild(downloadLink);
 
