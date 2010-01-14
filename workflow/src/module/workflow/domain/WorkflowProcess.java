@@ -440,4 +440,24 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
 	return document;
     }
 
+    public Collection<? extends WorkflowLog> getExecutionLogs(final Class<? extends WorkflowLog>... classes) {
+	final Collection<WorkflowLog> result = new ArrayList<WorkflowLog>();
+	for (final WorkflowLog workflowLog : getExecutionLogsSet()) {
+	    if (match(workflowLog, classes)) {
+		result.add(workflowLog);
+	    }
+	}
+	return result;
+    }
+
+    private boolean match(WorkflowLog workflowLog, Class<? extends WorkflowLog>[] classes) {
+	for (final Class clazz : classes) {
+	    if (clazz.isAssignableFrom(workflowLog.getClass())) {
+		return true;
+	    }
+	}
+	return false;
+    }
+    
+
 }
