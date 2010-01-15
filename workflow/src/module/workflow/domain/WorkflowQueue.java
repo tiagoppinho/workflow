@@ -2,6 +2,7 @@ package module.workflow.domain;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -17,6 +18,16 @@ import pt.ist.fenixWebFramework.services.Service;
 import pt.ist.fenixframework.pstm.IllegalWriteException;
 
 public abstract class WorkflowQueue extends WorkflowQueue_Base {
+
+    public static final Comparator<WorkflowQueue> COMPARATOR_BY_NAME = new Comparator<WorkflowQueue>() {
+
+	@Override
+	public int compare(final WorkflowQueue o1, final WorkflowQueue o2) {
+	    int n = o1.getName().compareTo(o2.getName());
+	    return n == 0 ? o1.getExternalId().compareTo(o2.getExternalId()) : n;
+	}
+	
+    };
 
     public WorkflowQueue() {
 	super();
