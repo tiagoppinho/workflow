@@ -23,7 +23,8 @@
 
 <logic:notEmpty name="party" property="queues">
 	<logic:iterate id="queue" name="party" property="queues">
-		<bean:write name="queue" property="metaType.name"/>
 		<bean:write name="queue" property="name"/>
+		<bean:write name="queue" property="metaType"/>		
+		<br/>
 	</logic:iterate>
 </logic:notEmpty>
