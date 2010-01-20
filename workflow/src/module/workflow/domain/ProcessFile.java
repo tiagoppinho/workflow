@@ -76,4 +76,18 @@ public class ProcessFile extends ProcessFile_Base {
 	super.delete();
     }
 
+    /**
+     * This method is called after a file is archived in order to allow the user
+     * to remove possible relations.
+     * 
+     * By default does nothing
+     */
+    public void processRemoval() {
+
+    }
+
+    public boolean isArchieved() {
+	return getProcess() == null && getProcessWithDeleteFile() != null;
+    }
+
 }

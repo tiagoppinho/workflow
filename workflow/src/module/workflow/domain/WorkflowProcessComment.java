@@ -30,10 +30,11 @@ import java.util.Comparator;
 import java.util.Set;
 
 import myorg.domain.User;
-import myorg.domain.index.interfaces.Indexable;
-import myorg.domain.index.interfaces.Searchable;
 
 import org.joda.time.DateTime;
+
+import pt.ist.fenixframework.plugins.luceneIndexing.domain.interfaces.Indexable;
+import pt.ist.fenixframework.plugins.luceneIndexing.domain.interfaces.Searchable;
 
 public class WorkflowProcessComment extends WorkflowProcessComment_Base implements Searchable {
 

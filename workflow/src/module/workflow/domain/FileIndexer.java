@@ -2,7 +2,8 @@ package module.workflow.domain;
 
 import module.fileSupport.metadata.parsing.FileMetadata;
 import module.fileSupport.metadata.parsing.MetadataParserChain;
-import myorg.domain.index.IndexDocument;
+import module.workflow.domain.WorkflowProcess.WorkflowProcessIndex;
+import pt.ist.fenixframework.plugins.luceneIndexing.domain.IndexDocument;
 
 /*
  * This is only here because we have that
@@ -17,7 +18,7 @@ public class FileIndexer {
 
 	if (parsedFiles.hasContent()) {
 	    for (String key : parsedFiles.keySet()) {
-		document.indexField(key, parsedFiles.getObject(key));
+		document.indexField(WorkflowProcessIndex.FILE, parsedFiles.getObject(key));
 	    }
 	}
     }

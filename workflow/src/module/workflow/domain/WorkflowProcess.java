@@ -44,9 +44,6 @@ import module.workflow.util.WorkflowFileUploadBean;
 import myorg.applicationTier.Authenticate.UserView;
 import myorg.domain.User;
 import myorg.domain.exceptions.DomainException;
-import myorg.domain.index.IndexDocument;
-import myorg.domain.index.interfaces.Indexable;
-import myorg.domain.index.interfaces.Searchable;
 import myorg.util.BundleUtil;
 
 import org.apache.commons.collections.Predicate;
@@ -55,13 +52,30 @@ import org.joda.time.DateTime;
 import org.joda.time.Interval;
 
 import pt.ist.fenixWebFramework.services.Service;
+import pt.ist.fenixframework.plugins.luceneIndexing.IndexableField;
+import pt.ist.fenixframework.plugins.luceneIndexing.domain.IndexDocument;
+import pt.ist.fenixframework.plugins.luceneIndexing.domain.interfaces.Indexable;
+import pt.ist.fenixframework.plugins.luceneIndexing.domain.interfaces.Searchable;
 import pt.ist.fenixframework.pstm.IllegalWriteException;
 
 public abstract class WorkflowProcess extends WorkflowProcess_Base implements Searchable, Indexable {
 
-    private static final String comments = "comments";
-    private static final String commentors = "commentors";
-    private static final String numberKey = "number";
+    public static enum WorkflowProcessIndex implements IndexableField {
+
+	COMMENTS("comments"), COMMENTORS("commentors"), NUMBER("number"), FILE("file");
+
+	private String fieldName;
+
+	private WorkflowProcessIndex(String fieldName) {
+	    this.fieldName = fieldName;
+	}
+
+	@Override
+	public String getFieldName() {
+	    return fieldName;
+	}
+
+    }
 
     public WorkflowProcess() {
 	super();
@@ -334,8 +348,9 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
 	}
 	super.removeFiles(file);
 	addDeletedFiles(file);
-	new FileRemoveLog(this, UserView.getCurrentUser(), file.getFilename(), file.getDisplayName(), BundleUtil
-		.getLocalizedNamedFroClass(file.getClass()));
+	file.processRemoval();
+	new FileRemoveLog(this, UserView.getCurrentUser(), file.getFilename(), file.getDisplayName() != null ? file
+		.getDisplayName() : file.getFilename(), BundleUtil.getLocalizedNamedFroClass(file.getClass()));
     }
 
     public List<WorkflowProcessComment> getUnreadCommentsForCurrentUser() {
@@ -420,23 +435,11 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
 	IndexDocument document = new IndexDocument(this);
 
 	if (!StringUtils.isEmpty(this.getProcessNumber())) {
-	    document.indexField(numberKey, this.getProcessNumber());
+	    document.indexField(WorkflowProcessIndex.NUMBER, this.getProcessNumber());
 	}
 
-	StringBuilder commentsBuffer = new StringBuilder();
-	StringBuilder commentorsBuffer = new StringBuilder();
-	for (WorkflowProcessComment comment : getComments()) {
-	    commentsBuffer.append(comment.getComment());
-	    commentsBuffer.append(" ");
-	    commentorsBuffer.append(comment.getCommenter().getPresentationName());
-	    commentorsBuffer.append(" ");
-
-	}
-
-	document.indexField(comments, commentsBuffer.toString());
-	document.indexField(commentors, commentorsBuffer.toString());
-
-	FileIndexer.indexFilesInProcess(document, this);
+	// CommentIndexer.indexCommentsInProcess(document,this);
+	// FileIndexer.indexFilesInProcess(document, this);
 	return document;
     }
 
@@ -458,6 +461,5 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
 	}
 	return false;
     }
-    
 
 }
