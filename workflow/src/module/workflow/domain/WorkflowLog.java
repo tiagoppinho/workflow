@@ -5,6 +5,7 @@ import java.util.Comparator;
 import myorg.domain.User;
 
 import org.joda.time.DateTime;
+import org.joda.time.Duration;
 
 import pt.utl.ist.fenix.tools.util.Strings;
 
@@ -46,4 +47,31 @@ public abstract class WorkflowLog extends WorkflowLog_Base {
     }
 
     public abstract String getDescription();
+
+    public WorkflowLog getPrevious() {
+	final WorkflowProcess workflowProcess = getProcess();
+	final DateTime when = getWhenOperationWasRan();
+	WorkflowLog previous = null;
+	for (final WorkflowLog workflowLog : workflowProcess.getExecutionLogsSet()) {
+	    if (workflowLog.isBefore(this) && (previous == null || previous.isBefore(workflowLog))) {
+		previous = workflowLog;
+	    }
+	}
+	return previous;
+    }
+
+    public boolean isBefore(final WorkflowLog workflowLog) {
+	final DateTime when = getWhenOperationWasRan();
+	return when.isBefore(workflowLog.getWhenOperationWasRan());
+    }
+
+    public Duration getDurationFromPreviousLog() {
+	final WorkflowLog previous = getPrevious();
+	return previous == null ? null : calculateDuration(previous, this);
+    }
+
+    private static Duration calculateDuration(final WorkflowLog previous, final WorkflowLog next) {
+	return new Duration(previous.getWhenOperationWasRan(), next.getWhenOperationWasRan());
+    }
+
 }
