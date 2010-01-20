@@ -15,10 +15,6 @@
 	</div>
 </logic:equal>
 
-<bean:define id="linkRemoveLabel">
-		<bean:message bundle="MYORG_RESOURCES" key="link.remove"/>
-</bean:define>
-	
 <script type="text/javascript">
 	$(function() {
 		$("#tabs").tabs();
@@ -77,8 +73,8 @@
 					<li class="mvert025">
 						<span>
 							<fr:view name="userPresentation"/>
-							<wf:activityLink id="<%= "remove-" + userID %>" processName="process" activityName="RemoveObserver" linkName="<%= linkRemoveLabel %>" scope="request">
-								<wf:activityLinkParameter parameter="user" value="<%= userID %>"/>
+							<wf:activityLink id="<%= "remove-" + userID %>" processName="process" activityName="RemoveObserver" scope="request" paramName0="user" paramValue0="<%= userID%>">
+								<bean:message bundle="MYORG_RESOURCES" key="link.remove"/>
 							</wf:activityLink>					
 							<script type="text/javaScript">
 							 linkConfirmationHook("<%= "remove-" + userID %>", '<bean:message key="label.confirm.removal" bundle="META_WORKFLOW_RESOURCES" arg0="<%= userPresentation.toString() %>"/>', ' <bean:message key="title.removeObserver" bundle="META_WORKFLOW_RESOURCES"/>');
@@ -91,10 +87,9 @@
 
 			
 			<p class="mtop15 mbottom05">
-				<bean:define id="addObserver">
+				<wf:activityLink processName="process" activityName="AddObserver" scope="request">
 					+ <bean:message key="activity.AddObserver" bundle="WORKFLOW_RESOURCES"/>
-				</bean:define>
-				<wf:activityLink processName="process" activityName="AddObserver" linkName="<%= addObserver %>" scope="request"/>
+				</wf:activityLink>
 			</p>
 			
 		</div>

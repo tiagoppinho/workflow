@@ -17,7 +17,6 @@ import myorg.applicationTier.Authenticate.UserView;
 import myorg.domain.User;
 import myorg.presentationTier.actions.ContextBaseAction;
 import myorg.util.VariantBean;
-import myorg.util.lucene.DomainIndexer;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Predicate;
@@ -28,6 +27,7 @@ import org.apache.struts.action.ActionMapping;
 
 import pt.ist.fenixWebFramework.renderers.utils.RenderUtils;
 import pt.ist.fenixWebFramework.struts.annotations.Mapping;
+import pt.ist.fenixframework.plugins.luceneIndexing.DomainIndexer;
 
 @Mapping(path = "/metaWorkflow")
 public class MetaWorkflowAction extends ContextBaseAction {

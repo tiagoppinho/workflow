@@ -24,12 +24,12 @@ import module.workflow.presentationTier.WorkflowLayoutContext;
 import myorg.applicationTier.Authenticate.UserView;
 import myorg.domain.User;
 import myorg.domain.exceptions.DomainException;
-import myorg.domain.index.IndexDocument;
 
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 
 import pt.ist.fenixWebFramework.services.Service;
+import pt.ist.fenixframework.plugins.luceneIndexing.domain.IndexDocument;
 
 public class WorkflowMetaProcess extends WorkflowMetaProcess_Base {
 
@@ -184,12 +184,14 @@ public class WorkflowMetaProcess extends WorkflowMetaProcess_Base {
     @Override
     public IndexDocument getDocumentToIndex() {
 	IndexDocument document = super.getDocumentToIndex();
-	document.indexField(subjectKey, this.getSubject());
-	document.indexField(descriptionKey, this.getInstanceDescription());
-
-	document.indexField(queueKey, getCurrentQueue().getName());
-	document.indexField(requestorKey, getRequestor().getUser().getPresentationName());
-	document.indexField(creatorKey, getCreator().getPresentationName());
+	// TODO : FIX THIS
+	// document.indexField(subjectKey, this.getSubject());
+	// document.indexField(descriptionKey, this.getInstanceDescription());
+	//
+	// document.indexField(queueKey, getCurrentQueue().getName());
+	// document.indexField(requestorKey,
+	// getRequestor().getUser().getPresentationName());
+	// document.indexField(creatorKey, getCreator().getPresentationName());
 
 	return document;
     }
@@ -210,7 +212,7 @@ public class WorkflowMetaProcess extends WorkflowMetaProcess_Base {
     public User getProcessCreator() {
 	return getCreator();
     }
-    
+
     @Override
     public void notifyUserDueToComment(User user, String comment) {
 	// This has still to be implemented.
