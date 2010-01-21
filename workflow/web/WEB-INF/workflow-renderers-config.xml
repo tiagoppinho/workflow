@@ -16,7 +16,7 @@
 	  <property name="nameClasses" value="bold"/>
 	  <property name="photoClasses" value="photoHolder"/>
 	  <property name="bodyClasses" value="aleft"/>
-	  <property name="photoUrl" value="https://fenix.ist.utl.pt/publico/retrievePersonalPhoto.do?method=retrieveByIstId&amp;contentContextPath_PATH=/homepage&amp;istId=${username}"/>
+	  <property name="photoUrl" value="https://fenix.ist.utl.pt/publico/retrievePersonalPhoto.do?method=retrieveByUUID&amp;contentContextPath_PATH=/homepage&amp;uuid=${username}"/>
 	  <property name="reverseOrder" value="false"/>
 	  <property name="observerBundle" value="WORKFLOW_RESOURCES"/>
 	  <property name="observerKey" value="label.marker.observer"/>
