@@ -40,6 +40,7 @@ import module.workflow.activities.ActivityInformation;
 import module.workflow.activities.WorkflowActivity;
 import module.workflow.presentationTier.WorkflowLayoutContext;
 import module.workflow.presentationTier.actions.CommentBean;
+import module.workflow.util.ProcessEvaluator;
 import module.workflow.util.WorkflowFileUploadBean;
 import myorg.applicationTier.Authenticate.UserView;
 import myorg.domain.User;
@@ -81,6 +82,15 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
 	super();
 	setOjbConcreteClass(getClass().getName());
 	setWorkflowSystem(WorkflowSystem.getInstance());
+    }
+
+    public static void evaluate(final Class processClass, final ProcessEvaluator<WorkflowProcess> processEvaluator,
+	    final Collection<? extends WorkflowProcess> processes) {
+	for (final WorkflowProcess process : processes) {
+	    if (processClass.isAssignableFrom(process.getClass())) {
+		processEvaluator.evaluate(process);
+	    }
+	}
     }
 
     @SuppressWarnings("unchecked")
