@@ -13,6 +13,7 @@ import pt.ist.fenixWebFramework.renderers.components.HtmlBlockContainer;
 import pt.ist.fenixWebFramework.renderers.components.HtmlComponent;
 import pt.ist.fenixWebFramework.renderers.components.HtmlLink;
 import pt.ist.fenixWebFramework.renderers.components.HtmlParagraphContainer;
+import pt.ist.fenixWebFramework.renderers.components.HtmlScript;
 import pt.ist.fenixWebFramework.renderers.components.HtmlText;
 import pt.ist.fenixWebFramework.renderers.layouts.Layout;
 import pt.ist.fenixWebFramework.renderers.utils.RenderUtils;
@@ -82,11 +83,13 @@ public class WorkflowProcessFiles extends OutputRenderer {
 
 			if (file.isPossibleToArchieve()) {
 			    HtmlLink removeLink = new HtmlLink();
+			    removeLink.setId("remove-" + file.getExternalId());
 			    removeLink.setBody(new HtmlText("("
 				    + RenderUtils.getResourceString("WORKFLOW_RESOURCES", "link.removeFile") + ")"));
 			    removeLink.setUrl(RenderUtils.getFormattedProperties(getRemoveFormat(), file));
 
 			    container.addChild(removeLink);
+			    container.addChild(removeConfirmation(file));
 			}
 
 			if (iterator.hasNext()) {
@@ -96,6 +99,18 @@ public class WorkflowProcessFiles extends OutputRenderer {
 		}
 		return blockContainer;
 
+	    }
+
+	    private HtmlComponent removeConfirmation(ProcessFile file) {
+		HtmlScript script = new HtmlScript();
+		script.setContentType("text/javascript");
+		script.setScript("linkConfirmationHook('remove-"
+			+ file.getExternalId()
+			+ "', '"
+			+ BundleUtil.getFormattedStringFromResourceBundle("resources/WorkflowResources",
+				"label.fileRemoval.confirmation", file.getDisplayName()) + "' , '" + file.getDisplayName()
+			+ "');");
+		return script;
 	    }
 
 	};
