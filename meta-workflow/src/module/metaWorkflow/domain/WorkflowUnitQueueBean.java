@@ -7,12 +7,11 @@ import module.organization.domain.AccountabilityType;
 import module.organization.domain.Unit;
 import module.workflow.domain.WorkflowQueue;
 import module.workflow.util.WorkflowQueueBean;
-import pt.ist.fenixWebFramework.util.DomainReference;
 
 public class WorkflowUnitQueueBean extends WorkflowQueueBean {
 
-    private DomainReference<Unit> unit;
-    private List<DomainReference<AccountabilityType>> accountabilityTypes;
+    private Unit unit;
+    private List<AccountabilityType> accountabilityTypes;
 
     public WorkflowUnitQueueBean() {
 	setAccountabilityTypes(new ArrayList<AccountabilityType>());
@@ -20,26 +19,22 @@ public class WorkflowUnitQueueBean extends WorkflowQueueBean {
     }
 
     public Unit getUnit() {
-	return unit.getObject();
+	return unit;
     }
 
     public void setUnit(Unit unit) {
-	this.unit = new DomainReference<Unit>(unit);
+	this.unit = unit;
     }
 
     public void setAccountabilityTypes(List<AccountabilityType> accountabilityTypes) {
-	this.accountabilityTypes = new ArrayList<DomainReference<AccountabilityType>>();
+	this.accountabilityTypes = new ArrayList<AccountabilityType>();
 	for (AccountabilityType type : accountabilityTypes) {
-	    this.accountabilityTypes.add(new DomainReference<AccountabilityType>(type));
+	    this.accountabilityTypes.add(type);
 	}
     }
 
     public List<AccountabilityType> getAccountabilityTypes() {
-	List<AccountabilityType> types = new ArrayList<AccountabilityType>();
-	for (DomainReference<AccountabilityType> domainReference : this.accountabilityTypes) {
-	    types.add(domainReference.getObject());
-	}
-	return types;
+	return accountabilityTypes;
     }
 
     @Override

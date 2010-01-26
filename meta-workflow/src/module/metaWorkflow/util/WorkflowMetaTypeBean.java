@@ -6,21 +6,20 @@ import java.util.List;
 
 import module.organization.domain.OrganizationalModel;
 import module.workflow.domain.ProcessFile;
-import pt.ist.fenixWebFramework.util.DomainReference;
 
 public class WorkflowMetaTypeBean implements Serializable {
 
     private String name;
     private String description;
     private List<Class<? extends ProcessFile>> classNames;
-    private DomainReference<OrganizationalModel> organizationModel;
+    private OrganizationalModel organizationModel;
 
     public OrganizationalModel getOrganizationModel() {
-	return organizationModel.getObject();
+	return organizationModel;
     }
 
     public void setOrganizationModel(OrganizationalModel organizationModel) {
-	this.organizationModel = new DomainReference<OrganizationalModel>(organizationModel);
+	this.organizationModel = organizationModel;
     }
 
     public List<Class<? extends ProcessFile>> getFileClassNames() {
