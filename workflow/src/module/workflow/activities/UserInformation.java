@@ -2,12 +2,11 @@ package module.workflow.activities;
 
 import module.workflow.domain.WorkflowProcess;
 import myorg.domain.User;
-import pt.ist.fenixWebFramework.util.DomainReference;
 
 public class UserInformation<T extends WorkflowProcess> extends ActivityInformation<T> {
 
     private static final long serialVersionUID = 1L;
-    private DomainReference<User> user;
+    private User user;
 
     public UserInformation(T process, WorkflowActivity<T, UserInformation<T>> activity) {
 	super(process, activity);
@@ -15,13 +14,14 @@ public class UserInformation<T extends WorkflowProcess> extends ActivityInformat
     }
 
     public void setUser(User user) {
-	this.user = new DomainReference<User>(user);
+	this.user = user;
     }
 
     public User getUser() {
-	return this.user.getObject();
+	return user;
     }
 
+    @Override
     public boolean hasAllneededInfo() {
 	return getUser() != null;
     }

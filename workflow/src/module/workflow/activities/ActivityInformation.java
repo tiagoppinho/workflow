@@ -28,11 +28,10 @@ package module.workflow.activities;
 import java.io.Serializable;
 
 import module.workflow.domain.WorkflowProcess;
-import pt.ist.fenixWebFramework.util.DomainReference;
 
 public class ActivityInformation<P extends WorkflowProcess> implements Serializable {
 
-    private DomainReference<P> process;
+    private P process;
     private Class<? extends WorkflowActivity> activityClass;
     private String activityName;
     private String localizedName;
@@ -63,7 +62,7 @@ public class ActivityInformation<P extends WorkflowProcess> implements Serializa
     }
 
     public P getProcess() {
-	return process.getObject();
+	return process;
     }
 
     public String getLocalizedName() {
@@ -75,7 +74,7 @@ public class ActivityInformation<P extends WorkflowProcess> implements Serializa
     }
 
     public void setProcess(P process) {
-	this.process = new DomainReference<P>(process);
+	this.process = process;
     }
 
     public boolean hasAllneededInfo() {

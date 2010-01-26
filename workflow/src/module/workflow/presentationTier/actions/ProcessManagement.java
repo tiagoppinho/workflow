@@ -59,7 +59,6 @@ import org.apache.struts.action.ActionMapping;
 import pt.ist.fenixWebFramework.renderers.utils.RenderUtils;
 import pt.ist.fenixWebFramework.servlets.filters.contentRewrite.GenericChecksumRewriter;
 import pt.ist.fenixWebFramework.struts.annotations.Mapping;
-import pt.ist.fenixWebFramework.util.DomainReference;
 import pt.ist.fenixframework.pstm.AbstractDomainObject;
 
 @Mapping(path = "/workflowProcessManagement")
@@ -172,9 +171,6 @@ public class ProcessManagement extends ContextBaseAction {
 
     private Object convert(Class<?> type, String parameterValue) throws Exception {
 	if (AbstractDomainObject.class.isAssignableFrom(type)) {
-	    return AbstractDomainObject.fromExternalId(parameterValue);
-	}
-	if (DomainReference.class == type) {
 	    return AbstractDomainObject.fromExternalId(parameterValue);
 	}
 	if (type == Integer.class) {
