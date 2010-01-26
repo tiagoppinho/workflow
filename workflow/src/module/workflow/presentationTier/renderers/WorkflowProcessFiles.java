@@ -104,12 +104,15 @@ public class WorkflowProcessFiles extends OutputRenderer {
 	    private HtmlComponent removeConfirmation(ProcessFile file) {
 		HtmlScript script = new HtmlScript();
 		script.setContentType("text/javascript");
+		String displayName = file.getDisplayName();
+		if (displayName == null) {
+		    displayName = file.getFilename();
+		}
 		script.setScript("linkConfirmationHook('remove-"
 			+ file.getExternalId()
 			+ "', '"
 			+ BundleUtil.getFormattedStringFromResourceBundle("resources/WorkflowResources",
-				"label.fileRemoval.confirmation", file.getDisplayName()) + "' , '" + file.getDisplayName()
-			+ "');");
+				"label.fileRemoval.confirmation", displayName) + "' , '" + displayName + "');");
 		return script;
 	    }
 
