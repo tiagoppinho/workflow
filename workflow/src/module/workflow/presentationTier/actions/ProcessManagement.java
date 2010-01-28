@@ -64,6 +64,8 @@ import pt.ist.fenixframework.pstm.AbstractDomainObject;
 @Mapping(path = "/workflowProcessManagement")
 public class ProcessManagement extends ContextBaseAction {
 
+    public static final String workflowManagementURL = "/workflowProcessManagement.do?method=viewProcess&processId=";
+
     public static Map<Class<? extends WorkflowProcess>, ProcessRequestHandler<? extends WorkflowProcess>> handlers = new HashMap<Class<? extends WorkflowProcess>, ProcessRequestHandler<? extends WorkflowProcess>>();
 
     public ActionForward viewProcess(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
@@ -89,8 +91,8 @@ public class ProcessManagement extends ContextBaseAction {
 
 	ActionForward forward = new ActionForward();
 	forward.setRedirect(true);
-	String realPath = "/workflowProcessManagement.do?method=viewProcess&processId=" + process.getExternalId() + "&"
-		+ CONTEXT_PATH + "=" + getContext(request).getPath();
+	String realPath = ProcessManagement.workflowManagementURL + process.getExternalId() + "&" + CONTEXT_PATH + "="
+		+ getContext(request).getPath();
 	forward.setPath(realPath + "&" + GenericChecksumRewriter.CHECKSUM_ATTRIBUTE_NAME + "="
 		+ GenericChecksumRewriter.calculateChecksum(request.getContextPath() + realPath));
 	return forward;
