@@ -11,7 +11,7 @@
 		<fr:layout name="tabular">
 		</fr:layout>
 	<fr:destination name="postBack" path="/metaWorkflow.do?method=prepareCreateProcess"/>
-	<fr:destination name="cancel" path="/metaWorkflow.do?method=metaProcessHome"/>
+	<fr:destination name="cancel" path="/metaWorkflow.do?method=viewOpenProcessesInMyQueues"/>
 	</fr:edit>
 
 

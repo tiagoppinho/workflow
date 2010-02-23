@@ -9,7 +9,7 @@
 
 <bean:define id="metaTypeId" name="metaType" property="externalId"/>
 
-<table class="table">
+<table class="tstyle3">
 <tr>
 	<th> A remover </th>
 	<th> A adicionar </th>

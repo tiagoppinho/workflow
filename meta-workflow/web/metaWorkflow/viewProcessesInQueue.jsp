@@ -10,7 +10,7 @@
 
 <ul>
 	<li>
-		<html:link page="/metaWorkflow.do?method=metaProcessHome">
+		<html:link page="/metaWorkflow.do?method=viewOpenProcessesInMyQueues">
 			<bean:message key="link.back" bundle="MYORG_RESOURCES"/>
 		</html:link>	
 	</li>
@@ -47,7 +47,7 @@
 		<div>
 			<fr:view name="displayProcesses" schema="view.metaProcesses.list.inQueueContext">
 				<fr:layout name="tabular">
-					<fr:property name="classes" value="table"/>
+					<fr:property name="classes" value="tstyle3"/>
 				</fr:layout>
 			</fr:view>
 		</div>

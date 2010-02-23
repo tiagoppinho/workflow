@@ -17,7 +17,7 @@
 
 <bean:define id="description" name="metaType" property="currentDescription"/>
 	
-<table class="table">
+<table class="tstyle3">
 	<tr>
 		<th><bean:message key="label.metaType.name" bundle="META_WORKFLOW_RESOURCES"/></th>
 		<th><bean:message key="label.organizational.structure" bundle="ORGANIZATION_RESOURCES"/></th>
@@ -97,7 +97,7 @@
 		<html:hidden styleId="rev1" property="rev1" value=""/>
 		<html:hidden styleId="rev2" property="rev2" value=""/>
 	
-		<table class="table">
+		<table class="tstyle3">
 		<tr>
 			<th><bean:message key="label.metaType.version" bundle="META_WORKFLOW_RESOURCES"/></th>
 			<th><bean:message key="label.metaType.versionOwner" bundle="META_WORKFLOW_RESOURCES"/></th>

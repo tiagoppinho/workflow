@@ -17,7 +17,7 @@
 
 <fr:view name="metaTypes" schema="view.metaType.list">
 	<fr:layout name="tabular">
-		<fr:property name="classes" value="table"/>
+		<fr:property name="classes" value="tstyle3"/>
 		<fr:property name="linkFormat(details)" value="/metaTypeManagement.do?method=viewMetaType&metaTypeId=${externalId}"/>
 		<fr:property name="bundle(details)" value="MYORG_RESOURCES"/>
 		<fr:property name="key(details)" value="link.view"/>

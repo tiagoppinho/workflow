@@ -6,10 +6,6 @@
 
 <h2><bean:message key="title.dashboard" bundle="META_WORKFLOW_RESOURCES"/></h2>
 
-<html:link page="/dashBoardManagement.do?method=doTest">
-Teste
-</html:link>
-
 <logic:present name="user">
 	<table class="structural">
 		<tr>
@@ -74,7 +70,7 @@ Teste
 		<div>
 			<fr:view name="displayProcesses" schema="view.metaProcesses.list">
 				<fr:layout name="tabular">
-					<fr:property name="classes" value="table"/>
+					<fr:property name="classes" value="tstyle3"/>
 				</fr:layout>
 			</fr:view>
 		</div>
@@ -93,7 +89,7 @@ Teste
 		<div>
 			<fr:view name="myProcess" schema="view.metaProcesses.list.withState">
 				<fr:layout name="tabular">
-					<fr:property name="classes" value="table"/>
+					<fr:property name="classes" value="tstyle3"/>
 				</fr:layout>
 			</fr:view>
 		</div>
@@ -111,7 +107,7 @@ Teste
 		<div>
 			<fr:view name="openProcesses" schema="view.metaProcesses.list">
 				<fr:layout name="tabular">
-					<fr:property name="classes" value="table"/>
+					<fr:property name="classes" value="tstyle3"/>
 				</fr:layout>
 			</fr:view>
 		</div>
@@ -131,7 +127,7 @@ Teste
 	<h3 class="mtop05 mbottom075"><bean:message key="label.queues" bundle="META_WORKFLOW_RESOURCES"/></h3>
 	
 	<div>
-		<table class="table">
+		<table class="tstyle3">
 			<tr>
 				<th><bean:message key="label.queue" bundle="META_WORKFLOW_RESOURCES"/></th>
 				<th><bean:message key="label.queue.openProcesses" bundle="META_WORKFLOW_RESOURCES"/></th>
