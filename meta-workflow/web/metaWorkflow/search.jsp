@@ -70,7 +70,7 @@
 	<logic:notEmpty name="searchResult">
 	
 		<div>
-			<table class="table">
+			<table class="tstyle3">
 				<tr>
 					<th><bean:message key="label.metaProcess.subject" bundle="META_WORKFLOW_RESOURCES"/></th>
 					<th><bean:message key="label.metaProcess.type" bundle="META_WORKFLOW_RESOURCES"/></th>
