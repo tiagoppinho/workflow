@@ -412,6 +412,10 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
 	return getAvailableFileTypes();
     }
 
+    public List<Class<? extends ProcessFile>> getDisplayableFileTypes() {
+	return getAvailableFileTypes();
+    }
+
     @SuppressWarnings("unchecked")
     public <T extends ProcessFile> List<T> getFiles(Class<T> selectedClass) {
 	List<T> classes = new ArrayList<T>();

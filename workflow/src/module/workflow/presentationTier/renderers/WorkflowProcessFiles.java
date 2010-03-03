@@ -49,7 +49,7 @@ public class WorkflowProcessFiles extends OutputRenderer {
 
 		HtmlBlockContainer container = new HtmlBlockContainer();
 
-		for (Class<? extends ProcessFile> fileType : process.getAvailableFileTypes()) {
+		for (Class<? extends ProcessFile> fileType : process.getDisplayableFileTypes()) {
 		    container.addChild(generate(process, fileType));
 		}
 
