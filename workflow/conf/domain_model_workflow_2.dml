@@ -24,8 +24,7 @@
  * 
  */
  
- 
-class module.workflow.domain.ProcessFile extends module.fileSupport.domain.GenericFile { }
+class module.workflow.domain.ProcessFile extends .pt.ist.fenixframework.plugins.fileSupport.domain.GenericFile { }
  
 relation WorkflowflowSystemMyOrg {
 	module.workflow.domain.WorkflowSystem playsRole workflowSystem;
