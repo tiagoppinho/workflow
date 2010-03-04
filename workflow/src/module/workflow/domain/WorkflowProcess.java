@@ -266,6 +266,7 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
 	    if (e.getCause() instanceof IllegalWriteException) {
 		throw new IllegalWriteException();
 	    }
+	    throw new Error(e);
 	}
 	file.fillInNonDefaultFields(bean);
 
