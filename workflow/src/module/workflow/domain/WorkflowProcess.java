@@ -477,4 +477,23 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
 	return false;
     }
 
+    public boolean hasBeenExecuted(Class<? extends WorkflowActivity> clazz) {
+	return hasBeenExecuted(clazz, 1);
+    }
+
+    public boolean hasBeenExecuted(Class<? extends WorkflowActivity> clazz, int count) {
+	String operationName = clazz.getSimpleName();
+	List<ActivityLog> activitiesExecution = (List<ActivityLog>) getExecutionLogs(ActivityLog.class);
+	int counter = 0;
+	for (ActivityLog log : activitiesExecution) {
+	    if (log.getOperation().equalsIgnoreCase(operationName)) {
+		counter++;
+	    }
+	    if (counter == count) {
+		return true;
+	    }
+	}
+
+	return false;
+    }
 }

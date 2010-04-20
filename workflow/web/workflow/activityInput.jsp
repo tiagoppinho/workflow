@@ -35,4 +35,5 @@ schema='<%= "activityInformation." + activityInformationClass %>'>
 		<fr:property name="requiredMarkShown" value="true"/>
 	</fr:layout>
 	<fr:destination name="cancel" path='<%="/workflowProcessManagement.do?method=viewProcess&processId=" + processId%>'/>
+	<fr:destination name="postback" path='<%= "/workflowProcessManagement.do?method=activityDefaultPostback&processId=" + processId%>'/>
 </fr:edit>

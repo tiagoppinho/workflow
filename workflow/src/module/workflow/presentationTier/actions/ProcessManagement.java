@@ -107,6 +107,17 @@ public class ProcessManagement extends ContextBaseAction {
 	return doLifeCycle(information, process, activity, request);
     }
 
+    public ActionForward activityDefaultPostback(final ActionMapping mapping, final ActionForm form,
+	    final HttpServletRequest request, final HttpServletResponse response) {
+
+	WorkflowProcess process = getProcess(request);
+	WorkflowActivity<WorkflowProcess, ActivityInformation<WorkflowProcess>> activity = getActivity(process, request);
+	ActivityInformation<WorkflowProcess> information = getRenderedObject("activityBean");
+	RenderUtils.invalidateViewState("activityBean");
+
+	return doLifeCycle(information, process, activity, request);
+    }
+
     public ActionForward actionLink(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
 	    final HttpServletResponse response) throws Exception {
 
