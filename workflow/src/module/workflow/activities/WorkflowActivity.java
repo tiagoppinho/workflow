@@ -227,7 +227,12 @@ public abstract class WorkflowActivity<P extends WorkflowProcess, AI extends Act
      * @return The localized activity name used in the interfaces.
      */
     public String getLocalizedName() {
-	return BundleUtil.getStringFromResourceBundle(getUsedBundle(), "activity." + getClass().getSimpleName());
+	try {
+	    return BundleUtil.getStringFromResourceBundle(getUsedBundle(), "activity." + getClass().getSimpleName());
+	} catch (java.util.MissingResourceException e) {
+	    e.printStackTrace();
+	    return getClass().getSimpleName();
+	}
     }
 
     /**
@@ -259,7 +264,7 @@ public abstract class WorkflowActivity<P extends WorkflowProcess, AI extends Act
      * Determines if a given activity needs confirmation to be ran. If returns
      * true the interface will first display a confirmation message with a
      * confirm/cancel buttons for the user to acknowledge the operation.
-     *
+     * 
      * @param process
      * @return by default false
      */
