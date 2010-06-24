@@ -49,22 +49,26 @@ public class WorkflowProcessFiles extends OutputRenderer {
 
 		HtmlBlockContainer container = new HtmlBlockContainer();
 
-		for (Class<? extends ProcessFile> fileType : process.getDisplayableFileTypes()) {
-		    container.addChild(generate(process, fileType));
+		List<Class<? extends ProcessFile>> displayableFileTypes = process.getDisplayableFileTypes();
+		for (Class<? extends ProcessFile> fileType : displayableFileTypes) {
+		    container.addChild(generate(process, fileType, displayableFileTypes.size() > 1));
 		}
 
 		return container;
 	    }
 
-	    private HtmlComponent generate(WorkflowProcess process, Class<? extends ProcessFile> fileType) {
+	    private HtmlComponent generate(WorkflowProcess process, Class<? extends ProcessFile> fileType, boolean shouldShowLabel) {
 		List<? extends ProcessFile> files = process.getFiles(fileType);
 
 		HtmlBlockContainer blockContainer = new HtmlBlockContainer();
 		HtmlParagraphContainer container = new HtmlParagraphContainer();
 		blockContainer.addChild(container);
 
-		container.addChild(new HtmlText(BundleUtil.getLocalizedNamedFroClass(fileType) + ": "));
-		if (files.isEmpty()) {
+		if (shouldShowLabel) {
+		    container.addChild(new HtmlText(BundleUtil.getLocalizedNamedFroClass(fileType) + ": "));
+		}
+
+		if (shouldShowLabel && files.isEmpty()) {
 		    container.addChild(new HtmlText("-"));
 		} else {
 		    Iterator<? extends ProcessFile> iterator = files.iterator();
