@@ -113,17 +113,6 @@ public abstract class WorkflowActivity<P extends WorkflowProcess, AI extends Act
     }
 
     /**
-     * Wrapper method to involve service execution within a service. See 
-     * the method executeWithoutServiceWrapper for more details. 
-     * 
-     * @param activityInformation
-     */
-    @Service
-    public final void execute(AI activityInformation) {
-	executeWithoutServiceWrapper(activityInformation);
-    }
-
-    /**
      * Activity core method. When called runs the activity, it has 4 different
      * steps: verification of the conditions, log, actual execution and user
      * notification. To specify activity behavior this should not be the method
@@ -131,7 +120,8 @@ public abstract class WorkflowActivity<P extends WorkflowProcess, AI extends Act
      * 
      * @param activityInformation
      */
-    public final void executeWithoutServiceWrapper(AI activityInformation) {
+    @Service
+    public final void execute(AI activityInformation) {
 	P process = activityInformation.getProcess();
 	checkConditionsFor(process);
 	logExecution(process, getClass().getSimpleName(), getLoggedPerson(), getArgumentsDescription(activityInformation));
