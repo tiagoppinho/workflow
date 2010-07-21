@@ -145,6 +145,7 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
 
     @SuppressWarnings("unchecked")
     public <T extends WorkflowProcess, AI extends ActivityInformation<T>> List<WorkflowActivity<T, AI>> getActiveActivities() {
+	try {
 	List<WorkflowActivity<T, AI>> activities = new ArrayList<WorkflowActivity<T, AI>>();
 	List<WorkflowActivity<T, AI>> activeActivities = getActivities();
 
@@ -155,6 +156,10 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
 	}
 
 	return activities;
+	} catch (final Throwable t) {
+	    t.printStackTrace();
+	    throw new Error(t);
+	}
     }
 
     @SuppressWarnings("unchecked")
