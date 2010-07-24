@@ -6,6 +6,22 @@ import myorg.util.BundleUtil;
 
 public class GiveProcess<T extends WorkflowProcess> extends WorkflowActivity<T, UserInformation<T>> {
 
+    public static abstract class NotifyUser {
+
+	public abstract void notifyUser(final User user, final WorkflowProcess process);
+
+    }
+
+    private NotifyUser notifyUser;
+
+    public GiveProcess(final NotifyUser notifyUser) {
+	this.notifyUser = notifyUser;
+    }
+
+    public GiveProcess() {
+	this(null);
+    }
+
     @Override
     public String getLocalizedName() {
 	return BundleUtil.getStringFromResourceBundle(getUsedBundle(), "activity." + getClass().getSimpleName());
@@ -18,7 +34,11 @@ public class GiveProcess<T extends WorkflowProcess> extends WorkflowActivity<T, 
 
     @Override
     protected void process(UserInformation<T> information) {
-	information.getProcess().giveProcess(information.getUser());
+	final User user = information.getUser();
+	information.getProcess().giveProcess(user);
+	if (notifyUser != null) {
+	    notifyUser.notifyUser(user, information.getProcess());
+	}
     }
 
     public boolean isUserAwarenessNeeded(T process, User user) {
