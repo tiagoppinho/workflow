@@ -23,6 +23,10 @@
  *   along with MyOrg. If not, see <http://www.gnu.org/licenses/>.
  * 
  */
+ 
+ 
+external class .pt.ist.fenixframework.plugins.fileSupport.domain.GenericFile;
+ 
  class module.metaWorkflow.domain.WorkflowMetaProcess extends module.workflow.domain.WorkflowProcess {
  	String instanceDescription;
  	String subject;
@@ -33,9 +37,6 @@
 
  class module.metaWorkflow.domain.UserRequestor extends module.metaWorkflow.domain.Requestor {
  }
-
-class module.metaWorkflow.domain.MetaWorkflowUserDashBoardPanel extends module.dashBoard.domain.UserDashBoardPanel {
-}
 
 relation WorkflowUnitQueueUnit {
 	module.metaWorkflow.domain.WorkflowUnitQueue playsRole queues {

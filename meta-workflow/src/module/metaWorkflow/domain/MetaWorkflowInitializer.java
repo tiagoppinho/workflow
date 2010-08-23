@@ -2,12 +2,9 @@ package module.metaWorkflow.domain;
 
 import javax.servlet.http.HttpServletRequest;
 
-import module.dashBoard.WidgetRegister;
 import module.dashBoard.WidgetRegister.WidgetAditionPredicate;
 import module.dashBoard.domain.DashBoardPanel;
-import module.dashBoard.widgets.WidgetController;
 import module.metaWorkflow.presentationTier.actions.OrganizationModelPluginAction.QueueView;
-import module.metaWorkflow.widgets.EasyAccessWidget;
 import module.organization.presentationTier.actions.OrganizationModelAction;
 import module.workflow.presentationTier.actions.ProcessManagement;
 import module.workflow.presentationTier.actions.ProcessManagement.ProcessRequestHandler;
@@ -18,13 +15,6 @@ import myorg.util.VariantBean;
 import pt.ist.fenixWebFramework.services.Service;
 
 public class MetaWorkflowInitializer extends MetaWorkflowInitializer_Base implements ModuleInitializer {
-
-    public static WidgetAditionPredicate META_WORKFLOW_PANEL_PREDICATE = new WidgetAditionPredicate() {
-	@Override
-	public boolean canBeAdded(DashBoardPanel panel, User userAdding) {
-	    return (MetaWorkflowUserDashBoardPanel.class.isAssignableFrom(panel.getClass()));
-	}
-    };
 
     private static boolean isInitialized = false;
 
@@ -67,7 +57,6 @@ public class MetaWorkflowInitializer extends MetaWorkflowInitializer_Base implem
 
     @Override
     public void init(MyOrg root) {
-	registerWidget(EasyAccessWidget.class);
 
 	ProcessManagement.registerProcessRequestHandler(WorkflowMetaProcess.class,
 		new ProcessRequestHandler<WorkflowMetaProcess>() {
@@ -82,7 +71,4 @@ public class MetaWorkflowInitializer extends MetaWorkflowInitializer_Base implem
 	OrganizationModelAction.partyViewHookManager.register(new QueueView());
     }
 
-    private static void registerWidget(Class<? extends WidgetController> widgetClass) {
-	WidgetRegister.registerWidget(widgetClass, META_WORKFLOW_PANEL_PREDICATE);
-    }
 }
