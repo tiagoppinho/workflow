@@ -85,6 +85,42 @@ class WorkflowUserGroupQueue extends WorkflowQueue {
 
 }
 
+class ProcessSelectionMapper {
+	String classname;
+}
+
+class NodeMapping {
+	int nodeOrder;
+}
+
+relation WorkflowflowSystemNodeMapping {
+	WorkflowSystem playsRole workflowSystem;
+	NodeMapping playsRole nodeMappings {
+		multiplicity *;
+	}
+}
+
+relation WorkflowflowSystemProcessSelectionMapper {
+	WorkflowSystem playsRole workflowSystem;
+	ProcessSelectionMapper playsRole processMappings {
+		multiplicity *;
+	}
+}
+
+relation MappedNodeProcessSelectionMapper {
+	NodeMapping playsRole nodeMappings {
+		multiplicity *;
+	}
+	ProcessSelectionMapper playsRole processMapping;
+}
+
+relation NodeMappingNode {
+	NodeMapping playsRole NodeMapping {
+		multiplicity *;
+	}
+	.myorg.domain.contents.Node playsRole node;
+}
+
 relation WorkflowflowSystemWorkflowProcess {
 	WorkflowSystem playsRole workflowSystem;
 	WorkflowProcess playsRole processes {

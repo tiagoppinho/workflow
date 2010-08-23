@@ -146,16 +146,16 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
     @SuppressWarnings("unchecked")
     public <T extends WorkflowProcess, AI extends ActivityInformation<T>> List<WorkflowActivity<T, AI>> getActiveActivities() {
 	try {
-	List<WorkflowActivity<T, AI>> activities = new ArrayList<WorkflowActivity<T, AI>>();
-	List<WorkflowActivity<T, AI>> activeActivities = getActivities();
+	    List<WorkflowActivity<T, AI>> activities = new ArrayList<WorkflowActivity<T, AI>>();
+	    List<WorkflowActivity<T, AI>> activeActivities = getActivities();
 
-	for (WorkflowActivity<T, AI> activity : activeActivities) {
-	    if (activity.isActive((T) this)) {
-		activities.add(activity);
+	    for (WorkflowActivity<T, AI> activity : activeActivities) {
+		if (activity.isActive((T) this)) {
+		    activities.add(activity);
+		}
 	    }
-	}
 
-	return activities;
+	    return activities;
 	} catch (final Throwable t) {
 	    t.printStackTrace();
 	    throw new Error(t);
@@ -383,6 +383,10 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
 	return comments;
     }
 
+    public String getDescription() {
+	return StringUtils.EMPTY;
+    }
+
     @Service
     public void markCommentsAsReadForUser(User user) {
 	for (WorkflowProcessComment comment : getComments()) {
@@ -450,6 +454,14 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
 	return Collections.singleton((Indexable) this);
     }
 
+    protected boolean isFileIndexingEnabled() {
+	return false;
+    }
+
+    protected boolean isCommentingIndexingEnabled() {
+	return false;
+    }
+
     @Override
     public IndexDocument getDocumentToIndex() {
 	IndexDocument document = new IndexDocument(this);
@@ -458,8 +470,14 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
 	    document.indexField(WorkflowProcessIndex.NUMBER, this.getProcessNumber());
 	}
 
-	// CommentIndexer.indexCommentsInProcess(document,this);
-	// FileIndexer.indexFilesInProcess(document, this);
+	if (isCommentingIndexingEnabled()) {
+	    CommentIndexer.indexCommentsInProcess(document, this);
+	}
+
+	if (isFileIndexingEnabled()) {
+	    FileIndexer.indexFilesInProcess(document, this);
+	}
+
 	return document;
     }
 

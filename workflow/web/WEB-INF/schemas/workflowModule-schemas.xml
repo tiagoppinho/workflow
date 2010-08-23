@@ -77,3 +77,12 @@
 		bundle="WORKFLOW_RESOURCES">
 	<slot name="user.presentationName"/>
 </schema>
+
+<schema name="search.quick"
+	type="module.workflow.presentationTier.actions.BasicSearchProcessBean"
+	bundle="ACQUISITION_RESOURCES">
+	<slot name="processId" key="label.acquisitionProcessId.short"
+		bundle="EXPENDITURE_RESOURCES">
+		<property name="size" value="10" />
+	</slot>
+</schema>

@@ -29,6 +29,7 @@ import module.workflow.domain.WorkflowProcess;
 import myorg.applicationTier.Authenticate.UserView;
 import myorg.domain.User;
 import myorg.util.BundleUtil;
+import pt.ist.fenixWebFramework.renderers.CollectionRenderer;
 import pt.ist.fenixWebFramework.services.Service;
 
 /**
@@ -305,5 +306,27 @@ public abstract class WorkflowActivity<P extends WorkflowProcess, AI extends Act
      */
     public boolean isVisible() {
 	return true;
+    }
+
+    /**
+     * In the process page, along with the rendering of the activities name
+     * there's also the option to render a help [ ? ] marker which on mouse over
+     * will display the text return by {@link WorkflowActivity#getHelpMessage()}
+     * 
+     * 
+     * @return true if an help marker should be rendered for the following
+     *         activity
+     */
+    public boolean hasHelpMessage() {
+	return false;
+    }
+
+    /**
+     * By default it returns the activity.help.CLASS_NAME label.
+     * 
+     * @returns Localized help message
+     */
+    public String getHelpMessage() {
+	return BundleUtil.getStringFromResourceBundle(getUsedBundle(), "activity.help." + getClass().getName());
     }
 }

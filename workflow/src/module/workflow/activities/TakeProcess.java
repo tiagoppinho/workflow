@@ -19,4 +19,9 @@ public class TakeProcess<T extends WorkflowProcess> extends WorkflowActivity<T, 
     public boolean isUserAwarenessNeeded(T process, User user) {
 	return false;
     }
+    
+    @Override
+    public boolean isVisible() {
+	return false;
+    }
 }

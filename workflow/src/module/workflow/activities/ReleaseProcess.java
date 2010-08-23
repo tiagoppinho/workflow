@@ -26,4 +26,9 @@ public class ReleaseProcess<T extends WorkflowProcess> extends WorkflowActivity<
 	return false;
     }
 
+    @Override
+    public boolean isVisible() {
+	return false;
+    }
+
 }

@@ -7,7 +7,11 @@
 
 <%@page import="myorg.presentationTier.LayoutContext"%>
 <%@page import="module.workflow.presentationTier.WorkflowLayoutContext"%>
-<%@page import="myorg.presentationTier.actions.ContextBaseAction"%><script src="<%= request.getContextPath() + "/javaScript/jquery.alerts.js"%>" type="text/javascript"></script> 
+<%@page import="myorg.presentationTier.actions.ContextBaseAction"%>
+<%@page import="module.workflow.activities.TakeProcess"%>
+<%@page import="module.workflow.activities.StealProcess"%>
+<%@page import="module.workflow.activities.ReleaseProcess"%>
+<%@page import="module.workflow.activities.GiveProcess"%><script src="<%= request.getContextPath() + "/javaScript/jquery.alerts.js"%>" type="text/javascript"></script> 
 
 <script src="<%= request.getContextPath() + "/javaScript/alertHandlers.js"%>" type="text/javascript"></script> 
  
@@ -74,7 +78,29 @@
 						<bean:message key="link.viewLogs" bundle="WORKFLOW_RESOURCES"/>
 					</html:link>
 				</li>
-			
+	
+				<logic:equal name="process" property="ticketSupportAvailable" value="true">
+				<li>
+					<wf:activityLink id="take-process" processName="process" activityName="<%=  TakeProcess.class.getSimpleName() %>" scope="request">
+								<wf:activityName processName="process" activityName="<%= TakeProcess.class.getSimpleName() %>" scope="request"/>
+					</wf:activityLink>
+						<wf:activityLink id="steal-process" processName="process" activityName="<%=  StealProcess.class.getSimpleName() %>" scope="request">
+								<wf:activityName processName="process" activityName="<%= StealProcess.class.getSimpleName() %>" scope="request"/>
+					</wf:activityLink>
+					<wf:activityLink id="release-process" processName="process" activityName="<%=  ReleaseProcess.class.getSimpleName() %>" scope="request">
+								<wf:activityName processName="process" activityName="<%= ReleaseProcess.class.getSimpleName() %>" scope="request"/>
+					</wf:activityLink>
+				</li>	
+				
+					<wf:isActive processName="process" activityName="<%= GiveProcess.class.getSimpleName() %>" scope="request">
+					<li>
+						<wf:activityLink id="give-process" processName="process" activityName="<%=  GiveProcess.class.getSimpleName() %>" scope="request">
+									<wf:activityName processName="process" activityName="<%= GiveProcess.class.getSimpleName() %>" scope="request"/>
+						</wf:activityLink>
+					</li>
+					</wf:isActive>
+				</logic:equal>	
+				
 				<logic:equal name="process" property="commentsSupportAvailable" value="true">
 					<bean:size id="comments"  name="process" property="comments"/>
 					<li> 

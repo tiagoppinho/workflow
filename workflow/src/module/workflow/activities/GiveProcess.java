@@ -29,7 +29,8 @@ public class GiveProcess<T extends WorkflowProcess> extends WorkflowActivity<T, 
 
     @Override
     public boolean isActive(WorkflowProcess process, User user) {
-	return process.isTicketSupportAvailable() && !process.isUserObserver(user) && (process.getCurrentOwner() == null || process.getCurrentOwner() == user);
+	return process.isTicketSupportAvailable() && !process.isUserObserver(user)
+		&& (process.getCurrentOwner() == null || process.getCurrentOwner() == user);
     }
 
     @Override
@@ -53,5 +54,10 @@ public class GiveProcess<T extends WorkflowProcess> extends WorkflowActivity<T, 
     @Override
     protected String[] getArgumentsDescription(UserInformation<T> activityInformation) {
 	return new String[] { activityInformation.getUser().getPresentationName() };
+    }
+
+    @Override
+    public boolean isVisible() {
+	return false;
     }
 }

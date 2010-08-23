@@ -1,5 +1,8 @@
 package module.workflow.domain;
 
+import module.dashBoard.WidgetRegister;
+import module.workflow.widgets.ProcessListWidget;
+import module.workflow.widgets.QuickViewWidget;
 import myorg.domain.ModuleInitializer;
 import myorg.domain.MyOrg;
 import pt.ist.fenixWebFramework.services.Service;
@@ -47,7 +50,8 @@ public class WorkflowSystem extends WorkflowSystem_Base implements ModuleInitial
 
     @Override
     public void init(MyOrg root) {
-
+	WidgetRegister.registerWidget(ProcessListWidget.class);
+	WidgetRegister.registerWidget(QuickViewWidget.class);
     }
 
 }

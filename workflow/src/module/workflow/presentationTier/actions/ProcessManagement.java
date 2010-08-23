@@ -29,6 +29,7 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
@@ -43,10 +44,12 @@ import module.workflow.domain.ProcessFile;
 import module.workflow.domain.ProcessFileValidationException;
 import module.workflow.domain.WorkflowProcess;
 import module.workflow.domain.WorkflowProcessComment;
+import module.workflow.presentationTier.ProcessNodeSelectionMapper;
 import module.workflow.presentationTier.WorkflowLayoutContext;
 import module.workflow.util.FileUploadBeanResolver;
 import module.workflow.util.WorkflowFileUploadBean;
 import myorg.applicationTier.Authenticate.UserView;
+import myorg.domain.contents.Node;
 import myorg.domain.exceptions.DomainException;
 import myorg.presentationTier.Context;
 import myorg.presentationTier.actions.ContextBaseAction;
@@ -83,6 +86,12 @@ public class ProcessManagement extends ContextBaseAction {
 		.get(process.getClass());
 	if (handler != null) {
 	    handler.handleRequest(process, request);
+	}
+
+	Context context = (Context) request.getAttribute(CONTEXT);
+	if (context.getElements().isEmpty()) {
+	    List<Node> forwardFor = ProcessNodeSelectionMapper.getForwardFor(process.getClass());
+	    context.getElements().addAll(forwardFor);
 	}
 	return forward(request, "/workflow/viewProcess.jsp");
     }

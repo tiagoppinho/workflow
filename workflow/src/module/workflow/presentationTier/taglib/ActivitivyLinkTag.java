@@ -14,6 +14,10 @@ import module.workflow.domain.WorkflowProcess;
 
 public class ActivitivyLinkTag extends WorkflowBodyTag {
 
+    public static String TOOL_TIP_CLOSE = "tooltip tooltipClosed";
+    public static String TOOL_TIP_OPEN = "tooltip tooltipOpen";
+    public static String TEXT_CLASSES = "tooltipText";
+
     private String linkName;
 
     private String id;
@@ -151,12 +155,13 @@ public class ActivitivyLinkTag extends WorkflowBodyTag {
 	WorkflowActivity<WorkflowProcess, ActivityInformation<WorkflowProcess>> activity = getActivity();
 	if (activity.isActive(process)) {
 	    try {
-		pageContext.getOut().write("<a ");
-		if (getId() != null) {
-		    pageContext.getOut().write("id=\"");
-		    pageContext.getOut().write(getId());
-		    pageContext.getOut().write("\" ");
+		if (getId() == null) {
+		    generateId(activity);
 		}
+		pageContext.getOut().write("<a ");
+		pageContext.getOut().write("id=\"");
+		pageContext.getOut().write(getId());
+		pageContext.getOut().write("\" ");
 		pageContext.getOut().write("href=\"");
 		pageContext.getOut().write(getContextPath());
 		pageContext.getOut().write("/workflowProcessManagement.do?method=actionLink&activity=");
@@ -184,6 +189,10 @@ public class ActivitivyLinkTag extends WorkflowBodyTag {
 	return SKIP_BODY;
     }
 
+    private void generateId(WorkflowActivity<WorkflowProcess, ActivityInformation<WorkflowProcess>> activity) {
+	setId(activity.getClass().getSimpleName() + "-" + content.hashCode());
+    }
+
     /*
      * This hack is needed so even if we close the tag on the line below the
      * content no white spaces are added to the output creating a nasty link
@@ -207,6 +216,9 @@ public class ActivitivyLinkTag extends WorkflowBodyTag {
 	    try {
 		content.trimToSize();
 		content.append("</a>");
+		if (activity.hasHelpMessage()) {
+		    generateHelpFor(content, activity);
+		}
 		pageContext.getOut().write(content.toString());
 	    } catch (IOException e) {
 		e.printStackTrace();
@@ -214,6 +226,22 @@ public class ActivitivyLinkTag extends WorkflowBodyTag {
 	}
 	release();
 	return super.doAfterBody();
+
+    }
+
+    private void generateHelpFor(StringBuilder content,
+	    WorkflowActivity<WorkflowProcess, ActivityInformation<WorkflowProcess>> activity) {
+
+	String id = "help-" + activity.getName() + "-" + System.currentTimeMillis();
+	String getDocument = "document.getElementById('" + id + "')";
+
+	content.append("<div id=\"").append(id).append("\"").append(" onmouseout=\"").append(getDocument).append(".className='")
+		.append(ActivitivyLinkTag.TOOL_TIP_CLOSE).append("';\" onmouseover=\"").append(getDocument)
+		.append(".className='").append(ActivitivyLinkTag.TOOL_TIP_OPEN).append("';\" class=\"\"").append(
+			"><span>(?)</span><div class=\"").append(TEXT_CLASSES).append("\"><p class=\"\"mvert025>").append(
+			activity.getHelpMessage()).append("</p></div></div>").append("<script type=\"text/javascript\">").append(
+			getDocument).append(".className=\"").append(ActivitivyLinkTag.TOOL_TIP_CLOSE).append("\"").append(
+			";</script>");
 
     }
 
