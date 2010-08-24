@@ -24,6 +24,7 @@ import module.workflow.presentationTier.WorkflowLayoutContext;
 import myorg.applicationTier.Authenticate.UserView;
 import myorg.domain.User;
 import myorg.domain.exceptions.DomainException;
+import myorg.util.ClassNameBundle;
 
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
@@ -31,6 +32,7 @@ import org.joda.time.LocalDate;
 import pt.ist.fenixWebFramework.services.Service;
 import pt.ist.fenixframework.plugins.luceneIndexing.domain.IndexDocument;
 
+@ClassNameBundle(key="label.module.metaWorkflow", bundle="resources/MetaWorkflowResources")
 public class WorkflowMetaProcess extends WorkflowMetaProcess_Base {
 
     public static Map<String, WorkflowActivity<? extends WorkflowProcess, ? extends ActivityInformation>> activityMap = new HashMap<String, WorkflowActivity<? extends WorkflowProcess, ? extends ActivityInformation>>();
