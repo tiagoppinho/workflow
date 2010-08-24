@@ -13,7 +13,7 @@
 	<logic:iterate id="mapperToEdit" name="mappers">
 		<li>
 			<html:link page="/processSelectionNodeConfiguration.do?method=manageNodeSelection" paramId="mapperId" paramName="mapperToEdit" paramProperty="externalId">
-				<fr:view name="mapperToEdit" property="classname" type="java.lang.String"/>
+				<fr:view name="mapperToEdit" property="mappedClass" layout="name-resolver"/>
 			</html:link>
 			-
 			<html:link page="/processSelectionNodeConfiguration.do?method=deleteMapper" paramId="mapperToDeleteId" paramName="mapperToEdit" paramProperty="externalId">
@@ -30,6 +30,7 @@
 						<fr:schema bundle="WORKFLOW_RESOURCES" type="myorg.util.VariantBean">
 							<fr:slot name="object" layout="menu-select" key="label.createNewMapper">
 								<fr:property name="providerClass" value="module.workflow.presentationTier.renderers.providers.ProcessesClassesProvider"/>
+								<fr:property name="eachLayout" value="name-resolver"/>
 							</fr:slot>
 						</fr:schema>
 						<fr:layout>

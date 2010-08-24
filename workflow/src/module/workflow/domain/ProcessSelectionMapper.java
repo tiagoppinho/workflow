@@ -21,6 +21,15 @@ public class ProcessSelectionMapper extends ProcessSelectionMapper_Base {
 	return mappings;
     }
 
+    public Class<? extends WorkflowProcess> getMappedClass() {
+	try {
+	    return (Class<? extends WorkflowProcess>) Class.forName(getClassname());
+	} catch (ClassNotFoundException e) {
+	    e.printStackTrace();
+	    return null;
+	}
+    }
+
     @Service
     public void addMapping(Node node) {
 	List<NodeMapping> nodeMappings = getNodeMappings();
