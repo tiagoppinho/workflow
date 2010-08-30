@@ -43,4 +43,13 @@ public class ProcessListWidget extends WidgetController {
 	return BundleUtil.getStringFromResourceBundle("resources/WorkflowResources", "widget.description.processListWidget");
     }
 
+    @Override
+    public boolean isHelpModeSupported() {
+	return true;
+    }
+
+    @Override
+    public String getHelp() {
+	return BundleUtil.getStringFromResourceBundle("resources/WorkflowResources", "widget.help.processListWidget");
+    }
 }
