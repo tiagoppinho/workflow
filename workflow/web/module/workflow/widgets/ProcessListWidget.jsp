@@ -15,14 +15,14 @@
 	<table class="width100pc">
 		<logic:iterate id="counter" name="pendingProcessList">
 			<tr>
-				<td><fr:view name="counter" property="countableObject" layout="name-resolver"/></td>
+				<td><fr:view name="counter" property="processClass" layout="name-resolver"/></td>
 				<td>
 			
-				<bean:define id="typeOfProcess" name="counter" property="countableObject" type="java.lang.Class"/> 
+				<bean:define id="typeOfProcess" name="counter" property="processClassForForwarding" type="java.lang.Class"/> 
 				
 				<% List<Node> nodes = ProcessNodeSelectionMapper.getForwardFor(typeOfProcess); Node node = nodes != null && nodes.size() > 0 ? nodes.get(nodes.size()-1) : null; %>
 				<html:link page='<%= node != null ? node.getUrl() : "#" %>'>
-					<fr:view name="counter" property="value" />
+					<bean:write name="counter" property="count" />
 				</html:link>
 				</td>
 				

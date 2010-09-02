@@ -1,41 +1,22 @@
 package module.workflow.widgets;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.HashSet;
+import java.util.Set;
 
 import module.dashBoard.presentationTier.WidgetRequest;
 import module.dashBoard.widgets.WidgetController;
-import module.workflow.domain.WorkflowProcess;
-import module.workflow.domain.WorkflowSystem;
-import myorg.domain.User;
+import module.workflow.domain.ProcessCounter;
 import myorg.util.BundleUtil;
 import myorg.util.ClassNameBundle;
-import myorg.util.Counter;
 
 @ClassNameBundle(bundle = "resources/WorkflowResources", key = "widget.title.processListWidget")
 public class ProcessListWidget extends WidgetController {
 
+    private static final Set<ProcessCounter> processCounters = new HashSet<ProcessCounter>();
+
     @Override
     public void doView(WidgetRequest request) {
-	User requestingUser = request.getCurrentUser();
-	Map<Class<? extends WorkflowProcess>, Counter<Class<? extends WorkflowProcess>>> map = new HashMap<Class<? extends WorkflowProcess>, Counter<Class<? extends WorkflowProcess>>>();
-	for (WorkflowProcess process : WorkflowSystem.getInstance().getProcesses()) {
-	    if (process.isAccessible(requestingUser) && process.hasAnyAvailableActivity(requestingUser, true)) {
-		register(map, process);
-	    }
-	}
-
-	request.setAttribute("pendingProcessList", map.values());
-    }
-
-    private void register(Map<Class<? extends WorkflowProcess>, Counter<Class<? extends WorkflowProcess>>> map,
-	    WorkflowProcess process) {
-	Counter<Class<? extends WorkflowProcess>> counter = map.get(process.getClass());
-	if (counter == null) {
-	    counter = new Counter(process.getClass());
-	    map.put(process.getClass(), counter);
-	}
-	counter.increment();
+	request.setAttribute("pendingProcessList", processCounters);
     }
 
     @Override
@@ -52,4 +33,9 @@ public class ProcessListWidget extends WidgetController {
     public String getHelp() {
 	return BundleUtil.getStringFromResourceBundle("resources/WorkflowResources", "widget.help.processListWidget");
     }
+
+    public static void register(final ProcessCounter processCounter) {
+	processCounters.add(processCounter);
+    }
+
 }
