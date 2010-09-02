@@ -2,6 +2,7 @@ package module.workflow.widgets;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.TreeSet;
 
 import module.dashBoard.presentationTier.WidgetRequest;
 import module.dashBoard.widgets.WidgetController;
@@ -16,6 +17,8 @@ public class ProcessListWidget extends WidgetController {
 
     @Override
     public void doView(WidgetRequest request) {
+	final Set<ProcessCounter> processCounters = new TreeSet<ProcessCounter>(ProcessCounter.COMPARATOR);
+	processCounters.addAll(this.processCounters);
 	request.setAttribute("pendingProcessList", processCounters);
     }
 
