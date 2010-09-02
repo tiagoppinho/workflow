@@ -25,12 +25,16 @@
 
 package module.workflow.activities;
 
+import java.util.MissingResourceException;
+import java.util.ResourceBundle;
+
 import module.workflow.domain.WorkflowProcess;
 import myorg.applicationTier.Authenticate.UserView;
 import myorg.domain.User;
 import myorg.util.BundleUtil;
 import pt.ist.fenixWebFramework.renderers.CollectionRenderer;
 import pt.ist.fenixWebFramework.services.Service;
+import pt.utl.ist.fenix.tools.util.i18n.Language;
 
 /**
  * 
@@ -313,12 +317,20 @@ public abstract class WorkflowActivity<P extends WorkflowProcess, AI extends Act
      * there's also the option to render a help [ ? ] marker which on mouse over
      * will display the text return by {@link WorkflowActivity#getHelpMessage()}
      * 
+     * Default implementation checks if the Bundle from getUsedBundle() contains
+     * a key activity.FULL_CLASS_NAME.help
      * 
      * @return true if an help marker should be rendered for the following
      *         activity
      */
     public boolean hasHelpMessage() {
-	return false;
+	final ResourceBundle resourceBundle = ResourceBundle.getBundle(getUsedBundle(), Language.getLocale());
+	try {
+	    resourceBundle.getString("label." + getClass().getName() + ".help");
+	} catch (MissingResourceException e) {
+	    return false;
+	}
+	return true;
     }
 
     /**
@@ -327,6 +339,6 @@ public abstract class WorkflowActivity<P extends WorkflowProcess, AI extends Act
      * @returns Localized help message
      */
     public String getHelpMessage() {
-	return BundleUtil.getStringFromResourceBundle(getUsedBundle(), "activity.help." + getClass().getName());
+	return BundleUtil.getStringFromResourceBundle(getUsedBundle(), "label." + getClass().getName() + ".help");
     }
 }
