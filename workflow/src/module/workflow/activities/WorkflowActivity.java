@@ -111,7 +111,7 @@ public abstract class WorkflowActivity<P extends WorkflowProcess, AI extends Act
      * 
      * @param process
      * @param operationName
-     * @param userx
+     * @param user
      */
     protected void logExecution(P process, String operationName, User user, String... argumentsDescription) {
 	process.logExecution(getLoggedPerson(), operationName, argumentsDescription);
@@ -141,7 +141,8 @@ public abstract class WorkflowActivity<P extends WorkflowProcess, AI extends Act
      * label.description.FULL_CLASS_NAME.
      * 
      * @param activityInformation
-     * @return
+     * @return String array with the arguments description to be passed to the
+     *         locazation string
      */
     protected String[] getArgumentsDescription(AI activityInformation) {
 	return null;
@@ -336,7 +337,7 @@ public abstract class WorkflowActivity<P extends WorkflowProcess, AI extends Act
     /**
      * By default it returns the activity.help.CLASS_NAME label.
      * 
-     * @returns Localized help message
+     * @return Localized help message
      */
     public String getHelpMessage() {
 	return BundleUtil.getStringFromResourceBundle(getUsedBundle(), "label." + getClass().getName() + ".help");

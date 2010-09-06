@@ -401,25 +401,74 @@ public class ProcessManagement extends ContextBaseAction {
 	return (T) getDomainObject(request, "processId");
     }
 
+    /**
+     * Utility method that forwards to the main page of the process.
+     * 
+     * @param process
+     *            to be seen
+     * @return ActionFoward to the main page of the process
+     */
     public static ActionForward forwardToProcess(final WorkflowProcess process) {
 	return new ActionForward("/workflowProcessManagement.do?method=viewProcess&processId=" + process.getExternalId());
     }
 
+    /**
+     * Utility method that forwards to the activity page (or executes it in case
+     * it doesn't need any input) for a given process
+     * 
+     * @param process
+     *            the process to run the activity against
+     * @param activity
+     *            the activity to run
+     * @return ActionForward to the Activity running lifecycle entry point
+     */
     public static ActionForward forwardToActivity(final WorkflowProcess process, final WorkflowActivity activity) {
 	return new ActionForward("/workflowProcessManagement.do?method=process&processId=" + process.getExternalId()
 		+ "&activity=" + activity.getClass().getSimpleName());
     }
 
+    /**
+     * Even though a default postback method is given -
+     * {@link ProcessManagement#activityDefaultPostback(ActionMapping, ActionForm, HttpServletRequest, HttpServletResponse)}
+     * - in case some other operations should be done during the postback, this
+     * method should be use.
+     * 
+     * Define the postback to your own postback destination and then in that
+     * method return the result of this method.
+     * 
+     * @param information
+     *            from the information postback
+     * @param request
+     *            the httpservlet request
+     * @return ActionForward for the activity input interface.
+     */
     public static ActionForward performActivityPostback(ActivityInformation<? extends WorkflowProcess> information,
 	    HttpServletRequest request) {
 	return forwardProcessForInput(information.getActivity(), request, information);
     }
 
+    /**
+     * Use this method to register objects of the type
+     * {@link ProcessRequestHandler}
+     * 
+     * @param workflowProcessClass
+     *            The type of class for which the handle will perform work
+     * @param handler
+     *            the handler that performs the specific code
+     */
     public static <T extends WorkflowProcess> void registerProcessRequestHandler(Class<T> workflowProcessClass,
 	    ProcessRequestHandler<T> handler) {
 	handlers.put(workflowProcessClass, handler);
     }
 
+    /**
+     * The ProcessRequestHandler is an handler that allows the user to take
+     * control of the HttpServletRequest before the main page of the process is
+     * viewed. This is useful if there are layout changes and more objects want
+     * to be put in the request.
+     * 
+     * @param <T>: Some kind of WorkflowProcess
+     */
     public static interface ProcessRequestHandler<T extends WorkflowProcess> {
 	public void handleRequest(T process, HttpServletRequest request);
     }

@@ -125,12 +125,38 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
 	return null;
     }
 
+    /**
+     * Abstract method that returns ALL activities for the process either
+     * they're active or not.
+     * 
+     * @return List of objects that extends {@link WorkflowActivity}
+     */
     public abstract <T extends WorkflowActivity<? extends WorkflowProcess, ? extends ActivityInformation>> List<T> getActivities();
 
+    /**
+     * This method is usually used by generic filtering mechanisms. Usually
+     * inactive processes are discarded.
+     * 
+     * @return true if the process should be seen as active
+     */
     public abstract boolean isActive();
 
+    /**
+     * 
+     * @return User that should be seen as the process creator
+     */
     public abstract User getProcessCreator();
 
+    /**
+     * This method is called when the process is sent to the main process page
+     * and also in default filtering mechanisms.
+     * 
+     * In order to implement access control to the process, this method should
+     * be overriden.
+     * 
+     * @param user
+     * @return true if the user given has input can access the process
+     */
     public boolean isAccessible(User user) {
 	return true;
     }
@@ -139,6 +165,21 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
 	return isAccessible(UserView.getCurrentUser());
     }
 
+    /**
+     * The WorkflowProcess already gives a default layout to render the head,
+     * body and a short body, which is presented in the activities input pages,
+     * of the processes pages. In order to have specific layouts for the process
+     * this method should be override with a new Layout class that extends
+     * WorkflowLayoutContext.
+     * 
+     * Default values:
+     * 
+     * Head: /FULL_CLASS_NAME.replace('.','/')/head.jsp Body:
+     * /FULL_CLASS_NAME.replace('.','/')/body.jsp ShortBody:
+     * /FULL_CLASS_NAME.replace('.','/')/shortBody.jsp
+     * 
+     * @return The WorkflowLayoutContext to use in the main process page
+     */
     public WorkflowLayoutContext getLayout() {
 	return WorkflowLayoutContext.getDefaultWorkflowLayoutContext(this);
     }
@@ -246,8 +287,28 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
 	}
     }
 
+    /**
+     * The comment page allows for the comments to be delivered to the users
+     * through some communication channel, usually email or sms, this method
+     * should implement that communication system.
+     * 
+     * @param user
+     * @param comment
+     */
     public abstract void notifyUserDueToComment(User user, String comment);
 
+    /**
+     * Not all users might be reachable through the notify system implemented in
+     * {@link WorkflowProcess#notifyUserDueToComment(User user, String comment)}
+     * , for example you've implemented an email notification system, but the
+     * user has no email in the system.
+     * 
+     * This method is use to determine that and render warnings in the interface
+     * for the users that cannot be notified.
+     * 
+     * @param user
+     * @return true if the system is able to notify the user
+     */
     public boolean isSystemAbleToNotifyUser(User user) {
 	return true;
     }
@@ -263,24 +324,29 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
     @Service
     public <T extends ProcessFile> T addFile(Class<T> instanceToCreate, String displayName, String filename,
 	    byte[] consumeInputStream, WorkflowFileUploadBean bean) throws Exception {
-	Constructor<T> fileConstructor = instanceToCreate.getConstructor(String.class, String.class, byte[].class);
-	T file = null;
-	try {
-	    file = fileConstructor.newInstance(new Object[] { displayName, filename, consumeInputStream });
-	} catch (InvocationTargetException e) {
-	    if (e.getCause() instanceof IllegalWriteException) {
-		throw new IllegalWriteException();
+	if (isFileSupportAvailable()) {
+	    Constructor<T> fileConstructor = instanceToCreate.getConstructor(String.class, String.class, byte[].class);
+	    T file = null;
+	    try {
+		file = fileConstructor.newInstance(new Object[] { displayName, filename, consumeInputStream });
+	    } catch (InvocationTargetException e) {
+		if (e.getCause() instanceof IllegalWriteException) {
+		    throw new IllegalWriteException();
+		}
+		throw new Error(e);
 	    }
-	    throw new Error(e);
-	}
-	file.fillInNonDefaultFields(bean);
+	    file.fillInNonDefaultFields(bean);
 
-	file.preProcess(bean);
-	addFiles(file);
-	file.postProcess(bean);
-	new FileUploadLog(this, UserView.getCurrentUser(), file.getFilename(), file.getDisplayName(), BundleUtil
-		.getLocalizedNamedFroClass(file.getClass()));
-	return file;
+	    file.preProcess(bean);
+	    addFiles(file);
+	    file.postProcess(bean);
+	    new FileUploadLog(this, UserView.getCurrentUser(), file.getFilename(), file.getDisplayName(), BundleUtil
+		    .getLocalizedNamedFroClass(file.getClass()));
+	    return file;
+	}
+	throw new DomainException("label.error.workflowProcess.noSupportForFiles", DomainException
+		.getResourceFor("resources/WorkflowResources"));
+
     }
 
     @Override
@@ -383,6 +449,13 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
 	return comments;
     }
 
+    /**
+     * When interfaces need to display several processes, which may or may not
+     * be from different kinds, this method should be used to render a textual
+     * description of the instance.
+     * 
+     * @return A localized string with the process description.
+     */
     public String getDescription() {
 	return StringUtils.EMPTY;
     }
@@ -396,32 +469,99 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
 	}
     }
 
+    /**
+     * By default a workflow process supports documents attached to it, although
+     * if there's a process where there should be no support for files, override
+     * this method to return false. No upload box will be rendered in the
+     * interface and calling the
+     * {@link WorkflowProcess#addFile(Class, String, String, byte[], WorkflowFileUploadBean)}
+     * will result in an exception.
+     * 
+     * 
+     * @return true if the process supports files
+     */
     public boolean isFileSupportAvailable() {
 	return true;
     }
 
+    /**
+     * A process may or may not have comments, by default it has. If this method
+     * returns false, no link for the comments will be rendered in the
+     * interface.
+     * 
+     * @return true if the process supports comments
+     */
     public boolean isCommentsSupportAvailable() {
 	return true;
     }
 
+    /**
+     * By ticket support we mean support for Take/Steal/Give/Release operations.
+     * If this method returns false, the interface will stop having this
+     * operations. Although the WorkflowProcess methods - currently - don't
+     * ensure that the system is active when they're invoked.
+     * 
+     * 
+     * @return true if the process supports ticket system
+     */
     public boolean isTicketSupportAvailable() {
 	return true;
     }
 
+    /**
+     * An observer is someone that can access the process although it cannot do
+     * any of it's activities.
+     * 
+     * To use this system you also have to add the
+     * {@link module.workflow.activities.AddObserver} and
+     * {@link module.workflow.activities.RemoveObserver} activities to your
+     * process.
+     * 
+     * Keep in mind that if the access control of the process has been overriden
+     * through {@link WorkflowProcess#isAccessible(User)} that method must
+     * implement also the observer logic.
+     * 
+     * @return true if the process supports observers
+     */
     public boolean isObserverSupportAvailable() {
 	return true;
     }
 
+    /**
+     * This list represents all the kind of classes that
+     * {@link WorkflowProcess#addFiles(ProcessFile)} supports. If
+     * {@link WorkflowProcess#addFiles(ProcessFile)} is invoked with some class
+     * that is not in this list an exception is thrown.
+     * 
+     * @return list of classes that extends ProcessFile that are allowed to add
+     *         to the process
+     */
     public List<Class<? extends ProcessFile>> getAvailableFileTypes() {
 	List<Class<? extends ProcessFile>> availableClasses = new ArrayList<Class<? extends ProcessFile>>();
 	availableClasses.add(ProcessFile.class);
 	return availableClasses;
     }
 
+    /**
+     * This list has to be a subset or the actual list returned by
+     * {@link WorkflowProcess#getAvailableFileTypes()}. Only the files in this
+     * list will be rendered as possible file options in the upload interface.
+     * 
+     * @return list of classes that extends ProcessFile that are able to be
+     *         uploaded
+     */
     public List<Class<? extends ProcessFile>> getUploadableFileTypes() {
 	return getAvailableFileTypes();
     }
 
+    /**
+     * This list has to be a subset or the actual list returned by
+     * {@link WorkflowProcess#getAvailableFileTypes()}. Only the files in this
+     * list will be rendered in the process page's file listing.
+     * 
+     * @return list of classes that extends ProcessFile that are displayed in
+     *         the process page
+     */
     public List<Class<? extends ProcessFile>> getDisplayableFileTypes() {
 	return getAvailableFileTypes();
     }
@@ -454,10 +594,26 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
 	return Collections.singleton((Indexable) this);
     }
 
+    /**
+     * The WorkflowProcess is integrated with the LuceneSearchPlugin to use
+     * lucene's indexing capabilities. It is allowed to index the content of
+     * files such as text files, excel, html, pdf, etc. But by default it does
+     * not index the files that are attached to the process.
+     * 
+     * @return true if files should also be indexed
+     */
     protected boolean isFileIndexingEnabled() {
 	return false;
     }
 
+    /**
+     * The WorkflowProcess is integrated with the LuceneSearchPlugin to use
+     * lucene's indexing capabilities. It is allowed to specify that a certain
+     * process wants their comments also indexed. But by default it does not
+     * index the process' comments.
+     * 
+     * @return true if comments should also be indexed
+     */
     protected boolean isCommentingIndexingEnabled() {
 	return false;
     }
