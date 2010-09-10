@@ -6,22 +6,23 @@
 
 
 <%@page import="module.workflow.presentationTier.WorkflowLayoutContext"%>
-<%@page import="myorg.presentationTier.actions.ContextBaseAction"%><h2>
+<%@page import="myorg.presentationTier.actions.ContextBaseAction"%>
 
-<bean:message key="title.comments" bundle="WORKFLOW_RESOURCES"/>
-</h2>
+<h2><bean:message key="title.comments" bundle="WORKFLOW_RESOURCES"/></h2>
 
 <%
 	final WorkflowLayoutContext layoutContext = (WorkflowLayoutContext) ContextBaseAction.getContext(request);
 %>
-
-<jsp:include page='<%= layoutContext.getWorkflowShortBody() %>'/>
 
 <p>
 	<html:link page="/workflowProcessManagement.do?method=viewProcess" paramId="processId" paramName="process" paramProperty="externalId">
 		« <bean:message key="link.backToProcess" bundle="WORKFLOW_RESOURCES"/>
 	</html:link>
 </p>
+
+
+<jsp:include page='<%= layoutContext.getWorkflowShortBody() %>'/>
+
 
 <logic:empty name="comments">
 	<p class="mtop15"><em><bean:message key="label.noComments" bundle="WORKFLOW_RESOURCES"/>.</em></p>
@@ -42,7 +43,7 @@
 	 
 	<fr:edit id="comment" name="bean" visible="false"/>
 
-	<table class="form">
+	<table class="form list-reset">
 		<tr>
 			<td>
 				<bean:message key="label.addComment" bundle="WORKFLOW_RESOURCES"/>:
@@ -74,7 +75,7 @@
 			</td>
 		</tr>
 	</table>
-	<html:submit styleClass="inputbutton"><bean:message key="renderers.form.add.name" bundle="RENDERER_RESOURCES"/> </html:submit>
+	<html:submit styleClass="inputbutton"><bean:message key="button.send" bundle="EXPENDITURE_RESOURCES"/> </html:submit>
 </fr:form>
 
 

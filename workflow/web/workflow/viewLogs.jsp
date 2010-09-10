@@ -22,17 +22,17 @@
 <jsp:include page='<%= layoutContext.getWorkflowShortBody() %>'/>
 
 
-
 <logic:empty name="operationLogs">
 	<p>
 		<em><bean:message key="label.noLogs" bundle="WORKFLOW_RESOURCES"/>.</em>
 	</p>
 </logic:empty>
 
+
 <fr:view name="operationLogs" schema="viewLogs">
 	<fr:layout name="tabular">
-		<fr:property name="classes" value="tstyle2"/>
-		<fr:property name="columnClasses" value="smalltxt, smalltxt aleft,smalltxt"/>
+		<fr:property name="classes" value="tstyle2 mtop1 noraquo"/>
+		<fr:property name="columnClasses" value="smalltxt, aleft, aleft"/>
 		<fr:property name="sortBy" value="whenOperationWasRan"/>
 	</fr:layout>
 </fr:view>

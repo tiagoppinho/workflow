@@ -19,20 +19,14 @@
 <bean:define id="processClassName" name="process" property="class.name" type="java.lang.String"/>
 <bean:define id="includeFolder" value="<%= processClassName.replace('.','/')%>"/>
 
-<logic:messagesPresent property="message" message="true">
-	<div class="error1">
-		<html:messages id="errorMessage" property="message" message="true"> 
-			<span><fr:view name="errorMessage"/></span>
-		</html:messages>
-	</div>
-</logic:messagesPresent>
+
 <%
 	final WorkflowLayoutContext layoutContext = (WorkflowLayoutContext) ContextBaseAction.getContext(request);
 %>
 
 <jsp:include page='<%=  layoutContext.getWorkflowHead() %>'/>
 
-<div id="processControl"> 
+ 
 <logic:present name="process" property="currentOwner">
 	<bean:define id="ownerName" name="process" property="currentOwner.presentationName"/>
 	<div class="highlightBox">
@@ -40,137 +34,195 @@
 	</div>
 </logic:present>
 
-<div style="float: left; width: 100%">
-<table style="width: 100%; margin: 1em 0;">
-	<tr>
-		<td style="border: 1px dotted #aaa; padding: 10px 15px; width: 48%; vertical-align: top;">
-			<p class="mtop0 mbottom05">
-				<b><bean:message key="label.activities" bundle="WORKFLOW_RESOURCES"/></b>
-			</p>
+<p>
 			
-			<ul class="operations mtop0">
-				<logic:iterate id="activity" name="process" property="activeActivities">
-					<logic:equal name="activity" property="visible" value="true">
-						<bean:define id="name" name="activity" property="class.simpleName" type="java.lang.String"/>
-						<li>
-							<wf:activityLink id="<%= name %>" processName="process" activityName="<%= name %>" scope="request">
-								<wf:activityName processName="process" activityName="<%= name %>" scope="request"/>
-							</wf:activityLink>
-						</li>
-					</logic:equal>
-				</logic:iterate>
-			</ul>
-			
-			<logic:empty name="process" property="activeActivities">
-				<p class="mvert05">
-					<em>
-						<bean:message key="messages.info.noOperatesAvailabeATM" bundle="WORKFLOW_RESOURCES"/>.
-					</em>
-				</p>
-			</logic:empty>
-			
-			<p class="mtop15 mbottom05">
-				<b><bean:message key="label.otherOperations" bundle="WORKFLOW_RESOURCES"/></b>
-			</p>
-			<ul class="operations mbottom05">
-				<li>
-					<html:link page="/workflowProcessManagement.do?method=viewLogs" paramId="processId" paramName="process" paramProperty="externalId">
-						<bean:message key="link.viewLogs" bundle="WORKFLOW_RESOURCES"/>
-					</html:link>
-				</li>
-	
-				<logic:equal name="process" property="ticketSupportAvailable" value="true">
-				<li>
-					<wf:activityLink id="take-process" processName="process" activityName="<%=  TakeProcess.class.getSimpleName() %>" scope="request">
-								<wf:activityName processName="process" activityName="<%= TakeProcess.class.getSimpleName() %>" scope="request"/>
-					</wf:activityLink>
-						<wf:activityLink id="steal-process" processName="process" activityName="<%=  StealProcess.class.getSimpleName() %>" scope="request">
-								<wf:activityName processName="process" activityName="<%= StealProcess.class.getSimpleName() %>" scope="request"/>
-					</wf:activityLink>
-					<wf:activityLink id="release-process" processName="process" activityName="<%=  ReleaseProcess.class.getSimpleName() %>" scope="request">
-								<wf:activityName processName="process" activityName="<%= ReleaseProcess.class.getSimpleName() %>" scope="request"/>
-					</wf:activityLink>
-				</li>	
-				
-					<wf:isActive processName="process" activityName="<%= GiveProcess.class.getSimpleName() %>" scope="request">
-					<li>
-						<wf:activityLink id="give-process" processName="process" activityName="<%=  GiveProcess.class.getSimpleName() %>" scope="request">
-									<wf:activityName processName="process" activityName="<%= GiveProcess.class.getSimpleName() %>" scope="request"/>
-						</wf:activityLink>
-					</li>
-					</wf:isActive>
-				</logic:equal>	
-				
-				<logic:equal name="process" property="commentsSupportAvailable" value="true">
-					<bean:size id="comments"  name="process" property="comments"/>
-					<li> 
-						<html:link page="/workflowProcessManagement.do?method=viewComments" paramId="processId" paramName="process" paramProperty="externalId">
-							<bean:message key="link.comments" bundle="WORKFLOW_RESOURCES"/> (<%= comments %>)
-						</html:link>	
-					</li>
-				</logic:equal>
-			</ul>
-		</td>
-		
-		<logic:equal name="process" property="fileSupportAvailable" value="true">
-	
-			<td style="border: none; width: 2%; padding: 0;"></td>
-	
-			<td style="border: 1px dotted #aaa; padding: 10px 15px; width: 48%; vertical-align: top;">
-			
-				<p class="mtop0 mbottom05">
-					<b><bean:message key="label.documents" bundle="WORKFLOW_RESOURCES"/></b>
-				</p>
-				
-				<div class="documents mtop0 mbottom05" style="overflow: hidden; ">
-					<fr:view name="process">
-						<fr:layout name="processFiles">
-							<fr:property name="classes" value=""/>
-						</fr:layout>
-					</fr:view>
-				</div>
-				
-				<ul class="operations mtop1">
-					<li>
-						<html:link page="/workflowProcessManagement.do?method=fileUpload" paramId="processId" paramName="process" paramProperty="externalId">
-							<bean:message key="link.uploadFile" bundle="WORKFLOW_RESOURCES"/>
-						</html:link>
-					</li>
-					<li>
-						<html:link page="/workflowProcessManagement.do?method=viewRemovedFiles" paramId="processId" paramName="process" paramProperty="externalId">
-							<bean:message key="link.viewRemovedFiles" bundle="WORKFLOW_RESOURCES"/>
-						</html:link>
-					</li>
-				</ul>
-			
-			</td>
+	<span class="post">Criado em <fr:view name="process" property="creationDate" layout="no-time"/></span> 
+	<span class="author">Criado por <fr:view name="process" property="processCreator.shortPresentationName"/></span> 
 
-		</logic:equal>
-	</tr>
-</table>
-</div>
-<div style="clear: left;"></div>
-
-<logic:equal name="process" property="commentsSupportAvailable" value="true">
-	<bean:define id="unreadComments" name="process" property="unreadCommentsForCurrentUser"/>
-	<logic:notEmpty name="unreadComments">
-		<bean:size id="count" name="unreadComments"/>
-			<div class="highlightBox mtop05 mbottom15">
-			<p class="mvert025">
+				<%--
 				<logic:greaterThan name="count" value="1">
 					<bean:message key="label.unreadComments.info.moreThanOne" arg0="<%= count.toString() %>" bundle="WORKFLOW_RESOURCES"/>
 				</logic:greaterThan>
 				<logic:equal name="count" value="1">
 					<bean:message key="label.unreadComments.info" arg0="<%= count.toString() %>" bundle="WORKFLOW_RESOURCES"/>
 				</logic:equal>
+				--%>
 				
-				<html:link page="/workflowProcessManagement.do?method=viewComments" paramId="processId" paramName="process" paramProperty="externalId">
-					<bean:message key="link.view.unreadComments" bundle="WORKFLOW_RESOURCES"/> »
-				</html:link>
-			</p>
-		</div>
-	</logic:notEmpty>
-</logic:equal>
-</div>
+	<logic:equal name="process" property="commentsSupportAvailable" value="true">
+		<bean:size id="comments"  name="process" property="comments"/>		 
+		<span class="comments">
+			<html:link page="/workflowProcessManagement.do?method=viewComments" paramId="processId" paramName="process" paramProperty="externalId">
+			<%= comments %>
+			<logic:equal name="comments" value="1">
+				<bean:message key="link.comment" bundle="WORKFLOW_RESOURCES"/>
+			</logic:equal>
+			<logic:notEqual name="comments" value="1">
+				<bean:message key="link.comments" bundle="WORKFLOW_RESOURCES"/>
+			</logic:notEqual>
+			</html:link>
+			<bean:define id="unreadComments" name="process" property="unreadCommentsForCurrentUser"/>
+			<logic:notEmpty name="unreadComments">
+				<bean:size id="count" name="unreadComments"/> (<%= count.toString() %> novos) 
+			</logic:notEmpty>
+		</span>
+	</logic:equal>
+</p>
+
+
+<logic:messagesPresent property="message" message="true">
+	<div class="error1 mtop15px mbottom10px">
+		<html:messages id="errorMessage" property="message" message="true"> 
+			<span><fr:view name="errorMessage"/></span>
+		</html:messages>
+	</div>
+</logic:messagesPresent>
+
+
+<table class="proccess_main">
+	<tr>
+		<td>
+		
+			<div class="infobox1 col2-1">
+				<h3><bean:message key="label.activities" bundle="WORKFLOW_RESOURCES"/></h3>
+				<div class="activities">
+					
+					<ul id="main-activities">
+						<logic:iterate id="activity" name="process" property="activeActivities">
+							<logic:equal name="activity" property="visible" value="true">
+								<bean:define id="name" name="activity" property="class.simpleName" type="java.lang.String"/>
+								<li>
+									<wf:activityLink id="<%= name %>" processName="process" activityName="<%= name %>" scope="request">
+										<wf:activityName processName="process" activityName="<%= name %>" scope="request"/>
+									</wf:activityLink>
+								</li>
+							</logic:equal>
+						</logic:iterate>
+					</ul>
+					
+					<logic:empty name="process" property="activeActivities">
+						<p class="mvert05">
+							<em>
+								<bean:message key="messages.info.noOperatesAvailabeATM" bundle="WORKFLOW_RESOURCES"/>.
+							</em>
+						</p>
+					</logic:empty>
+					
+					<!--
+					<p class="mtop15 mbottom05">
+						<b><bean:message key="label.otherOperations" bundle="WORKFLOW_RESOURCES"/></b>
+					</p>
+					 -->
+					
+					<ul id="other-activities" style="margin-top: 5px;">
+					
+			<logic:equal name="process" property="ticketSupportAvailable" value="true">
+               <li>
+                   <wf:activityLink id="take-process" processName="process" activityName="<%=  TakeProcess.class.getSimpleName() %>" scope="request">
+                               <wf:activityName processName="process" activityName="<%= TakeProcess.class.getSimpleName() %>" scope="request"/>
+                   </wf:activityLink>
+                       <wf:activityLink id="steal-process" processName="process" activityName="<%=  StealProcess.class.getSimpleName() %>" scope="request">
+                               <wf:activityName processName="process" activityName="<%= StealProcess.class.getSimpleName() %>" scope="request"/>
+                   </wf:activityLink>
+                   <wf:activityLink id="release-process" processName="process" activityName="<%=  ReleaseProcess.class.getSimpleName() %>" scope="request">
+                               <wf:activityName processName="process" activityName="<%= ReleaseProcess.class.getSimpleName() %>" scope="request"/>
+                   </wf:activityLink>
+               </li>    
+             <%--   
+                   <wf:isActive processName="process" activityName="<%= GiveProcess.class.getSimpleName() %>" scope="request">
+                   <li>
+                       <wf:activityLink id="give-process" processName="process" activityName="<%=  GiveProcess.class.getSimpleName() %>" scope="request">
+                                   <wf:activityName processName="process" activityName="<%= GiveProcess.class.getSimpleName() %>" scope="request"/>
+                       </wf:activityLink>
+                   </li>
+                   </wf:isActive>
+               --%>
+               </logic:equal>    
+					
+						<li>
+							<html:link page="/workflowProcessManagement.do?method=viewLogs" paramId="processId" paramName="process" paramProperty="externalId">
+								<bean:message key="link.viewLogs" bundle="WORKFLOW_RESOURCES"/>
+							</html:link>
+						</li>
+					</ul>
+					
+				</div>
+				<!-- #activities -->
+			</div>
+			<!-- infobox1 -->
+
+		</td>
+		
+		
+		
+		<logic:equal name="process" property="fileSupportAvailable" value="true">
+	
+			<td class="gutter"></td>
+	
+			<td>	
+				<div class="infobox1 col2-2">
+					<h3><bean:message key="label.documents" bundle="WORKFLOW_RESOURCES"/> <!--<a href="">(9)</a>--></h3>
+					<div>
+
+						<fr:view name="process">
+							<fr:layout name="processFiles">
+								<fr:property name="classes" value=""/>
+							</fr:layout>
+						</fr:view>
+						
+						<!--
+						<table class="process-files">
+							<tr>
+								<th>18/03/2010</th>
+								<td>Documento - <a href="">suspendisse_egestas.doc</a></td>
+								<td><a href="">(X)</a></td>
+							</tr>
+						</table>
+						<table class="structural mvert0">
+							<tr>
+								<td><a href="">Gerir ficheiros (9)</a></td>
+								<td class="aright">
+									<input type="button" value="+ Adicionar Ficheiro"/>
+								</td>
+							</tr>
+						</table>
+						-->
+						
+						
+						<table class="structural mvert0">
+							<tr>
+								<td>
+									<html:link page="/workflowProcessManagement.do?method=viewRemovedFiles" paramId="processId" paramName="process" paramProperty="externalId">
+										<bean:message key="link.viewRemovedFiles" bundle="WORKFLOW_RESOURCES"/>
+									</html:link>
+								</td>
+								<td class="aright">
+								
+									<input type="button" value="+ <bean:message key="link.uploadFile" bundle="WORKFLOW_RESOURCES"/>" onclick="window.location='<%= "workflowProcessManagement.do?method=fileUpload&processId="+processId %>'"/>
+								
+									<%--
+									<input id="addFileButton" type="button" value="<bean:message key="link.uploadFile" bundle="WORKFLOW_RESOURCES"/>"/>
+									<script type="java/textscript">
+										$("#addFileButton").click(function() {
+										window.location = <%= "/workflowProcessManagement.do?method=fileUpload&processId="+processId %>;
+										});
+									</script>
+									--%>
+								</td>
+							</tr>
+						</table>
+
+					</div>
+				</div>
+				<!-- infobox1 -->
+
+			</td>
+
+		</logic:equal>
+	</tr>
+</table>
+
+<div class="clear"></div>
+
 
 <jsp:include page='<%=  layoutContext.getWorkflowBody() %>'/>
+

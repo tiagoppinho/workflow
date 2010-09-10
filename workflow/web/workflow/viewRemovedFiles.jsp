@@ -21,15 +21,20 @@
 <jsp:include page='<%= layoutContext.getWorkflowShortBody() %>'/>
 
 <logic:empty name="process" property="deletedFiles">
-	<p><em><bean:message key="label.noRemovedFiles" bundle="WORKFLOW_RESOURCES"/>.</em></p>
+	<p class="mtop15"><em><bean:message key="label.noRemovedFiles" bundle="WORKFLOW_RESOURCES"/>.</em></p>
 </logic:empty>
 
 
+<logic:notEmpty name="process" property="deletedFiles">
 <ul class="mtop15">
 	<logic:iterate id="file" name="process" property="deletedFiles">
 		<li>
 			<bean:define id="fileId" name="file" property="externalId" type="java.lang.String"/>
-			<fr:view name="file" property="displayName"/> <html:link page='<%= "/workflowProcessManagement.do?method=downloadFile&fileId=" + fileId %>' paramId="processId" paramName="process" paramProperty="externalId"><bean:message key="link.downloadFile" bundle="WORKFLOW_RESOURCES"/></html:link> 
+			<fr:view name="file" property="displayName"/>
+			<span>
+				(<html:link page='<%= "/workflowProcessManagement.do?method=downloadFile&fileId=" + fileId %>' paramId="processId" paramName="process" paramProperty="externalId"><bean:message key="link.downloadFile" bundle="WORKFLOW_RESOURCES"/></html:link>)
+			</span> 
 		</li>
 	</logic:iterate>
 </ul>
+</logic:notEmpty>

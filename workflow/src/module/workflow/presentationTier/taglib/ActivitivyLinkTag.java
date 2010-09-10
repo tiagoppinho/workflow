@@ -238,7 +238,7 @@ public class ActivitivyLinkTag extends WorkflowBodyTag {
 	content.append("<div id=\"").append(id).append("\"").append(" onmouseout=\"").append(getDocument).append(".className='")
 		.append(ActivitivyLinkTag.TOOL_TIP_CLOSE).append("';\" onmouseover=\"").append(getDocument)
 		.append(".className='").append(ActivitivyLinkTag.TOOL_TIP_OPEN).append("';\" class=\"\"").append(
-			"><span>(?)</span><div class=\"").append(TEXT_CLASSES).append("\"><p class=\"\"mvert025>").append(
+			"><span>(?)</span><div class=\"").append(TEXT_CLASSES).append("\"><p>").append(
 			activity.getHelpMessage()).append("</p></div></div>").append("<script type=\"text/javascript\">").append(
 			getDocument).append(".className=\"").append(ActivitivyLinkTag.TOOL_TIP_CLOSE).append("\"").append(
 			";</script>");
