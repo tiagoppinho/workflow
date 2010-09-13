@@ -675,4 +675,10 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
 
 	return false;
     }
+
+    public DateTime getCreationDate() {
+	Set<WorkflowLog> logs = getExecutionLogsSet();
+	return (logs.isEmpty()) ? new DateTime() : logs.iterator().next().getWhenOperationWasRan();
+
+    }
 }
