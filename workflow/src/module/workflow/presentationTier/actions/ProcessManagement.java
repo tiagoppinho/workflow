@@ -293,7 +293,7 @@ public class ProcessManagement extends ContextBaseAction {
 	    final HttpServletResponse response) {
 
 	final WorkflowProcess process = getProcess(request);
-	Class<? extends ProcessFile> selectedInstance = process.getAvailableFileTypes().get(0);
+	Class<? extends ProcessFile> selectedInstance = process.getUploadableFileTypes().get(0);
 	WorkflowFileUploadBean bean = FileUploadBeanResolver.getBeanForProcessFile(process, selectedInstance);
 	bean.setSelectedInstance(selectedInstance);
 
