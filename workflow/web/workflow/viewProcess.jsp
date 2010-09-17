@@ -196,8 +196,13 @@
 									</html:link>
 								</td>
 								<td class="aright">
-								
-									<input type="button" value="+ <bean:message key="link.uploadFile" bundle="WORKFLOW_RESOURCES"/>" onclick="window.location='<%= "workflowProcessManagement.do?method=fileUpload&processId="+processId %>'"/>
+
+									<form action="<%= request.getContextPath() + "/workflowProcessManagement.do" %>" method="post">
+										<input type="hidden" name="method" value="fileUpload"/>
+										<input type="hidden" name="processId" value="<%= processId %>"/>
+
+										<html:submit><bean:message key="link.uploadFile" bundle="WORKFLOW_RESOURCES"/></html:submit>
+									</form>
 								
 									<%--
 									<input id="addFileButton" type="button" value="<bean:message key="link.uploadFile" bundle="WORKFLOW_RESOURCES"/>"/>
