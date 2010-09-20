@@ -10,11 +10,13 @@
 <%@page import="myorg.presentationTier.servlets.filters.contentRewrite.ContentContextInjectionRewriter"%>
 <%@page import="java.util.List"%>
 
+<% boolean hasSomeProcess = false; %>
 <logic:notEmpty name="pendingProcessList">
 	<table class="width100pc">
 		<logic:iterate id="counter" name="pendingProcessList">
 			<bean:define id="count" name="counter" property="count"/>
 			<logic:greaterThan name="count" value="0">
+				<% hasSomeProcess = true; %>
 				<tr>
 					<td><fr:view name="counter" property="processClass" layout="name-resolver"/></td>
 					<td>
@@ -30,6 +32,6 @@
 		</logic:iterate>
 	</table>
 </logic:notEmpty>
-<logic:empty name="pendingProcessList">
+<% if (!hasSomeProcess) { %>
 	<p><em><bean:message key="widget.label.noProcesses" bundle="WORKFLOW_RESOURCES"/></em></p>
-</logic:empty>
+<% } %>
