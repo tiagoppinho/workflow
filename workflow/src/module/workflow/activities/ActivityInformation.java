@@ -92,4 +92,8 @@ public class ActivityInformation<P extends WorkflowProcess> implements Serializa
     public Class getActivityClass() {
 	return this.activityClass;
     }
+
+    public String getUsedSchema() {
+	return "activityInformation." + getActivityClass().getSimpleName();
+    }
 }
