@@ -8,7 +8,7 @@
 
 <bean:define id="processId" name="process" property="externalId"  type="java.lang.String"/>
 <bean:define id="name" name="information" property="activityName"/>
-<bean:define id="activityInformationClass" name="information" property="activityClass.simpleName"/>
+<bean:define id="activityInformationSchema" name="information" property="usedSchema" type="java.lang.String"/>
 
 
 <h2><fr:view name="information" property="localizedName" layout="html"/></h2>
@@ -26,9 +26,8 @@
 		</html:messages>
 	</div>
 </logic:messagesPresent>
-
 <fr:edit id="activityBean" name="information" action='<%="/workflowProcessManagement.do?method=process&activity=" + name + "&processId=" + processId%>'
-schema='<%= "activityInformation." + activityInformationClass %>'>
+schema='<%= activityInformationSchema %>'>
 	<fr:layout name="tabular">
 		<fr:property name="classes" value="form"/>
 		<fr:property name="columnClasses" value=",,tderror"/>
