@@ -1,13 +1,9 @@
 package module.workflow.domain;
 
-import dml.runtime.RelationAdapter;
-import module.organization.domain.Party;
-import module.organization.domain.PartyType;
-import module.organizationIst.domain.IstPartyType;
 import myorg.domain.MyOrg;
 import myorg.domain.contents.Node;
-import pt.ist.expenditureTrackingSystem.domain.organization.CostCenter;
 import pt.ist.fenixWebFramework.services.Service;
+import dml.runtime.RelationAdapter;
 
 public class NodeMapping extends NodeMapping_Base implements Comparable<NodeMapping> {
 
