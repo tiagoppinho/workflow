@@ -47,6 +47,7 @@ import module.workflow.domain.WorkflowProcessComment;
 import module.workflow.presentationTier.ProcessNodeSelectionMapper;
 import module.workflow.presentationTier.WorkflowLayoutContext;
 import module.workflow.util.FileUploadBeanResolver;
+import module.workflow.util.PresentableProcessState;
 import module.workflow.util.WorkflowFileUploadBean;
 import myorg.applicationTier.Authenticate.UserView;
 import myorg.domain.contents.Node;
@@ -61,6 +62,7 @@ import org.apache.struts.action.ActionMapping;
 
 import pt.ist.fenixWebFramework.renderers.utils.RenderUtils;
 import pt.ist.fenixWebFramework.servlets.filters.contentRewrite.GenericChecksumRewriter;
+import pt.ist.fenixWebFramework.servlets.json.JsonObject;
 import pt.ist.fenixWebFramework.struts.annotations.Mapping;
 import pt.ist.fenixframework.pstm.AbstractDomainObject;
 
@@ -480,4 +482,32 @@ public class ProcessManagement extends ContextBaseAction {
 	layout.setElements(contextPathString);
 	return layout;
     }
+
+    public ActionForward viewTypeDescription(final ActionMapping mapping, final ActionForm form,
+	    final HttpServletRequest request, final HttpServletResponse response) throws IOException {
+	String classname = request.getParameter("classname");
+	int indexOfInnerClassInEnum = classname.indexOf("$");
+	if (indexOfInnerClassInEnum > 0) {
+	    classname = classname.substring(0, indexOfInnerClassInEnum);
+	}
+	PresentableProcessState type;
+	try {
+	    Class<Enum> stateEnum = (Class<Enum>) Class.forName(classname);
+	    type = (PresentableProcessState) Enum.valueOf(stateEnum, request.getParameter("type"));
+	} catch (Exception e) {
+	    e.printStackTrace();
+	    return null;
+	}
+	request.setAttribute("name", type.getLocalizedName());
+
+	JsonObject reply = new JsonObject();
+
+	reply.addAttribute("name", type.getLocalizedName());
+	reply.addAttribute("description", type.getDescription());
+
+	writeJsonReply(response, reply);
+
+	return null;
+    }
+
 }

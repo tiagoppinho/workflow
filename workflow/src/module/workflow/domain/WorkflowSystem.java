@@ -1,11 +1,15 @@
 package module.workflow.domain;
 
+import javax.servlet.http.HttpServletRequest;
+
 import module.dashBoard.WidgetRegister;
 import module.workflow.widgets.ProcessListWidget;
 import module.workflow.widgets.QuickViewWidget;
 import myorg.domain.ModuleInitializer;
 import myorg.domain.MyOrg;
 import pt.ist.fenixWebFramework.services.Service;
+import pt.ist.fenixWebFramework.servlets.filters.contentRewrite.RequestChecksumFilter;
+import pt.ist.fenixWebFramework.servlets.filters.contentRewrite.RequestChecksumFilter.ChecksumPredicate;
 
 public class WorkflowSystem extends WorkflowSystem_Base implements ModuleInitializer {
 
@@ -52,6 +56,14 @@ public class WorkflowSystem extends WorkflowSystem_Base implements ModuleInitial
     public void init(MyOrg root) {
 	WidgetRegister.registerWidget(ProcessListWidget.class);
 	WidgetRegister.registerWidget(QuickViewWidget.class);
+
+	RequestChecksumFilter.registerFilterRule(new ChecksumPredicate() {
+	    public boolean shouldFilter(HttpServletRequest httpServletRequest) {
+		return !(httpServletRequest.getRequestURI().endsWith("/workflowProcessManagement.do")
+			&& httpServletRequest.getQueryString() != null && httpServletRequest.getQueryString().contains(
+			"method=viewTypeDescription"));
+	    }
+	});
     }
 
 }
