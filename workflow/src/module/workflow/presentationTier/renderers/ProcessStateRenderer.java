@@ -2,11 +2,11 @@ package module.workflow.presentationTier.renderers;
 
 import java.util.List;
 
+import module.workflow.util.HasPresentableProcessState;
 import module.workflow.util.PresentableProcessState;
 
 import org.apache.commons.collections.Predicate;
 
-import pt.ist.expenditureTrackingSystem.domain.acquisitions.PaymentProcess;
 import pt.ist.fenixWebFramework.renderers.OutputRenderer;
 import pt.ist.fenixWebFramework.renderers.components.Face;
 import pt.ist.fenixWebFramework.renderers.components.HtmlBlockContainer;
@@ -16,9 +16,9 @@ import pt.ist.fenixWebFramework.renderers.components.HtmlLink;
 import pt.ist.fenixWebFramework.renderers.components.HtmlScript;
 import pt.ist.fenixWebFramework.renderers.components.HtmlTable;
 import pt.ist.fenixWebFramework.renderers.components.HtmlTableCell;
-import pt.ist.fenixWebFramework.renderers.components.HtmlTableCell.CellType;
 import pt.ist.fenixWebFramework.renderers.components.HtmlTableRow;
 import pt.ist.fenixWebFramework.renderers.components.HtmlText;
+import pt.ist.fenixWebFramework.renderers.components.HtmlTableCell.CellType;
 import pt.ist.fenixWebFramework.renderers.layouts.Layout;
 import pt.ist.fenixWebFramework.renderers.plugin.RenderersRequestProcessorImpl;
 
@@ -85,12 +85,12 @@ public class ProcessStateRenderer extends OutputRenderer {
     protected Layout getLayout(Object arg0, Class arg1) {
 	return new Layout() {
 
-	    private PaymentProcess process;
+	    private HasPresentableProcessState process;
 
 	    @Override
 	    public HtmlComponent createComponent(Object arg0, Class arg1) {
 
-		this.process = (PaymentProcess) arg0;
+		this.process = (HasPresentableProcessState) arg0;
 
 		HtmlBlockContainer container = new HtmlBlockContainer();
 

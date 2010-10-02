@@ -8,4 +8,8 @@ public interface HasPresentableProcessState {
 
     public List<? extends PresentableProcessState> getAvailablePresentableStates();
 
+    public boolean isActive();
+
+    public String getExternalId();
+
 }
