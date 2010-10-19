@@ -279,6 +279,18 @@ public abstract class WorkflowActivity<P extends WorkflowProcess, AI extends Act
     }
 
     /**
+     * This is used when a activity needs confirmation. By default delegates to
+     * {@link WorkflowActivity#getLocalizedConfirmationMessage()}
+     * 
+     * @param P
+     *            the process
+     * @return Localized confirmation message
+     */
+    public String getLocalizedConfirmationMessage(P process) {
+	return getLocalizedConfirmationMessage();
+    }
+
+    /**
      * This is used when a activity needs confirmation. Holds the confirmation
      * message. By default the label is activity.confirmation.CLASS_NAME
      * 
