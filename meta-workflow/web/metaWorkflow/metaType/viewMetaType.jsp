@@ -50,7 +50,7 @@
 	<tr>
 		<td colspan="4" class="aleft">
 			<logic:notEmpty name="historyVersion">
-			<fr:view name="historyVersion" property="description"/>
+			<fr:view name="historyVersion" property="description" layout="html"/>
 			<p>
 				<em>
 					<span class="aright">
@@ -65,7 +65,7 @@
 			</p>
 			</logic:notEmpty>
 			<logic:empty name="historyVersion">
-				<fr:view name="description" property="description"/>
+				<fr:view name="description" property="description" layout="html"/>
 				<p>
 					<em>
 						<span class="aright">
