@@ -41,7 +41,7 @@
 			</logic:notEmpty>
 		</td>
 		<td>
-			<fr:view name="description" property="version"/>
+			<fr:view name="description" property="version" layout="html"/>
 		</td>
 	</tr>
 	<tr>
