@@ -6,9 +6,10 @@
 		<property name="providerClass" value="module.organization.presentationTier.renderers.providers.OrganizationalModelProvider"/>
 		<property name="eachLayout" value="values"/>
 	</slot>
-	<slot name="description" key="label.metaType.description" layout="html" validator="pt.ist.fenixWebFramework.renderers.validators.RequiredValidator">
+	<slot name="description" key="label.metaType.description" layout="rich-text" validator="pt.ist.fenixWebFramework.renderers.validators.RequiredValidator">
 		<property name="rows" value="20"/>
 		<property name="columns" value="65"/>
+		<property name="config" value="advanced" />
 	</slot>
 	<slot name="fileClassNames" key="label.metaType.availableFileTypes" layout="option-select">
 		<property name="providerClass" value="module.metaWorkflow.presentationTier.renderers.providers.FileSubClasses"/>
@@ -108,9 +109,10 @@
 </schema>
 
 <schema name="edit.metaTypeDescription" type="module.metaWorkflow.domain.WorkflowMetaType" bundle="META_WORKFLOW_RESOURCES">
-	<slot name="currentDescription.description" key="label.metaType.description" layout="html" validator="pt.ist.fenixWebFramework.renderers.validators.RequiredValidator">
+	<slot name="currentDescription.description" key="label.metaType.description" layout="rich-text" validator="pt.ist.fenixWebFramework.renderers.validators.RequiredValidator">
 		<property name="rows" value="20"/>
 		<property name="columns" value="65"/>
+		<property name="config" value="advanced" />
 	</slot>
 	<slot name="organizationalModel" key="label.organizational.structure" layout="menu-select" bundle="ORGANIZATION_RESOURCES" validator="pt.ist.fenixWebFramework.renderers.validators.RequiredValidator">
 		<property name="providerClass" value="module.organization.presentationTier.renderers.providers.OrganizationalModelProvider"/>
