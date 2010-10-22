@@ -6,7 +6,7 @@
 		<property name="providerClass" value="module.organization.presentationTier.renderers.providers.OrganizationalModelProvider"/>
 		<property name="eachLayout" value="values"/>
 	</slot>
-	<slot name="description" key="label.metaType.description" layout="longText" validator="pt.ist.fenixWebFramework.renderers.validators.RequiredValidator">
+	<slot name="description" key="label.metaType.description" layout="html" validator="pt.ist.fenixWebFramework.renderers.validators.RequiredValidator">
 		<property name="rows" value="20"/>
 		<property name="columns" value="65"/>
 	</slot>
@@ -108,7 +108,7 @@
 </schema>
 
 <schema name="edit.metaTypeDescription" type="module.metaWorkflow.domain.WorkflowMetaType" bundle="META_WORKFLOW_RESOURCES">
-	<slot name="currentDescription.description" key="label.metaType.description" layout="longText" validator="pt.ist.fenixWebFramework.renderers.validators.RequiredValidator">
+	<slot name="currentDescription.description" key="label.metaType.description" layout="html" validator="pt.ist.fenixWebFramework.renderers.validators.RequiredValidator">
 		<property name="rows" value="20"/>
 		<property name="columns" value="65"/>
 	</slot>

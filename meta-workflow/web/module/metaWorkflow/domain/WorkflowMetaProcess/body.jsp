@@ -97,7 +97,7 @@
 		<div id="tabs-3">
 			<bean:define id="currentDescription" name="process" property="metaType.currentDescription"/>
 			<div class="mtop05 mbottom15">
-				<fr:view name="currentDescription" property="description"/>
+				<fr:view name="currentDescription" property="description" layout="html"/>
 			</div>
 			<p class="mbottom05">
 				<em>
