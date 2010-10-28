@@ -13,7 +13,7 @@ public class ProcessesClassesProvider extends AbstractDomainClassProvider implem
 
     @Override
     protected boolean shouldContainerAbstractClasses() {
-	return false;
+	return true;
     }
 
     @Override
