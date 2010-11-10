@@ -28,11 +28,12 @@ package module.workflow.activities;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
+import module.signature.util.SignableActivity;
+import module.workflow.domain.ActivityLog;
 import module.workflow.domain.WorkflowProcess;
 import myorg.applicationTier.Authenticate.UserView;
 import myorg.domain.User;
 import myorg.util.BundleUtil;
-import pt.ist.fenixWebFramework.renderers.CollectionRenderer;
 import pt.ist.fenixWebFramework.services.Service;
 import pt.utl.ist.fenix.tools.util.i18n.Language;
 
@@ -44,7 +45,7 @@ import pt.utl.ist.fenix.tools.util.i18n.Language;
  * @param <AI>
  *            object that extends ActivityInformation (bean of the activity)
  */
-public abstract class WorkflowActivity<P extends WorkflowProcess, AI extends ActivityInformation<P>> {
+public abstract class WorkflowActivity<P extends WorkflowProcess, AI extends ActivityInformation<P>> implements SignableActivity {
 
     /**
      * 
@@ -107,6 +108,19 @@ public abstract class WorkflowActivity<P extends WorkflowProcess, AI extends Act
     }
 
     /**
+     * Responsible for creating a (pre) log of the activity run. This is needed
+     * to signatures. They need the object created before
+     * 
+     * @param process
+     * @param operationName
+     * @param userx
+     */
+    public ActivityLog preLogExecution(P process, AI activityInformation) {
+	return process.preLogExecution(getLoggedPerson(), getClass().getSimpleName(),
+		getArgumentsDescription(activityInformation));
+    }
+
+    /**
      * Responsible for creating a log of the activity run.
      * 
      * @param process
@@ -130,6 +144,26 @@ public abstract class WorkflowActivity<P extends WorkflowProcess, AI extends Act
 	P process = activityInformation.getProcess();
 	checkConditionsFor(process);
 	logExecution(process, getClass().getSimpleName(), getLoggedPerson(), getArgumentsDescription(activityInformation));
+	process(activityInformation);
+	notifyUsers(process);
+    }
+
+    /**
+     * Activity core method. When called runs the activity, it has 4 different
+     * steps: verification of the conditions, log, actual execution and user
+     * notification. To specify activity behavior this should not be the method
+     * to be overridden. But process instead. This is the alternative version
+     * for signatures, which receives a pre created log
+     * 
+     * @param activityInformation
+     */
+    @Service
+    public final void execute(AI activityInformation, ActivityLog log) {
+	P process = activityInformation.getProcess();
+	checkConditionsFor(process);
+
+	log.setProcess(process);
+
 	process(activityInformation);
 	notifyUsers(process);
     }
@@ -249,7 +283,7 @@ public abstract class WorkflowActivity<P extends WorkflowProcess, AI extends Act
      * @return an ActivityInformation or subclass
      */
     public ActivityInformation<P> getActivityInformation(P process) {
-	return new ActivityInformation<P>(process, (WorkflowActivity<P, ActivityInformation<P>>) this);
+	return new ActivityInformation<P>(process, this);
     }
 
     /**
@@ -353,5 +387,14 @@ public abstract class WorkflowActivity<P extends WorkflowProcess, AI extends Act
      */
     public String getHelpMessage() {
 	return BundleUtil.getStringFromResourceBundle(getUsedBundle(), "label." + getClass().getName() + ".help");
+    }
+
+    public boolean isSigned() {
+	return false;
+    }
+
+    @Override
+    public String getIdentification() {
+	return getLocalizedName();
     }
 }

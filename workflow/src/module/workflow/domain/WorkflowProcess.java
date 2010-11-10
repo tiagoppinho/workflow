@@ -36,6 +36,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
+import module.signature.util.SignableObject;
 import module.workflow.activities.ActivityInformation;
 import module.workflow.activities.WorkflowActivity;
 import module.workflow.presentationTier.WorkflowLayoutContext;
@@ -59,7 +60,7 @@ import pt.ist.fenixframework.plugins.luceneIndexing.domain.interfaces.Indexable;
 import pt.ist.fenixframework.plugins.luceneIndexing.domain.interfaces.Searchable;
 import pt.ist.fenixframework.pstm.IllegalWriteException;
 
-public abstract class WorkflowProcess extends WorkflowProcess_Base implements Searchable, Indexable {
+public abstract class WorkflowProcess extends WorkflowProcess_Base implements Searchable, Indexable, SignableObject {
 
     public static enum WorkflowProcessIndex implements IndexableField {
 
@@ -252,6 +253,50 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
 	return comments.size() > 0 ? comments.first() : null;
     }
 
+    /**
+     * This method returns logs that were not 'finished' and should not be
+     * showed to the user
+     * 
+     * @return
+     */
+    public List<WorkflowLog> getPendingLogs() {
+	List<WorkflowLog> list = new ArrayList<WorkflowLog>();
+
+	for (WorkflowLog log : super.getExecutionLogs()) {
+	    if (log.getWhenOperationWasRan() == null) {
+		list.add(log);
+	    }
+	}
+
+	return list;
+    }
+
+    @Override
+    public List<WorkflowLog> getExecutionLogs() {
+	List<WorkflowLog> list = new ArrayList<WorkflowLog>();
+
+	for (WorkflowLog log : super.getExecutionLogs()) {
+	    if (log.getWhenOperationWasRan() != null) {
+		list.add(log);
+	    }
+	}
+
+	return list;
+    }
+
+    @Override
+    public Set<WorkflowLog> getExecutionLogsSet() {
+	Set<WorkflowLog> list = new HashSet<WorkflowLog>();
+
+	for (WorkflowLog log : super.getExecutionLogsSet()) {
+	    if (log.getWhenOperationWasRan() != null) {
+		list.add(log);
+	    }
+	}
+
+	return list;
+    }
+
     public List<ActivityLog> getExecutionLogs(DateTime begin, DateTime end) {
 	return getExecutionLogs(begin, end);
     }
@@ -261,8 +306,8 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
 	Interval interval = new Interval(begin, end);
 	for (WorkflowLog log : getExecutionLogs()) {
 	    if (interval.contains(log.getWhenOperationWasRan())
-		    && (activitiesClass.length == 0 || (log instanceof ActivityLog && match(activitiesClass, ((ActivityLog) log)
-			    .getOperation())))) {
+		    && (activitiesClass.length == 0 || (log instanceof ActivityLog && match(activitiesClass,
+			    ((ActivityLog) log).getOperation())))) {
 		logs.add(log);
 	    }
 	}
@@ -340,12 +385,12 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
 	    file.preProcess(bean);
 	    addFiles(file);
 	    file.postProcess(bean);
-	    new FileUploadLog(this, UserView.getCurrentUser(), file.getFilename(), file.getDisplayName(), BundleUtil
-		    .getLocalizedNamedFroClass(file.getClass()));
+	    new FileUploadLog(this, UserView.getCurrentUser(), file.getFilename(), file.getDisplayName(),
+		    BundleUtil.getLocalizedNamedFroClass(file.getClass()));
 	    return file;
 	}
-	throw new DomainException("label.error.workflowProcess.noSupportForFiles", DomainException
-		.getResourceFor("resources/WorkflowResources"));
+	throw new DomainException("label.error.workflowProcess.noSupportForFiles",
+		DomainException.getResourceFor("resources/WorkflowResources"));
 
     }
 
@@ -416,6 +461,15 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
 	return loggedPerson != null && isTakenByPerson(loggedPerson);
     }
 
+    @Service
+    @SuppressWarnings("unchecked")
+    public <T extends ActivityLog> T preLogExecution(User person, String operationName, String... args) {
+	T log = (T) new ActivityLog(this, person, operationName, args);
+	log.setWhenOperationWasRan(null);
+
+	return log;
+    }
+
     @SuppressWarnings("unchecked")
     public <T extends ActivityLog> T logExecution(User person, String operationName, String... args) {
 	return (T) new ActivityLog(this, person, operationName, args);
@@ -425,14 +479,15 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
     @Service
     public void removeFiles(ProcessFile file) {
 	if (!file.isPossibleToArchieve()) {
-	    throw new DomainException("error.invalidOperation.tryingToRemoveFileWhenIsNotPossible", DomainException
-		    .getResourceFor("resources/AcquisitionResources"));
+	    throw new DomainException("error.invalidOperation.tryingToRemoveFileWhenIsNotPossible",
+		    DomainException.getResourceFor("resources/AcquisitionResources"));
 	}
 	super.removeFiles(file);
 	addDeletedFiles(file);
 	file.processRemoval();
-	new FileRemoveLog(this, UserView.getCurrentUser(), file.getFilename(), file.getDisplayName() != null ? file
-		.getDisplayName() : file.getFilename(), BundleUtil.getLocalizedNamedFroClass(file.getClass()));
+	new FileRemoveLog(this, UserView.getCurrentUser(), file.getFilename(),
+		file.getDisplayName() != null ? file.getDisplayName() : file.getFilename(),
+		BundleUtil.getLocalizedNamedFroClass(file.getClass()));
     }
 
     public List<WorkflowProcessComment> getUnreadCommentsForCurrentUser() {
@@ -680,5 +735,10 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
 	Set<WorkflowLog> logs = getExecutionLogsSet();
 	return (logs.isEmpty()) ? new DateTime() : logs.iterator().next().getWhenOperationWasRan();
 
+    }
+
+    @Override
+    public String getIdentification() {
+	return getExternalId();
     }
 }
