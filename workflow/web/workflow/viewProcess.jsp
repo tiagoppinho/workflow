@@ -24,6 +24,14 @@
 	final WorkflowLayoutContext layoutContext = (WorkflowLayoutContext) ContextBaseAction.getContext(request);
 %>
 
+<logic:present name="signatureNotification">
+	<div class="infobox_warning">
+	 	<p class="mvert025">
+	 		<bean:write name="signatureNotification" />
+	 	</p>
+	 </div>
+</logic:present>
+
 <jsp:include page='<%=  layoutContext.getWorkflowHead() %>'/>
 
  

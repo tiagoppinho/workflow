@@ -178,3 +178,19 @@ relation WorkflowSystemWorkflowQueue {
 		multiplicity *;
 	}
 }
+
+/* Signatures */
+
+class SignatureProcess extends .module.signature.domain.SignatureIntentionObject {
+
+}
+
+relation WorkflowProcessSignature {
+	WorkflowProcess playsRole workflowProcess;
+	.module.signature.domain.SignatureIntention playsRole signature;
+}
+
+relation WorkflowLogSignature {
+	WorkflowLog playsRole workflowLog;
+	.module.signature.domain.SignatureIntention playsRole signature;
+}
