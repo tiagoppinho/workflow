@@ -37,12 +37,9 @@ import java.util.TreeSet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import module.signature.domain.SignatureIntention;
-import module.signature.domain.SignatureIntentionActivity;
 import module.workflow.activities.ActivityException;
 import module.workflow.activities.ActivityInformation;
 import module.workflow.activities.WorkflowActivity;
-import module.workflow.domain.ActivityLog;
 import module.workflow.domain.ProcessFile;
 import module.workflow.domain.ProcessFileValidationException;
 import module.workflow.domain.SignatureProcess;
@@ -64,6 +61,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.apache.struts.action.ActionRedirect;
 
 import pt.ist.fenixWebFramework.renderers.utils.RenderUtils;
 import pt.ist.fenixWebFramework.servlets.filters.contentRewrite.GenericChecksumRewriter;
@@ -89,6 +87,16 @@ public class ProcessManagement extends ContextBaseAction {
 	return viewProcess(process, request);
     }
 
+    public ActionForward signProcess(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
+	    final HttpServletResponse response) throws ClassNotFoundException {
+
+	WorkflowProcess process = getProcess(request);
+
+	SignatureProcess.factory(process);
+
+	return new ActionRedirect("/signature.do?method=history");
+    }
+
     @SuppressWarnings("unchecked")
     public ActionForward viewProcess(WorkflowProcess process, final HttpServletRequest request) {
 
@@ -98,7 +106,6 @@ public class ProcessManagement extends ContextBaseAction {
 	if (handler != null) {
 	    handler.handleRequest(process, request);
 	}
-
 
 	Context context = (Context) request.getAttribute(CONTEXT);
 	if (context.getElements().isEmpty()) {
@@ -238,10 +245,6 @@ public class ProcessManagement extends ContextBaseAction {
 	    ActivityInformation<WorkflowProcess> information) {
 	if (information.hasAllneededInfo()) {
 
-	    if (activity.isSigned()) {
-		return forwardToSignature(request, process, activity, information);
-	    }
-
 	    try {
 		activity.execute(information);
 	    } catch (ActivityException e) {
@@ -252,6 +255,7 @@ public class ProcessManagement extends ContextBaseAction {
 		return information.isForwardedFromInput() ? forwardProcessForInput(activity, request, information) : viewProcess(
 			process, request);
 	    }
+
 	    return forwardToProcessPage(process, request);
 	}
 
@@ -267,20 +271,6 @@ public class ProcessManagement extends ContextBaseAction {
 	    request.setAttribute("inputInterface", activity.getClass().getName().replace('.', '/') + ".jsp");
 	    return forward(request, "/workflow/nonDefaultActivityInput.jsp");
 	}
-    }
-
-    private <T extends WorkflowProcess> ActionForward forwardToSignature(HttpServletRequest request, T process,
-	    WorkflowActivity activity, ActivityInformation<T> information) {
-
-	ActivityLog log = activity.preLogExecution(process, information);
-
-	SignatureIntentionActivity<T, ActivityInformation<T>> signIntention = SignatureIntentionActivity
-		.factory(log, information);
-
-	request.setAttribute("information", information);
-	request.setAttribute("signIntention", signIntention);
-
-	return forward(request, "/workflow/activitySignature.jsp");
     }
 
     public ActionForward viewComments(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
@@ -340,8 +330,8 @@ public class ProcessManagement extends ContextBaseAction {
 	final WorkflowProcess process = getProcess(request);
 
 	try {
-	    process.addFile(bean.getSelectedInstance(), bean.getDisplayName(), bean.getFilename(), consumeInputStream(bean
-		    .getInputStream()), bean);
+	    process.addFile(bean.getSelectedInstance(), bean.getDisplayName(), bean.getFilename(),
+		    consumeInputStream(bean.getInputStream()), bean);
 	} catch (ProcessFileValidationException e) {
 	    request.setAttribute("bean", bean);
 	    request.setAttribute("process", process);
@@ -388,9 +378,6 @@ public class ProcessManagement extends ContextBaseAction {
 	    final HttpServletResponse response) {
 
 	final WorkflowProcess process = getProcess(request);
-
-	SignatureIntention signIntention = SignatureProcess.factory(process);
-	request.setAttribute("signIntention", signIntention);
 
 	request.setAttribute("operationLogs", process.getExecutionLogsSet());
 

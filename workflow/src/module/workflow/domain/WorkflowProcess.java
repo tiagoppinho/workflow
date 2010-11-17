@@ -461,15 +461,6 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
 	return loggedPerson != null && isTakenByPerson(loggedPerson);
     }
 
-    @Service
-    @SuppressWarnings("unchecked")
-    public <T extends ActivityLog> T preLogExecution(User person, String operationName, String... args) {
-	T log = (T) new ActivityLog(this, person, operationName, args);
-	log.setWhenOperationWasRan(null);
-
-	return log;
-    }
-
     @SuppressWarnings("unchecked")
     public <T extends ActivityLog> T logExecution(User person, String operationName, String... args) {
 	return (T) new ActivityLog(this, person, operationName, args);
