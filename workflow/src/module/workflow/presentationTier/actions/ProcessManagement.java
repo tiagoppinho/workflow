@@ -337,6 +337,12 @@ public class ProcessManagement extends ContextBaseAction {
 	    request.setAttribute("process", process);
 	    addLocalizedMessage(request, e.getLocalizedMessage());
 	    return forwardToUpload(request, bean);
+	} catch (DomainException e) {
+	    request.setAttribute("bean", bean);
+	    request.setAttribute("process", process);
+	    addLocalizedMessage(request, e.getLocalizedMessage());
+	    RenderUtils.invalidateViewState();
+	    return forwardToUpload(request, bean);
 	}
 
 	return viewProcess(process, request);
