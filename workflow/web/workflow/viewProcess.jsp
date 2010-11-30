@@ -45,8 +45,11 @@
 <p>
 			
 	<span class="post">Criado em <fr:view name="process" property="creationDate" layout="no-time"/></span> 
-	<span class="author">Criado por <fr:view name="process" property="processCreator.shortPresentationName"/></span> 
-
+	<span class="author">Criado por
+		<logic:present name="process" property="processCreator.shortPresentationName">
+			<fr:view name="process" property="processCreator.shortPresentationName"/> 
+		</logic:present>
+	</span>
 				<%--
 				<logic:greaterThan name="count" value="1">
 					<bean:message key="label.unreadComments.info.moreThanOne" arg0="<%= count.toString() %>" bundle="WORKFLOW_RESOURCES"/>
