@@ -306,8 +306,8 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
 	Interval interval = new Interval(begin, end);
 	for (WorkflowLog log : getExecutionLogs()) {
 	    if (interval.contains(log.getWhenOperationWasRan())
-		    && (activitiesClass.length == 0 || (log instanceof ActivityLog && match(activitiesClass,
-			    ((ActivityLog) log).getOperation())))) {
+		    && (activitiesClass.length == 0 || (log instanceof ActivityLog && match(activitiesClass, ((ActivityLog) log)
+			    .getOperation())))) {
 		logs.add(log);
 	    }
 	}
@@ -385,12 +385,12 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
 	    file.preProcess(bean);
 	    addFiles(file);
 	    file.postProcess(bean);
-	    new FileUploadLog(this, UserView.getCurrentUser(), file.getFilename(), file.getDisplayName(),
-		    BundleUtil.getLocalizedNamedFroClass(file.getClass()));
+	    new FileUploadLog(this, UserView.getCurrentUser(), file.getFilename(), file.getDisplayName(), BundleUtil
+		    .getLocalizedNamedFroClass(file.getClass()));
 	    return file;
 	}
-	throw new DomainException("label.error.workflowProcess.noSupportForFiles",
-		DomainException.getResourceFor("resources/WorkflowResources"));
+	throw new DomainException("label.error.workflowProcess.noSupportForFiles", DomainException
+		.getResourceFor("resources/WorkflowResources"));
 
     }
 
@@ -461,6 +461,18 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
 	return loggedPerson != null && isTakenByPerson(loggedPerson);
     }
 
+    public boolean isUserCanViewLogs(User user) {
+	return true;
+    }
+
+    public boolean isCurrentUserCanViewLogs() {
+	return isUserCanViewLogs(UserView.getCurrentUser());
+    }
+
+    public boolean isCreatedByAvailable() {
+	return true;
+    }
+
     @SuppressWarnings("unchecked")
     public <T extends ActivityLog> T logExecution(User person, String operationName, String... args) {
 	return (T) new ActivityLog(this, person, operationName, args);
@@ -470,15 +482,14 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
     @Service
     public void removeFiles(ProcessFile file) {
 	if (!file.isPossibleToArchieve()) {
-	    throw new DomainException("error.invalidOperation.tryingToRemoveFileWhenIsNotPossible",
-		    DomainException.getResourceFor("resources/AcquisitionResources"));
+	    throw new DomainException("error.invalidOperation.tryingToRemoveFileWhenIsNotPossible", DomainException
+		    .getResourceFor("resources/AcquisitionResources"));
 	}
 	super.removeFiles(file);
 	addDeletedFiles(file);
 	file.processRemoval();
-	new FileRemoveLog(this, UserView.getCurrentUser(), file.getFilename(),
-		file.getDisplayName() != null ? file.getDisplayName() : file.getFilename(),
-		BundleUtil.getLocalizedNamedFroClass(file.getClass()));
+	new FileRemoveLog(this, UserView.getCurrentUser(), file.getFilename(), file.getDisplayName() != null ? file
+		.getDisplayName() : file.getFilename(), BundleUtil.getLocalizedNamedFroClass(file.getClass()));
     }
 
     public List<WorkflowProcessComment> getUnreadCommentsForCurrentUser() {

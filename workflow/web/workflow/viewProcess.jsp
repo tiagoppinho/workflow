@@ -43,13 +43,14 @@
 </logic:present>
 
 <p>
-			
-	<span class="post">Criado em <fr:view name="process" property="creationDate" layout="no-time"/></span> 
-	<span class="author">Criado por
-		<logic:present name="process" property="processCreator.shortPresentationName">
-			<fr:view name="process" property="processCreator.shortPresentationName"/> 
-		</logic:present>
-	</span>
+	<logic:equal name="process" property="createdByAvailable" value="true">					
+		<span class="post">Criado em <fr:view name="process" property="creationDate" layout="no-time"/></span> 
+		<span class="author">Criado por
+			<logic:present name="process" property="processCreator.shortPresentationName">
+				<fr:view name="process" property="processCreator.shortPresentationName"/> 
+			</logic:present>
+		</span>
+	</logic:equal>
 				<%--
 				<logic:greaterThan name="count" value="1">
 					<bean:message key="label.unreadComments.info.moreThanOne" arg0="<%= count.toString() %>" bundle="WORKFLOW_RESOURCES"/>
@@ -148,12 +149,13 @@
                    </wf:isActive>
                --%>
                </logic:equal>    
-					
+					<logic:equal name="process" property="currentUserCanViewLogs" value="true"> 
 						<li>
 							<html:link page="/workflowProcessManagement.do?method=viewLogs" paramId="processId" paramName="process" paramProperty="externalId">
 								<bean:message key="link.viewLogs" bundle="WORKFLOW_RESOURCES"/>
 							</html:link>
 						</li>
+					</logic:equal>	
 					</ul>
 					
 				</div>
