@@ -141,9 +141,8 @@ public class ProcessManagement extends ContextBaseAction {
 	WorkflowProcess process = getProcess(request);
 	WorkflowActivity<WorkflowProcess, ActivityInformation<WorkflowProcess>> activity = getActivity(process, request);
 	ActivityInformation<WorkflowProcess> information = getRenderedObject("activityBean");
-	RenderUtils.invalidateViewState("activityBean");
-
-	return doLifeCycle(information, process, activity, request);
+	RenderUtils.invalidateViewState();
+	return executeActivity(process, request, activity, information);
     }
 
     public ActionForward actionLink(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
