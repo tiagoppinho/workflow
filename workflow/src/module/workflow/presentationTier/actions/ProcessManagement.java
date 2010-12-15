@@ -37,6 +37,7 @@ import java.util.TreeSet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import jvstm.cps.ConsistencyException;
 import module.workflow.activities.ActivityException;
 import module.workflow.activities.ActivityInformation;
 import module.workflow.activities.WorkflowActivity;
@@ -248,8 +249,16 @@ public class ProcessManagement extends ContextBaseAction {
 		activity.execute(information);
 	    } catch (ActivityException e) {
 		addMessage(request, e.getMessage());
-	    } catch (DomainException e) {
-		addLocalizedMessage(request, e.getLocalizedMessage());
+	    } catch (DomainException domainEx) {
+		addLocalizedMessage(request, domainEx.getLocalizedMessage());
+		RenderUtils.invalidateViewState();
+		return information.isForwardedFromInput() ? forwardProcessForInput(activity, request, information) : viewProcess(
+			process, request);
+	    } catch (Error error) {
+		if (!ConsistencyException.class.isAssignableFrom(error.getCause().getClass())) {
+		    throw error;
+		}
+		addLocalizedMessage(request, error.getCause().getLocalizedMessage());
 		RenderUtils.invalidateViewState();
 		return information.isForwardedFromInput() ? forwardProcessForInput(activity, request, information) : viewProcess(
 			process, request);
