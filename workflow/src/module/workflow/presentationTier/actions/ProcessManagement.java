@@ -57,6 +57,7 @@ import myorg.domain.contents.Node;
 import myorg.domain.exceptions.DomainException;
 import myorg.presentationTier.Context;
 import myorg.presentationTier.actions.ContextBaseAction;
+import myorg.util.BundleUtil;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.struts.action.ActionForm;
@@ -258,7 +259,13 @@ public class ProcessManagement extends ContextBaseAction {
 		if (!ConsistencyException.class.isAssignableFrom(error.getCause().getClass())) {
 		    throw error;
 		}
-		addLocalizedMessage(request, error.getCause().getLocalizedMessage());
+		if (error.getCause().getLocalizedMessage() != null) {
+		    addLocalizedMessage(request, error.getCause().getLocalizedMessage());
+		} else {
+		    addLocalizedMessage(request,
+			    BundleUtil.getStringFromResourceBundle("resources/WorkflowResources", "error.ConsistencyException"));
+		}
+
 		RenderUtils.invalidateViewState();
 		return information.isForwardedFromInput() ? forwardProcessForInput(activity, request, information) : viewProcess(
 			process, request);
