@@ -25,11 +25,11 @@
 
 package module.workflow.domain;
 
-import pt.utl.ist.fenix.tools.util.Strings;
 import module.workflow.activities.ActivityInformation;
 import module.workflow.activities.WorkflowActivity;
 import myorg.domain.User;
 import myorg.util.BundleUtil;
+import pt.utl.ist.fenix.tools.util.Strings;
 
 public class ActivityLog extends ActivityLog_Base {
 
@@ -57,4 +57,8 @@ public class ActivityLog extends ActivityLog_Base {
 	}
     }
 
+    @Override
+    public String getSignatureDescription() {
+	return "Actividade " + super.getSignatureDescription();
+    }
 }

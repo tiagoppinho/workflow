@@ -370,4 +370,9 @@ public abstract class WorkflowActivity<P extends WorkflowProcess, AI extends Act
     public String getIdentification() {
 	return getLocalizedName();
     }
+
+    @Override
+    public String getSignatureDescription() {
+	return "Actividade " + getLocalizedName();
+    }
 }

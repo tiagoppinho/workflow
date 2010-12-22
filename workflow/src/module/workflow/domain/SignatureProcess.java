@@ -1,20 +1,21 @@
 package module.workflow.domain;
 
 import module.signature.domain.SignatureIntention;
-import module.signature.metadata.SignatureMetaDataProcess;
+import module.signature.metadata.SignatureProcessMetaData;
 import pt.ist.fenixWebFramework.services.Service;
 
 public class SignatureProcess extends SignatureProcess_Base {
 
     @Service
     public static SignatureProcess factory(WorkflowProcess process) {
-	return new SignatureProcess(process);
+	SignatureProcess signatureProcess = new SignatureProcess();
+	signatureProcess.init(process);
+
+	return signatureProcess;
     }
 
-    protected SignatureProcess(WorkflowProcess process) {
+    protected SignatureProcess() {
 	super();
-
-	init(process);
     }
 
     protected void init(WorkflowProcess process) {
@@ -31,8 +32,8 @@ public class SignatureProcess extends SignatureProcess_Base {
     }
 
     @Override
-    public SignatureMetaDataProcess getMetaData() {
-	return new SignatureMetaDataProcess(getProcess());
+    public SignatureProcessMetaData getMetaData() {
+	return new SignatureProcessMetaData(getProcess());
     }
 
     @Override
@@ -43,5 +44,15 @@ public class SignatureProcess extends SignatureProcess_Base {
     @Override
     protected void finalizeSignature() {
 	// TODO getProcess().closeProcess()
+    }
+
+    @Override
+    public String getSignatureDescription() {
+	return "Processo " + getProcess().getProcessNumber();
+    }
+
+    @Override
+    public String getType() {
+	return "Processos";
     }
 }

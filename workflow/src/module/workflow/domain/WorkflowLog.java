@@ -89,6 +89,11 @@ public abstract class WorkflowLog extends WorkflowLog_Base implements SignableOb
 	return getExternalId();
     }
 
+    @Override
+    public String getSignatureDescription() {
+	return "Log " + getDescription();
+    }
+
     public boolean isSigned() {
 	return (getSignature() != null && getSignature().isSealed());
     }

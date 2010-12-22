@@ -743,4 +743,17 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
     public String getIdentification() {
 	return getExternalId();
     }
+
+    @Override
+    public String getSignatureDescription() {
+	return "Processo " + getProcessNumber();
+    }
+
+    /**
+     * Strategy Pattern: each subclass of WorkflowProcess must override this
+     * factory to the subclass of *SignatureProcess
+     */
+    public SignatureProcess signatureFactory() {
+	return SignatureProcess.factory(this);
+    }
 }
