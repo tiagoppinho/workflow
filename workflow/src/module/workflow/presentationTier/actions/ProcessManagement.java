@@ -43,11 +43,11 @@ import module.workflow.activities.ActivityInformation;
 import module.workflow.activities.WorkflowActivity;
 import module.workflow.domain.ProcessFile;
 import module.workflow.domain.ProcessFileValidationException;
-import module.workflow.domain.SignatureProcess;
 import module.workflow.domain.WorkflowProcess;
 import module.workflow.domain.WorkflowProcessComment;
 import module.workflow.presentationTier.ProcessNodeSelectionMapper;
 import module.workflow.presentationTier.WorkflowLayoutContext;
+import module.workflow.presentationTier.actions.ProcessManagement.ProcessRequestHandler;
 import module.workflow.util.FileUploadBeanResolver;
 import module.workflow.util.PresentableProcessState;
 import module.workflow.util.WorkflowFileUploadBean;
@@ -60,10 +60,10 @@ import myorg.presentationTier.actions.ContextBaseAction;
 import myorg.util.BundleUtil;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.poi.hssf.record.formula.functions.T;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
-import org.apache.struts.action.ActionRedirect;
 
 import pt.ist.fenixWebFramework.renderers.utils.RenderUtils;
 import pt.ist.fenixWebFramework.servlets.filters.contentRewrite.GenericChecksumRewriter;
@@ -94,9 +94,9 @@ public class ProcessManagement extends ContextBaseAction {
 
 	WorkflowProcess process = getProcess(request);
 
-	SignatureProcess.factory(process);
+	process.signatureFactory();
 
-	return new ActionRedirect("/signature.do?method=history");
+	return viewProcess(mapping, form, request, response);
     }
 
     @SuppressWarnings("unchecked")
