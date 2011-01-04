@@ -128,17 +128,30 @@ public abstract class WorkflowActivity<P extends WorkflowProcess, AI extends Act
      * @param activityInformation
      */
     @Service
-    public final void execute(AI activityInformation) {
-	P process = activityInformation.getProcess();
-	checkConditionsFor(process);
-	ActivityLog log = logExecution(process, getClass().getSimpleName(), getLoggedPerson(),
-		getArgumentsDescription(activityInformation));
-	process(activityInformation);
-	notifyUsers(process);
+	public final void execute(AI activityInformation) {
+		P process = activityInformation.getProcess();
+		checkConditionsFor(process);
+		ActivityLog log = null;
+		if (shouldLogActivity(activityInformation)) {
+			log = logExecution(process, getClass().getSimpleName(),
+					getLoggedPerson(),
+					getArgumentsDescription(activityInformation));
+		}
+		process(activityInformation);
+		notifyUsers(process);
 
-	if (isSigned()) {
-	    new SignatureIntentionActivity<P, AI>(log, activityInformation);
+		if (isSigned() && shouldLogActivity(activityInformation)) {
+			new SignatureIntentionActivity<P, AI>(log, activityInformation);
+		}
 	}
+    
+    /**
+     * @param activityInformation the {@link ActivityInformation} to help decide
+     * @return true if this activity should be logged, false otherwise
+     */
+    protected boolean shouldLogActivity(AI activityInformation)
+    {
+    	return true;
     }
 
     /**
@@ -375,4 +388,5 @@ public abstract class WorkflowActivity<P extends WorkflowProcess, AI extends Act
     public String getSignatureDescription() {
 	return "Actividade " + getLocalizedName();
     }
+
 }
