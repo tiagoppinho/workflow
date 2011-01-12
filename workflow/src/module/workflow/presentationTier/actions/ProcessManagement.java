@@ -37,7 +37,6 @@ import java.util.TreeSet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import jvstm.cps.ConsistencyException;
 import module.workflow.activities.ActivityException;
 import module.workflow.activities.ActivityInformation;
 import module.workflow.activities.WorkflowActivity;
@@ -47,7 +46,6 @@ import module.workflow.domain.WorkflowProcess;
 import module.workflow.domain.WorkflowProcessComment;
 import module.workflow.presentationTier.ProcessNodeSelectionMapper;
 import module.workflow.presentationTier.WorkflowLayoutContext;
-import module.workflow.presentationTier.actions.ProcessManagement.ProcessRequestHandler;
 import module.workflow.util.FileUploadBeanResolver;
 import module.workflow.util.PresentableProcessState;
 import module.workflow.util.WorkflowFileUploadBean;
@@ -57,10 +55,8 @@ import myorg.domain.contents.Node;
 import myorg.domain.exceptions.DomainException;
 import myorg.presentationTier.Context;
 import myorg.presentationTier.actions.ContextBaseAction;
-import myorg.util.BundleUtil;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.poi.hssf.record.formula.functions.T;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
@@ -256,15 +252,7 @@ public class ProcessManagement extends ContextBaseAction {
 		return information.isForwardedFromInput() ? forwardProcessForInput(activity, request, information) : viewProcess(
 			process, request);
 	    } catch (Error error) {
-		if (!ConsistencyException.class.isAssignableFrom(error.getCause().getClass())) {
-		    throw error;
-		}
-		if (error.getCause().getLocalizedMessage() != null) {
-		    addLocalizedMessage(request, error.getCause().getLocalizedMessage());
-		} else {
-		    addLocalizedMessage(request,
-			    BundleUtil.getStringFromResourceBundle("resources/WorkflowResources", "error.ConsistencyException"));
-		}
+		displayConsistencyException(error, request);
 
 		RenderUtils.invalidateViewState();
 		return information.isForwardedFromInput() ? forwardProcessForInput(activity, request, information) : viewProcess(
