@@ -139,7 +139,6 @@
                                <wf:activityName processName="process" activityName="<%= ReleaseProcess.class.getSimpleName() %>" scope="request"/>
                    </wf:activityLink>
                </li>    
-             <%--   
                    <wf:isActive processName="process" activityName="<%= GiveProcess.class.getSimpleName() %>" scope="request">
                    <li>
                        <wf:activityLink id="give-process" processName="process" activityName="<%=  GiveProcess.class.getSimpleName() %>" scope="request">
@@ -147,7 +146,6 @@
                        </wf:activityLink>
                    </li>
                    </wf:isActive>
-               --%>
                </logic:equal>    
 					<logic:equal name="process" property="currentUserCanViewLogs" value="true"> 
 						<li>

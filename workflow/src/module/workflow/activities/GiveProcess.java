@@ -60,4 +60,10 @@ public class GiveProcess<T extends WorkflowProcess> extends WorkflowActivity<T, 
     public boolean isVisible() {
 	return false;
     }
+
+    @Override
+    public boolean isDefaultInputInterfaceUsed() {
+        return false;
+    }
+
 }
