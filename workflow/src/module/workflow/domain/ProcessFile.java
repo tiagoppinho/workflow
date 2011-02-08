@@ -3,6 +3,8 @@ package module.workflow.domain;
 import module.workflow.util.WorkflowFileUploadBean;
 import myorg.util.ClassNameBundle;
 
+import org.apache.commons.lang.StringUtils;
+
 @ClassNameBundle(bundle = "resources/WorkflowResources")
 public class ProcessFile extends ProcessFile_Base {
 
@@ -90,4 +92,7 @@ public class ProcessFile extends ProcessFile_Base {
 	return getProcess() == null && getProcessWithDeleteFile() != null;
     }
 
+    public String getPresentationName() {
+	return StringUtils.isEmpty(getDisplayName()) ? getFilename() : getDisplayName();
+    }
 }
