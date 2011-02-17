@@ -21,6 +21,22 @@
 	  <property name="observerBundle" value="WORKFLOW_RESOURCES"/>
 	  <property name="observerKey" value="label.marker.observer"/>
 	  <property name="observerClass" value="observerClass"/>
+	  <property name="showOnlyUnreadComments" value="false"/>
+</renderer>
+
+<renderer type="module.workflow.domain.WorkflowProcess" layout="viewUnreadComments"
+	class="module.workflow.presentationTier.renderers.CommentRenderer">
+
+	  <property name="commentBlockClasses" value="comment dataBox roundCorners"/>
+	  <property name="nameClasses" value="bold"/>
+	  <property name="photoClasses" value="photoHolder"/>
+	  <property name="bodyClasses" value="aleft"/>
+	  <property name="photoUrl" value="https://fenix.ist.utl.pt/publico/retrievePersonalPhoto.do?method=retrieveByUUID&amp;contentContextPath_PATH=/homepage&amp;uuid=${username}"/>
+	  <property name="reverseOrder" value="false"/>
+	  <property name="observerBundle" value="WORKFLOW_RESOURCES"/>
+	  <property name="observerKey" value="label.marker.observer"/>
+	  <property name="observerClass" value="observerClass"/>
+	  <property name="showOnlyUnreadComments" value="true"/>
 </renderer>
 
 <renderer type="module.workflow.presentationTier.actions.UserNotificationBean" layout="viewCommenters"

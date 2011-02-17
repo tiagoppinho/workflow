@@ -31,6 +31,7 @@ public class CommentRenderer extends OutputRenderer {
     private String observerBundle;
     private String observerKey;
     private boolean reverseOrder;
+    private boolean showOnlyUnreadComments;
 
     public String getObserverBundle() {
 	return observerBundle;
@@ -114,7 +115,11 @@ public class CommentRenderer extends OutputRenderer {
 		WorkflowProcess process = (WorkflowProcess) arg0;
 		Set<WorkflowProcessComment> comments = new TreeSet<WorkflowProcessComment>(
 			isReverseOrder() ? WorkflowProcessComment.REVERSE_COMPARATOR : WorkflowProcessComment.COMPARATOR);
-		comments.addAll(process.getComments());
+		if (!showOnlyUnreadComments) {
+		    comments.addAll(process.getComments());
+		} else {
+		    comments.addAll(process.getUnreadCommentsForCurrentUser());
+		}
 
 		User currentRenderingUser = null;
 		HtmlBlockContainer commentContainer = null;
@@ -190,5 +195,13 @@ public class CommentRenderer extends OutputRenderer {
 	    }
 
 	};
+    }
+
+    public void setShowOnlyUnreadComments(boolean showOnlyUnreadComments) {
+	this.showOnlyUnreadComments = showOnlyUnreadComments;
+    }
+
+    public boolean isShowOnlyUnreadComments() {
+	return showOnlyUnreadComments;
     }
 }

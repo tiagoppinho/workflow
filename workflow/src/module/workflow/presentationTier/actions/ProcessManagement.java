@@ -112,6 +112,7 @@ public class ProcessManagement extends ContextBaseAction {
 	}
 	return forward(request, "/workflow/viewProcess.jsp");
     }
+    
 
     public ActionForward forwardToProcessPage(WorkflowProcess process, HttpServletRequest request) {
 

@@ -233,6 +233,7 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
 	logs.addAll(getExecutionLogs());
 	Collections.sort(logs, new Comparator<WorkflowLog>() {
 
+	    @Override
 	    public int compare(WorkflowLog log1, WorkflowLog log2) {
 		return -1 * log1.getWhenOperationWasRan().compareTo(log2.getWhenOperationWasRan());
 	    }
@@ -506,6 +507,11 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
 	return comments;
     }
 
+    public boolean hasUnreadCommentsForCurrentUser() {
+	User user = UserView.getCurrentUser();
+	return hasUnreadCommentsForUser(user);
+    }
+
     /**
      * When interfaces need to display several processes, which may or may not
      * be from different kinds, this method should be used to render a textual
@@ -755,5 +761,15 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
      */
     public SignatureProcess signatureFactory() {
 	return SignatureProcess.factory(this);
+    }
+
+    public boolean hasUnreadCommentsForUser(User user) {
+	List<WorkflowProcessComment> comments = new ArrayList<WorkflowProcessComment>();
+	for (WorkflowProcessComment comment : getComments()) {
+	    if (comment.isUnreadBy(user)) {
+		return true;
+	    }
+	}
+	return false;
     }
 }
