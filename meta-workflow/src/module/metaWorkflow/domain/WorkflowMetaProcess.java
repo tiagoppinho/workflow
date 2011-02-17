@@ -63,6 +63,7 @@ public class WorkflowMetaProcess extends WorkflowMetaProcess_Base {
 	requestorKey = "requestor";
 	creatorKey = "creator";
 
+
     }
 
     public WorkflowMetaProcess(WorkflowMetaType type, String subject, String instanceDescription, WorkflowQueue queue,
