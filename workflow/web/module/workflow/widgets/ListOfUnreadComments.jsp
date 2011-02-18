@@ -30,6 +30,10 @@
 		padding: 5px 0 0 0 !important;
 		}
 		
+		td.photoHolder img {
+		width: 50%;
+		}
+		
 		div.process-id {
 		margin: 10px 0 10px 0;
 		}
