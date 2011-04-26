@@ -12,6 +12,7 @@ import module.metaWorkflow.domain.search.SearchMetaWorkflowProcess;
 import module.metaWorkflow.util.WorkflowMetaProcessBean;
 import module.workflow.domain.WorkflowProcess;
 import module.workflow.domain.WorkflowQueue;
+import module.workflow.presentationTier.actions.CommentBean;
 import module.workflow.presentationTier.actions.ProcessManagement;
 import myorg.applicationTier.Authenticate.UserView;
 import myorg.domain.User;
@@ -247,10 +248,11 @@ public class MetaWorkflowAction extends ContextBaseAction {
 	    final HttpServletResponse response) {
 
 	final WorkflowMetaProcess process = getDomainObject(request, "processId");
-	String comment = getRenderedObject("comment");
-	if (true)
-	    throw new Error("The next line needs to be reimplemented...");
-	// process.createComment(UserView.getCurrentUser(), comment);
+	final String comment = getRenderedObject("comment");
+	// TODO : Add people to notify when creating comment.
+	final CommentBean commentBean = new CommentBean(process);
+	commentBean.setComment(comment);
+	process.createComment(UserView.getCurrentUser(), commentBean);
 
 	RenderUtils.invalidateViewState("comment");
 	return ProcessManagement.forwardToProcess(process);
