@@ -36,7 +36,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
-import module.signature.util.SignableObject;
 import module.workflow.activities.ActivityInformation;
 import module.workflow.activities.WorkflowActivity;
 import module.workflow.presentationTier.WorkflowLayoutContext;
@@ -60,7 +59,7 @@ import pt.ist.fenixframework.plugins.luceneIndexing.domain.interfaces.Indexable;
 import pt.ist.fenixframework.plugins.luceneIndexing.domain.interfaces.Searchable;
 import pt.ist.fenixframework.pstm.IllegalWriteException;
 
-public abstract class WorkflowProcess extends WorkflowProcess_Base implements Searchable, Indexable, SignableObject {
+public abstract class WorkflowProcess extends WorkflowProcess_Base implements Searchable, Indexable {
 
     public static enum WorkflowProcessIndex implements IndexableField {
 
@@ -745,23 +744,6 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
 
     }
 
-    @Override
-    public String getIdentification() {
-	return getExternalId();
-    }
-
-    @Override
-    public String getSignatureDescription() {
-	return "Processo " + getProcessNumber();
-    }
-
-    /**
-     * Strategy Pattern: each subclass of WorkflowProcess must override this
-     * factory to the subclass of *SignatureProcess
-     */
-    public SignatureProcess signatureFactory() {
-	return SignatureProcess.factory(this);
-    }
 
     public boolean hasUnreadCommentsForUser(User user) {
 	List<WorkflowProcessComment> comments = new ArrayList<WorkflowProcessComment>();

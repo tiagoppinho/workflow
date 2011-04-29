@@ -2,7 +2,6 @@ package module.workflow.domain;
 
 import java.util.Comparator;
 
-import module.signature.util.SignableObject;
 import myorg.domain.User;
 
 import org.joda.time.DateTime;
@@ -10,7 +9,7 @@ import org.joda.time.Duration;
 
 import pt.utl.ist.fenix.tools.util.Strings;
 
-public abstract class WorkflowLog extends WorkflowLog_Base implements SignableObject {
+public abstract class WorkflowLog extends WorkflowLog_Base {
     public static final Comparator<WorkflowLog> COMPARATOR_BY_WHEN = new Comparator<WorkflowLog>() {
 
 	@Override
@@ -84,17 +83,5 @@ public abstract class WorkflowLog extends WorkflowLog_Base implements SignableOb
 	return new Duration(previous.getWhenOperationWasRan(), next.getWhenOperationWasRan());
     }
 
-    @Override
-    public String getIdentification() {
-	return getExternalId();
-    }
 
-    @Override
-    public String getSignatureDescription() {
-	return "Log " + getDescription();
-    }
-
-    public boolean isSigned() {
-	return (getSignature() != null && getSignature().isSealed());
-    }
 }

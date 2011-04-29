@@ -57,8 +57,4 @@ public class ActivityLog extends ActivityLog_Base {
 	}
     }
 
-    @Override
-    public String getSignatureDescription() {
-	return "Actividade " + super.getSignatureDescription();
-    }
 }
