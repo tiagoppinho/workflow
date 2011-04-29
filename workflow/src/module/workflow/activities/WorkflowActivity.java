@@ -28,8 +28,6 @@ package module.workflow.activities;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
-import module.signature.domain.SignatureIntentionActivity;
-import module.signature.util.SignableActivity;
 import module.workflow.domain.ActivityLog;
 import module.workflow.domain.WorkflowProcess;
 import myorg.applicationTier.Authenticate.UserView;
@@ -46,7 +44,7 @@ import pt.utl.ist.fenix.tools.util.i18n.Language;
  * @param <AI>
  *            object that extends ActivityInformation (bean of the activity)
  */
-public abstract class WorkflowActivity<P extends WorkflowProcess, AI extends ActivityInformation<P>> implements SignableActivity {
+public abstract class WorkflowActivity<P extends WorkflowProcess, AI extends ActivityInformation<P>> {
 
     /**
      * 
@@ -140,9 +138,6 @@ public abstract class WorkflowActivity<P extends WorkflowProcess, AI extends Act
 		process(activityInformation);
 		notifyUsers(process);
 
-		if (isSigned() && shouldLogActivity(activityInformation)) {
-			new SignatureIntentionActivity<P, AI>(log, activityInformation);
-		}
 	}
     
     /**
@@ -379,14 +374,5 @@ public abstract class WorkflowActivity<P extends WorkflowProcess, AI extends Act
 	return false;
     }
 
-    @Override
-    public String getIdentification() {
-	return getLocalizedName();
-    }
-
-    @Override
-    public String getSignatureDescription() {
-	return "Actividade " + getLocalizedName();
-    }
 
 }

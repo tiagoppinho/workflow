@@ -86,15 +86,6 @@ public class ProcessManagement extends ContextBaseAction {
 	return viewProcess(process, request);
     }
 
-    public ActionForward signProcess(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
-	    final HttpServletResponse response) throws ClassNotFoundException {
-
-	WorkflowProcess process = getProcess(request);
-
-	process.signatureFactory();
-
-	return viewProcess(mapping, form, request, response);
-    }
 
     @SuppressWarnings("unchecked")
     public ActionForward viewProcess(WorkflowProcess process, final HttpServletRequest request) {
