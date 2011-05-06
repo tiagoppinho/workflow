@@ -61,22 +61,24 @@
 				--%>
 				
 	<logic:equal name="process" property="commentsSupportAvailable" value="true">
-		<bean:size id="comments"  name="process" property="comments"/>		 
-		<span class="comments">
-			<html:link page="/workflowProcessManagement.do?method=viewComments" paramId="processId" paramName="process" paramProperty="externalId">
-			<%= comments %>
-			<logic:equal name="comments" value="1">
-				<bean:message key="link.comment" bundle="WORKFLOW_RESOURCES"/>
-			</logic:equal>
-			<logic:notEqual name="comments" value="1">
-				<bean:message key="link.comments" bundle="WORKFLOW_RESOURCES"/>
-			</logic:notEqual>
-			</html:link>
-			<bean:define id="unreadComments" name="process" property="unreadCommentsForCurrentUser"/>
-			<logic:notEmpty name="unreadComments">
-				<bean:size id="count" name="unreadComments"/> (<%= count.toString() %> novos) 
-			</logic:notEmpty>
-		</span>
+		<logic:equal name="process" property="commentsDisplayedInBody" value="false">
+			<bean:size id="comments"  name="process" property="comments"/>		 
+			<span class="comments">
+				<html:link page="/workflowProcessManagement.do?method=viewComments" paramId="processId" paramName="process" paramProperty="externalId">
+				<%= comments %>
+				<logic:equal name="comments" value="1">
+					<bean:message key="link.comment" bundle="WORKFLOW_RESOURCES"/>
+				</logic:equal>
+				<logic:notEqual name="comments" value="1">
+					<bean:message key="link.comments" bundle="WORKFLOW_RESOURCES"/>
+				</logic:notEqual>
+				</html:link>
+				<bean:define id="unreadComments" name="process" property="unreadCommentsForCurrentUser"/>
+				<logic:notEmpty name="unreadComments">
+					<bean:size id="count" name="unreadComments"/> (<%= count.toString() %> novos) 
+				</logic:notEmpty>
+			</span>
+		</logic:equal>
 	</logic:equal>
 </p>
 
@@ -242,3 +244,11 @@
 
 <jsp:include page='<%=  layoutContext.getWorkflowBody() %>'/>
 
+<logic:equal name="process" property="commentsSupportAvailable" value="true">
+	<logic:equal name="process" property="commentsDisplayedInBody" value="true">
+		<jsp:include page="/workflow/viewComments.jsp">
+			<jsp:param value="true" name="displayedInline"/>
+			<jsp:param value="<%=processId%>" name="processId"/>
+		</jsp:include>
+	</logic:equal>
+</logic:equal>

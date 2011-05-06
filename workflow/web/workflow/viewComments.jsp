@@ -1,3 +1,10 @@
+<%@page import="myorg.domain.User"%>
+<%@page import="module.workflow.presentationTier.actions.CommentBean"%>
+<%@page import="java.util.TreeSet"%>
+<%@page import="module.workflow.domain.WorkflowProcessComment"%>
+<%@page import="java.util.Set"%>
+<%@page import="pt.ist.fenixframework.pstm.AbstractDomainObject"%>
+<%@page import="module.workflow.domain.WorkflowProcess"%>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib uri="/WEB-INF/struts-html.tld" prefix="html" %>
 <%@ taglib uri="/WEB-INF/struts-bean.tld" prefix="bean" %>
@@ -8,21 +15,50 @@
 <%@page import="module.workflow.presentationTier.WorkflowLayoutContext"%>
 <%@page import="myorg.presentationTier.actions.ContextBaseAction"%>
 
+<bean:define id="currentUser" name="USER_SESSION_ATTRIBUTE" property="user"/>
+
 <h2><bean:message key="title.comments" bundle="WORKFLOW_RESOURCES"/></h2>
 
 <%
 	final WorkflowLayoutContext layoutContext = (WorkflowLayoutContext) ContextBaseAction.getContext(request);
+
+//asert if we are to get the comments here or not, usually depending if we are showing the comments in-line or not
+String fetch = request.getParameter("displayedInline");
+if ( fetch != null && fetch.equalsIgnoreCase("true"))
+{
+    request.setAttribute("displayedInline", fetch);
+    //get the process 
+	String oid = request.getParameter("processId");
+	final WorkflowProcess process = AbstractDomainObject.fromExternalId(oid);
+	request.setAttribute("process", process);
+
+	Set<WorkflowProcessComment> comments = new TreeSet<WorkflowProcessComment>(WorkflowProcessComment.COMPARATOR);
+	comments.addAll(process.getComments());
+	
+	process.markCommentsAsReadForUser((User) currentUser);
+	request.setAttribute("comments", comments);
+	request.setAttribute("bean", new CommentBean(process));
+    
+}
+else {
+    fetch = "false";
+    request.setAttribute("displayedInline", fetch);
+    
+}
+
 %>
 
-<p>
-	<html:link page="/workflowProcessManagement.do?method=viewProcess" paramId="processId" paramName="process" paramProperty="externalId">
-		« <bean:message key="link.backToProcess" bundle="WORKFLOW_RESOURCES"/>
-	</html:link>
-</p>
+<logic:notEqual  name="displayedInline" value="true">
+	<p>
+		<html:link page="/workflowProcessManagement.do?method=viewProcess" paramId="processId" paramName="process" paramProperty="externalId">
+			« <bean:message key="link.backToProcess" bundle="WORKFLOW_RESOURCES"/>
+		</html:link>
+	</p>
 
 
 <jsp:include page='<%= layoutContext.getWorkflowShortBody() %>'/>
 
+</logic:notEqual>
 
 <logic:empty name="comments">
 	<p class="mtop15"><em><bean:message key="label.noComments" bundle="WORKFLOW_RESOURCES"/>.</em></p>
@@ -39,7 +75,7 @@
 
 <bean:define id="processOid" name="process" property="externalId" type="java.lang.String"/>
 
-<fr:form action='<%= "/workflowProcessManagement.do?method=addComment&processId=" + processOid%>'>
+<fr:form action='<%= "/workflowProcessManagement.do?method=addComment&processId=" + processOid + "&displayedInLine=" + fetch%>'>
 	 
 	<fr:edit id="comment" name="bean" visible="false"/>
 

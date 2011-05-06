@@ -558,6 +558,15 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
     }
 
     /**
+     * @return true if the comments should be displayed in-line in the main page
+     *         of the process, false if the default link on the top right corner
+     *         should be used instead
+     */
+    public boolean isCommentsDisplayedInBody() {
+	return false;
+    }
+
+    /**
      * By ticket support we mean support for Take/Steal/Give/Release operations.
      * If this method returns false, the interface will stop having this
      * operations. Although the WorkflowProcess methods - currently - don't

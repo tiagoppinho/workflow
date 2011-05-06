@@ -290,12 +290,18 @@ public class ProcessManagement extends ContextBaseAction {
 
 	final WorkflowProcess process = getProcess(request);
 
+	String displayedInlineString = request.getParameter("displayedInLine");
+	Boolean displayedInline = Boolean.valueOf(displayedInlineString);
+
 	CommentBean bean = getRenderedObject("comment");
 
 	process.createComment(UserView.getCurrentUser(), bean);
 
 	RenderUtils.invalidateViewState();
-	return viewComments(mapping, form, request, response);
+	if (!displayedInline)
+	    return viewComments(mapping, form, request, response);
+	else
+	    return viewProcess(process, request);
     }
 
     private ActionForward forwardToUpload(HttpServletRequest request, WorkflowFileUploadBean bean) {
