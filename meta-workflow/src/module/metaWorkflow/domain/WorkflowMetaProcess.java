@@ -123,8 +123,8 @@ public class WorkflowMetaProcess extends WorkflowMetaProcess_Base {
     }
 
     @Override
-    public boolean isCommentsSupportAvailable() {
-	return false;
+    public boolean isCommentsDisplayedInBody() {
+	return true;
     }
 
     @Override

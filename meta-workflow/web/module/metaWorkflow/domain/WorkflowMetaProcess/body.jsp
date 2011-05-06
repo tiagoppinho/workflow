@@ -120,6 +120,7 @@
 	</div>
 </div>
 
+<%--
 <h3 class="mbottom05"><bean:message key="title.comments" bundle="WORKFLOW_RESOURCES"/></h3>
 
 <div>
@@ -145,3 +146,4 @@
 		</fr:form>
 	</logic:present>	
 </div>
+ --%>
