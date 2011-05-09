@@ -12,6 +12,7 @@ import module.workflow.domain.WorkflowQueue;
 import module.workflow.domain.WorkflowSystem;
 import module.workflow.util.WorkflowQueueBean;
 import myorg.domain.User;
+import myorg.domain.VirtualHost;
 import myorg.util.ClassNameBundle;
 import pt.ist.fenixWebFramework.services.Service;
 
@@ -74,4 +75,11 @@ public class WorkflowUnitQueue extends WorkflowUnitQueue_Base {
 	}
 	return queues;
     }
+
+    @Override
+    public boolean isConnectedToCurrentHost() {
+	final VirtualHost virtualHost = VirtualHost.getVirtualHostForThread();
+	return virtualHost != null && getWorkflowSystem() == virtualHost.getWorkflowSystem();
+    }
+
 }

@@ -23,6 +23,7 @@ import module.workflow.domain.WorkflowQueue;
 import module.workflow.presentationTier.WorkflowLayoutContext;
 import myorg.applicationTier.Authenticate.UserView;
 import myorg.domain.User;
+import myorg.domain.VirtualHost;
 import myorg.domain.exceptions.DomainException;
 import myorg.util.ClassNameBundle;
 
@@ -220,4 +221,11 @@ public class WorkflowMetaProcess extends WorkflowMetaProcess_Base {
     public void notifyUserDueToComment(User user, String comment) {
 	// This has still to be implemented.
     }
+
+    @Override
+    public boolean isConnectedToCurrentHost() {
+	final VirtualHost virtualHost = VirtualHost.getVirtualHostForThread();
+	return virtualHost != null && getWorkflowSystem() == virtualHost.getWorkflowSystem();
+    }
+
 }
