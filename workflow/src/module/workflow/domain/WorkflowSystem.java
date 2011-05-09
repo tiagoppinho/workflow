@@ -6,7 +6,6 @@ import module.dashBoard.WidgetRegister;
 import module.workflow.widgets.ProcessListWidget;
 import module.workflow.widgets.QuickViewWidget;
 import module.workflow.widgets.UnreadCommentsWidget;
-import myorg.domain.MyOrg;
 import myorg.domain.VirtualHost;
 import pt.ist.fenixWebFramework.services.Service;
 import pt.ist.fenixWebFramework.servlets.filters.contentRewrite.RequestChecksumFilter;
@@ -36,19 +35,7 @@ public class WorkflowSystem extends WorkflowSystem_Base {
 
     public static WorkflowSystem getInstance() {
 	final VirtualHost virtualHostForThread = VirtualHost.getVirtualHostForThread();
-	if (virtualHostForThread != null && !virtualHostForThread.hasWorkflowSystem()) {
-	    init(virtualHostForThread);
-	}
 	return virtualHostForThread == null ? null : virtualHostForThread.getWorkflowSystem();
-    }
-
-    @Service
-    public synchronized static void init(final VirtualHost virtualHost) {
-	if (!virtualHost.hasWorkflowSystem()) {
-	    final MyOrg myOrg = MyOrg.getInstance();
-	    final WorkflowSystem workflowSystem = myOrg.getWorkflowSystem();
-	    virtualHost.setWorkflowSystem(workflowSystem);
-	}
     }
 
     @Service

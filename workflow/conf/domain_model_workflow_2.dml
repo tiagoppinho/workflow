@@ -28,11 +28,6 @@ external class .pt.ist.fenixframework.plugins.fileSupport.domain.GenericFile;
  
 class module.workflow.domain.ProcessFile extends .pt.ist.fenixframework.plugins.fileSupport.domain.GenericFile { }
  
-relation WorkflowflowSystemMyOrg {
-	module.workflow.domain.WorkflowSystem playsRole workflowSystem;
-	myorg.domain.MyOrg playsRole myOrg;
-}
- 
 relation WorkflowProcessFile {
 	module.workflow.domain.WorkflowProcess playsRole process;
 	module.workflow.domain.ProcessFile playsRole files {
