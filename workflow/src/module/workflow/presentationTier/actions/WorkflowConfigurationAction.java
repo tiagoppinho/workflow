@@ -5,16 +5,16 @@ import javax.servlet.http.HttpServletResponse;
 
 import module.workflow.domain.WorkflowSystem;
 import myorg.domain.VirtualHost;
+import myorg.presentationTier.actions.ContextBaseAction;
 
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
-import pt.ist.expenditureTrackingSystem.presentationTier.actions.BaseAction;
 import pt.ist.fenixWebFramework.struts.annotations.Mapping;
 
 @Mapping(path = "/workflowConfiguration")
-public class WorkflowConfigurationAction extends BaseAction {
+public class WorkflowConfigurationAction extends ContextBaseAction {
 
     public ActionForward viewConfiguration(final ActionMapping mapping, final ActionForm form,
 	    final HttpServletRequest request, final HttpServletResponse response) {
