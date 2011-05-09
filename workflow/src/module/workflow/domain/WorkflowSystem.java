@@ -6,55 +6,15 @@ import module.dashBoard.WidgetRegister;
 import module.workflow.widgets.ProcessListWidget;
 import module.workflow.widgets.QuickViewWidget;
 import module.workflow.widgets.UnreadCommentsWidget;
-import myorg.domain.ModuleInitializer;
 import myorg.domain.MyOrg;
+import myorg.domain.VirtualHost;
 import pt.ist.fenixWebFramework.services.Service;
 import pt.ist.fenixWebFramework.servlets.filters.contentRewrite.RequestChecksumFilter;
 import pt.ist.fenixWebFramework.servlets.filters.contentRewrite.RequestChecksumFilter.ChecksumPredicate;
 
-public class WorkflowSystem extends WorkflowSystem_Base implements ModuleInitializer {
+public class WorkflowSystem extends WorkflowSystem_Base {
 
-    private static boolean isInitialized = false;
-
-    private static ThreadLocal<WorkflowSystem> init = null;
-
-    private WorkflowSystem() {
-	setMyOrg(MyOrg.getInstance());
-    }
-
-    public static WorkflowSystem getInstance() {
-	if (init != null) {
-	    return init.get();
-	}
-
-	if (!isInitialized) {
-	    initialize();
-	}
-	final MyOrg myOrg = MyOrg.getInstance();
-	return myOrg.getWorkflowSystem();
-    }
-
-    @Service
-    public synchronized static void initialize() {
-	if (!isInitialized) {
-	    try {
-		final MyOrg myOrg = MyOrg.getInstance();
-		final WorkflowSystem system = myOrg.getWorkflowSystem();
-		if (system == null) {
-		    new WorkflowSystem();
-		}
-		init = new ThreadLocal<WorkflowSystem>();
-		init.set(myOrg.getWorkflowSystem());
-
-		isInitialized = true;
-	    } finally {
-		init = null;
-	    }
-	}
-    }
-
-    @Override
-    public void init(MyOrg root) {
+    static {
 	WidgetRegister.registerWidget(ProcessListWidget.class);
 	WidgetRegister.registerWidget(QuickViewWidget.class);
 	WidgetRegister.registerWidget(UnreadCommentsWidget.class);
@@ -67,6 +27,40 @@ public class WorkflowSystem extends WorkflowSystem_Base implements ModuleInitial
 			"method=viewTypeDescription"));
 	    }
 	});
+    }
+
+    private WorkflowSystem(final VirtualHost virtualHost) {
+	super();
+	virtualHost.setWorkflowSystem(this);
+    }
+
+    public static WorkflowSystem getInstance() {
+	final VirtualHost virtualHostForThread = VirtualHost.getVirtualHostForThread();
+	if (virtualHostForThread != null && !virtualHostForThread.hasWorkflowSystem()) {
+	    init(virtualHostForThread);
+	}
+	return virtualHostForThread == null ? null : virtualHostForThread.getWorkflowSystem();
+    }
+
+    @Service
+    public synchronized static void init(final VirtualHost virtualHost) {
+	if (!virtualHost.hasWorkflowSystem()) {
+	    final MyOrg myOrg = MyOrg.getInstance();
+	    final WorkflowSystem workflowSystem = myOrg.getWorkflowSystem();
+	    virtualHost.setWorkflowSystem(workflowSystem);
+	}
+    }
+
+    @Service
+    public static void createSystem(final VirtualHost virtualHost) {
+	if (!virtualHost.hasWorkflowSystem() || virtualHost.getWorkflowSystem().getVirtualHostCount() > 1) { 
+	    new WorkflowSystem(virtualHost);
+	}
+    }
+
+    @Service
+    public void setForVirtualHost(final VirtualHost virtualHost) {
+	virtualHost.setWorkflowSystem(this);
     }
 
 }

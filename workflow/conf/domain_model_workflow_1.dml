@@ -43,53 +43,50 @@ valueType pt.utl.ist.fenix.tools.util.Strings as Strings {
 class WorkflowSystem {
 }
 
-class WorkflowProcess {
+class WorkflowProcess implements .myorg.domain.VirtualHostAware {
 	String ojbConcreteClass;
 	String processNumber;
 }
 
-class WorkflowLog {
+class WorkflowLog implements .myorg.domain.VirtualHostAware {
 	String ojbConcreteClass;
 	DateTime whenOperationWasRan;
 	Strings descriptionArguments;
 }
 
-class ActivityLog extends WorkflowLog {
-	String operation;
-}
+	class ActivityLog extends WorkflowLog {
+		String operation;
+	}
 
-class LabelLog extends WorkflowLog {
-	String label;
-	String bundle;
-}
+	class LabelLog extends WorkflowLog {
+		String label;
+		String bundle;
+	}
 
-class FileUploadLog extends WorkflowLog {
+	class FileUploadLog extends WorkflowLog {
+	}
 
-}
+	class FileRemoveLog extends WorkflowLog {
+	}
 
-class FileRemoveLog extends WorkflowLog {
-
-}
-
-class WorkflowProcessComment {
+class WorkflowProcessComment implements .myorg.domain.VirtualHostAware {
 	String comment;
 	DateTime date;
 } 
 
-class WorkflowQueue {
+class WorkflowQueue implements .myorg.domain.VirtualHostAware {
 	String name;
 	String ojbConcreteClass;
 } 
 
-class WorkflowUserGroupQueue extends WorkflowQueue {
+	class WorkflowUserGroupQueue extends WorkflowQueue {
+	}
 
-}
-
-class ProcessSelectionMapper {
+class ProcessSelectionMapper implements .myorg.domain.VirtualHostAware {
 	String classname;
 }
 
-class NodeMapping {
+class NodeMapping implements .myorg.domain.VirtualHostAware {
 	int nodeOrder;
 }
 
@@ -177,4 +174,11 @@ relation WorkflowSystemWorkflowQueue {
 	WorkflowQueue playsRole workflowQueues {
 		multiplicity *;
 	}
+}
+
+relation VirtualHostWorkflowSystem {
+	.myorg.domain.VirtualHost playsRole virtualHost {
+		multiplicity *;
+	}
+	WorkflowSystem playsRole workflowSystem;
 }

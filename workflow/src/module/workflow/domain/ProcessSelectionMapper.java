@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import myorg.domain.VirtualHost;
 import myorg.domain.contents.Node;
 import pt.ist.fenixWebFramework.services.Service;
 
@@ -69,4 +70,11 @@ public class ProcessSelectionMapper extends ProcessSelectionMapper_Base {
 	}
 	super.deleteDomainObject();
     }
+
+    @Override
+    public boolean isConnectedToCurrentHost() {
+	final VirtualHost virtualHost = VirtualHost.getVirtualHostForThread();
+	return virtualHost != null && getWorkflowSystem() == virtualHost.getWorkflowSystem();
+    }
+
 }

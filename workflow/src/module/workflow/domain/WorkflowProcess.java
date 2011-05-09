@@ -44,6 +44,7 @@ import module.workflow.util.ProcessEvaluator;
 import module.workflow.util.WorkflowFileUploadBean;
 import myorg.applicationTier.Authenticate.UserView;
 import myorg.domain.User;
+import myorg.domain.VirtualHost;
 import myorg.domain.exceptions.DomainException;
 import myorg.util.BundleUtil;
 
@@ -763,4 +764,11 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
 	}
 	return false;
     }
+
+    @Override
+    public boolean isConnectedToCurrentHost() {
+	final VirtualHost virtualHost = VirtualHost.getVirtualHostForThread();
+	return virtualHost != null && getWorkflowSystem() == virtualHost.getWorkflowSystem();
+    }
+
 }

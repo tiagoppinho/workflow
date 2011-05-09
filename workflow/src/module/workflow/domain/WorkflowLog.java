@@ -3,6 +3,7 @@ package module.workflow.domain;
 import java.util.Comparator;
 
 import myorg.domain.User;
+import myorg.domain.VirtualHost;
 
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
@@ -83,5 +84,10 @@ public abstract class WorkflowLog extends WorkflowLog_Base {
 	return new Duration(previous.getWhenOperationWasRan(), next.getWhenOperationWasRan());
     }
 
+    @Override
+    public boolean isConnectedToCurrentHost() {
+	final VirtualHost virtualHost = VirtualHost.getVirtualHostForThread();
+	return virtualHost != null && getWorkflowSystem() == virtualHost.getWorkflowSystem();
+    }
 
 }

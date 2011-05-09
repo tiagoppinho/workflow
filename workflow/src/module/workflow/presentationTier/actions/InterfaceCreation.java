@@ -3,10 +3,12 @@ package module.workflow.presentationTier.actions;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import myorg.domain.RoleType;
 import myorg.domain.VirtualHost;
 import myorg.domain.contents.ActionNode;
 import myorg.domain.contents.Node;
 import myorg.domain.groups.AnyoneGroup;
+import myorg.domain.groups.Role;
 import myorg.presentationTier.actions.ContextBaseAction;
 
 import org.apache.struts.action.ActionForm;
@@ -25,8 +27,10 @@ public class InterfaceCreation extends ContextBaseAction {
 	final VirtualHost virtualHost = getDomainObject(request, "virtualHostToManageId");
 	final Node node = getDomainObject(request, "parentOfNodesToManageId");
 
-	final Node homeNode = ActionNode.createActionNode(virtualHost, node, "/workflowQueueManagement", "manageQueues",
+	ActionNode.createActionNode(virtualHost, node, "/workflowQueueManagement", "manageQueues",
 		"resources.WorkflowResources", "link.topBar.QueueManagement", AnyoneGroup.getInstance());
+	ActionNode.createActionNode(virtualHost, node, "/workflowConfiguration", "viewConfiguration",
+		"resources.WorkflowResources", "link.topBar.configuration", Role.getRole(RoleType.MANAGER));
 
 	return forwardToMuneConfiguration(request, virtualHost, node);
     }

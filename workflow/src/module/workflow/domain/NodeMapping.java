@@ -1,6 +1,7 @@
 package module.workflow.domain;
 
 import myorg.domain.MyOrg;
+import myorg.domain.VirtualHost;
 import myorg.domain.contents.Node;
 import pt.ist.fenixWebFramework.services.Service;
 import dml.runtime.RelationAdapter;
@@ -46,4 +47,11 @@ public class NodeMapping extends NodeMapping_Base implements Comparable<NodeMapp
     public int compareTo(NodeMapping o) {
 	return getNodeOrder() - o.getNodeOrder();
     }
+
+    @Override
+    public boolean isConnectedToCurrentHost() {
+	final VirtualHost virtualHost = VirtualHost.getVirtualHostForThread();
+	return virtualHost != null && getWorkflowSystem() == virtualHost.getWorkflowSystem();
+    }
+
 }

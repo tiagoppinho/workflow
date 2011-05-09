@@ -28,6 +28,7 @@ package module.workflow.domain;
 import module.workflow.activities.ActivityInformation;
 import module.workflow.activities.WorkflowActivity;
 import myorg.domain.User;
+import myorg.domain.VirtualHost;
 import myorg.util.BundleUtil;
 import pt.utl.ist.fenix.tools.util.Strings;
 
@@ -55,6 +56,12 @@ public class ActivityLog extends ActivityLog_Base {
 	} else {
 	    return activity.getLocalizedName();
 	}
+    }
+
+    @Override
+    public boolean isConnectedToCurrentHost() {
+	final VirtualHost virtualHost = VirtualHost.getVirtualHostForThread();
+	return virtualHost != null && getWorkflowSystem() == virtualHost.getWorkflowSystem();
     }
 
 }

@@ -30,6 +30,7 @@ import java.util.Comparator;
 import java.util.Set;
 
 import myorg.domain.User;
+import myorg.domain.VirtualHost;
 
 import org.joda.time.DateTime;
 
@@ -71,4 +72,11 @@ public class WorkflowProcessComment extends WorkflowProcessComment_Base implemen
     public Set<Indexable> getObjectsToIndex() {
 	return Collections.singleton((Indexable) getProcess());
     }
+
+    @Override
+    public boolean isConnectedToCurrentHost() {
+	final VirtualHost virtualHost = VirtualHost.getVirtualHostForThread();
+	return virtualHost != null && getWorkflowSystem() == virtualHost.getWorkflowSystem();
+    }
+
 }
