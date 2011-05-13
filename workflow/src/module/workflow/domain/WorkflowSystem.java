@@ -6,14 +6,27 @@ import module.dashBoard.WidgetRegister;
 import module.workflow.widgets.ProcessListWidget;
 import module.workflow.widgets.QuickViewWidget;
 import module.workflow.widgets.UnreadCommentsWidget;
+import myorg.domain.MyOrg;
 import myorg.domain.VirtualHost;
 import pt.ist.fenixWebFramework.services.Service;
 import pt.ist.fenixWebFramework.servlets.filters.contentRewrite.RequestChecksumFilter;
 import pt.ist.fenixWebFramework.servlets.filters.contentRewrite.RequestChecksumFilter.ChecksumPredicate;
+import dml.runtime.RelationAdapter;
 
 public class WorkflowSystem extends WorkflowSystem_Base {
 
+    public static class VirtualHostMyOrgRelationListener extends RelationAdapter<VirtualHost, MyOrg> {
+
+	@Override
+	public void beforeRemove(VirtualHost vh, MyOrg myorg) {
+	    vh.removeWorkflowSystem();
+	    super.beforeRemove(vh, myorg);
+	}
+    }
+
     static {
+	VirtualHost.MyOrgVirtualHost.addListener(new VirtualHostMyOrgRelationListener());
+
 	WidgetRegister.registerWidget(ProcessListWidget.class);
 	WidgetRegister.registerWidget(QuickViewWidget.class);
 	WidgetRegister.registerWidget(UnreadCommentsWidget.class);
@@ -40,7 +53,7 @@ public class WorkflowSystem extends WorkflowSystem_Base {
 
     @Service
     public static void createSystem(final VirtualHost virtualHost) {
-	if (!virtualHost.hasWorkflowSystem() || virtualHost.getWorkflowSystem().getVirtualHostCount() > 1) { 
+	if (!virtualHost.hasWorkflowSystem() || virtualHost.getWorkflowSystem().getVirtualHostCount() > 1) {
 	    new WorkflowSystem(virtualHost);
 	}
     }
