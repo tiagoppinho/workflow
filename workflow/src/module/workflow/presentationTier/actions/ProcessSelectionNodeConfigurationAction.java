@@ -8,7 +8,6 @@ import javax.servlet.http.HttpServletResponse;
 import module.workflow.domain.NodeMapping;
 import module.workflow.domain.ProcessSelectionMapper;
 import module.workflow.domain.WorkflowSystem;
-import myorg.domain.MyOrg;
 import myorg.domain.RoleType;
 import myorg.domain.VirtualHost;
 import myorg.domain.contents.ActionNode;
@@ -42,7 +41,7 @@ public class ProcessSelectionNodeConfigurationAction extends ContextBaseAction {
     @Service
     private void createActionNode(final VirtualHost virtualHost, final Node node) {
 	ActionNode.createActionNode(virtualHost, node, "/processSelectionNodeConfiguration", "manageNodeSelection",
-		"resources.WorkflowResources", "link.topBar.nodeSelectionConfiguration", new Role(RoleType.MANAGER));
+		"resources.WorkflowResources", "link.topBar.nodeSelectionConfiguration", Role.getRole(RoleType.MANAGER));
     }
 
     public final ActionForward newMapper(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
