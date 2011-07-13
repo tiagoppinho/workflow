@@ -29,6 +29,7 @@ package module.metaWorkflow.presentationTier.actions;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import myorg.domain.RoleType;
 import myorg.domain.VirtualHost;
 import myorg.domain.contents.ActionNode;
 import myorg.domain.contents.Node;
@@ -67,7 +68,8 @@ public class MetaWorkflowInterfaceCreation extends ContextBaseAction {
 	
 	
 	ActionNode.createActionNode(virtualHost, homeNode, "/metaTypeManagement", "manageMetaType",
-		"resources.MetaWorkflowResources", "link.sideBar.metaWorkflow.manageMetaType", UserGroup.getInstance());
+		"resources.MetaWorkflowResources", "link.sideBar.metaWorkflow.manageMetaType",
+		myorg.domain.groups.Role.getRole(RoleType.MANAGER));
 	
 	return forwardToMuneConfiguration(request, virtualHost, node);
     }
