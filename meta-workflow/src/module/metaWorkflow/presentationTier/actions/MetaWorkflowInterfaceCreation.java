@@ -32,7 +32,7 @@ import javax.servlet.http.HttpServletResponse;
 import myorg.domain.VirtualHost;
 import myorg.domain.contents.ActionNode;
 import myorg.domain.contents.Node;
-import myorg.domain.groups.AnyoneGroup;
+import myorg.domain.groups.UserGroup;
 import myorg.presentationTier.actions.ContextBaseAction;
 
 import org.apache.struts.action.ActionForm;
@@ -52,21 +52,22 @@ public class MetaWorkflowInterfaceCreation extends ContextBaseAction {
 	final Node node = getDomainObject(request, "parentOfNodesToManageId");
 
 	final Node homeNode = ActionNode.createActionNode(virtualHost, node, "/metaWorkflow", "viewOpenProcessesInMyQueues",
-		"resources.MetaWorkflowResources", "link.topBar.MetaWorkflow", AnyoneGroup.getInstance());
+		"resources.MetaWorkflowResources", "link.topBar.MetaWorkflow", UserGroup.getInstance());
 	    
 
 	ActionNode.createActionNode(virtualHost, homeNode, "/metaWorkflow", "prepareCreateProcess",
-		"resources.MetaWorkflowResources", "link.sideBar.metaWorkflow.createProcess", AnyoneGroup.getInstance());
+		"resources.MetaWorkflowResources", "link.sideBar.metaWorkflow.createProcess", UserGroup.getInstance());
 	
 	ActionNode.createActionNode(virtualHost, homeNode, "/metaWorkflow", "viewOpenProcessesInMyQueues",
-		"resources.MetaWorkflowResources", "link.sideBar.metaWorkflow.dashBoard", AnyoneGroup.getInstance());
+		"resources.MetaWorkflowResources", "link.sideBar.metaWorkflow.dashBoard", UserGroup.getInstance());
 	
 	ActionNode.createActionNode(virtualHost, homeNode, "/metaWorkflow", "search",
-		"resources.MetaWorkflowResources", "link.sideBar.metaWorkflow.search", AnyoneGroup.getInstance());
+ "resources.MetaWorkflowResources",
+		"link.sideBar.metaWorkflow.search", UserGroup.getInstance());
 	
 	
 	ActionNode.createActionNode(virtualHost, homeNode, "/metaTypeManagement", "manageMetaType",
-		"resources.MetaWorkflowResources", "link.sideBar.metaWorkflow.manageMetaType", AnyoneGroup.getInstance());
+		"resources.MetaWorkflowResources", "link.sideBar.metaWorkflow.manageMetaType", UserGroup.getInstance());
 	
 	return forwardToMuneConfiguration(request, virtualHost, node);
     }
