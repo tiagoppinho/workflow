@@ -26,6 +26,7 @@ public class WorkflowQueueBean implements Serializable {
 	this.name = name;
     }
 
+    //TODO probably put this method abstract and override it on its subclasses
     public Class<? extends WorkflowQueue> getQueueType() {
 	return queueType;
     }
