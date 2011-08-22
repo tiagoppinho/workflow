@@ -51,14 +51,15 @@
 			</logic:present>
 		</span>
 	</logic:equal>
-				<%--
-				<logic:greaterThan name="count" value="1">
-					<bean:message key="label.unreadComments.info.moreThanOne" arg0="<%= count.toString() %>" bundle="WORKFLOW_RESOURCES"/>
-				</logic:greaterThan>
-				<logic:equal name="count" value="1">
-					<bean:message key="label.unreadComments.info" arg0="<%= count.toString() %>" bundle="WORKFLOW_RESOURCES"/>
-				</logic:equal>
-				--%>
+	
+	<%--
+	<logic:greaterThan name="count" value="1">
+		<bean:message key="label.unreadComments.info.moreThanOne" arg0="<%= count.toString() %>" bundle="WORKFLOW_RESOURCES"/>
+	</logic:greaterThan>
+	<logic:equal name="count" value="1">
+		<bean:message key="label.unreadComments.info" arg0="<%= count.toString() %>" bundle="WORKFLOW_RESOURCES"/>
+	</logic:equal>
+	--%>
 				
 	<logic:equal name="process" property="commentsSupportAvailable" value="true">
 		<logic:equal name="process" property="commentsDisplayedInBody" value="false">
