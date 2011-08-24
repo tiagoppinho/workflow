@@ -34,7 +34,7 @@ public class ActivitivyLinkTag extends WorkflowBodyTag {
     private String paramName3;
     private String paramValue3;
 
-    private Map<String, String> parameterMap = new HashMap<String, String>();
+    private final Map<String, String> parameterMap = new HashMap<String, String>();
 
     private StringBuilder content = new StringBuilder();
 
