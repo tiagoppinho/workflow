@@ -640,13 +640,36 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
 
     @SuppressWarnings("unchecked")
     public <T extends ProcessFile> List<T> getFiles(Class<T> selectedClass) {
+	return getFilesFromList(getFiles(), selectedClass);
+    }
+
+    private <T extends ProcessFile> List<T> getFilesFromList(List<ProcessFile> list, Class<T> selectedClass) {
 	List<T> classes = new ArrayList<T>();
-	for (ProcessFile file : getFiles()) {
+	for (ProcessFile file : list) {
 	    if (file.getClass() == selectedClass) {
 		classes.add((T) file);
 	    }
 	}
 	return classes;
+    }
+
+    public <T extends ProcessFile> List<T> getFilesIncludingDeleted(Class<T> selectedClass, boolean sortedByFileName) {
+	ArrayList<ProcessFile> classes = new ArrayList<ProcessFile>();
+	classes.addAll(getFiles());
+	classes.addAll(getDeletedFiles());
+	if (!sortedByFileName) {
+	    return getFilesFromList(classes, selectedClass);
+	}
+	ArrayList<T> processFiles = (ArrayList<T>) getFilesFromList(classes, selectedClass);
+	Collections.sort(processFiles, new Comparator<ProcessFile>() {
+
+	    @Override
+	    public int compare(ProcessFile o1, ProcessFile o2) {
+		return o1.getFilename().compareTo(o2.getFilename());
+	    }
+	});
+	return processFiles;
+
     }
 
     @Override

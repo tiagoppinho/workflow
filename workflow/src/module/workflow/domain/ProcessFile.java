@@ -88,6 +88,7 @@ public class ProcessFile extends ProcessFile_Base {
 
     }
 
+
     public boolean isArchieved() {
 	return getProcess() == null && getProcessWithDeleteFile() != null;
     }

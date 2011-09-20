@@ -205,8 +205,8 @@
 						<table class="structural mvert0">
 							<tr>
 								<td>
-									<html:link page="/workflowProcessManagement.do?method=viewRemovedFiles" paramId="processId" paramName="process" paramProperty="externalId">
-										<bean:message key="link.viewRemovedFiles" bundle="WORKFLOW_RESOURCES"/>
+									<html:link page="/workflowProcessManagement.do?method=viewFilesDetails" paramId="processId" paramName="process" paramProperty="externalId">
+										<bean:message key="link.viewFilesDetails" bundle="WORKFLOW_RESOURCES"/>
 									</html:link>
 								</td>
 								<td class="aright">

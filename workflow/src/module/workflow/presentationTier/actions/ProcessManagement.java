@@ -411,12 +411,14 @@ public class ProcessManagement extends ContextBaseAction {
 
     }
 
-    public ActionForward viewRemovedFiles(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
+    public ActionForward viewFilesDetails(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
 	    final HttpServletResponse response) {
 
 	final WorkflowProcess process = getProcess(request);
+	List<ProcessFile> listFiles = process.getFilesIncludingDeleted(ProcessFile.class, true);
 	request.setAttribute("process", process);
-	return forward(request, "/workflow/viewRemovedFiles.jsp");
+	request.setAttribute("listFiles", listFiles);
+	return forward(request, "/workflow/viewFilesDetails.jsp");
 
     }
 

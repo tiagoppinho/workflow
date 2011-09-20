@@ -152,7 +152,7 @@ public abstract class WorkflowActivity<P extends WorkflowProcess, AI extends Act
     /**
      * Returns values that will be used in activity's log description t If this
      * is redefined, when presenting the description the bundle defined in
-     * getUsedBundle will be looked into a string
+     * getUsedBundle will be looked for a string
      * label.description.FULL_CLASS_NAME.
      * 
      * @param activityInformation
@@ -369,10 +369,4 @@ public abstract class WorkflowActivity<P extends WorkflowProcess, AI extends Act
     public String getHelpMessage() {
 	return BundleUtil.getStringFromResourceBundle(getUsedBundle(), "label." + getClass().getName() + ".help");
     }
-
-    public boolean isSigned() {
-	return false;
-    }
-
-
 }
