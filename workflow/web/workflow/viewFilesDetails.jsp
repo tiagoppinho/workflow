@@ -84,11 +84,13 @@ width: 75px !important;
 <logic:notEmpty name="listFiles">
 	<table class="tview1 files-list">
 			<tr>
+				<th>Data</th>
 				<th class="file-name"><bean:message bundle="WORKFLOW_RESOURCES" key="label.filename"/>:</th>
 				<th class="file-desc"><bean:message bundle="WORKFLOW_RESOURCES" key="label.presentationName"/>:</th>
 				<th class="file-type"><bean:message bundle="WORKFLOW_RESOURCES" key="label.fileType"/>:</th>
 				<th class="file-ash"><bean:message bundle="WORKFLOW_RESOURCES" key="label.digestSha1"/>:</th>
 				<th class="file-state"><bean:message bundle="WORKFLOW_RESOURCES" key="label.fileStatus"/>:</th>
+				<th>Tamanho</th>
 				<th class="file-download"></th>
 			</tr>
 		<logic:iterate id="file" name="listFiles" type="module.workflow.domain.ProcessFile">
@@ -99,6 +101,7 @@ width: 75px !important;
 			<logic:notEmpty name="file" property="processWithDeleteFile">
 				<tr>
 			</logic:notEmpty>
+					<td><div><bean:write name="file" property="creationDate"/></div></td>
 					<td class="file-name"><div><bean:write name="file" property="filename"/></div></td>
 					<td class="file-desc"><div><bean:write name="file" property="presentationName"/></div></td>
 					<td class="file-type"><%=BundleUtil.getLocalizedNamedFroClass(file.getClass())%></td>
@@ -109,6 +112,7 @@ width: 75px !important;
 					<logic:notEmpty name="file" property="processWithDeleteFile">
 						<td class="file-state"><bean:message bundle="WORKFLOW_RESOURCES" key="label.fileStatus.deleted"/></td>
 					</logic:notEmpty>
+					<td><bean:write name="file" property="size"/></td>
 					<td class="file-download"><span>(<html:link page='<%= "/workflowProcessManagement.do?method=downloadFile&fileId=" + fileId %>' paramId="processId" paramName="process" paramProperty="externalId"><bean:message key="link.downloadFile" bundle="WORKFLOW_RESOURCES"/></html:link>)</span></td>
 				</tr>
 		</logic:iterate>
