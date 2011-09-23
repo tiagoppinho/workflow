@@ -120,6 +120,34 @@
 	</div>
 </div>
 
+
+<h3><fr:view name="process" property="fieldSet.metaField.name.content"/></h3>
+<p>
+<logic:notEmpty name="process" property="fieldSet.childFieldValues">
+	<table class="tstyle2">
+		<logic:iterate id="childField" name="process" property="fieldSet.orderedChildFields">
+			<bean:define id="fieldId" name="childField" property="externalId" type="String"/>
+			
+			<tr>
+				<td class="aright"><fr:view name="childField" property="metaField.name.content"/>:</td>
+				<td><logic:notEmpty name="childField" property="value">
+					<fr:view name="childField" property="value"/>
+				</logic:notEmpty><logic:empty name="childField" property="value">
+					-
+				</logic:empty></td>
+				<td>
+				<wf:activityLink id="<%= "edit-" + fieldId %>" processName="process" activityName="EditFieldValue" scope="request" paramName0="field" paramValue0="<%=fieldId%>">
+					<bean:message bundle="MYORG_RESOURCES" key="link.edit"/>
+				</wf:activityLink>
+				</td>
+			</tr>
+		</logic:iterate>
+	</table>
+</logic:notEmpty>
+<logic:empty name="process" property="fieldSet.childFieldValues">
+	<bean:message key="label.noFields" bundle="META_WORKFLOW_RESOURCES" />
+</logic:empty>
+
 <%--
 <h3 class="mbottom05"><bean:message key="title.comments" bundle="WORKFLOW_RESOURCES"/></h3>
 

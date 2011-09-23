@@ -24,14 +24,19 @@
 		<fr:property name="order(details)" value="1"/>
 		
 		<fr:property name="linkFormat(edit)" value="/metaTypeManagement.do?method=editMetaType&metaTypeId=${externalId}"/>
-		<fr:property name="bundle(edit)" value="MYORG_RESOURCES"/>
-		<fr:property name="key(edit)" value="link.edit"/>
+		<fr:property name="bundle(edit)" value="META_WORKFLOW_RESOURCES"/>
+		<fr:property name="key(edit)" value="link.edit.metaType"/>
 		<fr:property name="order(edit)" value="2"/>
+		
+		<fr:property name="linkFormat(manage)" value="/metaTypeManagement.do?method=manageFields&metaTypeId=${externalId}"/>
+		<fr:property name="bundle(manage)" value="META_WORKFLOW_RESOURCES"/>
+		<fr:property name="key(manage)" value="link.manage.metaFields"/>
+		<fr:property name="order(manage)" value="3"/>
 		
 		<fr:property name="linkFormat(queues)" value="/metaTypeManagement.do?method=manageQueues&metaTypeId=${externalId}"/>
 		<fr:property name="bundle(queues)" value="META_WORKFLOW_RESOURCES"/>
 		<fr:property name="key(queues)" value="link.manageQueuesInMetaType"/>
-		<fr:property name="order(queues)" value="3"/>
+		<fr:property name="order(queues)" value="4"/>
 		
 	</fr:layout>
 </fr:view>	

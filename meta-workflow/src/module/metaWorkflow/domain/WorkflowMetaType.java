@@ -12,8 +12,11 @@ import module.workflow.domain.WorkflowQueue;
 import module.workflow.domain.WorkflowSystem;
 import myorg.domain.User;
 import myorg.domain.exceptions.DomainException;
+import myorg.util.BundleUtil;
 import pt.ist.fenixWebFramework.services.Service;
 import pt.utl.ist.fenix.tools.util.Strings;
+import pt.utl.ist.fenix.tools.util.i18n.Language;
+import pt.utl.ist.fenix.tools.util.i18n.MultiLanguageString;
 
 public class WorkflowMetaType extends WorkflowMetaType_Base {
 
@@ -25,6 +28,12 @@ public class WorkflowMetaType extends WorkflowMetaType_Base {
 	super.setOrganizationalModel(model);
 	addDescription(description, 1);
 	super.setSuporttedFileClasses(new Strings(Collections.EMPTY_LIST));
+
+	MultiLanguageString rootFieldSetName = new MultiLanguageString(Language.pt, BundleUtil.getStringFromResourceBundle(
+		"resources/MetaWorkflowResources", "label.rootFieldSetPT"));
+	rootFieldSetName.setContent(Language.en,
+		BundleUtil.getStringFromResourceBundle("resources/MetaWorkflowResources", "label.rootFieldSetEN"));
+	super.setFieldSet(new MetaFieldSet(rootFieldSetName, 1));
     }
 
     @Override
@@ -72,6 +81,10 @@ public class WorkflowMetaType extends WorkflowMetaType_Base {
 	    List<Class<? extends ProcessFile>> classNames) {
 	WorkflowMetaType type = new WorkflowMetaType(name, description, model);
 	type.setFileClasses(classNames);
+    }
+
+    public FieldSetValue initValuesOfFields() {
+	return getFieldSet().createFieldValue();
     }
 
     public void addDescription(String description) {

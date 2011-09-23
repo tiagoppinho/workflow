@@ -3,12 +3,16 @@ package module.metaWorkflow.presentationTier.actions;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import module.metaWorkflow.domain.MetaField;
+import module.metaWorkflow.domain.MetaFieldSet;
 import module.metaWorkflow.domain.WorkflowMetaType;
 import module.metaWorkflow.domain.WorkflowMetaTypeDescription;
+import module.metaWorkflow.presentationTier.dto.MetaFieldBean;
 import module.metaWorkflow.util.WorkflowMetaTypeBean;
 import module.workflow.domain.WorkflowQueue;
 import module.workflow.domain.WorkflowSystem;
 import myorg.presentationTier.actions.ContextBaseAction;
+import myorg.util.BundleUtil;
 
 import org.apache.commons.collections.Predicate;
 import org.apache.commons.lang.StringUtils;
@@ -49,8 +53,8 @@ public class MetaTypeManagement extends ContextBaseAction {
 	    final HttpServletResponse response) {
 
 	WorkflowMetaTypeBean bean = getRenderedObject("newMetaType");
-	WorkflowMetaType.createNewMetaType(bean.getName(), bean.getDescription(), bean.getOrganizationModel(), bean
-		.getFileClassNames());
+	WorkflowMetaType.createNewMetaType(bean.getName(), bean.getDescription(), bean.getOrganizationModel(),
+		bean.getFileClassNames());
 
 	RenderUtils.invalidateViewState("newMetaType");
 	return manageMetaType(mapping, form, request, response);
@@ -62,6 +66,67 @@ public class MetaTypeManagement extends ContextBaseAction {
 	WorkflowMetaType type = getDomainObject(request, "metaTypeId");
 	request.setAttribute("metaType", type);
 	return forward(request, "/metaWorkflow/metaType/editMetaType.jsp");
+    }
+
+    public ActionForward manageFields(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
+	    final HttpServletResponse response) {
+	WorkflowMetaType metaType = WorkflowMetaType.fromExternalId(request.getParameter("metaTypeId"));
+	request.setAttribute("metaType", metaType);
+	String fieldSetId = request.getParameter("fieldSetId");
+	if (fieldSetId != null) {
+	    request.setAttribute("fieldSet", MetaFieldSet.fromExternalId(fieldSetId));
+	} else {
+	    request.setAttribute("fieldSet", metaType.getFieldSet());
+	}
+
+	return forward(request, "/metaWorkflow/metaType/manageFields.jsp");
+    }
+
+    public ActionForward prepareAddField(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
+	    final HttpServletResponse response) {
+	WorkflowMetaType metaType = WorkflowMetaType.fromExternalId(request.getParameter("metaTypeId"));
+	request.setAttribute("metaType", metaType);
+	MetaFieldSet fieldSet = MetaFieldSet.fromExternalId(request.getParameter("fieldSetId"));
+	request.setAttribute("fieldSet", fieldSet);
+
+	request.setAttribute("fieldBean", new MetaFieldBean());
+
+	return forward(request, "/metaWorkflow/metaType/addField.jsp");
+    }
+
+    public ActionForward addField(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
+	    final HttpServletResponse response) {
+	MetaFieldBean fieldBean = getRenderedObject("fieldBean");
+	WorkflowMetaType metaType = WorkflowMetaType.fromExternalId(request.getParameter("metaTypeId"));
+	request.setAttribute("metaType", metaType);
+	MetaFieldSet fieldSet = MetaFieldSet.fromExternalId(request.getParameter("fieldSetId"));
+	request.setAttribute("fieldSet", fieldSet);
+
+	if ((fieldBean.getName() == null) || (fieldBean.getName().getContent() == null)
+		|| fieldBean.getName().getContent().trim().isEmpty()) {
+	    request.setAttribute("fieldBean", fieldBean);
+	    addLocalizedMessage(request,
+		    BundleUtil.getStringFromResourceBundle("resources/MetaWorkflowResources", "label.error.fieldNameRequired"));
+	    return forward(request, "/metaWorkflow/metaType/addField.jsp");
+	}
+
+	MetaField.createMetaField(fieldBean.getFieldClass(), fieldBean.getName(), fieldBean.getOrder(), fieldSet);
+
+	return forward(request, "/metaWorkflow/metaType/manageFields.jsp");
+    }
+
+    public ActionForward removeField(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
+	    final HttpServletResponse response) {
+	WorkflowMetaType metaType = WorkflowMetaType.fromExternalId(request.getParameter("metaTypeId"));
+	request.setAttribute("metaType", metaType);
+	MetaFieldSet fieldSet = MetaFieldSet.fromExternalId(request.getParameter("fieldSetId"));
+	request.setAttribute("fieldSet", fieldSet);
+
+	MetaField fieldToRemove = MetaField.fromExternalId(request.getParameter("fieldId"));
+
+	fieldToRemove.delete();
+
+	return forward(request, "/metaWorkflow/metaType/manageFields.jsp");
     }
 
     public ActionForward doDiff(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,

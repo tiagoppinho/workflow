@@ -8,6 +8,7 @@ import java.util.Map;
 import module.metaWorkflow.activities.ChangeMetaQueue;
 import module.metaWorkflow.activities.ChangeRequestor;
 import module.metaWorkflow.activities.CloseMetaProcess;
+import module.metaWorkflow.activities.EditFieldValue;
 import module.metaWorkflow.activities.OpenMetaProcess;
 import module.workflow.activities.ActivityInformation;
 import module.workflow.activities.AddObserver;
@@ -33,7 +34,7 @@ import org.joda.time.LocalDate;
 import pt.ist.fenixWebFramework.services.Service;
 import pt.ist.fenixframework.plugins.luceneIndexing.domain.IndexDocument;
 
-@ClassNameBundle(key="label.module.metaWorkflow", bundle="resources/MetaWorkflowResources")
+@ClassNameBundle(key = "label.module.metaWorkflow", bundle = "resources/MetaWorkflowResources")
 public class WorkflowMetaProcess extends WorkflowMetaProcess_Base {
 
     public static Map<String, WorkflowActivity<? extends WorkflowProcess, ? extends ActivityInformation>> activityMap = new HashMap<String, WorkflowActivity<? extends WorkflowProcess, ? extends ActivityInformation>>();
@@ -55,6 +56,7 @@ public class WorkflowMetaProcess extends WorkflowMetaProcess_Base {
 	activityMap.put(AddObserver.class.getSimpleName(), new AddObserver());
 	activityMap.put(RemoveObserver.class.getSimpleName(), new RemoveObserver());
 	activityMap.put(ChangeRequestor.class.getSimpleName(), new ChangeRequestor());
+	activityMap.put(EditFieldValue.class.getSimpleName(), new EditFieldValue());
 
 	// Index names
 
@@ -63,7 +65,6 @@ public class WorkflowMetaProcess extends WorkflowMetaProcess_Base {
 	queueKey = "queue";
 	requestorKey = "requestor";
 	creatorKey = "creator";
-
 
     }
 
@@ -79,6 +80,7 @@ public class WorkflowMetaProcess extends WorkflowMetaProcess_Base {
 	open();
 	setCurrentQueue(queue);
 	setRequestor(requestor);
+	super.setFieldSet(type.initValuesOfFields());
     }
 
     @Override

@@ -24,37 +24,58 @@ package module.metaWorkflow.domain;
  *   along with MyOrg. If not, see <http://www.gnu.org/licenses/>.
  * 
  */
- 
- valueType pt.utl.ist.fenix.tools.util.Strings as Strings {
-    externalizeWith {
-        String exportAsString();
-    }
 
-    internalizeWith importFromString();
+valueType pt.utl.ist.fenix.tools.util.Strings as Strings {
+	externalizeWith {
+		String exportAsString();
+	}
+
+	internalizeWith importFromString();
 }
 
- class WorkflowMetaType {
- 	String name;
- 	String requestHandler;
- 	Integer processCounter;
- 	Strings suporttedFileClasses;
- }
- 
- class WorkflowMetaTypeSpecificLayout {
- 	String body;
- 	String shortBody;
- 	String header;
- }
- 
- class WorkflowMetaTypeSpecificActivity {
- 	String activityClass;	
- }
- 
- class WorkflowMetaTypeDescription {
- 	String description;
- 	int version;
- 	DateTime date;
- }
+class WorkflowMetaType {
+	String name;
+	String requestHandler;
+	Integer processCounter;
+	Strings suporttedFileClasses;
+}
+
+class MetaField {
+	MultiLanguageString name;
+	Integer fieldOrder (REQUIRED);
+}
+
+	class MetaFieldSet extends MetaField {
+	}
+	
+	class MetaStringField extends MetaField {
+	}
+
+class FieldValue {
+}
+
+	class FieldSetValue extends FieldValue {
+	}
+	
+	class StringFieldValue extends FieldValue {
+		String value;
+	}
+
+class WorkflowMetaTypeSpecificLayout {
+	String body;
+	String shortBody;
+	String header;
+}
+
+class WorkflowMetaTypeSpecificActivity {
+	String activityClass;
+}
+
+class WorkflowMetaTypeDescription {
+	String description;
+	int version;
+	DateTime date;
+}
 
 class Requestor {
 	String ojbConcreteClass;
@@ -96,3 +117,30 @@ relation WorkflowInitializerMyOrg {
 	.myorg.domain.MyOrg playsRole myOrg;
 }
 
+relation WorkflowMetaTypeFieldSet {
+	WorkflowMetaType playsRole metaType;
+	MetaFieldSet playsRole fieldSet {
+		multiplicity 1..1;
+	}
+}
+
+relation MetaFieldMetaFieldSet {
+	MetaField playsRole childFields {
+		multiplicity *;
+	}
+	MetaFieldSet playsRole parentFieldSet;
+}
+
+relation FieldValueFieldSetValue {
+	FieldValue playsRole childFieldValues {
+		multiplicity *;
+	}
+	FieldSetValue playsRole parentFieldSet;
+}
+
+relation FieldValueMetaField {
+	MetaField playsRole metaField;
+	FieldValue playsRole fieldValues {
+		multiplicity *;
+	}
+}

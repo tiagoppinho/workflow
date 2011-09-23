@@ -18,6 +18,17 @@
 	</slot>
 </schema>
 
+<schema name="metaField.class.fromLabel" type="java.lang.Class" bundle="META_WORKFLOW_RESOURCES">
+	<slot name="this" layout="label">
+		<property name="bundle" value="META_WORKFLOW_RESOURCES"/>
+	</slot>
+</schema>
+
+<schema name="fieldValue.StringFieldValue" type="module.metaWorkflow.domain.StringFieldValue" bundle="META_WORKFLOW_RESOURCES">
+	<slot name="value" key="label.metaProcess.field.value">
+	</slot>
+</schema>
+
 <schema name="activityInformation.ChangeMetaQueue" type="module.workflow.activities.ChangeQueueInformation" bundle="META_WORKFLOW_RESOURCES">
 	<slot name="queue" layout="autoComplete" key="label.changeQueue">
 		<property name="labelField" value="name" />
