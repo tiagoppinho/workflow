@@ -30,13 +30,9 @@
 </schema>
 
 <schema name="activityInformation.ChangeMetaQueue" type="module.workflow.activities.ChangeQueueInformation" bundle="META_WORKFLOW_RESOURCES">
-	<slot name="queue" layout="autoComplete" key="label.changeQueue">
-		<property name="labelField" value="name" />
-		<property name="format" value="${name}" />
-		<property name="minChars" value="3" />
-		<property name="args"
-			value="provider=module.metaWorkflow.presentationTier.renderers.autoCompleteProviders.WorkflowQueueWithMetaTypeAutoComplete,metaTypeId=${process.metaType.externalId}" />
-		<property name="size" value="40" />
+	<slot name="queue" layout="radio-select" key="label.changeQueue">
+		<property name="format" value="${name}"/>
+		<property name="providerClass" value="module.metaWorkflow.presentationTier.renderers.providers.AvailableMetaTypeQueues" />
 	</slot>
 </schema>
 
