@@ -45,7 +45,7 @@
 				</logic:present>
 				</td>
 			<td>
-				<span style="float: right;">
+				<span style="padding-left: 12px; float: right;">
 					<fr:form action="/metaWorkflow.do?method=search">
 							<fr:edit id="searchQuery" name="searchBean" slot="string" type="java.lang.String">
 								<fr:layout>
@@ -107,7 +107,7 @@
 		<div>
 			<fr:view name="openProcesses" schema="view.metaProcesses.list">
 				<fr:layout name="tabular">
-					<fr:property name="classes" value="tstyle2"/>
+					<fr:property name="classes" value="tstyle3"/>
 				</fr:layout>
 			</fr:view>
 		</div>
