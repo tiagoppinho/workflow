@@ -210,9 +210,10 @@
 	</slot>
 	<slot name="metaType.name" key="label.metaProcess.type"/>
 	<slot name="processNumber" key="label.processNumber" bundle="WORKFLOW_RESOURCES"/>
-	<slot name="currentQueue" layout="null-as-label" key="label.metaProcess.currentQueue">
-		<property name="subLayout" value="values"/>
-		<property name="subSchema" value="view.queue.name"/>
+	<slot name="currentQueuesOrdered" layout="flowLayout" key="label.metaProcess.currentQueues">
+		<property name="eachLayout" value="values"/>
+		<property name="htmlSeparator" value=", "/>
+		<property name="eachSchema" value="queue.name"/>
 	</slot>
 	<slot name="open" layout="null-as-label" key="label.metaProcess.active"/>
 	<slot name="requestor" layout="null-as-label" key="label.metaProcess.requestor">
