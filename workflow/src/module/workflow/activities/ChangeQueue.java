@@ -1,8 +1,12 @@
 package module.workflow.activities;
 
+import java.util.Collection;
+
 import module.workflow.domain.WorkflowProcess;
 import module.workflow.domain.WorkflowQueue;
 import myorg.domain.User;
+import myorg.domain.exceptions.DomainException;
+import myorg.util.BundleUtil;
 
 public class ChangeQueue<T extends WorkflowProcess> extends WorkflowActivity<T, ChangeQueueInformation<T>> {
 
@@ -12,8 +16,27 @@ public class ChangeQueue<T extends WorkflowProcess> extends WorkflowActivity<T, 
     }
 
     @Override
-    protected void process(ChangeQueueInformation activityInformation) {
-	activityInformation.getProcess().setCurrentQueue(activityInformation.getQueue());
+    protected void process(ChangeQueueInformation<T> activityInformation) {
+	WorkflowProcess process = activityInformation.getProcess();
+	Collection<WorkflowQueue> queuesToAdd = activityInformation.getQueuesToAdd();
+	Collection<WorkflowQueue> queuesToRemove = activityInformation.getQueuesToRemove();
+
+	for (WorkflowQueue queueToRemove : queuesToRemove) {
+	    if (!queueToRemove.isCurrentUserAbleToAccessQueue()) {
+		throw new DomainException(BundleUtil.getFormattedStringFromResourceBundle("resources/MetaWorkflowResources",
+			"error.user.cannotRemove.from.queue", queueToRemove.getName()));
+	    }
+	    process.removeCurrentQueues(queueToRemove);
+	}
+
+	for (WorkflowQueue queueToAdd : queuesToAdd) {
+	    process.addCurrentQueues(queueToAdd);
+	}
+
+	if (!process.hasAnyCurrentQueues()) {
+	    throw new DomainException(BundleUtil.getFormattedStringFromResourceBundle("resources/MetaWorkflowResources",
+		    "error.process.mustHave.atLeast.one.queue"));
+	}
     }
 
     @Override
@@ -22,14 +45,8 @@ public class ChangeQueue<T extends WorkflowProcess> extends WorkflowActivity<T, 
     }
 
     @Override
-    public ChangeQueueInformation getActivityInformation(T process) {
+    public ChangeQueueInformation<T> getActivityInformation(T process) {
 	return new ChangeQueueInformation<T>(process, this);
-    }
-
-    @Override
-    protected String[] getArgumentsDescription(ChangeQueueInformation activityInformation) {
-	WorkflowQueue currentQueue = activityInformation.getProcess().getCurrentQueue();
-	return new String[] { currentQueue != null ? currentQueue.getName() : "", activityInformation.getQueue().getName() };
     }
 
 }

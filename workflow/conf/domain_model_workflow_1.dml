@@ -160,6 +160,15 @@ relation WorkflowProcessWorkflowQueue {
 	WorkflowQueue playsRole currentQueue;
 }
 
+relation WorkflowProcessesWorkflowQueues {
+	WorkflowProcess playsRole processes {
+		multiplicity *;
+	}	
+	WorkflowQueue playsRole currentQueues {
+		multiplicity *;
+	}
+}
+
 relation QueueHistory {
 	WorkflowProcess playsRole processesHistory {
 		multiplicity *;
