@@ -1,5 +1,7 @@
 package module.metaWorkflow.presentationTier.actions;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -37,7 +39,9 @@ public class MetaWorkflowAction extends ContextBaseAction {
 	request.setAttribute("searchBean", new VariantBean());
 	final User currentUser = UserView.getCurrentUser();
 	request.setAttribute("user", currentUser);
-	request.setAttribute("availableQueues", WorkflowMetaType.getAllQueuesForUser(currentUser));
+	List<WorkflowQueue> sortedQueues = new ArrayList<WorkflowQueue>(WorkflowMetaType.getAllQueuesForUser(currentUser));
+	Collections.sort(sortedQueues, WorkflowQueue.COMPARATOR_BY_NAME);
+	request.setAttribute("availableQueues", sortedQueues);
 
 	return forward(request, "/metaWorkflow/viewMetaProcesses.jsp");
     }
@@ -101,7 +105,7 @@ public class MetaWorkflowAction extends ContextBaseAction {
 	final Boolean state = active != null ? Boolean.valueOf(active) : null;
 
 	request.setAttribute("queue", queue);
-	request.setAttribute("displayProcesses", CollectionUtils.select(queue.getProcess(), new Predicate() {
+	request.setAttribute("displayProcesses", CollectionUtils.select(queue.getProcesses(), new Predicate() {
 
 	    @Override
 	    public boolean evaluate(Object arg0) {
