@@ -26,7 +26,7 @@ public abstract class WorkflowQueue extends WorkflowQueue_Base {
 	    int n = o1.getName().compareTo(o2.getName());
 	    return n == 0 ? o1.getExternalId().compareTo(o2.getExternalId()) : n;
 	}
-	
+
     };
 
     public WorkflowQueue() {
@@ -47,29 +47,29 @@ public abstract class WorkflowQueue extends WorkflowQueue_Base {
     public abstract boolean isUserAbleToAccessQueue(User user);
 
     private List<WorkflowProcess> filterProcesses(boolean active) {
-	List<WorkflowProcess> processes = new ArrayList<WorkflowProcess>();
-	for (WorkflowProcess process : getProcess()) {
+	List<WorkflowProcess> filteredProcesses = new ArrayList<WorkflowProcess>();
+	for (WorkflowProcess process : getProcesses()) {
 	    if (process.isActive() == active) {
-		processes.add(process);
+		filteredProcesses.add(process);
 	    }
 	}
-	return processes;
+	return filteredProcesses;
     }
 
-    public List<WorkflowProcess> getActiveMetaProcesses() {
+    public List<WorkflowProcess> getActiveProcesses() {
 	return filterProcesses(true);
     }
 
-    public List<WorkflowProcess> getNotActiveMetaProcesses() {
+    public List<WorkflowProcess> getNotActiveProcesses() {
 	return filterProcesses(false);
     }
 
     public int getActiveProcessCount() {
-	return getActiveMetaProcesses().size();
+	return getActiveProcesses().size();
     }
 
     public int getNotActiveProcessCount() {
-	return getNotActiveMetaProcesses().size();
+	return getNotActiveProcesses().size();
     }
 
     protected void fillNonDefaultFields(WorkflowQueueBean bean) {
