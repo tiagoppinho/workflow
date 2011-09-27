@@ -21,35 +21,35 @@ public class SearchMetaWorkflowProcess extends Search<WorkflowMetaProcess> {
     private WorkflowQueue queue;
 
     public User getRequestor() {
-        return requestor;
+	return requestor;
     }
 
     public void setRequestor(User requestor) {
-        this.requestor = requestor;
+	this.requestor = requestor;
     }
 
     public User getCreator() {
-        return creator;
+	return creator;
     }
 
     public void setCreator(User creator) {
-        this.creator = creator;
+	this.creator = creator;
     }
 
     public WorkflowMetaType getMetaType() {
-        return metaType;
+	return metaType;
     }
 
     public void setMetaType(WorkflowMetaType metaType) {
-        this.metaType = metaType;
+	this.metaType = metaType;
     }
 
     public WorkflowQueue getQueue() {
-        return queue;
+	return queue;
     }
 
     public void setQueue(WorkflowQueue queue) {
-        this.queue = queue;
+	this.queue = queue;
     }
 
     public SearchMetaWorkflowProcess() {
@@ -93,7 +93,11 @@ public class SearchMetaWorkflowProcess extends Search<WorkflowMetaProcess> {
 	protected boolean matchesSearchCriteria(WorkflowMetaProcess process) {
 	    return matchCriteria(getCreator(), process.getCreator())
 		    && matchCriteria(getRequestor(), process.getRequestor().getUser())
-		    && matchCriteria(getMetaType(), process.getMetaType()) && matchCriteria(getQueue(), process.getCurrentQueue());
+		    && matchCriteria(getMetaType(), process.getMetaType()) && matchesAnyQueue(queue, process.getCurrentQueues());
+	}
+
+	private boolean matchesAnyQueue(WorkflowQueue queue, Collection<WorkflowQueue> queues) {
+	    return (queue == null) || queues.contains(getQueue());
 	}
     }
 }

@@ -75,7 +75,7 @@
 					<th><bean:message key="label.metaProcess.subject" bundle="META_WORKFLOW_RESOURCES"/></th>
 					<th><bean:message key="label.metaProcess.type" bundle="META_WORKFLOW_RESOURCES"/></th>
 					<th><bean:message key="label.processNumber" bundle="WORKFLOW_RESOURCES"/></th>
-					<th><bean:message key="label.metaProcess.currentQueue" bundle="META_WORKFLOW_RESOURCES"/></th>
+					<th><bean:message key="label.metaProcess.currentQueues" bundle="META_WORKFLOW_RESOURCES"/></th>
 					<th><bean:message key="label.metaProcess.active" bundle="META_WORKFLOW_RESOURCES"/></th>
 					<th><bean:message key="label.metaProcess.requestor" bundle="META_WORKFLOW_RESOURCES"/></th>
 					<th><bean:message key="label.metaProcess.currentOwner" bundle="META_WORKFLOW_RESOURCES"/></th> 
@@ -85,17 +85,21 @@
 					<tr>
 					<td>
 						<bean:define id="processId" name="process" property="externalId" type="java.lang.String"/>
-						<html:link page="<%= "/workflowProcessManagement.do?method=viewProcess&processId=" +  processId %>" > 
+						<html:link page="<%= "/workflowProcessManagement.do?method=viewProcess&processId=" + processId %>" > 
 							<fr:view name="process" property="subject"/>
 						</html:link>
 						</td>
 					<td> <fr:view name="process" property="metaType.name"/></td>
 					<td> <fr:view name="process" property="processNumber"/></td>
-					<td class="acenter"> <fr:view name="process" property="currentQueue" type="module.workflow.domain.WorkflowQueue">
-							<fr:layout name="null-as-label">
-								<fr:property name="subLayout" value="values"/>
-								<fr:property name="subSchema" value="view.queue.name"/>
-							</fr:layout>
+					<td class="acenter">
+						<fr:view name="process" layout="values">
+							<fr:schema bundle="META_WORKFLOW_RESOURCES" type="module.metaWorkflow.domain.WorkflowMetaProcess">
+								<fr:slot name="currentQueuesOrdered" layout="flowLayout" key="label.metaProcess.currentQueues">
+									<fr:property name="eachLayout" value="values"/>
+									<fr:property name="htmlSeparator" value=", "/>
+									<fr:property name="eachSchema" value="view.queue.name"/>
+								</fr:slot>
+							</fr:schema>
 						 </fr:view> 
 					</td>
 					<td><fr:view name="process" property="open"/></td>
