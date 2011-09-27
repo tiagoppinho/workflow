@@ -1,10 +1,12 @@
 package module.metaWorkflow.domain;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import jvstm.cps.ConsistencyPredicate;
 import module.metaWorkflow.activities.ChangeMetaQueue;
 import module.metaWorkflow.activities.ChangeRequestor;
 import module.metaWorkflow.activities.CloseMetaProcess;
@@ -78,7 +80,7 @@ public class WorkflowMetaProcess extends WorkflowMetaProcess_Base {
 	setCreationDate(new DateTime());
 	setInstanceDescription(instanceDescription);
 	open();
-	setCurrentQueue(queue);
+	addCurrentQueues(queue);
 	setRequestor(requestor);
 	super.setFieldSet(type.initValuesOfFields());
     }
@@ -101,18 +103,6 @@ public class WorkflowMetaProcess extends WorkflowMetaProcess_Base {
 	List<WorkflowActivity<? extends WorkflowProcess, ? extends ActivityInformation>> list = new ArrayList<WorkflowActivity<? extends WorkflowProcess, ? extends ActivityInformation>>();
 	list.addAll(activityMap.values());
 	return list;
-    }
-
-    @Override
-    public void setCurrentQueue(WorkflowQueue queue) {
-	WorkflowQueue currentQueue = getCurrentQueue();
-	if (currentQueue != null && currentQueue.getMetaType() != queue.getMetaType()) {
-	    throw new DomainException("error.queue.has.different.metaType");
-	}
-	if (getCurrentQueue() != null) {
-	    addQueueHistory(getCurrentQueue());
-	}
-	super.setCurrentQueue(queue);
     }
 
     @Override
@@ -163,19 +153,29 @@ public class WorkflowMetaProcess extends WorkflowMetaProcess_Base {
 	return super.getObservers();
     }
 
+    public List<WorkflowQueue> getCurrentQueuesOrdered() {
+	List<WorkflowQueue> queues = new ArrayList<WorkflowQueue>(getCurrentQueues());
+	Collections.sort(queues, WorkflowQueue.COMPARATOR_BY_NAME);
+	return queues;
+    }
+
     public boolean isUserMetaMetaTypeObserver(User user) {
 	return getMetaType().getMetaTypeObservers().contains(user);
     }
 
     @Override
     public boolean isAccessible(User user) {
-	return isTakenByPerson(user) || getCreator() == user || isUserObserver(user) || isUserAbleToAccessCurrentQueue(user)
+	return isTakenByPerson(user) || getCreator() == user || isUserObserver(user) || isUserAbleToAccessCurrentQueues(user)
 		|| isUserAbleToAccessPastQueues(user);
     }
 
-    public boolean isUserAbleToAccessCurrentQueue(User user) {
-	WorkflowQueue currentQueue = getCurrentQueue();
-	return currentQueue != null ? currentQueue.isUserAbleToAccessQueue(user) : false;
+    public boolean isUserAbleToAccessCurrentQueues(User user) {
+	for (WorkflowQueue currentQueue : getCurrentQueues()) {
+	    if (currentQueue.isUserAbleToAccessQueue(user)) {
+		return true;
+	    }
+	}
+	return false;
     }
 
     public boolean isUserAbleToAccessPastQueues(User user) {
@@ -185,6 +185,14 @@ public class WorkflowMetaProcess extends WorkflowMetaProcess_Base {
 	    }
 	}
 	return false;
+    }
+
+    @Override
+    public void addCurrentQueues(WorkflowQueue queue) {
+	if (!queue.getMetaType().equals(getMetaType())) {
+	    throw new DomainException("error.queue.has.different.metaType");
+	}
+	super.addCurrentQueues(queue);
     }
 
     @Override
@@ -222,6 +230,15 @@ public class WorkflowMetaProcess extends WorkflowMetaProcess_Base {
     @Override
     public void notifyUserDueToComment(User user, String comment) {
 	// This has still to be implemented.
+    }
+
+    /*
+     * After the mission processes queues are migrated to the new relation, this predicate should be removed
+     */
+    @Deprecated
+    @ConsistencyPredicate
+    public boolean cannotUseOldRelationToQueues() {
+	return getCurrentQueue() == null;
     }
 
     @Override

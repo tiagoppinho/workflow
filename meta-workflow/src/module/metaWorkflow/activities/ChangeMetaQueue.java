@@ -9,4 +9,9 @@ public class ChangeMetaQueue extends ChangeQueue<WorkflowMetaProcess> {
     public String getUsedBundle() {
 	return "resources/MetaWorkflowResources";
     }
+
+    @Override
+    public boolean isDefaultInputInterfaceUsed() {
+	return false;
+    }
 }

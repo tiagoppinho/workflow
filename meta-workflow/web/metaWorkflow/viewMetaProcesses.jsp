@@ -107,7 +107,7 @@
 		<div>
 			<fr:view name="openProcesses" schema="view.metaProcesses.list">
 				<fr:layout name="tabular">
-					<fr:property name="classes" value="tstyle3"/>
+					<fr:property name="classes" value="tstyle2"/>
 				</fr:layout>
 			</fr:view>
 		</div>

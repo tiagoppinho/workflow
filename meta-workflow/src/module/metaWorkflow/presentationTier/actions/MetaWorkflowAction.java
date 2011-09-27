@@ -51,7 +51,15 @@ public class MetaWorkflowAction extends ContextBaseAction {
 	    @Override
 	    public boolean evaluate(Object arg0) {
 		WorkflowMetaProcess workflowMetaProcess = (WorkflowMetaProcess) arg0;
-		return workflowMetaProcess.isOpen() && workflowMetaProcess.getCurrentQueue().isUserAbleToAccessQueue(currentUser);
+		if (!workflowMetaProcess.isOpen()) {
+		    return false;
+		}
+		for (WorkflowQueue queue : workflowMetaProcess.getCurrentQueues()) {
+		    if (queue.isUserAbleToAccessQueue(currentUser)) {
+			return true;
+		    }
+		}
+		return false;
 	    }
 	}));
 
@@ -163,8 +171,8 @@ public class MetaWorkflowAction extends ContextBaseAction {
 	    final HttpServletResponse response) {
 
 	WorkflowMetaProcessBean processBean = getRenderedObject("processBean");
-	WorkflowMetaProcess process = WorkflowMetaProcess.createNewProcess(processBean.getSubject(), processBean
-		.getInstanceDescription(), processBean.getQueue(), processBean.getRequestor());
+	WorkflowMetaProcess process = WorkflowMetaProcess.createNewProcess(processBean.getSubject(),
+		processBean.getInstanceDescription(), processBean.getQueue(), processBean.getRequestor());
 
 	return viewMetaProcess(process);
     }

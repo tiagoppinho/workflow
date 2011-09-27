@@ -29,13 +29,6 @@
 	</slot>
 </schema>
 
-<schema name="activityInformation.ChangeMetaQueue" type="module.workflow.activities.ChangeQueueInformation" bundle="META_WORKFLOW_RESOURCES">
-	<slot name="queue" layout="radio-select" key="label.changeQueue">
-		<property name="format" value="${name}"/>
-		<property name="providerClass" value="module.metaWorkflow.presentationTier.renderers.providers.AvailableMetaTypeQueues" />
-	</slot>
-</schema>
-
 <schema name="activityInformation.ChangeRequestor" type="module.workflow.activities.UserInformation">
 	<slot name="user" layout="autoComplete" key="label.changeRequestor"
 		bundle="META_WORKFLOW_RESOURCES">
@@ -87,11 +80,11 @@
 
 <schema name="view.meta.process" type="module.metaWorkflow.domain.WorkflowMetaProcess" bundle="META_WORKFLOW_RESOURCES">
 	<slot name="metaType.name" key="label.metaType.name"/>
-	<slot name="processNumber" key="label.processNumber=" bundle="WORKFLOW_RESOURCES"/>
+	<slot name="processNumber" key="label.processNumber" bundle="WORKFLOW_RESOURCES"/>
 </schema>
 
 <schema name="view.meta.process.details" type="module.metaWorkflow.domain.WorkflowMetaProcess" bundle="META_WORKFLOW_RESOURCES">
-	<slot name="processNumber" key="label.processNumber=" bundle="WORKFLOW_RESOURCES"/>
+	<slot name="processNumber" key="label.processNumber" bundle="WORKFLOW_RESOURCES"/>
 	<slot name="open" key="label.metaProcess.open"/>
 	<slot name="subject" key="label.metaProcess.subject"/>
 	<slot name="instanceDescription" key="label.metaProcess.instanceDescription"/>
@@ -101,9 +94,10 @@
 		<property name="subLayout" value="values"/>
 		<property name="subSchema" value="view.requestor.name"/>
 	</slot>
-	<slot name="currentQueue" layout="null-as-label" key="label.metaProcess.currentQueue">
-		<property name="subLayout" value="values"/>
-		<property name="subSchema" value="view.queue.name"/>
+	<slot name="currentQueuesOrdered" layout="flowLayout" key="label.metaProcess.currentQueues">
+		<property name="eachLayout" value="values"/>
+		<property name="htmlSeparator" value=", "/>
+		<property name="eachSchema" value="queue.name"/>
 	</slot>
 </schema>
 
@@ -171,9 +165,10 @@
 	</slot>
 	<slot name="metaType.name" key="label.metaProcess.type"/>
 	<slot name="processNumber" key="label.processNumber" bundle="WORKFLOW_RESOURCES"/>
-	<slot name="currentQueue" layout="null-as-label" key="label.metaProcess.currentQueue">
-		<property name="subLayout" value="values"/>
-		<property name="subSchema" value="view.queue.name"/>
+	<slot name="currentQueuesOrdered" layout="flowLayout" key="label.metaProcess.currentQueues">
+		<property name="eachLayout" value="values"/>
+		<property name="htmlSeparator" value=", "/>
+		<property name="eachSchema" value="queue.name"/>
 	</slot>
 	<slot name="requestor" layout="null-as-label" key="label.metaProcess.requestor">
 		<property name="subLayout" value="values"/>
@@ -183,6 +178,10 @@
 		<property name="subLayout" value="values"/>
 		<property name="subSchema" value="view.user.shortPresentationName"/>
 	</slot>
+</schema>
+
+<schema name="queue.name" type="module.workflow.domain.WorkflowQueue" bundle="META_WORKFLOW_RESOURCES">
+	<slot name="name"/>
 </schema>
 
 

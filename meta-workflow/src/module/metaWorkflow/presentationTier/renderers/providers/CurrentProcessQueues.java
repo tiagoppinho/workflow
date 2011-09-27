@@ -1,11 +1,16 @@
 package module.metaWorkflow.presentationTier.renderers.providers;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import module.metaWorkflow.domain.WorkflowMetaProcess;
 import module.workflow.activities.ChangeQueueInformation;
+import module.workflow.domain.WorkflowQueue;
 import pt.ist.fenixWebFramework.renderers.DataProvider;
 import pt.ist.fenixWebFramework.renderers.components.converters.Converter;
 
-public class AvailableMetaTypeQueues implements DataProvider {
+public class CurrentProcessQueues implements DataProvider {
 
     @Override
     public Converter getConverter() {
@@ -19,6 +24,8 @@ public class AvailableMetaTypeQueues implements DataProvider {
     }
 
     public Object provide(WorkflowMetaProcess process) {
-	return process.getMetaType().getQueues();
+	List<WorkflowQueue> queues = new ArrayList<WorkflowQueue>(process.getCurrentQueues());
+	Collections.sort(queues, WorkflowQueue.COMPARATOR_BY_NAME);
+	return queues;
     }
 }

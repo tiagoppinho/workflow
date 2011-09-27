@@ -14,7 +14,7 @@ public class EditFieldValue extends WorkflowActivity<WorkflowMetaProcess, Activi
 
     @Override
     public boolean isActive(WorkflowMetaProcess process, User user) {
-	return process.getCurrentQueue().isCurrentUserAbleToAccessQueue();
+	return process.isAccessibleToCurrentUser();
     }
 
     @Override
@@ -26,10 +26,10 @@ public class EditFieldValue extends WorkflowActivity<WorkflowMetaProcess, Activi
     public boolean isUserAwarenessNeeded(WorkflowMetaProcess process) {
 	return false;
     }
-    
+
     @Override
     public boolean isDefaultInputInterfaceUsed() {
-        return false;
+	return false;
     }
 
     @Override
