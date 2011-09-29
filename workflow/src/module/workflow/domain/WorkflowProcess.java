@@ -470,6 +470,15 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
 	return isUserCanViewLogs(UserView.getCurrentUser());
     }
 
+    public boolean isCurrentUserAbleToAccessAnyQueues() {
+	for (WorkflowQueue queue : getCurrentQueues()) {
+	    if (queue.isCurrentUserAbleToAccessQueue()) {
+		return true;
+	    }
+	}
+	return false;
+    }
+
     public boolean isCreatedByAvailable() {
 	return true;
     }
@@ -750,6 +759,14 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
 	    }
 	}
 	return false;
+    }
+
+    /*
+     * After the mission processes queues are migrated to the new relation, this method should be removed
+     */
+    @Deprecated
+    public void setCurrentQueueToNullWithoutAddingToHistory() {
+	super.setCurrentQueue(null);
     }
 
     @Override
