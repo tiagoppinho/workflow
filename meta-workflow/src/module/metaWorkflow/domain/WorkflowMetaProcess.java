@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import jvstm.cps.ConsistencyPredicate;
 import module.metaWorkflow.activities.ChangeMetaQueue;
 import module.metaWorkflow.activities.ChangeRequestor;
 import module.metaWorkflow.activities.CloseMetaProcess;
@@ -230,15 +229,6 @@ public class WorkflowMetaProcess extends WorkflowMetaProcess_Base {
     @Override
     public void notifyUserDueToComment(User user, String comment) {
 	// This has still to be implemented.
-    }
-
-    /*
-     * After the mission processes queues are migrated to the new relation, this predicate should be removed
-     */
-    @Deprecated
-    @ConsistencyPredicate
-    public boolean cannotUseOldRelationToQueues() {
-	return getCurrentQueue() == null;
     }
 
     @Override
