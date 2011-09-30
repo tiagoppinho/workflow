@@ -153,13 +153,6 @@ relation WorkflowProcessWorkflowProcessComment {
 	WorkflowProcess playsRole process;
 }
 
-relation WorkflowProcessWorkflowQueue {
-	WorkflowProcess playsRole process {
-		multiplicity *;
-	}	
-	WorkflowQueue playsRole currentQueue;
-}
-
 relation WorkflowProcessesWorkflowQueues {
 	WorkflowProcess playsRole processes {
 		multiplicity *;

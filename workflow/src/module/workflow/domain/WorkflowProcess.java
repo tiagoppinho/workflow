@@ -761,20 +761,6 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
 	return false;
     }
 
-    /*
-     * After the mission processes queues are migrated to the new relation, this method should be removed
-     */
-    @Deprecated
-    public void setCurrentQueueToNullWithoutAddingToHistory() {
-	super.setCurrentQueue(null);
-    }
-
-    @Override
-    public void setCurrentQueue(WorkflowQueue newQueue) {
-	addQueueHistory(getCurrentQueue());
-	super.setCurrentQueue(newQueue);
-    }
-
     @Override
     public void removeCurrentQueues(WorkflowQueue queue) {
 	if (getCurrentQueues().contains(queue)) {
