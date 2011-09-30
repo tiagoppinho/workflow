@@ -31,11 +31,19 @@ public class ChangeQueueInformation<T extends WorkflowProcess> extends ActivityI
 	return queuesToRemove;
     }
 
+    public boolean hasAnyQueuesToRemove() {
+	return !queuesToRemove.isEmpty();
+    }
+
     public void setQueuesToAdd(List<WorkflowQueue> queuesToAdd) {
 	this.queuesToAdd = queuesToAdd;
     }
 
     public List<WorkflowQueue> getQueuesToAdd() {
 	return queuesToAdd;
+    }
+
+    public boolean hasAnyQueuesToAdd() {
+	return !queuesToAdd.isEmpty();
     }
 }
