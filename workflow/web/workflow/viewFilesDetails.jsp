@@ -104,7 +104,13 @@ width: 45px !important;
 			<logic:notEmpty name="file" property="processWithDeleteFile">
 				<tr>
 			</logic:notEmpty>
-					<td class="file-date"><div><fr:view name="file" property="creationDate"/></div></td>
+					<td class="file-date">
+						<div>
+							<logic:present name="file" property="creationDate">
+								<fr:view name="file" property="creationDate"/>
+							</logic:present>
+						</div>
+					</td>
 					<td class="file-name"><div><bean:write name="file" property="filename"/></div></td>
 					<td class="file-desc"><div><bean:write name="file" property="presentationName"/></div></td>
 					<td class="file-type"><%=BundleUtil.getLocalizedNamedFroClass(file.getClass())%></td>
