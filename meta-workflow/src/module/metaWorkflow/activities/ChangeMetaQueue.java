@@ -56,7 +56,6 @@ public class ChangeMetaQueue extends ChangeQueue<WorkflowMetaProcess> {
 	    }
 	}
 
-	String[] arguments = { queuesDescription };
-	return arguments;
+	return new String[] { queuesDescription };
     }
 }
