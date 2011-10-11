@@ -415,7 +415,7 @@ public class ProcessManagement extends ContextBaseAction {
 	    final HttpServletResponse response) {
 
 	final WorkflowProcess process = getProcess(request);
-	List<ProcessFile> listFiles = process.getFilesIncludingDeleted(ProcessFile.class, true);
+	List<ProcessFile> listFiles = process.getFilesIncludingDeleted(process.getAvailableFileTypes(), true);
 	request.setAttribute("process", process);
 	request.setAttribute("listFiles", listFiles);
 	return forward(request, "/workflow/viewFilesDetails.jsp");

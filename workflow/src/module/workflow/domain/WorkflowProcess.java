@@ -648,29 +648,35 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
 	return getAvailableFileTypes();
     }
 
-    @SuppressWarnings("unchecked")
-    public <T extends ProcessFile> List<T> getFiles(Class<T> selectedClass) {
-	return getFilesFromList(getFiles(), selectedClass);
+    public <T extends ProcessFile> List<T> getFiles(Class<? extends ProcessFile> selectedClass) {
+	List<Class<? extends ProcessFile>> list = new ArrayList<Class<? extends ProcessFile>>();
+	list.add(selectedClass);
+	return getFilesFromList(getFiles(), list);
     }
 
-    private <T extends ProcessFile> List<T> getFilesFromList(List<ProcessFile> list, Class<T> selectedClass) {
+    private <T extends ProcessFile> List<T> getFilesFromList(List<ProcessFile> list,
+	    List<Class<? extends ProcessFile>> selectedClasses) {
 	List<T> classes = new ArrayList<T>();
 	for (ProcessFile file : list) {
+	    for (Class selectedClass : selectedClasses) {
 	    if (file.getClass() == selectedClass) {
 		classes.add((T) file);
+	    }
+
 	    }
 	}
 	return classes;
     }
 
-    public <T extends ProcessFile> List<T> getFilesIncludingDeleted(Class<T> selectedClass, boolean sortedByFileName) {
+    public <T extends ProcessFile> List<T> getFilesIncludingDeleted(List<Class<? extends ProcessFile>> selectedClasses,
+	    boolean sortedByFileName) {
 	ArrayList<ProcessFile> classes = new ArrayList<ProcessFile>();
 	classes.addAll(getFiles());
 	classes.addAll(getDeletedFiles());
 	if (!sortedByFileName) {
-	    return getFilesFromList(classes, selectedClass);
+	    return getFilesFromList(classes, selectedClasses);
 	}
-	ArrayList<T> processFiles = (ArrayList<T>) getFilesFromList(classes, selectedClass);
+	ArrayList<T> processFiles = (ArrayList<T>) getFilesFromList(classes, selectedClasses);
 	Collections.sort(processFiles, new Comparator<ProcessFile>() {
 
 	    @Override
