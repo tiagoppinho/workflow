@@ -1,2 +1,2 @@
 name=metaWorkflow
-depends=core, workflow-module, dashBoard, organization
+depends=core, workflow-module, dashBoard, organization, scheduler
