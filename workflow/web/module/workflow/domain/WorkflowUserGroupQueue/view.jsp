@@ -5,7 +5,7 @@
 <%@ taglib uri="/WEB-INF/fenix-renderers.tld" prefix="fr"%>
 
 
-<table class="table">
+<table class="table tstyle2">
 	<tr>
 		<th><bean:message key="label.application.users" bundle="MYORG_RESOURCES"/></th>
 	</tr>

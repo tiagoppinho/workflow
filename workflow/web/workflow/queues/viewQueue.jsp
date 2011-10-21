@@ -25,7 +25,7 @@
 </ul>
 
 
-<table class="table mtop15 mbottom15">
+<table class="table tstyle2 mtop15 mbottom15">
 	<tr>
 		<th><bean:message key="label.queue.name" bundle="WORKFLOW_RESOURCES"/></th>
 		<th><bean:message key="label.queue.type" bundle="WORKFLOW_RESOURCES"/></th>

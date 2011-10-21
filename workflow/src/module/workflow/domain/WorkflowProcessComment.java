@@ -47,13 +47,7 @@ public class WorkflowProcessComment extends WorkflowProcessComment_Base implemen
 
     };
 
-    public final static Comparator<WorkflowProcessComment> REVERSE_COMPARATOR = new Comparator<WorkflowProcessComment>() {
-
-	public int compare(WorkflowProcessComment o1, WorkflowProcessComment o2) {
-	    return -1 * o1.getDate().compareTo(o2.getDate());
-	}
-
-    };
+    public final static Comparator<WorkflowProcessComment> REVERSE_COMPARATOR = Collections.reverseOrder(COMPARATOR);
 
     public WorkflowProcessComment(WorkflowProcess process, User commenter, String comment) {
 	super();

@@ -2,11 +2,13 @@ package module.workflow.domain;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import module.organization.domain.Person;
 import module.workflow.presentationTier.WorkflowQueueLayoutContext;
 import module.workflow.util.WorkflowQueueBean;
 import myorg.applicationTier.Authenticate.UserView;
@@ -123,4 +125,6 @@ public abstract class WorkflowQueue extends WorkflowQueue_Base {
 	}
 	return filteredQueues;
     }
+
+    public abstract Collection<Person> getPersons();
 }
