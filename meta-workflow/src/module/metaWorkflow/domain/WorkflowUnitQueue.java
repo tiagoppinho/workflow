@@ -82,4 +82,7 @@ public class WorkflowUnitQueue extends WorkflowUnitQueue_Base {
 	return virtualHost != null && getWorkflowSystem() == virtualHost.getWorkflowSystem();
     }
 
+    public Collection<Person> getPersons() {
+	return getUnit().getChildPersons(getAccountabilityTypes());
+    }
 }

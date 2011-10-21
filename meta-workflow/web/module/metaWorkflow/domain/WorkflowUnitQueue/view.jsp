@@ -23,4 +23,18 @@
 			</ul>
 		</td>
 	</tr>
+	
 </table>
+
+<strong><bean:message key="label.viewPeople" bundle="ORGANIZATION_RESOURCES" /></strong>
+
+<fr:view name="queue" property="persons">
+	<fr:schema bundle="ORGANIZATION_RESOURCES" type="module.organization.domain.Person">
+		<fr:slot name="user.username" key="label.username" />
+		<fr:slot name="name" />
+	</fr:schema>
+
+	<fr:layout name="tabular">
+		<fr:property name="classes" value="tstyle2" />
+	</fr:layout>
+</fr:view>
