@@ -14,4 +14,7 @@
 <h3><fr:view name="information" property="field.metaField.name.content"/></h3>
 
 <fr:edit action="<%= "/workflowProcessManagement.do?method=viewProcess&processId=" + processId %>" id="fieldValue" name="field" schema="<%= field.getSchemaName() %>" >
+	<fr:layout name="tabular">
+		<fr:property name="columnClasses" value=",,tderror" />
+	</fr:layout>
 </fr:edit>
