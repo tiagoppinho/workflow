@@ -16,4 +16,9 @@ public class DateTimeFieldValue extends DateTimeFieldValue_Base {
     public String getSchemaName() {
 	return "fieldValue.DateTimeFieldValue";
     }
+
+    @Override
+    public String getValueSlotName() {
+	return "dateTimeValue";
+    }
 }

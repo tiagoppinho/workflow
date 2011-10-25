@@ -6,19 +6,24 @@ public class StringFieldValue extends StringFieldValue_Base {
 	super();
     }
 
-    public StringFieldValue(MetaStringField metaField) {
+    public StringFieldValue(StringMetaField metaField) {
 	this();
 	setMetaField(metaField);
     }
 
-    public StringFieldValue(FieldSetValue parentFieldSet, MetaStringField metaField) {
+    public StringFieldValue(FieldSetValue parentFieldSet, StringMetaField metaField) {
 	this(metaField);
 	setParentFieldSet(parentFieldSet);
     }
 
-    public StringFieldValue(String value, FieldSetValue parentFieldSet, MetaStringField metaField) {
+    public StringFieldValue(String value, FieldSetValue parentFieldSet, StringMetaField metaField) {
 	this(parentFieldSet, metaField);
-	setValue(value);
+	setStringValue(value);
+    }
+
+    @Override
+    public String getValueSlotName() {
+	return "stringValue";
     }
 
     @Override

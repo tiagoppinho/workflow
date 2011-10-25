@@ -39,6 +39,11 @@ public class FieldSetValue extends FieldSetValue_Base {
     }
 
     @Override
+    public String getValueSlotName() {
+	return "childFieldValues";
+    }
+
+    @Override
     public String getSchemaName() {
 	return null;
     }

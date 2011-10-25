@@ -23,4 +23,6 @@ public abstract class FieldValue extends FieldValue_Base {
     }
 
     public abstract String getSchemaName();
+
+    public abstract String getValueSlotName();
 }

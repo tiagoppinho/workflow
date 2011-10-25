@@ -17,4 +17,9 @@ public class LocalDateFieldValue extends LocalDateFieldValue_Base {
 	return "fieldValue.LocalDateFieldValue";
     }
 
+    @Override
+    public String getValueSlotName() {
+	return "localDateValue";
+    }
+
 }

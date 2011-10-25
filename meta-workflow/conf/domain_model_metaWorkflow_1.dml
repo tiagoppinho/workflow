@@ -48,7 +48,7 @@ class MetaField {
 	class MetaFieldSet extends MetaField {
 	}
 	
-	class MetaStringField extends MetaField {
+	class StringMetaField extends MetaField {
 	}
 	
 	class DateTimeMetaField extends MetaField {
@@ -64,15 +64,15 @@ class FieldValue {
 	}
 	
 	class StringFieldValue extends FieldValue {
-		String value;
+		String stringValue;
 	}
 	
 	class DateTimeFieldValue extends FieldValue {
-		DateTime value;
+		DateTime dateTimeValue;
 	}
 	
 	class LocalDateFieldValue extends FieldValue {
-		LocalDate value;
+		LocalDate localDateValue;
 	}
 
 class WorkflowMetaTypeSpecificLayout {

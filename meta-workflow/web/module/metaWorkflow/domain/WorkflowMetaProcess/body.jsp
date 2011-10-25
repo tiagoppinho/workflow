@@ -123,6 +123,9 @@
 
 <h3><fr:view name="process" property="fieldSet.metaField.name.content"/></h3>
 <p>
+<logic:empty name="process" property="fieldSet.childFieldValues">
+	<bean:message key="label.noFields" bundle="META_WORKFLOW_RESOURCES" />
+</logic:empty>
 <logic:notEmpty name="process" property="fieldSet.childFieldValues">
 	<table class="tstyle2">
 		<logic:iterate id="childField" name="process" property="fieldSet.orderedChildFields">
@@ -130,9 +133,10 @@
 			
 			<tr>
 				<td class="aright"><fr:view name="childField" property="metaField.name.content"/>:</td>
-				<td><logic:notEmpty name="childField" property="value">
-					<fr:view name="childField" property="value"/>
-				</logic:notEmpty><logic:empty name="childField" property="value">
+				<bean:define id="valueSlotName" name="childField" property="valueSlotName" type="java.lang.String" />
+				<td><logic:notEmpty name="childField" property="<%= valueSlotName %>">
+					<fr:view name="childField" property="<%= valueSlotName %>"/>
+				</logic:notEmpty><logic:empty name="childField" property="<%= valueSlotName %>">
 					-
 				</logic:empty></td>
 				<td>
@@ -144,9 +148,6 @@
 		</logic:iterate>
 	</table>
 </logic:notEmpty>
-<logic:empty name="process" property="fieldSet.childFieldValues">
-	<bean:message key="label.noFields" bundle="META_WORKFLOW_RESOURCES" />
-</logic:empty>
 
 <%--
 <h3 class="mbottom05"><bean:message key="title.comments" bundle="WORKFLOW_RESOURCES"/></h3>
