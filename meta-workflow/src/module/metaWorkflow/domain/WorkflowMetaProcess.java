@@ -27,13 +27,14 @@ import myorg.applicationTier.Authenticate.UserView;
 import myorg.domain.User;
 import myorg.domain.VirtualHost;
 import myorg.domain.exceptions.DomainException;
+import myorg.util.BundleUtil;
 import myorg.util.ClassNameBundle;
 
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 
+import pt.ist.emailNotifier.domain.Email;
 import pt.ist.fenixWebFramework.services.Service;
-import pt.ist.fenixframework.plugins.luceneIndexing.domain.IndexDocument;
 
 @ClassNameBundle(key = "label.module.metaWorkflow", bundle = "resources/MetaWorkflowResources")
 public class WorkflowMetaProcess extends WorkflowMetaProcess_Base {
@@ -228,7 +229,23 @@ public class WorkflowMetaProcess extends WorkflowMetaProcess_Base {
 
     @Override
     public void notifyUserDueToComment(User user, String comment) {
-	// This has still to be implemented.
+	List<String> toAddress = new ArrayList<String>();
+	toAddress.clear();
+	final String email = user.getPerson().getRemotePerson().getEmailForSendingEmails();
+	if (email != null) {
+	    toAddress.add(email);
+
+	    final VirtualHost virtualHost = VirtualHost.getVirtualHostForThread();
+	    new Email(virtualHost.getApplicationSubTitle().getContent(),
+			    virtualHost.getSystemEmailAddress(), new String[] {}, toAddress, Collections.EMPTY_LIST,
+ Collections.EMPTY_LIST, BundleUtil.getFormattedStringFromResourceBundle(
+			    "resources/MetaWorkflowResources", "label.email.commentCreated.subject", getProcessNumber()),
+		    BundleUtil
+			    .getFormattedStringFromResourceBundle("resources/MetaWorkflowResources",
+			    "label.email.commentCreated.body", UserView.getCurrentUser().getPerson().getPresentationName(),
+			    getProcessNumber(),
+			    comment));
+	}
     }
 
     @Override
