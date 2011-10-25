@@ -1,2 +1,2 @@
 name=workflow-module
-depends=core, content, fileSupport, dashBoard, organization, scheduler
+depends=core, content, fileSupport, lucene, dashBoard, organization, scheduler
