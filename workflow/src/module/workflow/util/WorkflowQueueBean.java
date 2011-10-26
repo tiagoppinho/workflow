@@ -6,6 +6,8 @@ import module.workflow.domain.WorkflowQueue;
 
 public class WorkflowQueueBean implements Serializable {
 
+    private static final long serialVersionUID = 1L;
+
     private String name;
     private Class<? extends WorkflowQueue> queueType;
     private WorkflowQueue queue;
@@ -49,5 +51,9 @@ public class WorkflowQueueBean implements Serializable {
 
     protected void fillQueueFields(WorkflowQueue queue) {
 
+    }
+    
+    public WorkflowQueue createWorkflowQueue() {
+	throw new RuntimeException("only subclasses can create workflow queues");
     }
 }

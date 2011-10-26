@@ -1,6 +1,5 @@
 package module.workflow.domain;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -16,9 +15,6 @@ import myorg.domain.User;
 
 import org.apache.commons.collections.Predicate;
 
-import pt.ist.fenixWebFramework.services.Service;
-import pt.ist.fenixframework.pstm.IllegalWriteException;
-
 public abstract class WorkflowQueue extends WorkflowQueue_Base {
 
     public static final Comparator<WorkflowQueue> COMPARATOR_BY_NAME = new Comparator<WorkflowQueue>() {
@@ -31,14 +27,13 @@ public abstract class WorkflowQueue extends WorkflowQueue_Base {
 
     };
 
-    public WorkflowQueue() {
+    protected WorkflowQueue() {
 	super();
 	super.setWorkflowSystem(WorkflowSystem.getInstance());
 	super.setOjbConcreteClass(this.getClass().getName());
     }
 
-    public WorkflowQueue(String name) {
-	this();
+    protected void init(String name) {
 	setName(name);
     }
 
@@ -80,25 +75,6 @@ public abstract class WorkflowQueue extends WorkflowQueue_Base {
 
     public void edit(WorkflowQueueBean bean) {
 	// do nothing
-    }
-
-    @Service
-    public static WorkflowQueue createQueue(Class<? extends WorkflowQueue> queueType, WorkflowQueueBean bean) {
-	WorkflowQueue queue = null;
-	try {
-	    Class<? extends WorkflowQueue> queueClass = (Class<? extends WorkflowQueue>) Class.forName(queueType.getName());
-	    queue = queueClass.getConstructor(new Class[] { String.class, }).newInstance(new Object[] { bean.getName() });
-
-	} catch (InvocationTargetException e) {
-	    if (e.getCause() instanceof IllegalWriteException) {
-		throw new IllegalWriteException();
-	    }
-	} catch (Exception e) {
-	    e.printStackTrace();
-	    return null;
-	}
-	queue.fillNonDefaultFields(bean);
-	return queue;
     }
 
     public static Set<WorkflowQueue> getQueuesForUser(User user) {

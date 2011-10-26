@@ -14,17 +14,22 @@ import pt.ist.fenixWebFramework.services.Service;
 @ClassNameBundle(bundle = "resources/WorkflowResources")
 public class WorkflowUserGroupQueue extends WorkflowUserGroupQueue_Base {
 
-    public WorkflowUserGroupQueue(String name) {
+    WorkflowUserGroupQueue(String name, List<User> baseUsers) {
 	super();
-	setName(name);
+	init(name, baseUsers);
     }
 
-    public WorkflowUserGroupQueue(List<User> baseUsers, String name) {
-	super();
+    @Override
+    protected void init(String name) {
+	throw new RuntimeException("invalid init invocation");
+    }
+    
+    protected void init(String name, List<User> baseUsers) {
 	setName(name);
+
 	for (User user : baseUsers) {
 	    addUsers(user);
-	}
+	}	
     }
 
     @Override
@@ -33,17 +38,13 @@ public class WorkflowUserGroupQueue extends WorkflowUserGroupQueue_Base {
     }
 
     @Override
-    protected void fillNonDefaultFields(WorkflowQueueBean bean) {
-	for (User user : ((WorkflowUserGroupQueueBean) bean).getUsers()) {
-	    addUsers(user);
-	}
-    }
-
-    @Override
     @Service
     public void edit(WorkflowQueueBean bean) {
 	setName(bean.getName());
-	fillNonDefaultFields(bean);
+
+	for (User user : ((WorkflowUserGroupQueueBean) bean).getUsers()) {
+	    addUsers(user);
+	}
     }
 
     @Override

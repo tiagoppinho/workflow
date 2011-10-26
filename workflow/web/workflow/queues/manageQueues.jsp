@@ -17,7 +17,7 @@
 
 <fr:view name="queues" schema="view.queues.details">
 	<fr:layout name="tabular">
-		<fr:property name="classes" value="table mtop05"/>
+		<fr:property name="classes" value="table tsyle2 mtop05"/>
 		<fr:property name="linkFormat(view)" value="/workflowQueueManagement.do?method=viewQueue&queueId=${externalId}"/>
 		<fr:property name="key(view)" value="link.view"/>
 		<fr:property name="bundle(view)" value="MYORG_RESOURCES"/>

@@ -102,10 +102,9 @@ public class QueueManagementAction extends ContextBaseAction {
 
     private WorkflowQueueBean getBeanForType(Class<? extends WorkflowQueue> selectedType) throws ClassNotFoundException,
 	    InstantiationException, IllegalAccessException {
-	WorkflowQueueBean bean;
 	Class<? extends WorkflowQueueBean> beanClass = (Class<? extends WorkflowQueueBean>) Class.forName(selectedType.getName()
 		+ "Bean");
-	bean = beanClass.newInstance();
+	WorkflowQueueBean bean = beanClass.newInstance();
 	bean.setQueueType(selectedType);
 	return bean;
     }
@@ -158,7 +157,7 @@ public class QueueManagementAction extends ContextBaseAction {
 	    final HttpServletResponse response) {
 
 	WorkflowQueueBean bean = getRenderedObject("newQueue");
-	WorkflowQueue.createQueue(bean.getQueueType(), bean);
+	bean.createWorkflowQueue();
 
 	RenderUtils.invalidateViewState("newQueue");
 	return manageQueues(mapping, form, request, response);
