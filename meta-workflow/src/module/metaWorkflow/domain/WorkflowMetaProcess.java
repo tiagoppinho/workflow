@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import module.contacts.ist.domain.ContactsIstSystem;
 import jvstm.cps.ConsistencyPredicate;
 import module.metaWorkflow.activities.ChangeMetaQueue;
 import module.metaWorkflow.activities.ChangeRequestor;
@@ -254,7 +255,7 @@ public class WorkflowMetaProcess extends WorkflowMetaProcess_Base {
     public void notifyUserDueToComment(User user, String comment) {
 	List<String> toAddress = new ArrayList<String>();
 	toAddress.clear();
-	final String email = user.getPerson().getRemotePerson().getEmailForSendingEmails();
+	final String email = ContactsIstSystem.retrieveLatestEmailAddress(user.getPerson());
 	if (email != null) {
 	    toAddress.add(email);
 
