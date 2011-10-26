@@ -4,10 +4,12 @@ import java.util.Collection;
 import java.util.Comparator;
 
 import jvstm.cps.ConsistencyPredicate;
+import module.metaWorkflow.presentationTier.dto.MetaFieldBean;
 import myorg.util.BundleUtil;
 
 import org.apache.commons.lang.StringUtils;
 
+import pt.ist.fenixWebFramework.services.Service;
 import pt.utl.ist.fenix.tools.util.i18n.Language;
 import pt.utl.ist.fenix.tools.util.i18n.MultiLanguageString;
 
@@ -32,6 +34,21 @@ public abstract class MetaField extends MetaField_Base {
 	this.setName(name);
 	this.setFieldOrder(order);
 	this.setParentFieldSet(parentFieldSet);
+    }
+
+    @Service
+    public static MetaField createMetaField(MetaFieldBean bean, MetaFieldSet parentFieldSet) {
+	if (StringMetaField.class == bean.getFieldClass()) {
+	    return new StringMetaField(bean, parentFieldSet);
+	} else if (DateTimeMetaField.class == bean.getFieldClass()) {
+	    return new DateTimeMetaField(bean, parentFieldSet);
+	} else if (LocalDateMetaField.class == bean.getFieldClass()) {
+	    return new LocalDateMetaField(bean, parentFieldSet);
+	} else if (MetaFieldSet.class == bean.getFieldClass()) {
+	    return new MetaFieldSet(bean, parentFieldSet);
+	}
+
+	throw new RuntimeException("Unknown MetaField: " + bean.getFieldClass().getName());
     }
 
     @ConsistencyPredicate
