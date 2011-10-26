@@ -4,7 +4,9 @@ import java.util.Comparator;
 
 import jvstm.cps.ConsistencyPredicate;
 import myorg.util.BundleUtil;
-import pt.ist.fenixWebFramework.services.Service;
+
+import org.apache.commons.lang.StringUtils;
+
 import pt.utl.ist.fenix.tools.util.i18n.MultiLanguageString;
 
 public abstract class MetaField extends MetaField_Base {
@@ -24,30 +26,25 @@ public abstract class MetaField extends MetaField_Base {
 	super();
     }
 
+    protected void init(MultiLanguageString name, Integer order, MetaFieldSet parentFieldSet) {
+	this.setName(name);
+	this.setFieldOrder(order);
+	this.setParentFieldSet(parentFieldSet);
+    }
+
     @ConsistencyPredicate
     public boolean checkHasParent() {
 	return hasParentFieldSet();
     }
 
-    public String getLocalizedClassName() {
-	return BundleUtil.getStringFromResourceBundle("resources/MetaWorkflowResources", "label." + getClass().getName());
+    @ConsistencyPredicate
+    public boolean checkHasName() {
+	String content = getName().getContent();
+	return !StringUtils.isEmpty(content);
     }
 
-    @Service
-    public static MetaField createMetaField(Class<? extends MetaField> fieldClass, MultiLanguageString name, int order,
-	    MetaFieldSet parentFieldSet) {
-	try {
-	    MetaField newField = fieldClass.newInstance();
-	    newField.setName(name);
-	    newField.setFieldOrder(order);
-	    newField.setParentFieldSet(parentFieldSet);
-	    return newField;
-	} catch (InstantiationException e) {
-	    throw new RuntimeException("Unable to create instance of: " + fieldClass.getName(), e);
-	} catch (IllegalAccessException e) {
-	    throw new RuntimeException("Unable to create instance of: " + fieldClass.getName(), e);
-	}
-
+    public String getLocalizedClassName() {
+	return BundleUtil.getStringFromResourceBundle("resources/MetaWorkflowResources", "label." + getClass().getName());
     }
 
     public abstract FieldValue createFieldValue();

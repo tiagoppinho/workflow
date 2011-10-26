@@ -110,7 +110,7 @@ public class MetaTypeManagement extends ContextBaseAction {
 	    return forward(request, "/metaWorkflow/metaType/addField.jsp");
 	}
 
-	MetaField.createMetaField(fieldBean.getFieldClass(), fieldBean.getName(), fieldBean.getOrder(), fieldSet);
+	fieldBean.createMetaField(fieldSet);
 
 	return forward(request, "/metaWorkflow/metaType/manageFields.jsp");
     }

@@ -4,6 +4,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import jvstm.cps.ConsistencyPredicate;
+import module.metaWorkflow.presentationTier.dto.MetaFieldBean;
 import myorg.util.BundleUtil;
 import pt.ist.fenixWebFramework.services.Service;
 import pt.utl.ist.fenix.tools.util.i18n.MultiLanguageString;
@@ -14,18 +15,22 @@ public class MetaFieldSet extends MetaFieldSet_Base {
 	super();
     }
 
-    protected MetaFieldSet(MultiLanguageString name, int order) {
+    protected MetaFieldSet(MultiLanguageString name, Integer order) {
 	this();
 	setName(name);
 	setFieldOrder(order);
     }
 
-    public MetaFieldSet(MultiLanguageString name, int order, WorkflowMetaType metaType) {
+    public MetaFieldSet(MultiLanguageString name, Integer order, WorkflowMetaType metaType) {
 	this(name, order);
 	setMetaType(metaType);
     }
+    
+    public MetaFieldSet(MetaFieldBean bean, MetaFieldSet parentFieldSet) {
+	this(bean.getName(), bean.getOrder(), parentFieldSet);
+    }
 
-    public MetaFieldSet(MultiLanguageString name, int order, MetaFieldSet parentFieldSet) {
+    public MetaFieldSet(MultiLanguageString name, Integer order, MetaFieldSet parentFieldSet) {
 	this(name, order);
 	setParentFieldSet(parentFieldSet);
     }

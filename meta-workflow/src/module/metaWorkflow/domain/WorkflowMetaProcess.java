@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import jvstm.cps.ConsistencyPredicate;
 import module.metaWorkflow.activities.ChangeMetaQueue;
 import module.metaWorkflow.activities.ChangeRequestor;
 import module.metaWorkflow.activities.CloseMetaProcess;
@@ -30,6 +31,7 @@ import myorg.domain.exceptions.DomainException;
 import myorg.util.BundleUtil;
 import myorg.util.ClassNameBundle;
 
+import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 
@@ -41,12 +43,12 @@ import pt.ist.fenixframework.plugins.luceneIndexing.domain.IndexDocument;
 public class WorkflowMetaProcess extends WorkflowMetaProcess_Base {
 
     public static Map<String, WorkflowActivity<? extends WorkflowProcess, ? extends ActivityInformation>> activityMap = new HashMap<String, WorkflowActivity<? extends WorkflowProcess, ? extends ActivityInformation>>();
-    private static final String subjectKey;
-    private static final String descriptionKey;
+    private static final String subjectKey = "subject";
+    private static final String descriptionKey = "description";
 
-    private static final String queueKey;
-    private static final String requestorKey;
-    private static final String creatorKey;
+    private static final String queueKey = "queue";
+    private static final String requestorKey = "requestor";
+    private static final String creatorKey = "creator";
 
     static {
 	activityMap.put(TakeProcess.class.getSimpleName(), new TakeProcess());
@@ -60,20 +62,40 @@ public class WorkflowMetaProcess extends WorkflowMetaProcess_Base {
 	activityMap.put(RemoveObserver.class.getSimpleName(), new RemoveObserver());
 	activityMap.put(ChangeRequestor.class.getSimpleName(), new ChangeRequestor());
 	activityMap.put(EditFieldValue.class.getSimpleName(), new EditFieldValue());
-
-	// Index names
-
-	subjectKey = "subject";
-	descriptionKey = "description";
-	queueKey = "queue";
-	requestorKey = "requestor";
-	creatorKey = "creator";
-
     }
 
-    public WorkflowMetaProcess(WorkflowMetaType type, String subject, String instanceDescription, WorkflowQueue queue,
-	    Requestor requestor) {
+    protected WorkflowMetaProcess() {
 	super();
+    }
+
+    protected WorkflowMetaProcess(WorkflowMetaType type, String subject, String instanceDescription, WorkflowQueue queue,
+	    Requestor requestor) {
+	this();
+	init(type, subject, instanceDescription, queue, requestor);
+    }
+    
+    @ConsistencyPredicate
+    public final boolean checkMetaTypeRequired() {
+	return hasMetaType();
+    }
+
+    @ConsistencyPredicate
+    public final boolean checkSubjectRequired() {
+	return !StringUtils.isEmpty(getSubject());
+    }
+
+    @ConsistencyPredicate
+    public final boolean checkInstanceDescriptionRequired() {
+	return !StringUtils.isEmpty(getInstanceDescription());
+    }
+
+    @ConsistencyPredicate
+    public final boolean checkRequestorRequired() {
+	return hasRequestor();
+    }
+
+    protected void init(WorkflowMetaType type, String subject, String instanceDescription, WorkflowQueue queue,
+	    Requestor requestor) {
 	setMetaType(type);
 	setSubject(subject);
 	setProcessNumber(new LocalDate().getYear() + "-" + type.getNextIdentifier());
@@ -83,7 +105,7 @@ public class WorkflowMetaProcess extends WorkflowMetaProcess_Base {
 	open();
 	addCurrentQueues(queue);
 	setRequestor(requestor);
-	super.setFieldSet(type.initValuesOfFields());
+	super.setFieldSet(type.initValuesOfFields());	
     }
 
     @Override
@@ -237,15 +259,12 @@ public class WorkflowMetaProcess extends WorkflowMetaProcess_Base {
 	    toAddress.add(email);
 
 	    final VirtualHost virtualHost = VirtualHost.getVirtualHostForThread();
-	    new Email(virtualHost.getApplicationSubTitle().getContent(),
-			    virtualHost.getSystemEmailAddress(), new String[] {}, toAddress, Collections.EMPTY_LIST,
- Collections.EMPTY_LIST, BundleUtil.getFormattedStringFromResourceBundle(
+	    new Email(virtualHost.getApplicationSubTitle().getContent(), virtualHost.getSystemEmailAddress(), new String[] {},
+		    toAddress, Collections.EMPTY_LIST, Collections.EMPTY_LIST, BundleUtil.getFormattedStringFromResourceBundle(
 			    "resources/MetaWorkflowResources", "label.email.commentCreated.subject", getProcessNumber()),
-		    BundleUtil
-			    .getFormattedStringFromResourceBundle("resources/MetaWorkflowResources",
+		    BundleUtil.getFormattedStringFromResourceBundle("resources/MetaWorkflowResources",
 			    "label.email.commentCreated.body", UserView.getCurrentUser().getPerson().getPresentationName(),
-			    getProcessNumber(),
-			    comment));
+			    getProcessNumber(), comment));
 	}
     }
 

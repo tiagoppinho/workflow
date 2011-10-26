@@ -7,7 +7,7 @@
 
 <h2><bean:message key="title.metaType.edit" bundle="META_WORKFLOW_RESOURCES"/></h2>
 
-<fr:edit name="metaType" schema="edit.metaTypeDescription" action="/metaTypeManagement.do?method=manageMetaType" schema="edit.metaTypeDescription">
+<fr:edit name="metaType" schema="edit.metaTypeDescription" action="/metaTypeManagement.do?method=manageMetaType">
 	<fr:layout name="tabular">
 		<fr:property name="classes" value="form"/>
 	</fr:layout>

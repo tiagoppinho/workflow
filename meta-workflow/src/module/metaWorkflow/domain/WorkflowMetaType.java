@@ -20,7 +20,7 @@ import pt.utl.ist.fenix.tools.util.i18n.MultiLanguageString;
 
 public class WorkflowMetaType extends WorkflowMetaType_Base {
 
-    public WorkflowMetaType(String name, String description, OrganizationalModel model) {
+    protected WorkflowMetaType(String name, String description, OrganizationalModel model) {
 	super();
 	super.setWorkflowSystem(WorkflowSystem.getInstance());
 	super.setName(name);
@@ -77,10 +77,12 @@ public class WorkflowMetaType extends WorkflowMetaType_Base {
     }
 
     @Service
-    public static void createNewMetaType(String name, String description, OrganizationalModel model,
+    public static WorkflowMetaType createNewMetaType(String name, String description, OrganizationalModel model,
 	    List<Class<? extends ProcessFile>> classNames) {
 	WorkflowMetaType type = new WorkflowMetaType(name, description, model);
 	type.setFileClasses(classNames);
+
+	return type;
     }
 
     public FieldSetValue initValuesOfFields() {
