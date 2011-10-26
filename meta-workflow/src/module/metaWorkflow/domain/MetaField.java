@@ -1,5 +1,6 @@
 package module.metaWorkflow.domain;
 
+import java.util.Collection;
 import java.util.Comparator;
 
 import jvstm.cps.ConsistencyPredicate;
@@ -7,6 +8,7 @@ import myorg.util.BundleUtil;
 
 import org.apache.commons.lang.StringUtils;
 
+import pt.utl.ist.fenix.tools.util.i18n.Language;
 import pt.utl.ist.fenix.tools.util.i18n.MultiLanguageString;
 
 public abstract class MetaField extends MetaField_Base {
@@ -39,8 +41,16 @@ public abstract class MetaField extends MetaField_Base {
 
     @ConsistencyPredicate
     public boolean checkHasName() {
-	String content = getName().getContent();
-	return !StringUtils.isEmpty(content);
+	Collection<Language> allLanguages = getName().getAllLanguages();
+
+	for (Language language : allLanguages) {
+	    String content = getName().getContent(language);
+	    if (StringUtils.isEmpty(content)) {
+		return false;
+	    }
+	}
+
+	return true;
     }
 
     public String getLocalizedClassName() {
