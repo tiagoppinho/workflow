@@ -35,6 +35,7 @@ import org.joda.time.LocalDate;
 
 import pt.ist.emailNotifier.domain.Email;
 import pt.ist.fenixWebFramework.services.Service;
+import pt.ist.fenixframework.plugins.luceneIndexing.domain.IndexDocument;
 
 @ClassNameBundle(key = "label.module.metaWorkflow", bundle = "resources/MetaWorkflowResources")
 public class WorkflowMetaProcess extends WorkflowMetaProcess_Base {
