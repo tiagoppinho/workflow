@@ -6,11 +6,14 @@
 
 <bean:define id="process" name="information" property="process"/>
 <bean:define id="processId" name="process" property="externalId" type="java.lang.String"/>
-<bean:define id="name" name="information" property="activityName"/>
 
 <bean:define id="field" name="information" property="field" type="module.metaWorkflow.domain.FieldValue"/>
 
-<p>
-<h3><fr:view name="information" property="field.metaField.name.content"/></h3>
-
-<jsp:include page="<%= "../domain/fieldValues/edit" + field.getClass().getSimpleName() + ".jsp" %>"/>
+<fr:edit action="<%= "/workflowProcessManagement.do?method=viewProcess&processId=" + processId %>" id="fieldValue" name="field">
+	<fr:schema type="module.metaWorkflow.domain.DateTimeFieldValue" bundle="META_WORKFLOW_RESOURCES">
+		<fr:slot name="dateTimeValue" key="label.metaProcess.field.value" layout="picker" validator="pt.ist.fenixWebFramework.rendererExtensions.validators.DateTimeValidator"/>
+	</fr:schema>
+	<fr:layout name="tabular">
+		<fr:property name="columnClasses" value=",,tderror" />
+	</fr:layout>
+</fr:edit>

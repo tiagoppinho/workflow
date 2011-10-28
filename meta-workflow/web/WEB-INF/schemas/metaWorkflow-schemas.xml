@@ -24,18 +24,6 @@
 	</slot>
 </schema>
 
-<schema name="fieldValue.StringFieldValue" type="module.metaWorkflow.domain.StringFieldValue" bundle="META_WORKFLOW_RESOURCES">
-	<slot name="stringValue" key="label.metaProcess.field.value"/>
-</schema>
-
-<schema name="fieldValue.DateTimeFieldValue" type="module.metaWorkflow.domain.DateTimeFieldValue" bundle="META_WORKFLOW_RESOURCES">
-	<slot name="dateTimeValue" key="label.metaProcess.field.value" layout="picker" validator="pt.ist.fenixWebFramework.rendererExtensions.validators.DateTimeValidator"/>
-</schema>
-
-<schema name="fieldValue.LocalDateFieldValue" type="module.metaWorkflow.domain.LocalDateFieldValue" bundle="META_WORKFLOW_RESOURCES">
-	<slot name="localDateValue" key="label.metaProcess.field.value" layout="picker" validator="pt.ist.fenixWebFramework.rendererExtensions.validators.LocalDateValidator"/>
-</schema>
-
 <schema name="activityInformation.ChangeRequestor" type="module.workflow.activities.UserInformation">
 	<slot name="user" layout="autoComplete" key="label.changeRequestor"
 		bundle="META_WORKFLOW_RESOURCES">

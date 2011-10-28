@@ -40,11 +40,14 @@ public abstract class MetaField extends MetaField_Base {
     public static MetaField createMetaField(MetaFieldBean bean, MetaFieldSet parentFieldSet) {
 	if (StringMetaField.class == bean.getFieldClass()) {
 	    return new StringMetaField(bean, parentFieldSet);
-	} else if (DateTimeMetaField.class == bean.getFieldClass()) {
+	}
+	if (DateTimeMetaField.class == bean.getFieldClass()) {
 	    return new DateTimeMetaField(bean, parentFieldSet);
-	} else if (LocalDateMetaField.class == bean.getFieldClass()) {
+	}
+	if (LocalDateMetaField.class == bean.getFieldClass()) {
 	    return new LocalDateMetaField(bean, parentFieldSet);
-	} else if (MetaFieldSet.class == bean.getFieldClass()) {
+	}
+	if (MetaFieldSet.class == bean.getFieldClass()) {
 	    return new MetaFieldSet(bean, parentFieldSet);
 	}
 
@@ -74,6 +77,10 @@ public abstract class MetaField extends MetaField_Base {
 	return BundleUtil.getStringFromResourceBundle("resources/MetaWorkflowResources", "label." + getClass().getName());
     }
 
+    /**
+     * @return a new instance of the FieldValue that will contain the field's
+     *         data
+     */
     public abstract FieldValue createFieldValue();
 
     public abstract void delete();

@@ -1,6 +1,5 @@
 package module.metaWorkflow.domain;
 
-
 public class LocalDateFieldValue extends LocalDateFieldValue_Base {
 
     public LocalDateFieldValue() {
@@ -10,11 +9,6 @@ public class LocalDateFieldValue extends LocalDateFieldValue_Base {
     public LocalDateFieldValue(LocalDateMetaField metaField) {
 	this();
 	setMetaField(metaField);
-    }
-
-    @Override
-    public String getSchemaName() {
-	return "fieldValue.LocalDateFieldValue";
     }
 
     @Override

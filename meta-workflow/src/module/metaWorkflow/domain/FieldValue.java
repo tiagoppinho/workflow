@@ -22,7 +22,9 @@ public abstract class FieldValue extends FieldValue_Base {
 	return hasParentFieldSet();
     }
 
-    public abstract String getSchemaName();
-
+    /**
+     * 
+     * @return the name of the slot that contains the field's value
+     */
     public abstract String getValueSlotName();
 }

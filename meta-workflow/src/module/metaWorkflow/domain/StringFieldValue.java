@@ -25,9 +25,4 @@ public class StringFieldValue extends StringFieldValue_Base {
     public String getValueSlotName() {
 	return "stringValue";
     }
-
-    @Override
-    public String getSchemaName() {
-	return "fieldValue.StringFieldValue";
-    }
 }
