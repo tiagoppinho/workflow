@@ -38,8 +38,18 @@ public class FieldSetValue extends FieldSetValue_Base {
 	return orderedFields;
     }
 
-    @Override
-    public String getValueSlotName() {
-	return "childFieldValues";
+    public FieldValue findChildField(String OID) {
+	for (FieldValue childField : getChildFieldValues()) {
+	    if (childField.getExternalId().equals(OID)) {
+		return childField;
+	    }
+	    if (childField instanceof FieldSetValue) {
+		FieldValue possibleMatchField = ((FieldSetValue) childField).findChildField(OID);
+		if (possibleMatchField != null) {
+		    return possibleMatchField;
+		}
+	    }
+	}
+	return null;
     }
 }

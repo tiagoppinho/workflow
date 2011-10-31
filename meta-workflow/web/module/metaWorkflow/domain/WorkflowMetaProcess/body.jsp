@@ -7,7 +7,9 @@
 
 
 <%@page import="myorg.presentationTier.servlets.filters.contentRewrite.ContentContextInjectionRewriter"%>
-<%@page import="pt.ist.fenixWebFramework.servlets.filters.contentRewrite.GenericChecksumRewriter"%><bean:define id="processOID" name="process" property="externalId" type="java.lang.String"/>
+<%@page import="pt.ist.fenixWebFramework.servlets.filters.contentRewrite.GenericChecksumRewriter"%>
+
+<bean:define id="processOID" name="process" property="externalId" type="java.lang.String"/>
 
 <logic:equal name="process" property="open" value="false">
 	<div class="highlightBox mtop05 mbottom15">
@@ -128,17 +130,19 @@
 </logic:empty>
 <logic:notEmpty name="process" property="fieldSet.childFieldValues">
 	<table class="tstyle2">
-		<logic:iterate id="childField" name="process" property="fieldSet.orderedChildFields">
-			<bean:define id="fieldId" name="childField" property="externalId" type="String"/>
+		<logic:iterate id="field" name="process" property="fieldSet.orderedChildFields">
+			<bean:define id="field" name="field"/>
+			<bean:define id="fieldId" name="field" property="externalId" type="String"/>
 			
 			<tr>
-				<td class="aright"><fr:view name="childField" property="metaField.name.content"/>:</td>
-				<bean:define id="valueSlotName" name="childField" property="valueSlotName" type="java.lang.String" />
-				<td><logic:notEmpty name="childField" property="<%= valueSlotName %>">
-					<fr:view name="childField" property="<%= valueSlotName %>"/>
-				</logic:notEmpty><logic:empty name="childField" property="<%= valueSlotName %>">
-					-
-				</logic:empty></td>
+				<td class="aright"><fr:view name="field" property="metaField.name.content"/>:</td>
+				<td>
+				<jsp:include page="<%= "../fieldValues/view" + field.getClass().getSimpleName() + ".jsp" %>">
+					<jsp:param name="metaTypeId" value="<%=metaTypeId%>" />
+					<jsp:param name="processId" value="<%=processOID%>" />
+					<jsp:param name="fieldId" value="<%=fieldId%>" />
+				</jsp:include>
+				</td>
 				<td>
 				<wf:activityLink id="<%= "edit-" + fieldId %>" processName="process" activityName="EditFieldValue" scope="request" paramName0="field" paramValue0="<%=fieldId%>">
 					<bean:message bundle="MYORG_RESOURCES" key="link.edit"/>
@@ -173,6 +177,6 @@
 				<p><html:submit styleClass="inputbutton"><bean:message key="label.addComment" bundle="WORKFLOW_RESOURCES"/></html:submit></p>
 			</div>
 		</fr:form>
-	</logic:present>	
+	</logic:present>
 </div>
  --%>

@@ -6,8 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import module.contacts.ist.domain.ContactsIstSystem;
 import jvstm.cps.ConsistencyPredicate;
+import module.contacts.ist.domain.ContactsIstSystem;
 import module.metaWorkflow.activities.ChangeMetaQueue;
 import module.metaWorkflow.activities.ChangeRequestor;
 import module.metaWorkflow.activities.CloseMetaProcess;
@@ -74,7 +74,7 @@ public class WorkflowMetaProcess extends WorkflowMetaProcess_Base {
 	this();
 	init(type, subject, instanceDescription, queue, requestor);
     }
-    
+
     @ConsistencyPredicate
     public final boolean checkMetaTypeRequired() {
 	return hasMetaType();
@@ -106,7 +106,7 @@ public class WorkflowMetaProcess extends WorkflowMetaProcess_Base {
 	open();
 	addCurrentQueues(queue);
 	setRequestor(requestor);
-	super.setFieldSet(type.initValuesOfFields());	
+	super.setFieldSet(type.initValuesOfFields());
     }
 
     @Override
@@ -209,6 +209,10 @@ public class WorkflowMetaProcess extends WorkflowMetaProcess_Base {
 	    }
 	}
 	return false;
+    }
+
+    public FieldValue getField(String OID) {
+	return getFieldSet().findChildField(OID);
     }
 
     @Override

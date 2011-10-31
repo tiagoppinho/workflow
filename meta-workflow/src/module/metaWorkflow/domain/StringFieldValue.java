@@ -20,9 +20,4 @@ public class StringFieldValue extends StringFieldValue_Base {
 	this(parentFieldSet, metaField);
 	setStringValue(value);
     }
-
-    @Override
-    public String getValueSlotName() {
-	return "stringValue";
-    }
 }

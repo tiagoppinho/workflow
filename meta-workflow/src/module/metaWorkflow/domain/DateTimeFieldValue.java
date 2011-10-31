@@ -10,9 +10,4 @@ public class DateTimeFieldValue extends DateTimeFieldValue_Base {
 	this();
 	setMetaField(metaField);
     }
-
-    @Override
-    public String getValueSlotName() {
-	return "dateTimeValue";
-    }
 }

@@ -21,10 +21,4 @@ public abstract class FieldValue extends FieldValue_Base {
     public boolean checkHasParent() {
 	return hasParentFieldSet();
     }
-
-    /**
-     * 
-     * @return the name of the slot that contains the field's value
-     */
-    public abstract String getValueSlotName();
 }

@@ -10,10 +10,4 @@ public class LocalDateFieldValue extends LocalDateFieldValue_Base {
 	this();
 	setMetaField(metaField);
     }
-
-    @Override
-    public String getValueSlotName() {
-	return "localDateValue";
-    }
-
 }
