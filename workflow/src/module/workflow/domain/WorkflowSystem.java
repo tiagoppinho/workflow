@@ -3,7 +3,6 @@ package module.workflow.domain;
 import javax.servlet.http.HttpServletRequest;
 
 import module.dashBoard.WidgetRegister;
-import module.metaWorkflow.domain.WorkflowMetaType;
 import module.workflow.widgets.ProcessListWidget;
 import module.workflow.widgets.QuickViewWidget;
 import module.workflow.widgets.UnreadCommentsWidget;
@@ -62,14 +61,5 @@ public class WorkflowSystem extends WorkflowSystem_Base {
     @Service
     public void setForVirtualHost(final VirtualHost virtualHost) {
 	virtualHost.setWorkflowSystem(this);
-    }
-
-    public WorkflowMetaType getMetaType(String OID) {
-	for (WorkflowMetaType type : getMetaTypes()) {
-	    if (type.getExternalId().equals(OID)) {
-		return type;
-	    }
-	}
-	return null;
     }
 }
