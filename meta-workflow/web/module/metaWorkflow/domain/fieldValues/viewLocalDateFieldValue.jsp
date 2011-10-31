@@ -4,12 +4,11 @@
 <%@ taglib uri="/WEB-INF/struts-logic.tld" prefix="logic"%>
 <%@ taglib uri="/WEB-INF/fenix-renderers.tld" prefix="fr"%>
 
-<%@ page import="module.workflow.domain.WorkflowSystem"%>
 <%@ page import="module.metaWorkflow.domain.WorkflowMetaType"%>
 <%@ page import="module.metaWorkflow.domain.WorkflowMetaProcess"%>
 <%@ page import="module.metaWorkflow.domain.LocalDateFieldValue"%>
 <%
-	WorkflowMetaType metaType = WorkflowSystem.getInstance().getMetaType((String) request.getParameter("metaTypeId"));
+	WorkflowMetaType metaType = WorkflowMetaType.readMetaType((String) request.getParameter("metaTypeId"));
 	WorkflowMetaProcess process = metaType.getProcess((String) request.getParameter("processId"));
 	LocalDateFieldValue field = (LocalDateFieldValue) process.getField((String) request.getParameter("fieldId"));
 	request.setAttribute("field", field);

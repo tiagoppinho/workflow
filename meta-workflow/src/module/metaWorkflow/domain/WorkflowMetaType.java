@@ -85,6 +85,15 @@ public class WorkflowMetaType extends WorkflowMetaType_Base {
 	return null;
     }
 
+    public static WorkflowMetaType readMetaType(String OID) {
+	for (WorkflowMetaType type : WorkflowSystem.getInstance().getMetaTypes()) {
+	    if (type.getExternalId().equals(OID)) {
+		return type;
+	    }
+	}
+	return null;
+    }
+
     @Service
     public static WorkflowMetaType createNewMetaType(String name, String description, OrganizationalModel model,
 	    List<Class<? extends ProcessFile>> classNames) {
