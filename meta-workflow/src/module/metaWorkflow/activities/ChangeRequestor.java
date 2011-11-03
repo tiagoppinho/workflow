@@ -40,4 +40,9 @@ public class ChangeRequestor extends WorkflowActivity<WorkflowMetaProcess, UserI
 	Requestor currentRequestor = activityInformation.getProcess().getRequestor();
 	return new String[] { currentRequestor != null ? currentRequestor.getName() : "", user.getPresentationName() };
     }
+
+    @Override
+    public boolean isUserAwarenessNeeded(WorkflowMetaProcess process, User user) {
+	return false;
+    }
 }

@@ -22,4 +22,8 @@ public class CloseMetaProcess extends WorkflowActivity<WorkflowMetaProcess, Acti
 	activityInformation.getProcess().close();
     }
 
+    @Override
+    public boolean isUserAwarenessNeeded(WorkflowMetaProcess process, User user) {
+	return false;
+    }
 }

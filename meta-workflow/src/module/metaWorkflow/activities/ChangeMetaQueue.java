@@ -6,6 +6,7 @@ import module.metaWorkflow.domain.WorkflowMetaProcess;
 import module.workflow.activities.ChangeQueue;
 import module.workflow.activities.ChangeQueueInformation;
 import module.workflow.domain.WorkflowQueue;
+import myorg.domain.User;
 import myorg.util.BundleUtil;
 
 public class ChangeMetaQueue extends ChangeQueue<WorkflowMetaProcess> {
@@ -57,5 +58,20 @@ public class ChangeMetaQueue extends ChangeQueue<WorkflowMetaProcess> {
 	}
 
 	return new String[] { queuesDescription };
+    }
+
+    @Override
+    public boolean isUserAwarenessNeeded(WorkflowMetaProcess process, User user) {
+	//joantune: so, basicly we want to make sure that:
+	//- the given user belongs to the current queue;
+	//- and the proccess isn't closed;
+	//- and the proccess isn't taken by somebody else
+
+	if (process.isOpen() && (process.getCurrentOwner() == null || process.isTakenByPerson(user))
+		&& process.isUserAbleToAccessCurrentQueues(user)) {
+	    return true;
+
+	}
+	return false;
     }
 }

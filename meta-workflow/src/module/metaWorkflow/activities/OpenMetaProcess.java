@@ -22,4 +22,8 @@ public class OpenMetaProcess extends WorkflowActivity<WorkflowMetaProcess, Activ
 	activityInformation.getProcess().open();
     }
 
+    @Override
+    public boolean isUserAwarenessNeeded(WorkflowMetaProcess process, User user) {
+	return false;
+    }
 }
