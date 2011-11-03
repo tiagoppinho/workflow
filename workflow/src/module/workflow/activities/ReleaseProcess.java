@@ -23,7 +23,9 @@ public class ReleaseProcess<T extends WorkflowProcess> extends WorkflowActivity<
 
     @Override
     public boolean isUserAwarenessNeeded(T process, User user) {
-	return false;
+	//joantune: if we own it, that's because we should do something with it, otherwise
+	//we should release it
+	return true;
     }
 
     @Override

@@ -219,6 +219,16 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
 	return false;
     }
 
+    @SuppressWarnings("unchecked")
+    public boolean hasAnyAvailableActivity(boolean checkForUserAwareness, User user) {
+	for (WorkflowActivity activity : getActivities()) {
+	    if ((!checkForUserAwareness || activity.isUserAwarenessNeeded(this, user)) && activity.isActive(this, user)) {
+		return true;
+	    }
+	}
+	return false;
+    }
+
     public boolean hasAnyAvailableActivity(User user, boolean checkForUserAwareness) {
 	for (WorkflowActivity activity : getActivities()) {
 	    if ((!checkForUserAwareness || activity.isUserAwarenessNeeded(this, user)) && activity.isActive(this, user)) {
@@ -816,5 +826,6 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
 	final VirtualHost virtualHost = VirtualHost.getVirtualHostForThread();
 	return virtualHost != null && getWorkflowSystem() == virtualHost.getWorkflowSystem();
     }
+
 
 }
