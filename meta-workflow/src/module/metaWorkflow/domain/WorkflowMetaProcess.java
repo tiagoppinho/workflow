@@ -279,4 +279,10 @@ public class WorkflowMetaProcess extends WorkflowMetaProcess_Base {
 	return virtualHost != null && getWorkflowSystem() == virtualHost.getWorkflowSystem();
     }
 
+    @Override
+    public boolean isFileEditionAllowed(User userEditingFiles) {
+	return (isUserAbleToAccessCurrentQueues(userEditingFiles) || (getCurrentOwner() != null && getCurrentOwner().equals(
+		userEditingFiles)));
+    }
+
 }
