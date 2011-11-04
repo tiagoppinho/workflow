@@ -209,24 +209,26 @@
 										<bean:message key="link.viewFilesDetails" bundle="WORKFLOW_RESOURCES"/>
 									</html:link>
 								</td>
-								<td class="aright">
-
-									<form action="<%= request.getContextPath() + "/workflowProcessManagement.do" %>" method="post">
-										<input type="hidden" name="method" value="fileUpload"/>
-										<input type="hidden" name="processId" value="<%= processId %>"/>
-
-										<html:submit><bean:message key="link.uploadFile" bundle="WORKFLOW_RESOURCES"/></html:submit>
-									</form>
-								
-									<%--
-									<input id="addFileButton" type="button" value="<bean:message key="link.uploadFile" bundle="WORKFLOW_RESOURCES"/>"/>
-									<script type="java/textscript">
-										$("#addFileButton").click(function() {
-										window.location = <%= "/workflowProcessManagement.do?method=fileUpload&processId="+processId %>;
-										});
-									</script>
-									--%>
-								</td>
+								<logic:equal name="process" property="fileEditionAllowed" value="true">
+									<td class="aright">
+	
+										<form action="<%= request.getContextPath() + "/workflowProcessManagement.do" %>" method="post">
+											<input type="hidden" name="method" value="fileUpload"/>
+											<input type="hidden" name="processId" value="<%= processId %>"/>
+	
+											<html:submit><bean:message key="link.uploadFile" bundle="WORKFLOW_RESOURCES"/></html:submit>
+										</form>
+									
+										<%--
+										<input id="addFileButton" type="button" value="<bean:message key="link.uploadFile" bundle="WORKFLOW_RESOURCES"/>"/>
+										<script type="java/textscript">
+											$("#addFileButton").click(function() {
+											window.location = <%= "/workflowProcessManagement.do?method=fileUpload&processId="+processId %>;
+											});
+										</script>
+										--%>
+									</td>
+								</logic:equal>
 							</tr>
 						</table>
 

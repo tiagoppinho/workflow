@@ -3,11 +3,12 @@ package module.workflow.presentationTier.renderers;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
-
 import module.workflow.domain.ProcessFile;
 import module.workflow.domain.WorkflowProcess;
 import myorg.util.BundleUtil;
+
+import org.apache.commons.lang.StringUtils;
+
 import pt.ist.fenixWebFramework.renderers.OutputRenderer;
 import pt.ist.fenixWebFramework.renderers.components.HtmlBlockContainer;
 import pt.ist.fenixWebFramework.renderers.components.HtmlComponent;
@@ -86,7 +87,7 @@ public class WorkflowProcessFiles extends OutputRenderer {
 			downloadLink.setUrl(RenderUtils.getFormattedProperties(getDownloadFormat(), file));
 			container.addChild(downloadLink);
 
-			if (file.isPossibleToArchieve()) {
+			if (file.isPossibleToArchieve() && file.getProcess().isFileEditionAllowed()) {
 
 			    HtmlLink removeLink = new HtmlLink();
 			    removeLink.setIndented(false);

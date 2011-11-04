@@ -381,6 +381,9 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
     public <T extends ProcessFile> T addFile(Class<T> instanceToCreate, String displayName, String filename,
 	    byte[] consumeInputStream, WorkflowFileUploadBean bean) throws Exception {
 	if (isFileSupportAvailable()) {
+	    if (!isFileEditionAllowed())
+		throw new DomainException("label.error.workflowProcess.noFileEditionAvailable",
+			DomainException.getResourceFor("resources/WorkflowResources"));
 	    Constructor<T> fileConstructor = instanceToCreate.getConstructor(String.class, String.class, byte[].class);
 	    T file = null;
 	    try {
@@ -565,6 +568,22 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
      */
     public boolean isFileSupportAvailable() {
 	return true;
+    }
+
+    /**
+     * By default the edition (removal/upload) of files will be allowed. But
+     * this method should be overwritten to allow more intricate conditions to
+     * be applied here.
+     * 
+     * @author João Antunes
+     * @return true if file removeal/upload should be allowed, false otherwise
+     */
+    public boolean isFileEditionAllowed(User userEditingFiles) {
+	return true;
+    }
+
+    public boolean isFileEditionAllowed() {
+	return isFileEditionAllowed(UserView.getCurrentUser());
     }
 
     /**
