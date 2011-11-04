@@ -14,7 +14,7 @@ public class EditFieldValue extends WorkflowActivity<WorkflowMetaProcess, Activi
 
     @Override
     public boolean isActive(WorkflowMetaProcess process, User user) {
-	return process.isAccessibleToCurrentUser();
+	return (process.getCurrentQueues().contains(user.getQueues()) || user.getUserProcesses().contains(process));
     }
 
     @Override

@@ -9,8 +9,10 @@ public class CloseMetaProcess extends WorkflowActivity<WorkflowMetaProcess, Acti
 
     @Override
     public boolean isActive(WorkflowMetaProcess process, User user) {
-	return process.isOpen() && process.isAccessible(user) && !process.isUserObserver(user);
+	return process.isOpen()
+		&& (process.getCurrentQueues().contains(user.getQueues()) || user.getUserProcesses().contains(process));
     }
+
 
     @Override
     public String getUsedBundle() {

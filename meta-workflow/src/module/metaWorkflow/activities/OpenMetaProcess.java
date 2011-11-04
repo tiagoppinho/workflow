@@ -9,9 +9,9 @@ public class OpenMetaProcess extends WorkflowActivity<WorkflowMetaProcess, Activ
 
     @Override
     public boolean isActive(WorkflowMetaProcess process, User user) {
-	return !process.isOpen() && process.isAccessible(user) && !process.isUserObserver(user);
+	return !process.isOpen() && (process.getCurrentQueues().contains(user.getQueues()) || user.getUserProcesses().contains(process));
     }
-
+    
     @Override
     public String getUsedBundle() {
 	return "resources/MetaWorkflowResources";

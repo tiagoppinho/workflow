@@ -17,6 +17,12 @@ public class ChangeMetaQueue extends ChangeQueue<WorkflowMetaProcess> {
     }
 
     @Override
+    public boolean isActive(WorkflowMetaProcess process, User user) {
+	return process.getCurrentQueues().contains(user.getQueues()) || user.getUserProcesses().contains(process)
+		|| process.getCreator().equals(user);
+    }
+
+    @Override
     public boolean isDefaultInputInterfaceUsed() {
 	return false;
     }
