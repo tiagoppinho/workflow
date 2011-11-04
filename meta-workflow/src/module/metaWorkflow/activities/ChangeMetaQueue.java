@@ -18,8 +18,7 @@ public class ChangeMetaQueue extends ChangeQueue<WorkflowMetaProcess> {
 
     @Override
     public boolean isActive(WorkflowMetaProcess process, User user) {
-	return process.isUserAbleToAccessCurrentQueues(user) || process.isTakenByPerson(user)
-		|| process.getCreator().equals(user);
+	return process.isUserAbleToAccessCurrentQueues(user) || process.isTakenByPerson(user);
     }
 
     @Override

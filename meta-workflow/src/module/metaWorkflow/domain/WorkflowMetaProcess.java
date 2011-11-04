@@ -281,7 +281,8 @@ public class WorkflowMetaProcess extends WorkflowMetaProcess_Base {
 
     @Override
     public boolean isFileEditionAllowed(User userEditingFiles) {
-	return (isUserAbleToAccessCurrentQueues(userEditingFiles) || (getCurrentOwner() != null && getCurrentOwner().equals(
+	return isOpen()
+		&& (isUserAbleToAccessCurrentQueues(userEditingFiles) || (getCurrentOwner() != null && getCurrentOwner().equals(
 		userEditingFiles)));
     }
 
