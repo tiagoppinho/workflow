@@ -11,9 +11,8 @@ public class ChangeRequestor extends WorkflowActivity<WorkflowMetaProcess, UserI
 
     @Override
     public boolean isActive(WorkflowMetaProcess process, User user) {
-	return process.getCurrentQueues().contains(user.getQueues()) || user.getUserProcesses().contains(process);
+	return process.isUserAbleToAccessCurrentQueues(user) || process.isTakenByPerson(user);
     }
-
 
     @Override
     protected void process(UserInformation<WorkflowMetaProcess> activityInformation) {
