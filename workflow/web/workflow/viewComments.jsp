@@ -94,7 +94,7 @@ else {
 				</fr:edit>
 			</td>
 		</tr>
-			<tr>
+		<tr>
 			<td>
 				<bean:message key="label.notifyPeopleByEmail" bundle="WORKFLOW_RESOURCES"/>:
 			</td>
@@ -110,6 +110,22 @@ else {
 				</fr:edit>
 			</td>
 		</tr>
+			<logic:equal name="bean" property="process.queuesAssociated" value="true">
+				<tr>
+					<td><bean:message key="label.notifyQueuesByEmail" bundle="WORKFLOW_RESOURCES" />:</td>
+					<td>
+						<fr:edit id="queuesToNotify" name="bean" slot="queuesToNotify">
+							<fr:layout name="option-select">
+								<fr:property name="providerClass" value="module.workflow.presentationTier.renderers.providers.QueuesForProcess"/>
+								<fr:property name="eachLayout" value="viewQueues"/>
+								<fr:property name="saveOptions" value="true"/>
+								<fr:property name="selectAllShown" value="true"/>
+								<fr:property name="classes" value="nobullet"/>
+							</fr:layout>
+						</fr:edit>
+					</td>
+				</tr>
+			</logic:equal>
 	</table>
 	<html:submit styleClass="inputbutton"><bean:message key="button.send" bundle="EXPENDITURE_RESOURCES"/> </html:submit>
 </fr:form>

@@ -107,6 +107,14 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
 	return classes;
     }
 
+    /**
+     * 
+     * @return true if this process has any relation with queues. False
+     *         otherwise
+     */
+    public boolean isQueuesAssociated() {
+	return hasAnyQueueHistory() || hasAnyCurrentQueues();
+    }
     public static <T extends WorkflowProcess> Set<T> getAllProcesses(Class<T> processClass) {
 	return filter(processClass, null, WorkflowSystem.getInstance().getProcessesSet());
     }
@@ -366,6 +374,21 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
      * @return true if the system is able to notify the user
      */
     public boolean isSystemAbleToNotifyUser(User user) {
+	return true;
+    }
+
+    /**
+     * For some reason (e.g. lots of users in a queue) one might not want to
+     * send a notification by email to the whole list of users in a queue
+     * 
+     * @author joantune - João Antunes
+     * 
+     * @param queue
+     *            the queue to where to assert if one wants to send a
+     *            notification or not
+     * @return if true, notify away, if false don't
+     */
+    public boolean isSystemAbleToNotifyQueue(WorkflowQueue queue) {
 	return true;
     }
 
@@ -688,9 +711,9 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
 	List<T> classes = new ArrayList<T>();
 	for (ProcessFile file : list) {
 	    for (Class selectedClass : selectedClasses) {
-	    if (file.getClass() == selectedClass) {
-		classes.add((T) file);
-	    }
+		if (file.getClass() == selectedClass) {
+		    classes.add((T) file);
+		}
 
 	    }
 	}
@@ -845,6 +868,5 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
 	final VirtualHost virtualHost = VirtualHost.getVirtualHostForThread();
 	return virtualHost != null && getWorkflowSystem() == virtualHost.getWorkflowSystem();
     }
-
 
 }

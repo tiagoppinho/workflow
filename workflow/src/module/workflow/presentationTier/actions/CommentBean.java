@@ -1,9 +1,10 @@
 package module.workflow.presentationTier.actions;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import module.workflow.domain.WorkflowProcess;
 import myorg.domain.User;
@@ -13,10 +14,12 @@ public class CommentBean implements Serializable {
     private WorkflowProcess process;
     private String comment;
     private List<UserNotificationBean> peopleToNotify;
+    private final List<QueueNotificationBean> queuesToNotify;
 
     public CommentBean(WorkflowProcess process) {
 	this.process = process;
 	this.peopleToNotify = Collections.emptyList();
+	this.queuesToNotify = Collections.emptyList();
     }
 
     public WorkflowProcess getProcess() {
@@ -35,11 +38,16 @@ public class CommentBean implements Serializable {
 	this.comment = comment;
     }
 
-    public List<User> getUsersToNotify() {
-	List<User> users = new ArrayList<User>();
+    public Set<User> getUsersToNotify() {
+	Set<User> users = new HashSet<User>();
 	for (UserNotificationBean bean : this.peopleToNotify) {
 	    if (bean.isAbleToNotify()) {
 		users.add(bean.getUser());
+	    }
+	}
+	for (QueueNotificationBean bean : this.queuesToNotify) {
+	    if (bean.isAbleToNotify()) {
+		users.addAll(bean.getUsers());
 	    }
 	}
 	return users;
@@ -51,5 +59,9 @@ public class CommentBean implements Serializable {
 
     public void setPeopleToNotify(List<UserNotificationBean> peopleToNotify) {
 	this.peopleToNotify = peopleToNotify;
+    }
+
+    public List<QueueNotificationBean> getQueuesToNotify() {
+	return queuesToNotify;
     }
 }

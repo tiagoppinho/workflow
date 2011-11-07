@@ -44,6 +44,11 @@
 	  <property name="unableToNotifyClasses" value="unableToNotify"/>
 </renderer>
 
+<renderer type="module.workflow.presentationTier.actions.QueueNotificationBean" layout="viewQueues"
+	class="module.workflow.presentationTier.renderers.NotifyQueues">
+	  <property name="unableToNotifyClasses" value="unableToNotify"/>
+</renderer>
+
 <renderer
 	type="module.workflow.util.HasPresentableProcessState"
 	layout="process-state-view"

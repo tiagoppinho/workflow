@@ -27,6 +27,9 @@ public class CommentersForProcess implements DataProvider {
 	WorkflowProcess process = bean.getProcess();
 
 	availablePeopleToNotify.add(new UserNotificationBean(process.getProcessCreator(), process));
+	//let's also add the 'takers'/owners of the process
+	if (process.hasCurrentOwner())
+	    availablePeopleToNotify.add(new UserNotificationBean(process.getCurrentOwner(), process));
 
 	for (WorkflowProcessComment comment : process.getCommentsSet()) {
 	    availablePeopleToNotify.add(new UserNotificationBean(comment.getCommenter(), process));
