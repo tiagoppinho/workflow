@@ -14,8 +14,12 @@ import pt.ist.fenixWebFramework.services.Service;
 @ClassNameBundle(bundle = "resources/WorkflowResources")
 public class WorkflowUserGroupQueue extends WorkflowUserGroupQueue_Base {
 
-    WorkflowUserGroupQueue(String name, List<User> baseUsers) {
+    protected WorkflowUserGroupQueue() {
 	super();
+    }
+
+    WorkflowUserGroupQueue(String name, List<User> baseUsers) {
+	this();
 	init(name, baseUsers);
     }
 

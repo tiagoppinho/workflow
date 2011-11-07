@@ -212,7 +212,7 @@ public abstract class WorkflowActivity<P extends WorkflowProcess, AI extends Act
 
     /**
      * An activity is said to need user awareness if it's important that the
-     * users nows such activity is active.
+     * users knows such activity is active.
      * 
      * @param process
      * @return true if the current user should be aware of such activity is
