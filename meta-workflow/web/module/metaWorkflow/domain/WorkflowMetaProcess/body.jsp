@@ -131,17 +131,13 @@
 <logic:notEmpty name="process" property="fieldSet.childFieldValues">
 	<table class="tstyle2">
 		<logic:iterate id="field" name="process" property="fieldSet.orderedChildFields">
-			<bean:define id="field" name="field"/>
+			<% request.setAttribute("field", field); %>
 			<bean:define id="fieldId" name="field" property="externalId" type="String"/>
 			
 			<tr>
 				<td class="aright"><fr:view name="field" property="metaField.name.content"/>:</td>
 				<td>
-				<jsp:include page="<%= "../fieldValues/view" + field.getClass().getSimpleName() + ".jsp" %>">
-					<jsp:param name="metaTypeId" value="<%=metaTypeId%>" />
-					<jsp:param name="processId" value="<%=processOID%>" />
-					<jsp:param name="fieldId" value="<%=fieldId%>" />
-				</jsp:include>
+					<jsp:include page="<%= "../fieldValues/view" + field.getClass().getSimpleName() + ".jsp" %>"/>
 				</td>
 				<td>
 				<wf:activityLink id="<%= "edit-" + fieldId %>" processName="process" activityName="EditFieldValue" scope="request" paramName0="field" paramValue0="<%=fieldId%>">
