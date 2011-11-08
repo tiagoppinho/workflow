@@ -190,7 +190,7 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
      * @return The WorkflowLayoutContext to use in the main process page
      */
     public WorkflowLayoutContext getLayout() {
-	return WorkflowLayoutContext.getDefaultWorkflowLayoutContext(this);
+	return WorkflowLayoutContext.getDefaultWorkflowLayoutContext(this.getClass());
     }
 
     @SuppressWarnings("unchecked")

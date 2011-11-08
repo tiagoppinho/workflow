@@ -9,9 +9,9 @@ public class WorkflowLayoutContext extends LayoutContext {
     public final static String DEFAULT_SHORT_BODY = "shortBody.jsp";
     public final static String DEFAULT_HEAD = "header.jsp";
 
-    private String workflowBody;
-    private String workflowShortBody;
-    private String workflowHead;
+    protected String workflowBody;
+    protected String workflowShortBody;
+    protected String workflowHead;
 
     public WorkflowLayoutContext() {
 	super();
@@ -45,9 +45,9 @@ public class WorkflowLayoutContext extends LayoutContext {
 	this.workflowHead = workflowHead;
     }
 
-    public static WorkflowLayoutContext getDefaultWorkflowLayoutContext(WorkflowProcess process) {
+    public static WorkflowLayoutContext getDefaultWorkflowLayoutContext(Class<? extends WorkflowProcess> processClass) {
 	WorkflowLayoutContext context = new WorkflowLayoutContext();
-	String folder = process.getClass().getName().replace(".", "/");
+	String folder = processClass.getName().replace(".", "/");
 	context.setWorkflowBody("/" + folder + "/" + DEFAULT_BODY);
 	context.setWorkflowHead("/" + folder + "/" + DEFAULT_HEAD);
 	context.setWorkflowShortBody("/" + folder + "/" + DEFAULT_SHORT_BODY);
