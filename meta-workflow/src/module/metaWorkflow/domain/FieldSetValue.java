@@ -52,4 +52,9 @@ public class FieldSetValue extends FieldSetValue_Base {
 	}
 	return null;
     }
+
+    @Override
+    public boolean isFieldSet() {
+	return true;
+    }
 }

@@ -21,4 +21,8 @@ public abstract class FieldValue extends FieldValue_Base {
     public boolean checkHasParent() {
 	return hasParentFieldSet();
     }
+
+    public boolean isFieldSet() {
+	return false;
+    }
 }
