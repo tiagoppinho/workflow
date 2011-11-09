@@ -61,7 +61,7 @@ public class WorkflowMetaType extends WorkflowMetaType_Base {
 
     public List<Class<? extends ProcessFile>> getFileClasses() {
 	List<Class<? extends ProcessFile>> fileClasses = new ArrayList<Class<? extends ProcessFile>>();
-	for (String className : getSuporttedFileClasses()) {
+	for (String className : getSuporttedFileClasses().getUnmodifiableList()) {
 	    Class<? extends ProcessFile> clazz = null;
 	    try {
 		clazz = (Class<? extends ProcessFile>) Class.forName(className);
@@ -128,7 +128,7 @@ public class WorkflowMetaType extends WorkflowMetaType_Base {
 
     public List<Class<? extends ProcessFile>> getAvailableFileTypes() {
 	List<Class<? extends ProcessFile>> classes = new ArrayList<Class<? extends ProcessFile>>();
-	for (String fileClass : getSuporttedFileClasses()) {
+	for (String fileClass : getSuporttedFileClasses().getUnmodifiableList()) {
 	    try {
 		Class<? extends ProcessFile> clazz = (Class<? extends ProcessFile>) Class.forName(fileClass);
 		classes.add(clazz);
