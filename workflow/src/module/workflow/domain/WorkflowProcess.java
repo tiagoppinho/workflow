@@ -848,9 +848,19 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
     }
 
     public DateTime getCreationDate() {
-	Set<WorkflowLog> logs = getExecutionLogsSet();
-	return (logs.isEmpty()) ? new DateTime() : logs.iterator().next().getWhenOperationWasRan();
+	final WorkflowLog log = findFirstLogEntry();
+	return log == null ? new DateTime() : log.getWhenOperationWasRan();
 
+    }
+
+    private WorkflowLog findFirstLogEntry() {
+	WorkflowLog result = null;
+	for (final WorkflowLog log : getExecutionLogsSet()) {
+	    if (result == null || log.isBefore(result)) {
+		result = log;
+	    }
+	}
+	return result;
     }
 
     public boolean hasUnreadCommentsForUser(User user) {
