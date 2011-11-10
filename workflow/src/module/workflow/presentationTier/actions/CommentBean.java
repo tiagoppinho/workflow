@@ -14,7 +14,7 @@ public class CommentBean implements Serializable {
     private WorkflowProcess process;
     private String comment;
     private List<UserNotificationBean> peopleToNotify;
-    private final List<QueueNotificationBean> queuesToNotify;
+    private List<QueueNotificationBean> queuesToNotify;
 
     public CommentBean(WorkflowProcess process) {
 	this.process = process;
@@ -45,7 +45,7 @@ public class CommentBean implements Serializable {
 		users.add(bean.getUser());
 	    }
 	}
-	for (QueueNotificationBean bean : this.queuesToNotify) {
+	for (QueueNotificationBean bean : this.getQueuesToNotify()) {
 	    if (bean.isAbleToNotify()) {
 		users.addAll(bean.getUsers());
 	    }
@@ -63,5 +63,9 @@ public class CommentBean implements Serializable {
 
     public List<QueueNotificationBean> getQueuesToNotify() {
 	return queuesToNotify;
+    }
+
+    public void setQueuesToNotify(List<QueueNotificationBean> queuesToNotify) {
+	this.queuesToNotify = queuesToNotify;
     }
 }
