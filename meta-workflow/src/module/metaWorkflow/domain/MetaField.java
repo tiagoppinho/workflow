@@ -41,6 +41,9 @@ public abstract class MetaField extends MetaField_Base {
 	if (StringMetaField.class == bean.getFieldClass()) {
 	    return new StringMetaField(bean, parentFieldSet);
 	}
+	if (StringsMetaField.class == bean.getFieldClass()) {
+	    return new StringsMetaField(bean, parentFieldSet);
+	}
 	if (DateTimeMetaField.class == bean.getFieldClass()) {
 	    return new DateTimeMetaField(bean, parentFieldSet);
 	}

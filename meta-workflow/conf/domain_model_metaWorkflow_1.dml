@@ -51,6 +51,9 @@ class MetaField {
 	class StringMetaField extends MetaField {
 	}
 	
+	class StringsMetaField extends MetaField {
+	}
+	
 	class DateTimeMetaField extends MetaField {
 	}
 	
@@ -65,6 +68,10 @@ class FieldValue {
 	
 	class StringFieldValue extends FieldValue {
 		String stringValue;
+	}
+	
+	class StringsFieldValue extends FieldValue {
+		Strings stringsValue;
 	}
 	
 	class DateTimeFieldValue extends FieldValue {
