@@ -28,6 +28,7 @@ public abstract class MetaField extends MetaField_Base {
 
     protected MetaField() {
 	super();
+	setOjbConcreteClass(this.getClass().getName());
     }
 
     protected void init(MultiLanguageString name, Integer order, MetaFieldSet parentFieldSet) {

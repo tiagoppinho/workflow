@@ -43,6 +43,7 @@ class WorkflowMetaType {
 class MetaField {
 	MultiLanguageString name;
 	Integer fieldOrder (REQUIRED);
+	String ojbConcreteClass (REQUIRED);
 }
 
 	class MetaFieldSet extends MetaField {
@@ -61,6 +62,7 @@ class MetaField {
 	}
 
 class FieldValue {
+	String ojbConcreteClass (REQUIRED);
 }
 
 	class FieldSetValue extends FieldValue {

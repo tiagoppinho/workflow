@@ -15,6 +15,7 @@ public abstract class FieldValue extends FieldValue_Base {
 
     protected FieldValue() {
 	super();
+	setOjbConcreteClass(this.getClass().getName());
     }
 
     @ConsistencyPredicate
