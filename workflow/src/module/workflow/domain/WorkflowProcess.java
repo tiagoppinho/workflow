@@ -566,7 +566,7 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
      * @return A localized string with the process description.
      */
     public String getDescription() {
-	return StringUtils.EMPTY;
+	return getClass().getSimpleName() + " " + getProcessNumber();
     }
 
     @Service
