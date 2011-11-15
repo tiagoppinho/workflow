@@ -1,10 +1,27 @@
 package module.metaWorkflow.domain;
 
+import java.io.Serializable;
 import java.util.Comparator;
 
 import jvstm.cps.ConsistencyPredicate;
 
 public abstract class FieldValue extends FieldValue_Base {
+
+    public abstract class FieldValueBean implements Serializable {
+	private static final long serialVersionUID = 1L;
+
+	public void writeValueToField() {
+	    writeValueFromBean(this);
+	}
+
+	public Class<? extends FieldValue> getFieldClass() {
+	    return FieldValue.this.getClass();
+	}
+
+	public String getFieldName() {
+	    return getMetaField().getName().getContent();
+	}
+    }
 
     public static Comparator<FieldValue> COMPARATOR_BY_FIELD_ORDER = new Comparator<FieldValue>() {
 	@Override
@@ -15,7 +32,7 @@ public abstract class FieldValue extends FieldValue_Base {
 
     protected FieldValue() {
 	super();
-	setOjbConcreteClass(this.getClass().getName());
+	setOjbConcreteClass(getClass().getName());
     }
 
     @ConsistencyPredicate
@@ -26,4 +43,8 @@ public abstract class FieldValue extends FieldValue_Base {
     public boolean isFieldSet() {
 	return false;
     }
+
+    abstract public FieldValueBean createFieldValueBean();
+
+    abstract public void writeValueFromBean(FieldValueBean bean);
 }

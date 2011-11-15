@@ -4,13 +4,11 @@
 <%@ taglib uri="/WEB-INF/struts-logic.tld" prefix="logic"%>
 <%@ taglib uri="/WEB-INF/fenix-renderers.tld" prefix="fr"%>
 
-<bean:define id="process" name="information" property="process"/>
-<bean:define id="processId" name="process" property="externalId" type="java.lang.String"/>
-<bean:define id="name" name="information" property="activityName"/>
-
-<bean:define id="field" name="information" property="field" type="module.metaWorkflow.domain.FieldValue"/>
+<bean:define id="fieldBean" name="information" property="fieldBean" type="module.metaWorkflow.domain.FieldValue.FieldValueBean"/>
 
 <p>
-<h3><fr:view name="information" property="field.metaField.name.content"/></h3>
+<h3><fr:view name="information" property="fieldBean.fieldName"/></h3>
 
-<jsp:include page="<%= "../domain/fieldValues/edit" + field.getClass().getSimpleName() + ".jsp" %>"/>
+<div class="dinline forminline">
+	<jsp:include page="<%= "../domain/fieldValues/edit" + fieldBean.getFieldClass().getSimpleName() + ".jsp" %>"/>
+</div>

@@ -39,5 +39,13 @@ public class EditFieldValue extends WorkflowActivity<WorkflowMetaProcess, Activi
 
     @Override
     protected void process(ActivityInformation<WorkflowMetaProcess> activityInformation) {
+	EditFieldValueInfo fieldInfo = ((EditFieldValueInfo) activityInformation);
+	fieldInfo.getFieldBean().writeValueToField();
+    }
+
+    @Override
+    protected String[] getArgumentsDescription(ActivityInformation<WorkflowMetaProcess> activityInformation) {
+	String fieldName = ((EditFieldValueInfo) activityInformation).getFieldBean().getFieldName();
+	return new String[] { fieldName };
     }
 }

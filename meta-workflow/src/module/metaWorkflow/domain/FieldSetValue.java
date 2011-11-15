@@ -57,4 +57,13 @@ public class FieldSetValue extends FieldSetValue_Base {
     public boolean isFieldSet() {
 	return true;
     }
+
+    @Override
+    public FieldValueBean createFieldValueBean() {
+	return null;
+    }
+
+    @Override
+    public void writeValueFromBean(FieldValueBean bean) {
+    }
 }

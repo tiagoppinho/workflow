@@ -4,19 +4,24 @@
 <%@ taglib uri="/WEB-INF/struts-logic.tld" prefix="logic"%>
 <%@ taglib uri="/WEB-INF/fenix-renderers.tld" prefix="fr"%>
 
-<%@ page import="pt.utl.ist.fenix.tools.util.Strings" %>
-<%@ page import="myorg.util.BundleUtil" %>
+<bean:define id="processId" name="information" property="process.externalId" type="java.lang.String"/>
+<bean:define id="name" name="information" property="activityName"/>
 
-<bean:define id="process" name="information" property="process"/>
-<bean:define id="processId" name="process" property="externalId" type="java.lang.String"/>
+<fr:form id="submitForm" action="<%= "/workflowProcessManagement.do?method=process&processId=" + processId + "&activity=" + name %>" >
+	<fr:edit id="activityBean" name="information" visible="false"/>
+	
+	<fr:edit id="fieldBean" name="information" property="fieldBean">
+		<fr:schema type="module.metaWorkflow.domain.FieldValue$FieldValueBean" bundle="META_WORKFLOW_RESOURCES">
+			<fr:slot name="stringsValue" key="label.metaProcess.field.value"/>
+		</fr:schema>
+		<fr:layout name="tabular">
+			<fr:property name="columnClasses" value=",,tderror" />
+		</fr:layout>
+	</fr:edit>
+	
+	<html:submit styleClass="inputbutton"><bean:message key="renderers.form.submit.name" bundle="RENDERER_RESOURCES"/> </html:submit>
+</fr:form>
 
-<bean:define id="field" name="information" property="field" type="module.metaWorkflow.domain.FieldValue"/>
-
-<fr:edit action="<%= "/workflowProcessManagement.do?method=viewProcess&processId=" + processId %>" id="fieldValue" name="field">
-	<fr:schema type="module.metaWorkflow.domain.StringsFieldValue" bundle="META_WORKFLOW_RESOURCES">
-		<fr:slot name="stringsValue" key="label.metaProcess.field.value"/>
-	</fr:schema>
-	<fr:layout name="tabular">
-		<fr:property name="columnClasses" value=",,tderror" />
-	</fr:layout>
-</fr:edit>
+<fr:form id="cancelForm" action='<%= "/workflowProcessManagement.do?method=viewProcess&processId=" + processId %>'>
+	<html:submit styleClass="inputbutton"><bean:message key="renderers.form.cancel.name" bundle="RENDERER_RESOURCES"/> </html:submit>
+</fr:form>
