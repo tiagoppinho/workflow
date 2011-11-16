@@ -827,11 +827,11 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
 	super.removeCurrentQueues(queue);
     }
 
-    public boolean hasBeenExecuted(Class<? extends WorkflowActivity> clazz) {
-	return hasBeenExecuted(clazz, 1);
+    public boolean hasLogOfBeingExecuted(Class<? extends WorkflowActivity> clazz) {
+	return hasLogOfBeingExecuted(clazz, 1);
     }
 
-    public boolean hasBeenExecuted(Class<? extends WorkflowActivity> clazz, int count) {
+    public boolean hasLogOfBeingExecuted(Class<? extends WorkflowActivity> clazz, int count) {
 	String operationName = clazz.getSimpleName();
 	List<ActivityLog> activitiesExecution = (List<ActivityLog>) getExecutionLogs(ActivityLog.class);
 	int counter = 0;
