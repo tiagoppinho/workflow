@@ -29,6 +29,12 @@ public class StringsFieldValue extends StringsFieldValue_Base {
 	setMetaField(metaField);
     }
 
+    public StringsFieldValue(StringsMetaField metaField, FieldSetValue parent, Strings value) {
+	this(metaField);
+	setParentFieldSet(parent);
+	setStringsValue(value);
+    }
+
     @Override
     public FieldValueBean createFieldValueBean() {
 	return new StringsFieldValueBean(getStringsValue());
