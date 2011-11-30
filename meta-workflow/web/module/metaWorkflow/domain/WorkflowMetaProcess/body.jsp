@@ -26,14 +26,14 @@
 <div>
 	
 	<div id="tabs">
-		<%= ContentContextInjectionRewriter.BLOCK_HAS_CONTEXT_PREFIX %>
+		<%= pt.ist.fenixWebFramework.servlets.filters.contentRewrite.RequestRewriter.BLOCK_HAS_CONTEXT_PREFIX %>
 		<ul>
 			<li><%= GenericChecksumRewriter.NO_CHECKSUM_PREFIX %><a href="#tabs-1"><bean:message key="label.tab.information" bundle="META_WORKFLOW_RESOURCES"/></a></li>
 			<bean:size id="observersCount" name="process" property="observers"/>
 			<li><%= GenericChecksumRewriter.NO_CHECKSUM_PREFIX %><a href="#tabs-2"><bean:message key="label.tab.observers" bundle="META_WORKFLOW_RESOURCES"/> (<fr:view name="observersCount"/>)</a></li>
 			<li><%= GenericChecksumRewriter.NO_CHECKSUM_PREFIX %><a href="#tabs-3"><bean:message key="label.tab.rules" bundle="META_WORKFLOW_RESOURCES"/></a></li>
 		</ul>
-		<%= ContentContextInjectionRewriter.END_BLOCK_HAS_CONTEXT_PREFIX %>
+		<%= pt.ist.fenixWebFramework.servlets.filters.contentRewrite.RequestRewriter.END_BLOCK_HAS_CONTEXT_PREFIX %>
 		<div id="tabs-1">
 			<fr:view name="process" schema="view.meta.process.details">
 				<fr:layout name="tabular">
