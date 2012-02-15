@@ -115,6 +115,7 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
     public boolean isQueuesAssociated() {
 	return hasAnyQueueHistory() || hasAnyCurrentQueues();
     }
+
     public static <T extends WorkflowProcess> Set<T> getAllProcesses(Class<T> processClass) {
 	return filter(processClass, null, WorkflowSystem.getInstance().getProcessesSet());
     }
@@ -220,8 +221,13 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
     @SuppressWarnings("unchecked")
     public boolean hasAnyAvailableActivity(boolean checkForUserAwareness) {
 	for (WorkflowActivity activity : getActivities()) {
-	    if ((!checkForUserAwareness || activity.isUserAwarenessNeeded(this)) && activity.isActive(this)) {
-		return true;
+	    try {
+		if ((!checkForUserAwareness || activity.isUserAwarenessNeeded(this)) && activity.isActive(this)) {
+		    return true;
+		}
+	    } catch (Throwable t) {
+		t.printStackTrace();
+		throw new Error(t);
 	    }
 	}
 	return false;
@@ -438,11 +444,16 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
     }
 
     @Override
+    @Deprecated
     public void setCurrentOwner(User currentOwner) {
 	throw new DomainException("error.message.illegal.method.useTakeInstead");
     }
 
+    /**
+     * use {@link #releaseProcess()} instead
+     */
     @Override
+    @Deprecated
     public void removeCurrentOwner() {
 	throw new DomainException("error.message.illegal.method.useReleaseInstead");
     }
