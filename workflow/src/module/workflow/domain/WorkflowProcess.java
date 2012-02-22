@@ -465,10 +465,13 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
     @Service
     public void takeProcess() {
 	final User currentOwner = getCurrentOwner();
-	if (currentOwner != null) {
-	    throw new DomainException("error.message.illegal.method.useStealInstead");
+	final User currentUser = UserView.getCurrentUser();
+	if (currentOwner != currentUser) {
+	    if (currentOwner != null) {
+		throw new DomainException("error.message.illegal.method.useStealInstead");
+	    }
+	    super.setCurrentOwner(currentUser);
 	}
-	super.setCurrentOwner(UserView.getCurrentUser());
     }
 
     @Service
