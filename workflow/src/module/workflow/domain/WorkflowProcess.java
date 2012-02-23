@@ -814,6 +814,11 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
 	return document;
     }
 
+    @Override
+    public IndexMode getIndexMode() {
+	return IndexMode.MANUAL;
+    }
+
     public Collection<? extends WorkflowLog> getExecutionLogs(final Class<? extends WorkflowLog>... classes) {
 	final Collection<WorkflowLog> result = new ArrayList<WorkflowLog>();
 	for (final WorkflowLog workflowLog : getExecutionLogsSet()) {
