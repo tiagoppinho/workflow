@@ -30,8 +30,7 @@ public class WorkflowMetaType extends WorkflowMetaType_Base {
 	super.setSuporttedFileClasses(new Strings(Collections.EMPTY_LIST));
 
 	MultiLanguageString rootFieldSetName = new MultiLanguageString(Language.pt, BundleUtil.getStringFromResourceBundle(
-		"resources/MetaWorkflowResources", "label.rootFieldSetPT"));
-	rootFieldSetName.setContent(Language.en,
+		"resources/MetaWorkflowResources", "label.rootFieldSetPT")).with(Language.en,
 		BundleUtil.getStringFromResourceBundle("resources/MetaWorkflowResources", "label.rootFieldSetEN"));
 	super.setFieldSet(new MetaFieldSet(rootFieldSetName, 1));
     }
