@@ -1,3 +1,27 @@
+/*
+ * @(#)RevisionRenderer.java
+ *
+ * Copyright 2009 Instituto Superior Tecnico
+ * Founding Authors: Paulo Abrantes
+ * 
+ *      https://fenix-ashes.ist.utl.pt/
+ * 
+ *   This file is part of the Meta-Workflow Module.
+ *
+ *   The Meta-Workflow Module is free software: you can
+ *   redistribute it and/or modify it under the terms of the GNU Lesser General
+ *   Public License as published by the Free Software Foundation, either version 
+ *   3 of the License, or (at your option) any later version.
+ *
+ *   The Meta-Workflow Module is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *   GNU Lesser General Public License for more details.
+ *
+ *   You should have received a copy of the GNU Lesser General Public License
+ *   along with the Meta-Workflow Module. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ */
 package module.metaWorkflow.presentationTier.renderers;
 
 import java.util.ArrayList;
@@ -21,16 +45,16 @@ import pt.ist.fenixWebFramework.renderers.layouts.Layout;
 
 /**
  * 
+ * The code of this Rendered is basically the adaption of
+ * com.xpn.xwiki.plugin.diff.DiffPlugin from XWiki which has a kick ass diff
+ * HTML display algorithm!
+ * 
+ * Base code can be found in: https://svn.xwiki.org/svnroot/xwiki/platform
+ * /core/trunk/xwiki-core/src
+ * /main/java/com/xpn/xwiki/plugin/diff/DiffPlugin.java
+ * 
  * @author Paulo Abrantes
  * 
- *         The code of this Rendered is basically the adaption of
- *         com.xpn.xwiki.plugin.diff.DiffPlugin from XWiki which has a kick ass
- *         diff HTML display algorithm!
- * 
- *         Base code can be found in:
- *         https://svn.xwiki.org/svnroot/xwiki/platform
- *         /core/trunk/xwiki-core/src
- *         /main/java/com/xpn/xwiki/plugin/diff/DiffPlugin.java
  */
 public class RevisionRenderer extends OutputRenderer {
 
@@ -190,14 +214,14 @@ public class RevisionRenderer extends OutputRenderer {
 	    private HtmlContainer getWordDifference(String text1, String text2) {
 		text1 = "~~PLACEHOLDER~~" + text1 + "~~PLACEHOLDER~~";
 		text2 = "~~PLACEHOLDER~~" + text2 + "~~PLACEHOLDER~~";
-		
+
 		HtmlBlockContainer container = new HtmlBlockContainer();
 		container.setClasses(getModifiedLineClass());
 		List<Delta> list = getWordDifferencesAsList(text1, text2);
-		String[] words =  StringUtils.splitPreserveAllTokens(text1, ' ');
+		String[] words = StringUtils.splitPreserveAllTokens(text1, ' ');
 		int cursor = 0;
 		boolean addSpace = false;
-		
+
 		for (int i = 0; i < list.size(); i++) {
 		    if (addSpace) {
 			container.addChild(new HtmlText(" "));
@@ -219,7 +243,7 @@ public class RevisionRenderer extends OutputRenderer {
 			container.addChild(removeWord);
 			removeWord.setClasses(getRemoveWord());
 			List<String> chunks = orig.chunk();
-			
+
 			for (int j = 0; j < chunks.size(); j++) {
 			    if (j > 0)
 				removeWord.addChild(new HtmlText(" "));
@@ -235,7 +259,7 @@ public class RevisionRenderer extends OutputRenderer {
 			HtmlInlineContainer addWord = new HtmlInlineContainer();
 			container.addChild(addWord);
 			addWord.setClasses(getAddWord());
-			
+
 			List<String> chunks = rev.chunk();
 			for (int j = 0; j < chunks.size(); j++) {
 			    if (j > 0)
@@ -256,11 +280,9 @@ public class RevisionRenderer extends OutputRenderer {
 		}
 
 		return container;
-		//return html.toString().replaceAll("~~PLACEHOLDER~~", "");
+		// return html.toString().replaceAll("~~PLACEHOLDER~~", "");
 	    }
-	    
-	     
-	    
+
 	    private List<Delta> getWordDifferencesAsList(String text1, String text2) {
 		try {
 		    text1 = text1.replaceAll(" ", "\n");
@@ -271,7 +293,7 @@ public class RevisionRenderer extends OutputRenderer {
 		    return null;
 		}
 	    }
-	    
+
 	    private List<Delta> getDeltas(org.apache.commons.jrcs.diff.Revision revision) {
 		ArrayList<Delta> deltas = new ArrayList<Delta>();
 		for (int i = 0; i < revision.size(); i++) {
@@ -284,7 +306,6 @@ public class RevisionRenderer extends OutputRenderer {
 		return string.replaceAll("~~PLACEHOLDER~~", "");
 	    }
 
-	   
 	};
     }
 
