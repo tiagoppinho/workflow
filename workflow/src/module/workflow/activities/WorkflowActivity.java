@@ -2,27 +2,26 @@
  * @(#)WorkflowActivity.java
  *
  * Copyright 2009 Instituto Superior Tecnico
- * Founding Authors: João Figueiredo, Luis Cruz, Paulo Abrantes, Susana Fernandes
+ * Founding Authors: Luis Cruz, Paulo Abrantes
  * 
  *      https://fenix-ashes.ist.utl.pt/
  * 
- *   This file is part of the MyOrg web application infrastructure.
+ *   This file is part of the Case Handleing Based Workflow Module.
  *
- *   MyOrg is free software: you can redistribute it and/or modify
- *   it under the terms of the GNU Lesser General Public License as published
- *   by the Free Software Foundation, either version 3 of the License, or
- *   (at your option) any later version.*
+ *   The Case Handleing Based Workflow Module is free software: you can
+ *   redistribute it and/or modify it under the terms of the GNU Lesser General
+ *   Public License as published by the Free Software Foundation, either version 
+ *   3 of the License, or (at your option) any later version.
  *
- *   MyOrg is distributed in the hope that it will be useful,
+ *   The Workflow Module is distributed in the hope that it will be useful,
  *   but WITHOUT ANY WARRANTY; without even the implied warranty of
  *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  *   GNU Lesser General Public License for more details.
  *
  *   You should have received a copy of the GNU Lesser General Public License
- *   along with MyOrg. If not, see <http://www.gnu.org/licenses/>.
+ *   along with the Workflow Module. If not, see <http://www.gnu.org/licenses/>.
  * 
  */
-
 package module.workflow.activities;
 
 import java.util.MissingResourceException;
@@ -43,6 +42,13 @@ import pt.utl.ist.fenix.tools.util.i18n.Language;
  *            process that extends a WorkflowProcess
  * @param <AI>
  *            object that extends ActivityInformation (bean of the activity)
+ * 
+ * @author Diogo Figueiredo
+ * @author João Antunes
+ * @author Anil Kassamali
+ * @author Luis Cruz
+ * @author Paulo Abrantes
+ * 
  */
 public abstract class WorkflowActivity<P extends WorkflowProcess, AI extends ActivityInformation<P>> {
 

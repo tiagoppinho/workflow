@@ -2,27 +2,26 @@
  * @(#)ProcessManagement.java
  *
  * Copyright 2009 Instituto Superior Tecnico
- * Founding Authors: João Figueiredo, Luis Cruz, Paulo Abrantes, Susana Fernandes
+ * Founding Authors: Luis Cruz, Paulo Abrantes
  * 
  *      https://fenix-ashes.ist.utl.pt/
  * 
- *   This file is part of the MyOrg web application infrastructure.
+ *   This file is part of the Case Handleing Based Workflow Module.
  *
- *   MyOrg is free software: you can redistribute it and/or modify
- *   it under the terms of the GNU Lesser General Public License as published
- *   by the Free Software Foundation, either version 3 of the License, or
- *   (at your option) any later version.*
+ *   The Case Handleing Based Workflow Module is free software: you can
+ *   redistribute it and/or modify it under the terms of the GNU Lesser General
+ *   Public License as published by the Free Software Foundation, either version 
+ *   3 of the License, or (at your option) any later version.
  *
- *   MyOrg is distributed in the hope that it will be useful,
+ *   The Workflow Module is distributed in the hope that it will be useful,
  *   but WITHOUT ANY WARRANTY; without even the implied warranty of
  *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  *   GNU Lesser General Public License for more details.
  *
  *   You should have received a copy of the GNU Lesser General Public License
- *   along with MyOrg. If not, see <http://www.gnu.org/licenses/>.
+ *   along with the Workflow Module. If not, see <http://www.gnu.org/licenses/>.
  * 
  */
-
 package module.workflow.presentationTier.actions;
 
 import java.io.IOException;
@@ -68,6 +67,17 @@ import pt.ist.fenixWebFramework.servlets.json.JsonObject;
 import pt.ist.fenixWebFramework.struts.annotations.Mapping;
 import pt.ist.fenixframework.pstm.AbstractDomainObject;
 
+/**
+ * 
+ * @author Diogo Figueiredo
+ * @author João Neves
+ * @author João Antunes
+ * @author Pedro Santos
+ * @author Shezad Anavarali
+ * @author Paulo Abrantes
+ * @author Luis Cruz
+ * 
+ */
 @Mapping(path = "/workflowProcessManagement")
 public class ProcessManagement extends ContextBaseAction {
 
