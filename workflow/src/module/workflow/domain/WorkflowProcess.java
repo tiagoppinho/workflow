@@ -560,8 +560,8 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
 	super.removeFiles(file);
 	addDeletedFiles(file);
 	file.processRemoval();
-	new FileRemoveLog(this, UserView.getCurrentUser(), file.getFilename(),
-		file.getDisplayName() != null ? file.getDisplayName() : file.getFilename(),
+	String nameToLog = file.getDisplayName() != null ? file.getDisplayName() : file.getFilename();
+	new FileRemoveLog(this, UserView.getCurrentUser(), file.getFilename(), nameToLog,
 		BundleUtil.getLocalizedNamedFroClass(file.getClass()));
     }
 
