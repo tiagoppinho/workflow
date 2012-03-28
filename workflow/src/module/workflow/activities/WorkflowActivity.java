@@ -169,9 +169,19 @@ public abstract class WorkflowActivity<P extends WorkflowProcess, AI extends Act
 	return null;
     }
 
-    private void checkConditionsFor(P process) {
+    public static class NotActiveActivityException extends ActivityException {
+
+	public NotActiveActivityException(final String activityName) {
+	    super(BundleUtil.getFormattedStringFromResourceBundle("resources.WorkflowResources",
+		    "activities.messages.exception.notActive", activityName), activityName);
+	}
+	
+    }
+
+    private void checkConditionsFor(final P process) {
 	if (!isActive(process)) {
-	    throw new ActivityException("activities.messages.exception.notActive", getLocalizedName());
+	    final String activityName = getLocalizedName();
+	    throw new NotActiveActivityException(activityName);
 	}
     }
 
