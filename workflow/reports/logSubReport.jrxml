@@ -2,13 +2,13 @@
 <!-- Created with iReport - A designer for JasperReports -->
 <!DOCTYPE jasperReport PUBLIC "//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
 <jasperReport
-		 name="acquisitionRequestDeliveryLocals"
-		 columnCount="2"
+		 name="logSubReport"
+		 columnCount="1"
 		 printOrder="Horizontal"
-		 orientation="Portrait"
-		 pageWidth="535"
-		 pageHeight="842"
-		 columnWidth="262"
+		 orientation="Landscape"
+		 pageWidth="533"
+		 pageHeight="100"
+		 columnWidth="533"
 		 columnSpacing="10"
 		 leftMargin="0"
 		 rightMargin="0"
@@ -25,21 +25,30 @@
 
 
 	<field name="whenOperationWasRan" class="org.joda.time.DateTime"/>
+	<field name="description" class="java.lang.String"/>
+	<field name="activityExecutor" class="myorg.domain.User"/>
 
 		<background>
 			<band height="0"  isSplitAllowed="true" >
 			</band>
 		</background>
 		<title>
-			<band height="37"  isSplitAllowed="true" >
+			<band height="31"  isSplitAllowed="false" >
 				<staticText>
 					<reportElement
+						mode="Opaque"
 						x="0"
 						y="0"
-						width="59"
-						height="37"
-						key="staticText-1"/>
-					<box></box>
+						width="60"
+						height="31"
+						backcolor="#CCCCCC"
+						key="staticText-1"
+						positionType="Float"/>
+					<box>					<topPen lineWidth="1.0" lineStyle="Solid"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid"/>
+</box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font pdfFontName="Helvetica-BoldOblique" isBold="true" isItalic="true"/>
 					</textElement>
@@ -47,12 +56,19 @@
 				</staticText>
 				<staticText>
 					<reportElement
-						x="59"
+						mode="Opaque"
+						x="60"
 						y="0"
-						width="317"
-						height="37"
-						key="staticText-2"/>
-					<box></box>
+						width="314"
+						height="31"
+						backcolor="#CCCCCC"
+						key="staticText-2"
+						positionType="Float"/>
+					<box>					<topPen lineWidth="1.0" lineStyle="Solid"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid"/>
+</box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font pdfFontName="Helvetica-BoldOblique" isBold="true" isItalic="true"/>
 					</textElement>
@@ -60,26 +76,24 @@
 				</staticText>
 				<staticText>
 					<reportElement
-						x="376"
+						mode="Opaque"
+						x="374"
 						y="0"
 						width="159"
-						height="37"
-						key="staticText-3"/>
-					<box></box>
+						height="31"
+						backcolor="#CCCCCC"
+						key="staticText-3"
+						positionType="Float"/>
+					<box>					<topPen lineWidth="1.0" lineStyle="Solid"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid"/>
+</box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font pdfFontName="Helvetica-BoldOblique" isBold="true" isItalic="true"/>
 					</textElement>
 				<text><![CDATA[Utilizador]]></text>
 				</staticText>
-				<line direction="TopDown">
-					<reportElement
-						x="0"
-						y="36"
-						width="535"
-						height="1"
-						key="line-1"/>
-					<graphicElement stretchType="NoStretch"/>
-				</line>
 			</band>
 		</title>
 		<pageHeader>
@@ -91,30 +105,63 @@
 			</band>
 		</columnHeader>
 		<detail>
-			<band height="114"  isSplitAllowed="true" >
-				<rectangle>
-					<reportElement
-						x="0"
-						y="5"
-						width="535"
-						height="66"
-						key="rectangle-1"/>
-					<graphicElement stretchType="NoStretch">
-					<pen lineWidth="0.5" lineStyle="Dotted"/>
-</graphicElement>
-				</rectangle>
+			<band height="44"  isSplitAllowed="false" >
 				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
-						x="3"
-						y="9"
-						width="56"
-						height="62"
-						key="textField-1"/>
-					<box></box>
-					<textElement textAlignment="Right">
+						mode="Opaque"
+						x="0"
+						y="0"
+						width="60"
+						height="44"
+						key="textField-1"
+						positionType="Float"/>
+					<box>					<topPen lineWidth="1.0" lineStyle="Solid"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid"/>
+</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font pdfFontName="Helvetica-Oblique" isBold="false" isItalic="true"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{whenOperationWasRan}.toString()]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{whenOperationWasRan}.toString("dd/MM/yyyy HH:mm:ss")]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="60"
+						y="0"
+						width="314"
+						height="44"
+						key="textField-2"
+						positionType="Float"/>
+					<box>					<topPen lineWidth="1.0" lineStyle="Solid"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid"/>
+</box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{description}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+					<reportElement
+						mode="Opaque"
+						x="374"
+						y="0"
+						width="159"
+						height="44"
+						key="textField-3"
+						positionType="Float"/>
+					<box>					<topPen lineWidth="1.0" lineStyle="Solid"/>
+					<leftPen lineWidth="1.0" lineStyle="Solid"/>
+					<bottomPen lineWidth="1.0" lineStyle="Solid"/>
+					<rightPen lineWidth="1.0" lineStyle="Solid"/>
+</box>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font/>
+					</textElement>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{activityExecutor}.getPresentationName()]]></textFieldExpression>
 				</textField>
 			</band>
 		</detail>
