@@ -4,10 +4,10 @@
 <jasperReport
 		 name="logSubReport"
 		 columnCount="1"
-		 printOrder="Horizontal"
-		 orientation="Landscape"
+		 printOrder="Vertical"
+		 orientation="Portrait"
 		 pageWidth="533"
-		 pageHeight="100"
+		 pageHeight="1000"
 		 columnWidth="533"
 		 columnSpacing="10"
 		 leftMargin="0"
@@ -106,7 +106,7 @@
 		</columnHeader>
 		<detail>
 			<band height="44"  isSplitAllowed="false" >
-				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+				<textField isStretchWithOverflow="true" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						mode="Opaque"
 						x="0"
@@ -114,6 +114,7 @@
 						width="60"
 						height="44"
 						key="textField-1"
+						stretchType="RelativeToTallestObject"
 						positionType="Float"/>
 					<box>					<topPen lineWidth="1.0" lineStyle="Solid"/>
 					<leftPen lineWidth="1.0" lineStyle="Solid"/>
@@ -125,7 +126,7 @@
 					</textElement>
 				<textFieldExpression   class="java.lang.String"><![CDATA[$F{whenOperationWasRan}.toString("dd/MM/yyyy HH:mm:ss")]]></textFieldExpression>
 				</textField>
-				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+				<textField isStretchWithOverflow="true" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						mode="Opaque"
 						x="60"
@@ -133,6 +134,7 @@
 						width="314"
 						height="44"
 						key="textField-2"
+						stretchType="RelativeToTallestObject"
 						positionType="Float"/>
 					<box>					<topPen lineWidth="1.0" lineStyle="Solid"/>
 					<leftPen lineWidth="1.0" lineStyle="Solid"/>
@@ -144,7 +146,7 @@
 					</textElement>
 				<textFieldExpression   class="java.lang.String"><![CDATA[$F{description}]]></textFieldExpression>
 				</textField>
-				<textField isStretchWithOverflow="false" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
+				<textField isStretchWithOverflow="true" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						mode="Opaque"
 						x="374"
@@ -152,6 +154,7 @@
 						width="159"
 						height="44"
 						key="textField-3"
+						stretchType="RelativeToTallestObject"
 						positionType="Float"/>
 					<box>					<topPen lineWidth="1.0" lineStyle="Solid"/>
 					<leftPen lineWidth="1.0" lineStyle="Solid"/>

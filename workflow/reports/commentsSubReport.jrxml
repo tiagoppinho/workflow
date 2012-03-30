@@ -2,12 +2,12 @@
 <!-- Created with iReport - A designer for JasperReports -->
 <!DOCTYPE jasperReport PUBLIC "//JasperReports//DTD Report Design//EN" "http://jasperreports.sourceforge.net/dtds/jasperreport.dtd">
 <jasperReport
-		 name="logSubReport"
+		 name="commentsSubReport"
 		 columnCount="1"
 		 printOrder="Vertical"
-		 orientation="Portrait"
+		 orientation="Landscape"
 		 pageWidth="533"
-		 pageHeight="1000"
+		 pageHeight="100"
 		 columnWidth="533"
 		 columnSpacing="10"
 		 leftMargin="0"
@@ -24,9 +24,9 @@
 	<import value="net.sf.jasperreports.engine.data.*" />
 
 
-	<field name="whenOperationWasRan" class="org.joda.time.DateTime"/>
-	<field name="description" class="java.lang.String"/>
-	<field name="activityExecutor" class="myorg.domain.User"/>
+	<field name="commenter" class="myorg.domain.User"/>
+	<field name="comment" class="java.lang.String"/>
+	<field name="date" class="org.joda.time.DateTime"/>
 
 		<background>
 			<band height="0"  isSplitAllowed="true" >
@@ -39,7 +39,7 @@
 						mode="Opaque"
 						x="0"
 						y="0"
-						width="60"
+						width="78"
 						height="31"
 						backcolor="#CCCCCC"
 						key="staticText-1"
@@ -52,14 +52,14 @@
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font pdfFontName="Helvetica-BoldOblique" isBold="true" isItalic="true"/>
 					</textElement>
-				<text><![CDATA[Data da Execução]]></text>
+				<text><![CDATA[Utilizador]]></text>
 				</staticText>
 				<staticText>
 					<reportElement
 						mode="Opaque"
-						x="60"
+						x="78"
 						y="0"
-						width="314"
+						width="365"
 						height="31"
 						backcolor="#CCCCCC"
 						key="staticText-2"
@@ -72,14 +72,14 @@
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font pdfFontName="Helvetica-BoldOblique" isBold="true" isItalic="true"/>
 					</textElement>
-				<text><![CDATA[Descrição da operação]]></text>
+				<text><![CDATA[Comentário]]></text>
 				</staticText>
 				<staticText>
 					<reportElement
 						mode="Opaque"
-						x="374"
+						x="443"
 						y="0"
-						width="159"
+						width="90"
 						height="31"
 						backcolor="#CCCCCC"
 						key="staticText-3"
@@ -92,7 +92,7 @@
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font pdfFontName="Helvetica-BoldOblique" isBold="true" isItalic="true"/>
 					</textElement>
-				<text><![CDATA[Utilizador]]></text>
+				<text><![CDATA[Instante]]></text>
 				</staticText>
 			</band>
 		</title>
@@ -105,16 +105,18 @@
 			</band>
 		</columnHeader>
 		<detail>
-			<band height="44"  isSplitAllowed="false" >
+			<band height="44"  isSplitAllowed="true" >
 				<textField isStretchWithOverflow="true" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						mode="Opaque"
 						x="0"
 						y="0"
-						width="60"
+						width="78"
 						height="44"
 						key="textField-1"
-						positionType="Float"/>
+						stretchType="RelativeToTallestObject"
+						positionType="Float"
+						isPrintWhenDetailOverflows="true"/>
 					<box>					<topPen lineWidth="1.0" lineStyle="Solid"/>
 					<leftPen lineWidth="1.0" lineStyle="Solid"/>
 					<bottomPen lineWidth="1.0" lineStyle="Solid"/>
@@ -123,17 +125,19 @@
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font pdfFontName="Helvetica-Oblique" isBold="false" isItalic="true"/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{whenOperationWasRan}.toString("dd/MM/yyyy HH:mm:ss")]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{commenter}.getPerson().getFirstAndLastName() + " (" + $F{commenter}.getUsername() + ")"]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="true" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						mode="Opaque"
-						x="60"
+						x="78"
 						y="0"
-						width="314"
+						width="365"
 						height="44"
 						key="textField-2"
-						positionType="Float"/>
+						stretchType="RelativeToTallestObject"
+						positionType="Float"
+						isPrintWhenDetailOverflows="true"/>
 					<box>					<topPen lineWidth="1.0" lineStyle="Solid"/>
 					<leftPen lineWidth="1.0" lineStyle="Solid"/>
 					<bottomPen lineWidth="1.0" lineStyle="Solid"/>
@@ -142,17 +146,19 @@
 					<textElement textAlignment="Left" verticalAlignment="Middle">
 						<font/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{description}]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{comment}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="true" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement
 						mode="Opaque"
-						x="374"
+						x="443"
 						y="0"
-						width="159"
+						width="90"
 						height="44"
 						key="textField-3"
-						positionType="Float"/>
+						stretchType="RelativeToTallestObject"
+						positionType="Float"
+						isPrintWhenDetailOverflows="true"/>
 					<box>					<topPen lineWidth="1.0" lineStyle="Solid"/>
 					<leftPen lineWidth="1.0" lineStyle="Solid"/>
 					<bottomPen lineWidth="1.0" lineStyle="Solid"/>
@@ -161,7 +167,7 @@
 					<textElement textAlignment="Left" verticalAlignment="Middle">
 						<font/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{activityExecutor}.getPresentationName()]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{date}.toString("dd/MM/yyyy HH:mm:ss")]]></textFieldExpression>
 				</textField>
 			</band>
 		</detail>
