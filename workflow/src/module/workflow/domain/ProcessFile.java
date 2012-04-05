@@ -55,6 +55,39 @@ public class ProcessFile extends ProcessFile_Base {
     }
 
     /**
+     * Hook that is called each time someone tries to access the file (for now
+     * this translates to Download, but a preview, which is not implemented yet,
+     * should also invoke this method)
+     * 
+     * @author João Antunes
+     */
+    public void preFileContentAccess() {
+
+    }
+
+    /**
+     * Hook that is called after someone accesses a file (for now this
+     * translates to Download, but a preview, which is not implemented yet,
+     * should also invoke this method)
+     * 
+     * @author João Antunes
+     */
+    public void postFileContentAccess() {
+
+    }
+
+    /**
+     * 
+     * @return true if one should log whenever someone tries to access the
+     *         content of the file, false otherwise
+     * @author João Antunes
+     */
+    public boolean shouldFileContentAccessBeLogged() {
+	return false;
+    }
+
+
+    /**
      * Validates if this file is valid to be associated with the workflowProcess
      * 
      * @param workflowProcess

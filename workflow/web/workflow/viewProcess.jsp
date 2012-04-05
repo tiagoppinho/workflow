@@ -14,6 +14,9 @@
 <%@page import="module.workflow.activities.GiveProcess"%><script src="<%= request.getContextPath() + "/javaScript/jquery.alerts.js"%>" type="text/javascript"></script> 
 
 <script src="<%= request.getContextPath() + "/javaScript/alertHandlers.js"%>" type="text/javascript"></script> 
+
+<%-- Block UI used by the files for the warning on the logging of the file accesses --%>
+<script src="<%= request.getContextPath() + "/javaScript/jquery.blockUI.js"%>" type="text/javascript"></script>
  
 <bean:define id="processId" name="process" property="externalId"  type="java.lang.String"/>
 <bean:define id="processClassName" name="process" property="class.name" type="java.lang.String"/>
@@ -169,7 +172,12 @@
 		
 		
 		<logic:equal name="process" property="fileSupportAvailable" value="true">
-	
+		<div id="fileAccessLoggedConfirmation" style="display:none; cursor: default"> 
+		        <h3><bean:message key="label.fileAccess.logged.confirmMessage" bundle="WORKFLOW_RESOURCES" /></h3> 
+		        <%-- TODO joanutne: localize Sim e Não --%>
+		        <input type="button" id="yes" value="Sim" /> 
+		        <input type="button" id="no" value="Não" /> 
+		</div> 
 			<td class="gutter"></td>
 	
 			<td>	

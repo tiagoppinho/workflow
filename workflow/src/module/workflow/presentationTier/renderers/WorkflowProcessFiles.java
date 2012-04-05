@@ -114,10 +114,16 @@ public class WorkflowProcessFiles extends OutputRenderer {
 			if (StringUtils.isEmpty(filename)) {
 			    filename = file.getFilename();
 			}
+			//joantune: taking care of the confirmation action in case this is 
+			//a file whose access is logged
+			downloadLink.setId("access-" + file.getExternalId());
 			downloadLink.setIndented(false);
 			downloadLink.setBody(new HtmlText(filename));
 			downloadLink.setUrl(RenderUtils.getFormattedProperties(getDownloadFormat(), file));
 			container.addChild(downloadLink);
+			if (file.shouldFileContentAccessBeLogged()) {
+			    container.addChild(accessConfirmation(file));
+			}
 
 			if (file.isPossibleToArchieve() && file.getProcess().isFileEditionAllowed()) {
 
@@ -141,6 +147,20 @@ public class WorkflowProcessFiles extends OutputRenderer {
 
 	    }
 
+	    private HtmlComponent accessConfirmation(ProcessFile file) {
+		HtmlScript script = new HtmlScript();
+		script.setContentType("text/javascript");
+		String displayName = file.getDisplayName();
+		if (displayName == null) {
+		    displayName = file.getFilename();
+		}
+		script.setScript("linkConfirmationHookLink('access-"
+			+ file.getExternalId()
+			+ "', '"
+			+ BundleUtil.getFormattedStringFromResourceBundle("resources/WorkflowResources",
+				"label.fileAccess.logged.confirmMessage", displayName) + "' , '" + displayName + "');");
+		return script;
+	    }
 	    private HtmlComponent removeConfirmation(ProcessFile file) {
 		HtmlScript script = new HtmlScript();
 		script.setContentType("text/javascript");

@@ -68,6 +68,9 @@ class WorkflowLog implements .myorg.domain.VirtualHostAware {
 
 	class FileRemoveLog extends WorkflowLog {
 	}
+	
+	class FileAccessLog extends WorkflowLog {
+	}
 
 class WorkflowProcessComment implements .myorg.domain.VirtualHostAware {
 	String comment;

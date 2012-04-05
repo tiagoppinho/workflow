@@ -418,6 +418,30 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
 	return users;
     }
 
+    public void preAccessFile(ProcessFile file) {
+	if (isFileSupportAvailable()) {
+	    file.preFileContentAccess();
+	    return;
+	}
+	throw new DomainException("label.error.workflowProcess.noSupportForFiles",
+		DomainException.getResourceFor("resources/WorkflowResources"));
+    }
+
+    @Service
+    public void postAccessFile(ProcessFile file) {
+	if (isFileSupportAvailable()) {
+	    file.postFileContentAccess();
+	    if (file.shouldFileContentAccessBeLogged()) {
+		String nameToLog = file.getDisplayName() != null ? file.getDisplayName() : file.getFilename();
+		new FileAccessLog(this, UserView.getCurrentUser(), file.getFilename(), nameToLog,
+			BundleUtil.getLocalizedNamedFroClass(file.getClass()));
+	    }
+	} else {
+	    throw new DomainException("label.error.workflowProcess.noSupportForFiles",
+		    DomainException.getResourceFor("resources/WorkflowResources"));
+	}
+    }
+
     @Service
     public <T extends ProcessFile> T addFile(Class<T> instanceToCreate, String displayName, String filename,
 	    byte[] consumeInputStream, WorkflowFileUploadBean bean) throws Exception {

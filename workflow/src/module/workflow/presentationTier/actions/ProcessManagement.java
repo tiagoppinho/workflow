@@ -410,7 +410,11 @@ public class ProcessManagement extends ContextBaseAction {
 	    final HttpServletResponse response) throws IOException {
 
 	final ProcessFile file = getDomainObject(request, "fileId");
-	return download(response, file.getFilename(), file.getStream(), file.getContentType());
+	WorkflowProcess process = file.getProcess();
+	process.preAccessFile(file);
+	download(response, file.getFilename(), file.getStream(), file.getContentType());
+	process.postAccessFile(file);
+	return null;
     }
 
     public ActionForward removeFile(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
