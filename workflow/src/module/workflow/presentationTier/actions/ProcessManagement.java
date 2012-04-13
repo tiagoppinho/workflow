@@ -411,9 +411,13 @@ public class ProcessManagement extends ContextBaseAction {
 
 	final ProcessFile file = getDomainObject(request, "fileId");
 	WorkflowProcess process = file.getProcess();
-	process.preAccessFile(file);
+	if (process != null) {
+	    process.preAccessFile(file);
+	}
 	download(response, file.getFilename(), file.getStream(), file.getContentType());
-	process.postAccessFile(file);
+	if (process != null) {
+	    process.postAccessFile(file);
+	}
 	return null;
     }
 
