@@ -64,6 +64,7 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
+import pt.ist.bennu.vaadin.domain.contents.VaadinNode;
 import pt.ist.fenixWebFramework.servlets.functionalities.CreateNodeAction;
 import pt.ist.fenixWebFramework.struts.annotations.Mapping;
 
@@ -96,12 +97,17 @@ public class MetaWorkflowInterfaceCreation extends ContextBaseAction {
 	ActionNode.createActionNode(virtualHost, homeNode, "/metaWorkflow", "search",
  "resources.MetaWorkflowResources",
 		"link.sideBar.metaWorkflow.search", UserGroup.getInstance());
-	
-	
+
 	ActionNode.createActionNode(virtualHost, homeNode, "/metaTypeManagement", "manageMetaType",
 		"resources.MetaWorkflowResources", "link.sideBar.metaWorkflow.manageMetaType",
 		myorg.domain.groups.Role.getRole(RoleType.MANAGER));
 	
+	
+	
+	VaadinNode.createVaadinNode(virtualHost, homeNode, "resources.MetaWorkflowResources",
+		"link.sideBar.metaWorkflow.manageMetaType", "metaTypeManagement",
+		myorg.domain.groups.Role.getRole(RoleType.MANAGER));
+
 	return forwardToMuneConfiguration(request, virtualHost, node);
     }
 
