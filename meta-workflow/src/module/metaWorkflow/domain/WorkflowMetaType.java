@@ -53,7 +53,7 @@ import pt.utl.ist.fenix.tools.util.i18n.MultiLanguageString;
  */
 public class WorkflowMetaType extends WorkflowMetaType_Base {
 
-    protected WorkflowMetaType(String name, String description, OrganizationalModel model) {
+    public WorkflowMetaType(String name, String description, OrganizationalModel model) {
 	super();
 	super.setWorkflowSystem(WorkflowSystem.getInstance());
 	super.setName(name);
