@@ -37,7 +37,6 @@ import module.workflow.domain.WorkflowSystem;
 import myorg.applicationTier.Authenticate.UserView;
 import myorg.domain.RoleType;
 import myorg.util.BundleUtil;
-import pt.ist.fenixWebFramework.services.Service;
 import pt.ist.vaadinframework.annotation.EmbeddedComponent;
 import pt.ist.vaadinframework.data.ItemConstructor;
 import pt.ist.vaadinframework.data.reflect.DomainContainer;
@@ -46,6 +45,7 @@ import pt.ist.vaadinframework.ui.EmbeddedComponentContainer;
 import pt.ist.vaadinframework.ui.TransactionalTable;
 
 import com.vaadin.data.Buffered.SourceException;
+import com.vaadin.data.util.PropertyFormatter;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.CustomComponent;
@@ -142,7 +142,7 @@ public class ManageMetaTypesComponent extends CustomComponent implements Embedde
 	}
     }
 
-    private void manageStatesInterface(WorkflowMetaType metaType) {
+    private void manageStatesInterface(final WorkflowMetaType metaType) {
 	VerticalLayout header = new VerticalLayout();
 	setCompositionRoot(header);
 	header.setSpacing(true);
@@ -175,7 +175,7 @@ public class ManageMetaTypesComponent extends CustomComponent implements Embedde
 	DomainItem<WorkflowMetaType> metaTypeDI = new DomainItem<WorkflowMetaType>(metaType);
 	final DomainContainer<MetaProcessState> states = (DomainContainer<MetaProcessState>) metaTypeDI
 		.getItemProperty("processStates");
-	states.setContainerProperties("name.content");
+	states.setContainerProperties("name");
 	stateTable.setContainerDataSource(states);
 	stateTable.setSelectable(true);
 	stateTable.setImmediate(true);
@@ -183,16 +183,46 @@ public class ManageMetaTypesComponent extends CustomComponent implements Embedde
 	content.addComponent(stateTable);
 
 	VerticalLayout stateInfo = new VerticalLayout();
+	stateInfo.setMargin(true);
+	stateInfo.setSpacing(true);
+
 	Label stateName = new Label();
-	stateName.setPropertyDataSource(selectedItem);
-	stateName.setCaption("Name:");
+	stateName.setPropertyDataSource(new PropertyFormatter(selectedItem) {
+	    
+	    @Override
+	    public Object parse(String formattedValue) throws Exception {
+		return null;
+	    }
+	    
+	    @Override
+	    public String format(Object value) {
+		return getMessage("label.metaType.name") + ": " + ((MetaProcessState) value).getName().getContent();
+	    }
+	});
 	stateInfo.addComponent(stateName);
+
+	Label statePosition = new Label();
+	statePosition.setPropertyDataSource(new PropertyFormatter(selectedItem) {
+
+	    @Override
+	    public Object parse(String formattedValue) throws Exception {
+		return null;
+	    }
+
+	    @Override
+	    public String format(Object value) {
+		return getMessage("module.metaWorkflow.domain.MetaProcessState.position") + ": "
+			+ ((MetaProcessState) value).getPosition();
+	    }
+	});
+	stateInfo.addComponent(statePosition);
+
 	content.addComponent(stateInfo);
 
 	Button buttonAdd = new Button(getMessage("link.processState.add"), new Button.ClickListener() {
 	    @Override
 	    public void buttonClick(ClickEvent event) {
-		addProcessState(states);
+		addProcessState(metaType, states);
 	    }
 	});
 	buttonAdd.addStyleName(BaseTheme.BUTTON_LINK);
@@ -201,9 +231,8 @@ public class ManageMetaTypesComponent extends CustomComponent implements Embedde
 
     private static final String NEW_STATE_NAME = "new.state.name";
 
-    @Service
-    private void addProcessState(DomainContainer<MetaProcessState> states) {
-	states.addItem(new MetaProcessState(getMessage(NEW_STATE_NAME), 1));
+    private void addProcessState(WorkflowMetaType metaType, DomainContainer<MetaProcessState> states) {
+	states.addItem(MetaProcessState.create(metaType, getMessage(NEW_STATE_NAME), 1));
     }
 
     private String getMessage(String message) {

@@ -25,6 +25,7 @@
 package module.metaWorkflow.domain;
 
 import jvstm.cps.ConsistencyPredicate;
+import pt.ist.fenixWebFramework.services.Service;
 import pt.utl.ist.fenix.tools.util.i18n.MultiLanguageString;
 
 /**
@@ -45,6 +46,11 @@ public class MetaProcessState extends MetaProcessState_Base {
 	setPosition(position);
     }
 
+    public MetaProcessState(WorkflowMetaType metaType, String name, Integer position) {
+	this(name, position);
+	setWorkflowMetaType(metaType);
+    }
+
     @ConsistencyPredicate
     public boolean checkHasMetaType() {
 	return hasWorkflowMetaType();
@@ -58,5 +64,10 @@ public class MetaProcessState extends MetaProcessState_Base {
 	    }
 	}
 	return false;
+    }
+
+    @Service
+    public static MetaProcessState create(WorkflowMetaType metaType, String name, Integer position) {
+	return new MetaProcessState(metaType, name, position);
     }
 }
