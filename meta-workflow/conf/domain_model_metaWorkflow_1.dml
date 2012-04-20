@@ -84,6 +84,14 @@ class FieldValue {
 		LocalDate localDateValue;
 	}
 
+class MetaProcessState {
+	MultiLanguageString name;
+	Integer position (REQUIRED);
+}
+
+class MetaProcessStateConfig {
+}
+
 class WorkflowMetaTypeSpecificLayout {
 	String body;
 	String shortBody;
@@ -164,6 +172,37 @@ relation FieldValueFieldSetValue {
 relation FieldValueMetaField {
 	MetaField playsRole metaField;
 	FieldValue playsRole fieldValues {
+		multiplicity *;
+	}
+}
+
+relation WorkflowMetaTypeMetaProcessState {
+	WorkflowMetaType playsRole workflowMetaType;
+	MetaProcessState playsRole processStates {
+		multiplicity *;
+	}
+}
+
+relation MetaProcessStateMetaProcessStateConfig {
+	MetaProcessState playsRole metaProcessState;
+	MetaProcessStateConfig playsRole configs {
+		multiplicity *;
+	}
+}
+
+relation MetaProcessStateConfigMetaProcessState {
+	MetaProcessState playsRole dependedStates {
+		multiplicity *;
+	}
+	MetaProcessStateConfig playsRole dependingConfigs {
+		multiplicity *;
+	}
+}
+relation MetaProcessStateConfigMetaField {
+	MetaField playsRole dependedFields {
+		multiplicity *;
+	}
+	MetaProcessStateConfig playsRole dependingStateConfigs {
 		multiplicity *;
 	}
 }

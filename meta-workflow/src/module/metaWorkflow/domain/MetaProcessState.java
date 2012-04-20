@@ -1,7 +1,7 @@
 /*
- * @(#)DateTimeMetaField.java
+ * @(#)MetaProcessState.java
  *
- * Copyright 2011 Instituto Superior Tecnico
+ * Copyright 2012 Instituto Superior Tecnico
  * Founding Authors: Paulo Abrantes
  * 
  *      https://fenix-ashes.ist.utl.pt/
@@ -24,43 +24,39 @@
  */
 package module.metaWorkflow.domain;
 
-import module.metaWorkflow.presentationTier.dto.MetaFieldBean;
-import pt.ist.fenixWebFramework.services.Service;
+import jvstm.cps.ConsistencyPredicate;
 import pt.utl.ist.fenix.tools.util.i18n.MultiLanguageString;
 
 /**
  * 
  * @author João Neves
- * @author Anil Kassamali
+ * @author David Martinho
  * 
  */
-public class DateTimeMetaField extends DateTimeMetaField_Base {
+public class MetaProcessState extends MetaProcessState_Base {
 
-    protected DateTimeMetaField() {
-	super();
+    public MetaProcessState() {
+        super();
     }
-
-    public DateTimeMetaField(MultiLanguageString name, Integer order, MetaFieldSet parentFieldSet) {
+    
+    public MetaProcessState(String name, Integer position) {
 	this();
-	init(name, order, parentFieldSet);
+	setName(new MultiLanguageString(name));
+	setPosition(position);
     }
 
-    public DateTimeMetaField(final MetaFieldBean bean, MetaFieldSet parentFieldSet) {
-	this(bean.getName(), bean.getOrder(), parentFieldSet);
+    @ConsistencyPredicate
+    public boolean checkHasMetaType() {
+	return hasWorkflowMetaType();
     }
 
-    @Override
-    public FieldValue createFieldValue() {
-	return new DateTimeFieldValue(this);
-    }
 
-    @Override
-    @Service
-    public void delete() {
-	removeParentFieldSet();
-	if (!hasAnyFieldValues()) {
-	    deleteDomainObject();
+    public boolean isActive(WorkflowMetaProcess process) {
+	for (MetaProcessStateConfig configuration : getConfigs()) {
+	    if (configuration.isActive(process)) {
+		return true;
+	    }
 	}
+	return false;
     }
-
 }

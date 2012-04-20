@@ -29,6 +29,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import jvstm.cps.ConsistencyPredicate;
 import module.metaWorkflow.activities.ChangeMetaQueue;
@@ -245,6 +246,10 @@ public class WorkflowMetaProcess extends WorkflowMetaProcess_Base {
 
     public FieldValue getField(String OID) {
 	return getFieldSet().findChildField(OID);
+    }
+
+    public Set<FieldValue> getAllFields() {
+	return getFieldSet().getAllFields();
     }
 
     @Override

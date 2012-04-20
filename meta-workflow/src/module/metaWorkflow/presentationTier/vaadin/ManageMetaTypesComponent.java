@@ -24,37 +24,33 @@
  */
 package module.metaWorkflow.presentationTier.vaadin;
 
-import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
+import module.metaWorkflow.domain.MetaProcessState;
 import module.metaWorkflow.domain.WorkflowMetaType;
 import module.organization.domain.OrganizationalModel;
 import module.vaadin.ui.BennuTheme;
+import module.workflow.domain.ProcessFile;
 import module.workflow.domain.WorkflowSystem;
-import myorg.domain.MyOrg;
+import myorg.applicationTier.Authenticate.UserView;
+import myorg.domain.RoleType;
 import myorg.util.BundleUtil;
+import pt.ist.fenixWebFramework.services.Service;
 import pt.ist.vaadinframework.annotation.EmbeddedComponent;
 import pt.ist.vaadinframework.data.ItemConstructor;
 import pt.ist.vaadinframework.data.reflect.DomainContainer;
 import pt.ist.vaadinframework.data.reflect.DomainItem;
-import pt.ist.vaadinframework.ui.DefaultFieldFactory;
 import pt.ist.vaadinframework.ui.EmbeddedComponentContainer;
-import pt.ist.vaadinframework.ui.TransactionalForm;
 import pt.ist.vaadinframework.ui.TransactionalTable;
-import pt.utl.ist.fenix.tools.util.Strings;
 
 import com.vaadin.data.Buffered.SourceException;
-import com.vaadin.data.Item;
-import com.vaadin.data.util.ObjectProperty;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Component;
 import com.vaadin.ui.CustomComponent;
-import com.vaadin.ui.Field;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.RichTextArea;
-import com.vaadin.ui.Select;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.Table.ColumnGenerator;
 import com.vaadin.ui.VerticalLayout;
@@ -64,6 +60,7 @@ import com.vaadin.ui.themes.BaseTheme;
  * 
  * @author David Martinho
  * @author João Neves
+ * @author João Antunes
  * 
  */
 @EmbeddedComponent(path = { "metaTypeManagement" })
@@ -75,11 +72,11 @@ public class ManageMetaTypesComponent extends CustomComponent implements Embedde
 	home();
     }
 
-    private void home() {
-	manageMetaTypes();
+    public void home() {
+	manageMetaTypesInterface();
     }
 
-    private void manageMetaTypes() {
+    private void manageMetaTypesInterface() {
 	VerticalLayout layout = new VerticalLayout();
 	setCompositionRoot(layout);
 	layout.setSpacing(true);
@@ -88,28 +85,18 @@ public class ManageMetaTypesComponent extends CustomComponent implements Embedde
 	title.addStyleName(BennuTheme.LABEL_H2);
 	layout.addComponent(title);
 
-	Button buttonCreate = new Button(getMessage("link.metaType.create"), new Button.ClickListener() {
-	    @Override
-	    public void buttonClick(ClickEvent event) {
-		createMetaType();
-	    }
-	});
-	buttonCreate.addStyleName(BaseTheme.BUTTON_LINK);
-	layout.addComponent(buttonCreate);
-
 	Table table = new TransactionalTable(RESOURCE_BUNDLE) {
 	    @Override
 	    protected String formatPropertyValue(Object rowId, Object colId, com.vaadin.data.Property property) {
-		if (property.getType().isAssignableFrom(Strings.class)) {
+		if ("availableFileTypes".equals(colId)) {
 		    StringBuilder strBuilder = new StringBuilder();
-		    Strings fileClasses = (Strings) property.getValue();
-		    for (String fileClass : fileClasses.getUnmodifiableList()) {
-			try {
-			    strBuilder.append(BundleUtil.getLocalizedNamedFroClass(Class.forName(fileClass)));
-			} catch (ClassNotFoundException ex) {
-			    strBuilder.append("!" + ex.getClass() + "!");
+		    List<Class<? extends ProcessFile>> fileClasses = (List<Class<? extends ProcessFile>>) property.getValue();
+		    Iterator<Class<? extends ProcessFile>> fileIterator = fileClasses.iterator();
+		    while (fileIterator.hasNext()) {
+			strBuilder.append(BundleUtil.getLocalizedNamedFroClass(fileIterator.next()));
+			if (fileIterator.hasNext()) {
+			    strBuilder.append(", ");
 			}
-			strBuilder.append(", ");
 		    }
 		    return strBuilder.toString();
 		    
@@ -123,42 +110,18 @@ public class ManageMetaTypesComponent extends CustomComponent implements Embedde
 	table.setContainerDataSource(container);
 	table.addGeneratedColumn("", new ColumnGenerator() {
 	    @Override
-	    public Object generateCell(Table source, Object itemId, Object columnId) {
+	    public Object generateCell(Table source, final Object itemId, Object columnId) {
 		HorizontalLayout horizontalLayout = new HorizontalLayout();
 		horizontalLayout.setSpacing(true);
-		Button buttonView = new Button(BundleUtil.getFormattedStringFromResourceBundle("resources/MyorgResources",
-			"link.view"), new Button.ClickListener() {
+
+		Button buttonFields = new Button(getMessage("link.metaType.manageStates"), new Button.ClickListener() {
 		    @Override
 		    public void buttonClick(ClickEvent event) {
-			viewMetaType();
+			manageStatesInterface((WorkflowMetaType) itemId);
 		    }
 		});
-		Button buttonEdit = new Button(getMessage("link.edit.metaType"), new Button.ClickListener() {
-		    @Override
-		    public void buttonClick(ClickEvent event) {
-			editMetaType();
-		    }
-		});
-		Button buttonFields = new Button(getMessage("link.manage.metaFields"), new Button.ClickListener() {
-		    @Override
-		    public void buttonClick(ClickEvent event) {
-			manageFields();
-		    }
-		});
-		Button buttonQueues = new Button(getMessage("link.manageQueuesInMetaType"), new Button.ClickListener() {
-		    @Override
-		    public void buttonClick(ClickEvent event) {
-			manageQueues();
-		    }
-		});
-		buttonView.addStyleName(BaseTheme.BUTTON_LINK);
-		buttonEdit.addStyleName(BaseTheme.BUTTON_LINK);
 		buttonFields.addStyleName(BaseTheme.BUTTON_LINK);
-		buttonQueues.addStyleName(BaseTheme.BUTTON_LINK);
-		horizontalLayout.addComponent(buttonView);
-		horizontalLayout.addComponent(buttonEdit);
 		horizontalLayout.addComponent(buttonFields);
-		horizontalLayout.addComponent(buttonQueues);
 		return horizontalLayout;
 	    }
 	});
@@ -179,52 +142,68 @@ public class ManageMetaTypesComponent extends CustomComponent implements Embedde
 	}
     }
 
-    private void createMetaType() {
-	VerticalLayout layout = new VerticalLayout();
-	setCompositionRoot(layout);
-	layout.setSpacing(true);
+    private void manageStatesInterface(WorkflowMetaType metaType) {
+	VerticalLayout header = new VerticalLayout();
+	setCompositionRoot(header);
+	header.setSpacing(true);
 
-	Label title = new Label(getMessage("label.metaType.create"));
-	title.addStyleName(BennuTheme.LABEL_H2);
-	layout.addComponent(title);
+	Label statesTitle = new Label(getMessage("label.metaType.manageStates"));
+	statesTitle.addStyleName(BennuTheme.LABEL_H2);
+	header.addComponent(statesTitle);
 
-	TransactionalForm form = new TransactionalForm(RESOURCE_BUNDLE);
-	DomainItem<WorkflowMetaType> source = new DomainItem<WorkflowMetaType>(WorkflowMetaType.class);
-	source.addItemProperty("firstDescription", new ObjectProperty<String>("", String.class));
-	source.setConstructor(new WorkflowMetaTypeMaker());
-	form.setFormFieldFactory(new DefaultFieldFactory(RESOURCE_BUNDLE) {
-	    private static final long serialVersionUID = 1L;
-
+	Button buttonBack = new Button(getMessage("link.back"), new Button.ClickListener() {
 	    @Override
-	    protected Field makeField(Item item, Object propertyId, Component uiContext) {
-		if (propertyId.equals("firstDescription")) {
-		    return new RichTextArea();
-		}
-		return super.makeField(item, propertyId, uiContext);
+	    public void buttonClick(ClickEvent event) {
+		manageMetaTypesInterface();
 	    }
 	});
-	form.setItemDataSource(source, Arrays.asList("name", "firstDescription", "organizationalModel"));
-	Select select = (Select) form.getField("organizationalModel");
-	for (OrganizationalModel organization : MyOrg.getInstance().getOrganizationalModels()) {
-	    select.addItem(organization);
-	}
-	//source.getItemProperty("organizationalModel").setValue("");
-	//((HintedProperty) source.getItemProperty("firstDescription")).addHint(arg0);
+	buttonBack.addStyleName(BaseTheme.BUTTON_LINK);
+	header.addComponent(buttonBack);
+
+	Label metaTypeTitle = new Label(getMessage("label.metaType") + ": " + metaType.getName());
+	metaTypeTitle.addStyleName(BennuTheme.LABEL_H3);
+	header.addComponent(metaTypeTitle);
+
+	HorizontalLayout content = new HorizontalLayout();
+	content.setSpacing(true);
+	header.addComponent(content);
+	
+	DomainItem<MetaProcessState> selectedItem = new DomainItem<MetaProcessState>(MetaProcessState.class);
+
+	Table stateTable = new TransactionalTable(RESOURCE_BUNDLE);
+
+	DomainItem<WorkflowMetaType> metaTypeDI = new DomainItem<WorkflowMetaType>(metaType);
+	final DomainContainer<MetaProcessState> states = (DomainContainer<MetaProcessState>) metaTypeDI
+		.getItemProperty("processStates");
+	states.setContainerProperties("name.content");
+	stateTable.setContainerDataSource(states);
+	stateTable.setSelectable(true);
+	stateTable.setImmediate(true);
+	stateTable.setPropertyDataSource(selectedItem);
+	content.addComponent(stateTable);
+
+	VerticalLayout stateInfo = new VerticalLayout();
+	Label stateName = new Label();
+	stateName.setPropertyDataSource(selectedItem);
+	stateName.setCaption("Name:");
+	stateInfo.addComponent(stateName);
+	content.addComponent(stateInfo);
+
+	Button buttonAdd = new Button(getMessage("link.processState.add"), new Button.ClickListener() {
+	    @Override
+	    public void buttonClick(ClickEvent event) {
+		addProcessState(states);
+	    }
+	});
+	buttonAdd.addStyleName(BaseTheme.BUTTON_LINK);
+	header.addComponent(buttonAdd);
     }
 
-    private void viewMetaType() {
-    }
+    private static final String NEW_STATE_NAME = "new.state.name";
 
-    private void editMetaType() {
-
-    }
-
-    private void manageFields() {
-
-    }
-
-    private void manageQueues() {
-
+    @Service
+    private void addProcessState(DomainContainer<MetaProcessState> states) {
+	states.addItem(new MetaProcessState(getMessage(NEW_STATE_NAME), 1));
     }
 
     private String getMessage(String message) {
@@ -233,10 +212,10 @@ public class ManageMetaTypesComponent extends CustomComponent implements Embedde
 
     @Override
     public boolean isAllowedToOpen(Map<String, String> arguments) {
-	return true;
+	return UserView.getCurrentUser().hasRoleType(RoleType.MANAGER);
     }
 
     @Override
-    public void setArguments(Map<String, String> arguments) {
+    public void setArguments(Map<String, String> arg0) {
     }
 }

@@ -49,6 +49,11 @@ public class DateTimeFieldValue extends DateTimeFieldValue_Base {
 	}
     }
 
+    @Override
+    public boolean isDefined() {
+	return getDateTimeValue() != null;
+    }
+
     public DateTimeFieldValue() {
 	super();
     }

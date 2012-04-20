@@ -1,7 +1,7 @@
 /*
- * @(#)DateTimeMetaField.java
+ * @(#)MetaProcessStateConfig.java
  *
- * Copyright 2011 Instituto Superior Tecnico
+ * Copyright 2012 Instituto Superior Tecnico
  * Founding Authors: Paulo Abrantes
  * 
  *      https://fenix-ashes.ist.utl.pt/
@@ -24,43 +24,43 @@
  */
 package module.metaWorkflow.domain;
 
-import module.metaWorkflow.presentationTier.dto.MetaFieldBean;
-import pt.ist.fenixWebFramework.services.Service;
-import pt.utl.ist.fenix.tools.util.i18n.MultiLanguageString;
+import java.util.HashSet;
+import java.util.Set;
+
+import jvstm.cps.ConsistencyPredicate;
 
 /**
  * 
  * @author João Neves
- * @author Anil Kassamali
+ * @author David Martinho
  * 
  */
-public class DateTimeMetaField extends DateTimeMetaField_Base {
-
-    protected DateTimeMetaField() {
-	super();
+public class MetaProcessStateConfig extends MetaProcessStateConfig_Base {
+    
+    public MetaProcessStateConfig() {
+        super();
+    }
+    
+    @ConsistencyPredicate
+    public boolean checkHasState() {
+	return hasMetaProcessState();
     }
 
-    public DateTimeMetaField(MultiLanguageString name, Integer order, MetaFieldSet parentFieldSet) {
-	this();
-	init(name, order, parentFieldSet);
-    }
-
-    public DateTimeMetaField(final MetaFieldBean bean, MetaFieldSet parentFieldSet) {
-	this(bean.getName(), bean.getOrder(), parentFieldSet);
-    }
-
-    @Override
-    public FieldValue createFieldValue() {
-	return new DateTimeFieldValue(this);
-    }
-
-    @Override
-    @Service
-    public void delete() {
-	removeParentFieldSet();
-	if (!hasAnyFieldValues()) {
-	    deleteDomainObject();
+    public boolean isActive(WorkflowMetaProcess process) {
+	for (MetaProcessState state : getDependedStates()) {
+	    if (!state.isActive(process)) {
+		return false;
+	    }
 	}
+
+	Set<MetaField> definedMetaFields = new HashSet<MetaField>();
+	for (FieldValue value : process.getAllFields()) {
+	    if (value.isDefined()) {
+		definedMetaFields.add(value.getMetaField());
+	    }
+	}
+
+	return definedMetaFields.contains(getDependedFields());
     }
 
 }

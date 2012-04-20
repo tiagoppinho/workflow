@@ -50,6 +50,11 @@ public class LocalDateFieldValue extends LocalDateFieldValue_Base {
 	}
     }
 
+    @Override
+    public boolean isDefined() {
+	return getLocalDateValue() != null;
+    }
+
     public LocalDateFieldValue() {
 	super();
     }

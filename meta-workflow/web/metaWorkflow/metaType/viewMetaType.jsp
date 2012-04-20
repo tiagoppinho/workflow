@@ -16,6 +16,7 @@
 </ul>
 
 <bean:define id="description" name="metaType" property="currentDescription"/>
+<bean:define id="metaTypeId" name="metaType" property="externalId" type="java.lang.String"/>
 	
 <table class="tstyle3">
 	<tr>
@@ -91,7 +92,6 @@
 	<bean:message key="title.metaType.descriptionHistory" bundle="META_WORKFLOW_RESOURCES"/>
 </h3>
 
-		<bean:define id="metaTypeId" name="metaType" property="externalId" type="java.lang.String"/>
 		<fr:form id="diffForm" action="<%= "/metaTypeManagement.do?method=doDiff&metaTypeId=" + metaTypeId%>">
 		
 		<html:hidden styleId="rev1" property="rev1" value=""/>
@@ -150,3 +150,8 @@
 	</logic:notEmpty>
 
 </logic:greaterThan>
+
+
+<html:link action="<%= "/metaTypeManagement.do?method=editMetaType&metaTypeId=" + metaTypeId %>">
+	<bean:message key="link.edit.metaType" bundle="META_WORKFLOW_RESOURCES"/>
+</html:link>

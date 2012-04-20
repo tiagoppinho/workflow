@@ -65,16 +65,6 @@
 	<slot name="name" key="label.metaType.name"/>
 </schema>
 
-<schema name="view.metaType.list" type="module.metaWorkflow.domain.WorkflowMetaType" bundle="META_WORKFLOW_RESOURCES">
-	<slot name="name" key="label.metaType.name"/>
-	<slot name="organizationalModel.name" key="label.organizational.structure" bundle="ORGANIZATION_RESOURCES"/>
-	<slot name="availableFileTypes"  layout="separator-list" key="label.metaType.availableFileTypes">
-		<property name="separator" value=", "/>
-		<property name="eachLayout" value="name-resolver"/>
-	</slot>
-</schema>
-
-
 <schema name="view.meta.process" type="module.metaWorkflow.domain.WorkflowMetaProcess" bundle="META_WORKFLOW_RESOURCES">
 	<slot name="metaType.name" key="label.metaType.name"/>
 	<slot name="processNumber" key="label.processNumber" bundle="WORKFLOW_RESOURCES"/>

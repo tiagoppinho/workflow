@@ -24,6 +24,8 @@
  */
 package module.metaWorkflow.domain;
 
+import org.apache.commons.lang.StringUtils;
+
 import pt.utl.ist.fenix.tools.util.Strings;
 
 /**
@@ -48,6 +50,19 @@ public class StringsFieldValue extends StringsFieldValue_Base {
 	public void setStringsValue(Strings value) {
 	    this.value = value;
 	}
+    }
+
+    @Override
+    public boolean isDefined() {
+	if ((getStringsValue() == null) && (getStringsValue().size() == 0)) {
+	    return false;
+	}
+	for (String string : getStringsValue().getUnmodifiableList()) {
+	    if (!StringUtils.isEmpty(string)) {
+		return true;
+	    }
+	}
+	return false;
     }
 
     public StringsFieldValue() {

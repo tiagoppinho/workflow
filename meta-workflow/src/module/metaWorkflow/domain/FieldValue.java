@@ -26,6 +26,8 @@ package module.metaWorkflow.domain;
 
 import java.io.Serializable;
 import java.util.Comparator;
+import java.util.HashSet;
+import java.util.Set;
 
 import jvstm.cps.ConsistencyPredicate;
 
@@ -73,6 +75,18 @@ public abstract class FieldValue extends FieldValue_Base {
     public boolean isFieldSet() {
 	return false;
     }
+
+    public WorkflowMetaProcess getProcess() {
+	return getParentFieldSet().getProcess();
+    }
+
+    public Set<FieldValue> getAllFields() {
+	Set<FieldValue> fieldSet = new HashSet<FieldValue>();
+	fieldSet.add(this);
+	return fieldSet;
+    }
+
+    abstract public boolean isDefined();
 
     abstract public FieldValueBean createFieldValueBean();
 

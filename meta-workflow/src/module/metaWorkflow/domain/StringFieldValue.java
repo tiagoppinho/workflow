@@ -47,6 +47,11 @@ public class StringFieldValue extends StringFieldValue_Base {
 	}
     }
 
+    @Override
+    public boolean isDefined() {
+	return getStringValue() != null;
+    }
+
     protected StringFieldValue() {
 	super();
     }

@@ -24,6 +24,7 @@
  */
 package module.metaWorkflow.domain;
 
+import java.util.HashSet;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -81,6 +82,35 @@ public class FieldSetValue extends FieldSetValue_Base {
 	    }
 	}
 	return null;
+    }
+
+    @Override
+    public Set<FieldValue> getAllFields() {
+	Set<FieldValue> fieldValues = new HashSet<FieldValue>();
+	for (FieldValue child : getChildFieldValues()) {
+	    fieldValues.addAll(child.getAllFields());
+	}
+	fieldValues.add(this);
+	return fieldValues;
+    }
+
+    @Override
+    public WorkflowMetaProcess getProcess() {
+	if (super.hasProcess()) {
+	    return super.getProcess();
+	}
+
+	return getParentFieldSet().getProcess();
+    }
+
+    @Override
+    public boolean isDefined() {
+	for (FieldValue child : getChildFieldValues()) {
+	    if (!child.isDefined()) {
+		return false;
+	    }
+	}
+	return true;
     }
 
     @Override
