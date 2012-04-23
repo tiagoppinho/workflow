@@ -63,4 +63,13 @@ public class MetaProcessStateConfig extends MetaProcessStateConfig_Base {
 	return definedMetaFields.contains(getDependedFields());
     }
 
+    public void delete() {
+	for (MetaField field : getDependedFields()) {
+	    removeDependedFields(field);
+	}
+	for (MetaProcessState dependedState : getDependedStates()) {
+	    removeDependedStates(dependedState);
+	}
+	deleteDomainObject();
+    }
 }

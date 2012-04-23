@@ -28,24 +28,19 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import module.metaWorkflow.domain.MetaProcessState;
 import module.metaWorkflow.domain.WorkflowMetaType;
-import module.organization.domain.OrganizationalModel;
 import module.vaadin.ui.BennuTheme;
 import module.workflow.domain.ProcessFile;
 import module.workflow.domain.WorkflowSystem;
 import myorg.applicationTier.Authenticate.UserView;
 import myorg.domain.RoleType;
 import myorg.util.BundleUtil;
+import pt.ist.vaadinframework.EmbeddedApplication;
 import pt.ist.vaadinframework.annotation.EmbeddedComponent;
-import pt.ist.vaadinframework.data.ItemConstructor;
 import pt.ist.vaadinframework.data.reflect.DomainContainer;
-import pt.ist.vaadinframework.data.reflect.DomainItem;
 import pt.ist.vaadinframework.ui.EmbeddedComponentContainer;
 import pt.ist.vaadinframework.ui.TransactionalTable;
 
-import com.vaadin.data.Buffered.SourceException;
-import com.vaadin.data.util.PropertyFormatter;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.CustomComponent;
@@ -69,14 +64,6 @@ public class ManageMetaTypesComponent extends CustomComponent implements Embedde
     private static final long serialVersionUID = 1L;
 
     public ManageMetaTypesComponent() {
-	home();
-    }
-
-    public void home() {
-	manageMetaTypesInterface();
-    }
-
-    private void manageMetaTypesInterface() {
 	VerticalLayout layout = new VerticalLayout();
 	setCompositionRoot(layout);
 	layout.setSpacing(true);
@@ -86,6 +73,11 @@ public class ManageMetaTypesComponent extends CustomComponent implements Embedde
 	layout.addComponent(title);
 
 	Table table = new TransactionalTable(RESOURCE_BUNDLE) {
+	    /**
+	     * 
+	     */
+	    private static final long serialVersionUID = 1L;
+
 	    @Override
 	    protected String formatPropertyValue(Object rowId, Object colId, com.vaadin.data.Property property) {
 		if ("availableFileTypes".equals(colId)) {
@@ -109,130 +101,29 @@ public class ManageMetaTypesComponent extends CustomComponent implements Embedde
 	container.setContainerProperties("name", "organizationalModel.name", "availableFileTypes");
 	table.setContainerDataSource(container);
 	table.addGeneratedColumn("", new ColumnGenerator() {
+	    private static final long serialVersionUID = 1L;
+
 	    @Override
 	    public Object generateCell(Table source, final Object itemId, Object columnId) {
 		HorizontalLayout horizontalLayout = new HorizontalLayout();
 		horizontalLayout.setSpacing(true);
 
-		Button buttonFields = new Button(getMessage("link.metaType.manageStates"), new Button.ClickListener() {
+		Button statesButton = new Button(getMessage("link.metaType.manageStates"), new Button.ClickListener() {
+		    private static final long serialVersionUID = 1L;
+
 		    @Override
 		    public void buttonClick(ClickEvent event) {
-			manageStatesInterface((WorkflowMetaType) itemId);
+			EmbeddedApplication.open(getApplication(), ManageMetaProcessStatesComponent.class,
+				((WorkflowMetaType) itemId).getExternalId());
 		    }
 		});
-		buttonFields.addStyleName(BaseTheme.BUTTON_LINK);
-		horizontalLayout.addComponent(buttonFields);
+		statesButton.addStyleName(BaseTheme.BUTTON_LINK);
+		horizontalLayout.addComponent(statesButton);
 		return horizontalLayout;
 	    }
 	});
 
 	layout.addComponent(table);
-    }
-
-    public class WorkflowMetaTypeMaker implements ItemConstructor<Object> {
-	private static final long serialVersionUID = 1L;
-
-	@Override
-	public Object[] getOrderedArguments() {
-	    return new Object[] { "name", "firstDescription", "organizationalModel" };
-	}
-
-	public WorkflowMetaType construct(String name, String description, OrganizationalModel model) throws SourceException {
-	    return new WorkflowMetaType(name, description, model);
-	}
-    }
-
-    private void manageStatesInterface(final WorkflowMetaType metaType) {
-	VerticalLayout header = new VerticalLayout();
-	setCompositionRoot(header);
-	header.setSpacing(true);
-
-	Label statesTitle = new Label(getMessage("label.metaType.manageStates"));
-	statesTitle.addStyleName(BennuTheme.LABEL_H2);
-	header.addComponent(statesTitle);
-
-	Button buttonBack = new Button(getMessage("link.back"), new Button.ClickListener() {
-	    @Override
-	    public void buttonClick(ClickEvent event) {
-		manageMetaTypesInterface();
-	    }
-	});
-	buttonBack.addStyleName(BaseTheme.BUTTON_LINK);
-	header.addComponent(buttonBack);
-
-	Label metaTypeTitle = new Label(getMessage("label.metaType") + ": " + metaType.getName());
-	metaTypeTitle.addStyleName(BennuTheme.LABEL_H3);
-	header.addComponent(metaTypeTitle);
-
-	HorizontalLayout content = new HorizontalLayout();
-	content.setSpacing(true);
-	header.addComponent(content);
-	
-	DomainItem<MetaProcessState> selectedItem = new DomainItem<MetaProcessState>(MetaProcessState.class);
-
-	Table stateTable = new TransactionalTable(RESOURCE_BUNDLE);
-
-	DomainItem<WorkflowMetaType> metaTypeDI = new DomainItem<WorkflowMetaType>(metaType);
-	final DomainContainer<MetaProcessState> states = (DomainContainer<MetaProcessState>) metaTypeDI
-		.getItemProperty("processStates");
-	states.setContainerProperties("name");
-	stateTable.setContainerDataSource(states);
-	stateTable.setSelectable(true);
-	stateTable.setImmediate(true);
-	stateTable.setPropertyDataSource(selectedItem);
-	content.addComponent(stateTable);
-
-	VerticalLayout stateInfo = new VerticalLayout();
-	stateInfo.setMargin(true);
-	stateInfo.setSpacing(true);
-
-	Label stateName = new Label();
-	stateName.setPropertyDataSource(new PropertyFormatter(selectedItem) {
-	    
-	    @Override
-	    public Object parse(String formattedValue) throws Exception {
-		return null;
-	    }
-	    
-	    @Override
-	    public String format(Object value) {
-		return getMessage("label.metaType.name") + ": " + ((MetaProcessState) value).getName().getContent();
-	    }
-	});
-	stateInfo.addComponent(stateName);
-
-	Label statePosition = new Label();
-	statePosition.setPropertyDataSource(new PropertyFormatter(selectedItem) {
-
-	    @Override
-	    public Object parse(String formattedValue) throws Exception {
-		return null;
-	    }
-
-	    @Override
-	    public String format(Object value) {
-		return getMessage("module.metaWorkflow.domain.MetaProcessState.position") + ": "
-			+ ((MetaProcessState) value).getPosition();
-	    }
-	});
-	stateInfo.addComponent(statePosition);
-
-	content.addComponent(stateInfo);
-
-	Button buttonAdd = new Button(getMessage("link.processState.add"), new Button.ClickListener() {
-	    @Override
-	    public void buttonClick(ClickEvent event) {
-		addProcessState(metaType, states);
-	    }
-	});
-	buttonAdd.addStyleName(BaseTheme.BUTTON_LINK);
-	header.addComponent(buttonAdd);
-    }
-
-    private static final String NEW_STATE_NAME = "new.state.name";
-
-    private void addProcessState(WorkflowMetaType metaType, DomainContainer<MetaProcessState> states) {
-	states.addItem(MetaProcessState.create(metaType, getMessage(NEW_STATE_NAME), 1));
     }
 
     private String getMessage(String message) {

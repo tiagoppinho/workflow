@@ -25,6 +25,7 @@
 package module.metaWorkflow.domain;
 
 import jvstm.cps.ConsistencyPredicate;
+import myorg.domain.exceptions.DomainException;
 import pt.ist.fenixWebFramework.services.Service;
 import pt.utl.ist.fenix.tools.util.i18n.MultiLanguageString;
 
@@ -69,5 +70,17 @@ public class MetaProcessState extends MetaProcessState_Base {
     @Service
     public static MetaProcessState create(WorkflowMetaType metaType, String name, Integer position) {
 	return new MetaProcessState(metaType, name, position);
+    }
+
+    @Service
+    public void delete() {
+	if (hasAnyDependingConfigs()) {
+	    throw new DomainException("error.state.has.depending.states");
+	}
+	for (MetaProcessStateConfig config : getConfigs()) {
+	    config.delete();
+	}
+	removeWorkflowMetaType();
+	deleteDomainObject();
     }
 }
