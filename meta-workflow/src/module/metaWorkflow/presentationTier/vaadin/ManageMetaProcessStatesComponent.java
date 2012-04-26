@@ -35,17 +35,18 @@ import myorg.domain.RoleType;
 import myorg.util.BundleUtil;
 import pt.ist.fenixframework.pstm.AbstractDomainObject;
 import pt.ist.vaadinframework.annotation.EmbeddedComponent;
-import pt.ist.vaadinframework.data.ItemWriter;
 import pt.ist.vaadinframework.data.reflect.DomainContainer;
 import pt.ist.vaadinframework.data.reflect.DomainItem;
 import pt.ist.vaadinframework.ui.DefaultFieldFactory;
 import pt.ist.vaadinframework.ui.EmbeddedComponentContainer;
 import pt.ist.vaadinframework.ui.TransactionalForm;
 import pt.ist.vaadinframework.ui.TransactionalTable;
+import pt.ist.vaadinframework.ui.fields.MultiLanguageStringField;
+import pt.utl.ist.fenix.tools.util.i18n.Language;
 
-import com.vaadin.data.Buffered.SourceException;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
+import com.vaadin.terminal.ThemeResource;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.CustomComponent;
@@ -72,21 +73,7 @@ public class ManageMetaProcessStatesComponent extends CustomComponent implements
 
     private final TransactionalForm form = new TransactionalForm(RESOURCE_BUNDLE);
 
-    private final DomainItem<MetaProcessState> selectedItem = new DomainItem<MetaProcessState>(MetaProcessState.class);
-
     private final TransactionalTable stateTable = new TransactionalTable(RESOURCE_BUNDLE);
-
-    public class MetaProcessStateWriter implements ItemWriter<Object> {
-	@Override
-	public Object[] getOrderedArguments() {
-	    return new Object[] { "position" };
-	}
-
-	public MetaProcessState write(MetaProcessState state, Integer position) throws SourceException {
-	    state.setPosition(position);
-	    return state;
-	}
-    }
 
     public ManageMetaProcessStatesComponent() {
     }
@@ -163,11 +150,10 @@ public class ManageMetaProcessStatesComponent extends CustomComponent implements
 	stateTable.setContainerDataSource(states);
 	stateTable.setSelectable(true);
 	stateTable.setImmediate(true);
-	stateTable.setPropertyDataSource(selectedItem);
 	stateTable.addGeneratedColumn("", new ColumnGenerator() {
 	    @Override
-	    public Object generateCell(Table source, final Object itemId, Object columnId) {
-		Button buttonRemove = new Button(getMessage("state.remove"), new Button.ClickListener() {
+	    public Object generateCell(final Table source, final Object itemId, Object columnId) {
+		Button buttonRemove = new Button("", new Button.ClickListener() {
 		    @Override
 		    public void buttonClick(ClickEvent event) {
 			final MetaProcessState state = ((MetaProcessState) itemId);
@@ -175,6 +161,7 @@ public class ManageMetaProcessStatesComponent extends CustomComponent implements
 				.getName().getContent())) {
 			    @Override
 			    public void onConfirm() {
+				source.unselect(state);
 				states.removeItem(state);
 				state.delete();
 			    }
@@ -182,38 +169,31 @@ public class ManageMetaProcessStatesComponent extends CustomComponent implements
 			getWindow().addWindow(confirmationWindow);
 		    }
 		});
+		buttonRemove.setIcon(new ThemeResource("../runo/icons/16/cancel.png"));
+		buttonRemove.addStyleName(BennuTheme.BUTTON_SMALL);
 		return buttonRemove;
 	    }
 	});
 	
 	content.addComponent(stateTable);
+
 	stateTable.addListener(new ValueChangeListener() {
 	    @Override
 	    public void valueChange(ValueChangeEvent event) {
-		getWindow().showNotification("TABELA", Window.Notification.TYPE_TRAY_NOTIFICATION);
-	    }
-	});
-
-	selectedItem.addListener(new ValueChangeListener() {
-	    @Override
-	    public void valueChange(ValueChangeEvent event) {
-		getWindow().showNotification("ITEM");
-		if (event.getProperty().getValue() != null) {
+		Object selection = event.getProperty().getValue();
+		if (selection != null) {
 		    content.addComponent(form);
+		    form.setItemDataSource(stateTable.getItem(selection),
+			    Arrays.asList(new Object[] { "name", "position" }));
+		    form.setWriteThrough(false);		
 		} else {
 		    content.removeComponent(form);
 		}
 	    }
 	});
 
-	MetaProcessStateWriter stateWriter = new MetaProcessStateWriter();
-	selectedItem.setWriter(stateWriter);
-
 	form.setFormFieldFactory(new DefaultFieldFactory(RESOURCE_BUNDLE));
-	form.setWriteThrough(false);
-	form.setItemDataSource(selectedItem, Arrays.asList(new Object[] { "position" }));
 	form.addSubmitButton();
-	form.addClearButton();
 
 	Button buttonAdd = new Button(getMessage("link.processState.add"), new Button.ClickListener() {
 	    @Override
@@ -230,11 +210,11 @@ public class ManageMetaProcessStatesComponent extends CustomComponent implements
     private void addProcessState(WorkflowMetaType metaType, DomainContainer<MetaProcessState> states) {
 	MetaProcessState newState = MetaProcessState.create(metaType, getMessage(NEW_STATE_NAME), 1);
 	states.addItem(newState);
-	selectedItem.setValue(newState);
+	stateTable.setValue(newState);
 	stateTable.sort();
-	TextField positionField = (TextField) form.getField("position");
-	positionField.focus();
-	positionField.setSelectionRange(0, ((String) positionField.getValue()).length());
+	TextField ptText = ((MultiLanguageStringField) form.getField("name")).getTextField(Language.pt);
+	ptText.focus();
+	ptText.setSelectionRange(0, ((String) ptText.getValue()).length());
     }
 
     private static String getMessage(String message, String ... args) {

@@ -47,6 +47,10 @@ public class MetaProcessStateConfig extends MetaProcessStateConfig_Base {
     }
 
     public boolean isActive(WorkflowMetaProcess process) {
+	if (getDependedStates().isEmpty() && getDependedFields().isEmpty()) {
+	    return true;
+	}
+
 	for (MetaProcessState state : getDependedStates()) {
 	    if (!state.isActive(process)) {
 		return false;

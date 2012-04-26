@@ -73,9 +73,6 @@ public class ManageMetaTypesComponent extends CustomComponent implements Embedde
 	layout.addComponent(title);
 
 	Table table = new TransactionalTable(RESOURCE_BUNDLE) {
-	    /**
-	     * 
-	     */
 	    private static final long serialVersionUID = 1L;
 
 	    @Override
