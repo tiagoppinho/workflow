@@ -96,7 +96,7 @@ public class FieldSetValue extends FieldSetValue_Base {
 
     @Override
     public WorkflowMetaProcess getProcess() {
-	if (super.hasProcess()) {
+	if (!hasParentFieldSet()) {
 	    return super.getProcess();
 	}
 
