@@ -28,6 +28,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import jvstm.cps.ConsistencyPredicate;
+import pt.ist.fenixWebFramework.services.Service;
 
 /**
  * 
@@ -41,6 +42,11 @@ public class MetaProcessStateConfig extends MetaProcessStateConfig_Base {
         super();
     }
     
+    public MetaProcessStateConfig(MetaProcessState state) {
+	this();
+	setMetaProcessState(state);
+    }
+
     @ConsistencyPredicate
     public boolean checkHasState() {
 	return hasMetaProcessState();
@@ -67,6 +73,12 @@ public class MetaProcessStateConfig extends MetaProcessStateConfig_Base {
 	return definedMetaFields.contains(getDependedFields());
     }
 
+    @Service
+    public static MetaProcessStateConfig create(MetaProcessState state) {
+	return new MetaProcessStateConfig(state);
+    }
+
+    @Service
     public void delete() {
 	for (MetaField field : getDependedFields()) {
 	    removeDependedFields(field);
@@ -74,6 +86,14 @@ public class MetaProcessStateConfig extends MetaProcessStateConfig_Base {
 	for (MetaProcessState dependedState : getDependedStates()) {
 	    removeDependedStates(dependedState);
 	}
+	removeMetaProcessState();
+
 	deleteDomainObject();
+    }
+
+    @Service
+    @Override
+    public void addDependedStates(MetaProcessState dependedStates) {
+	super.addDependedStates(dependedStates);
     }
 }

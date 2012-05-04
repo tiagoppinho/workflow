@@ -25,9 +25,14 @@
 package module.metaWorkflow.presentationTier.vaadin;
 
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
+import module.metaWorkflow.domain.MetaField;
 import module.metaWorkflow.domain.MetaProcessState;
+import module.metaWorkflow.domain.MetaProcessStateConfig;
 import module.metaWorkflow.domain.WorkflowMetaType;
 import module.vaadin.ui.BennuTheme;
 import myorg.applicationTier.Authenticate.UserView;
@@ -52,6 +57,8 @@ import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.Panel;
+import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.Table.ColumnGenerator;
 import com.vaadin.ui.TextField;
@@ -74,6 +81,12 @@ public class ManageMetaProcessStatesComponent extends CustomComponent implements
     private final TransactionalForm form = new TransactionalForm(RESOURCE_BUNDLE);
 
     private final TransactionalTable stateTable = new TransactionalTable(RESOURCE_BUNDLE);
+
+    private MetaProcessState selectedState;
+
+    private VerticalLayout operationsLayout;
+
+    private DomainContainer<MetaProcessState> states;
 
     public ManageMetaProcessStatesComponent() {
     }
@@ -125,28 +138,55 @@ public class ManageMetaProcessStatesComponent extends CustomComponent implements
     }
 
     private void manageStatesInterface(final WorkflowMetaType metaType) {
-	VerticalLayout header = new VerticalLayout();
-	setCompositionRoot(header);
-	header.setSpacing(true);
+	VerticalLayout headerLayout = new VerticalLayout();
+	setCompositionRoot(headerLayout);
+	headerLayout.setSpacing(true);
 
 	Label statesTitle = new Label(getMessage("label.metaType.manageStates"));
 	statesTitle.addStyleName(BennuTheme.LABEL_H2);
-	header.addComponent(statesTitle);
+	headerLayout.addComponent(statesTitle);
 
 	Label metaTypeTitle = new Label(getMessage("label.metaType") + ": " + metaType.getName());
 	metaTypeTitle.addStyleName(BennuTheme.LABEL_H3);
-	header.addComponent(metaTypeTitle);
+	headerLayout.addComponent(metaTypeTitle);
 
 	final HorizontalLayout content = new HorizontalLayout();
 	content.setSpacing(true);
-	header.addComponent(content);
-	
+	headerLayout.addComponent(content);
+	initContent(content, metaType);
+    }
 
-
+    private void initContent(final HorizontalLayout content, final WorkflowMetaType metaType) {
 	DomainItem<WorkflowMetaType> metaTypeDI = new DomainItem<WorkflowMetaType>(metaType);
-	final DomainContainer<MetaProcessState> states = (DomainContainer<MetaProcessState>) metaTypeDI
-		.getItemProperty("processStates");
-	states.setContainerProperties("name");
+	states = (DomainContainer<MetaProcessState>) metaTypeDI.getItemProperty("processStates");
+	states.setContainerProperties("name", "position");
+
+	VerticalLayout tableLayout = new VerticalLayout();
+	tableLayout.setSpacing(true);
+	content.addComponent(tableLayout);
+	initTableLayout(tableLayout, metaType);
+
+	operationsLayout = new VerticalLayout();
+	operationsLayout.setSpacing(true);
+	content.addComponent(operationsLayout);
+
+	form.setFormFieldFactory(new DefaultFieldFactory(RESOURCE_BUNDLE));
+	form.addSubmitButton();
+
+	stateTable.addListener(new ValueChangeListener() {
+	    @Override
+	    public void valueChange(ValueChangeEvent event) {
+		selectedState = (MetaProcessState) event.getProperty().getValue();
+		if (selectedState != null) {
+		    initOperationsLayout();
+		} else {
+		    operationsLayout.removeAllComponents();
+		}
+	    }
+	});
+    }
+
+    private void initTableLayout(VerticalLayout tableLayout, final WorkflowMetaType metaType) {
 	stateTable.setContainerDataSource(states);
 	stateTable.setSelectable(true);
 	stateTable.setImmediate(true);
@@ -174,26 +214,7 @@ public class ManageMetaProcessStatesComponent extends CustomComponent implements
 		return buttonRemove;
 	    }
 	});
-	
-	content.addComponent(stateTable);
-
-	stateTable.addListener(new ValueChangeListener() {
-	    @Override
-	    public void valueChange(ValueChangeEvent event) {
-		Object selection = event.getProperty().getValue();
-		if (selection != null) {
-		    content.addComponent(form);
-		    form.setItemDataSource(stateTable.getItem(selection),
-			    Arrays.asList(new Object[] { "name", "position" }));
-		    form.setWriteThrough(false);		
-		} else {
-		    content.removeComponent(form);
-		}
-	    }
-	});
-
-	form.setFormFieldFactory(new DefaultFieldFactory(RESOURCE_BUNDLE));
-	form.addSubmitButton();
+	tableLayout.addComponent(stateTable);
 
 	Button buttonAdd = new Button(getMessage("link.processState.add"), new Button.ClickListener() {
 	    @Override
@@ -202,19 +223,192 @@ public class ManageMetaProcessStatesComponent extends CustomComponent implements
 	    }
 	});
 	buttonAdd.addStyleName(BaseTheme.BUTTON_LINK);
-	header.addComponent(buttonAdd);
+	tableLayout.addComponent(buttonAdd);
     }
 
-    private static final String NEW_STATE_NAME = "new.state.name";
+    private void initOperationsLayout() {
+	operationsLayout.removeAllComponents();
+	operationsLayout.addComponent(form);
+	form.setItemDataSource(stateTable.getItem(selectedState), Arrays.asList(new Object[] { "name", "position" }));
+	form.setWriteThrough(false);
+
+	if (!selectedState.hasAnyConfigs()) {
+	    Label noConditions = new Label(getMessage("state.activation.conditions.none"));
+	    operationsLayout.addComponent(noConditions);
+	} else {
+	    Panel conditionsPanel = new Panel(getMessage("state.activation.conditions"));
+	    conditionsPanel.setHeight("275px");
+	    conditionsPanel.setWidth("620px");
+	    operationsLayout.addComponent(conditionsPanel);
+
+	    Iterator<MetaProcessStateConfig> configIterator = selectedState.getConfigs().iterator();
+	    while (configIterator.hasNext()) {
+		MetaProcessStateConfig config = configIterator.next();
+		HorizontalLayout configLayout = new HorizontalLayout();
+		configLayout.setSpacing(true);
+		conditionsPanel.addComponent(configLayout);
+		initConfigLayout(config, configLayout);
+
+		if (configIterator.hasNext()) {
+		    Label or = new Label(getMessage("state.activation.conditions.or"));
+		    conditionsPanel.addComponent(or);
+		}
+	    }
+	}
+
+	Button addConfigButton = new Button(getMessage("state.activation.conditions.add"), new Button.ClickListener() {
+	    @Override
+	    public void buttonClick(ClickEvent event) {
+		addStateConfig(selectedState);
+		initOperationsLayout();
+	    }
+	});
+	addConfigButton.addStyleName(BaseTheme.BUTTON_LINK);
+	operationsLayout.addComponent(addConfigButton);
+    }
+
+    private void initConfigLayout(final MetaProcessStateConfig config, HorizontalLayout configLayout) {
+	Iterator<MetaProcessState> dependedStatesIterator = config.getDependedStates().iterator();
+	Iterator<MetaField> dependedFieldsIterator = config.getDependedFields().iterator();
+
+	Label indentationLabel = new Label(" - ");
+	configLayout.addComponent(indentationLabel);
+	if (!dependedStatesIterator.hasNext() && !dependedFieldsIterator.hasNext()) {
+	    Label noDependenciesLabel = new Label(getMessage("state.activation.conditions.depended.none"));
+	    configLayout.addComponent(noDependenciesLabel);
+	}
+
+	if (dependedStatesIterator.hasNext()) {
+	    Label statesLabel = new Label(getMessage("state.activation.conditions.depended.states") + ": ");
+	    configLayout.addComponent(statesLabel);
+	}
+	while (dependedStatesIterator.hasNext()) {
+	    MetaProcessState dependedState = dependedStatesIterator.next();
+	    Label dependedStateLabel = new Label(dependedState.getName().getContent());
+	    configLayout.addComponent(dependedStateLabel);
+	    
+	    if (dependedStatesIterator.hasNext()) {
+		Label separatorLabel = new Label(", ");
+		configLayout.addComponent(separatorLabel);
+	    } else {
+		Label separatorLabel = new Label(" ");
+		configLayout.addComponent(separatorLabel);
+	    }
+	}
+
+	if (dependedFieldsIterator.hasNext()) {
+	    Label fieldsLabel = new Label(getMessage("state.activation.conditions.depended.fields") + ": ");
+	    configLayout.addComponent(fieldsLabel);
+	}
+	while (dependedFieldsIterator.hasNext()) {
+	    MetaField dependedField = dependedFieldsIterator.next();
+	    Label dependedFieldLabel = new Label(dependedField.getName().getContent());
+	    configLayout.addComponent(dependedFieldLabel);
+
+	    if (dependedFieldsIterator.hasNext()) {
+		Label separatorLabel = new Label(", ");
+		configLayout.addComponent(separatorLabel);
+	    }
+	}
+
+	Button deleteConfigButton = new Button(getMessage("state.activation.conditions.del"), new Button.ClickListener() {
+	    @Override
+	    public void buttonClick(ClickEvent event) {
+		deleteStateConfig(config);
+		initOperationsLayout();
+	    }
+	});
+	deleteConfigButton.addStyleName(BaseTheme.BUTTON_LINK);
+	configLayout.addComponent(deleteConfigButton);
+
+	configLayout.addComponent(new Label(", "));
+
+	Button editConfigButton = new Button(getMessage("state.activation.conditions.depended.add"), new Button.ClickListener() {
+	    @Override
+	    public void buttonClick(ClickEvent event) {
+		openEditConfigWindow(config);
+	    }
+	});
+	editConfigButton.addStyleName(BaseTheme.BUTTON_LINK);
+	configLayout.addComponent(editConfigButton);
+    }
+
+    private static final String NEW_STATE_LABEL = "new.state.name";
+
+    private void openEditConfigWindow(final MetaProcessStateConfig config) {
+	final Window editConfigWindow = new Window(getMessage("state.activation.conditions.depended.add"));
+	getWindow().addWindow(editConfigWindow);
+	editConfigWindow.setModal(true);
+	editConfigWindow.setHeight("500px");
+	editConfigWindow.setWidth("400px");
+
+	VerticalLayout content = new VerticalLayout();
+	editConfigWindow.addComponent(content);
+	content.setSpacing(true);
+	content.addComponent(new Label(getMessage("state.activation.conditions.choose.dependencies")));
+
+	TabSheet dependenciesTabs = new TabSheet();
+	dependenciesTabs.setHeight("400px");
+	content.addComponent(dependenciesTabs);
+
+	VerticalLayout tableLayout = new VerticalLayout();
+	tableLayout.setSpacing(true);
+	tableLayout.setMargin(true);
+	dependenciesTabs.addTab(tableLayout, getMessage("state.activation.conditions.depended.states"));
+
+	WorkflowMetaType metaType = config.getMetaProcessState().getWorkflowMetaType();
+	Set<MetaProcessState> possibleStates = new HashSet<MetaProcessState>();
+	possibleStates.addAll(metaType.getProcessStates());
+	// A state cannot depend on itself
+	possibleStates.remove(config.getMetaProcessState());
+	// Cannot add duplicate dependencies
+	for (MetaProcessState existingDependedState : config.getDependedStates()) {
+	    possibleStates.remove(existingDependedState);
+	}
+	
+	if (possibleStates.isEmpty()) {
+	    tableLayout.addComponent(new Label(getMessage("state.activation.conditions.depended.none.to.add")));
+	    return;
+	}
+
+	TransactionalTable dependedStatesTable = new TransactionalTable(RESOURCE_BUNDLE);
+	DomainContainer<MetaProcessState> dependedStates = new DomainContainer<MetaProcessState>(possibleStates,
+		MetaProcessState.class);
+	dependedStates.setContainerProperties("name", "position");
+
+	dependedStatesTable.setContainerDataSource(dependedStates);
+	dependedStatesTable.setSelectable(true);
+	dependedStatesTable.setImmediate(true);
+	dependedStatesTable.addListener(new ValueChangeListener() {
+	    @Override
+	    public void valueChange(ValueChangeEvent event) {
+		MetaProcessState dependedState = (MetaProcessState) event.getProperty().getValue();
+		if (dependedState != null) {
+		    config.addDependedStates(dependedState);
+		    getWindow().removeWindow(editConfigWindow);
+		    initOperationsLayout();
+		}
+	    }
+	});
+	tableLayout.addComponent(dependedStatesTable);
+    }
 
     private void addProcessState(WorkflowMetaType metaType, DomainContainer<MetaProcessState> states) {
-	MetaProcessState newState = MetaProcessState.create(metaType, getMessage(NEW_STATE_NAME), 1);
+	MetaProcessState newState = MetaProcessState.create(metaType, getMessage(NEW_STATE_LABEL), 1);
 	states.addItem(newState);
 	stateTable.setValue(newState);
 	stateTable.sort();
 	TextField ptText = ((MultiLanguageStringField) form.getField("name")).getTextField(Language.pt);
 	ptText.focus();
 	ptText.setSelectionRange(0, ((String) ptText.getValue()).length());
+    }
+
+    private void addStateConfig(MetaProcessState state) {
+	MetaProcessStateConfig.create(state);
+    }
+
+    private void deleteStateConfig(MetaProcessStateConfig config) {
+	config.delete();
     }
 
     private static String getMessage(String message, String ... args) {
