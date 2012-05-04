@@ -76,7 +76,7 @@ public class ProcessCounter {
 		}
 	    } catch (final Throwable t) {
 		t.printStackTrace();
-		throw new Error(t);
+		//throw new Error(t);
 	    }
 	}
         return result;
