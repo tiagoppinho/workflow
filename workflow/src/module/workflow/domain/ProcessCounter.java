@@ -70,8 +70,13 @@ public class ProcessCounter {
 	int result = 0;
 	final User requestingUser = UserView.getCurrentUser();
 	for (final WorkflowProcess process : WorkflowSystem.getInstance().getProcesses()) {
-	    if (shouldCountProcess(process, requestingUser)) {
-		result++;
+	    try {
+		if (shouldCountProcess(process, requestingUser)) {
+		    result++;
+		}
+	    } catch (final Throwable t) {
+		t.printStackTrace();
+		throw new Error(t);
 	    }
 	}
         return result;
