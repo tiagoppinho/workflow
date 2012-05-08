@@ -24,6 +24,7 @@
  */
 package module.metaWorkflow.domain;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -95,5 +96,17 @@ public class MetaProcessStateConfig extends MetaProcessStateConfig_Base {
     @Override
     public void addDependedStates(MetaProcessState dependedStates) {
 	super.addDependedStates(dependedStates);
+    }
+
+    @Service
+    public void updateDependedStates(Collection<MetaProcessState> newStates) {
+	Collection<MetaProcessState> oldStates = getDependedStates();
+	if (!oldStates.containsAll(newStates) || !newStates.containsAll(oldStates)) {
+	    //There are changes to make
+	    oldStates.clear();
+	    for (MetaProcessState selectedState : newStates) {
+		addDependedStates(selectedState);
+	    }
+	}
     }
 }

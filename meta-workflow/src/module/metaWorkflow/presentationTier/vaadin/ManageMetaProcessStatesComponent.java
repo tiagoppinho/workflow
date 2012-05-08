@@ -25,6 +25,7 @@
 package module.metaWorkflow.presentationTier.vaadin;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
@@ -52,8 +53,10 @@ import pt.utl.ist.fenix.tools.util.i18n.Language;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.terminal.ThemeResource;
+import com.vaadin.ui.AbstractSelect.MultiSelectMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
@@ -323,7 +326,8 @@ public class ManageMetaProcessStatesComponent extends CustomComponent implements
 
 	configLayout.addComponent(new Label(", "));
 
-	Button editConfigButton = new Button(getMessage("state.activation.conditions.depended.add"), new Button.ClickListener() {
+	Button editConfigButton = new Button(getMessage("state.activation.conditions.depended.change"),
+		new Button.ClickListener() {
 	    @Override
 	    public void buttonClick(ClickEvent event) {
 		openEditConfigWindow(config);
@@ -336,10 +340,10 @@ public class ManageMetaProcessStatesComponent extends CustomComponent implements
     private static final String NEW_STATE_LABEL = "new.state.name";
 
     private void openEditConfigWindow(final MetaProcessStateConfig config) {
-	final Window editConfigWindow = new Window(getMessage("state.activation.conditions.depended.add"));
+	final Window editConfigWindow = new Window(getMessage("state.activation.conditions.depended.change"));
 	getWindow().addWindow(editConfigWindow);
 	editConfigWindow.setModal(true);
-	editConfigWindow.setHeight("500px");
+	editConfigWindow.setHeight("550px");
 	editConfigWindow.setWidth("400px");
 
 	VerticalLayout content = new VerticalLayout();
@@ -351,46 +355,49 @@ public class ManageMetaProcessStatesComponent extends CustomComponent implements
 	dependenciesTabs.setHeight("400px");
 	content.addComponent(dependenciesTabs);
 
-	VerticalLayout tableLayout = new VerticalLayout();
-	tableLayout.setSpacing(true);
-	tableLayout.setMargin(true);
-	dependenciesTabs.addTab(tableLayout, getMessage("state.activation.conditions.depended.states"));
+	VerticalLayout statesLayout = new VerticalLayout();
+	statesLayout.setSpacing(true);
+	statesLayout.setMargin(true);
+	dependenciesTabs.addTab(statesLayout, getMessage("state.activation.conditions.depended.states"));
 
 	WorkflowMetaType metaType = config.getMetaProcessState().getWorkflowMetaType();
 	Set<MetaProcessState> possibleStates = new HashSet<MetaProcessState>();
 	possibleStates.addAll(metaType.getProcessStates());
 	// A state cannot depend on itself
 	possibleStates.remove(config.getMetaProcessState());
-	// Cannot add duplicate dependencies
-	for (MetaProcessState existingDependedState : config.getDependedStates()) {
-	    possibleStates.remove(existingDependedState);
-	}
 	
 	if (possibleStates.isEmpty()) {
-	    tableLayout.addComponent(new Label(getMessage("state.activation.conditions.depended.none.to.add")));
+	    statesLayout.addComponent(new Label(getMessage("state.activation.conditions.depended.none.to.add")));
 	    return;
 	}
 
-	TransactionalTable dependedStatesTable = new TransactionalTable(RESOURCE_BUNDLE);
+	final TransactionalTable dependedStatesTable = new TransactionalTable(RESOURCE_BUNDLE);
 	DomainContainer<MetaProcessState> dependedStates = new DomainContainer<MetaProcessState>(possibleStates,
 		MetaProcessState.class);
 	dependedStates.setContainerProperties("name", "position");
 
 	dependedStatesTable.setContainerDataSource(dependedStates);
 	dependedStatesTable.setSelectable(true);
-	dependedStatesTable.setImmediate(true);
-	dependedStatesTable.addListener(new ValueChangeListener() {
+	dependedStatesTable.setMultiSelect(true);
+	dependedStatesTable.setMultiSelectMode(MultiSelectMode.SIMPLE);
+
+	// Pre-select already depended states
+	for (MetaProcessState dependedState : config.getDependedStates()) {
+	    dependedStatesTable.select(dependedState);
+	}
+	statesLayout.addComponent(dependedStatesTable);
+
+	Button saveButton = new Button(getMessage("state.activation.conditions.save"));
+
+	saveButton.addListener(new ClickListener() {
 	    @Override
-	    public void valueChange(ValueChangeEvent event) {
-		MetaProcessState dependedState = (MetaProcessState) event.getProperty().getValue();
-		if (dependedState != null) {
-		    config.addDependedStates(dependedState);
-		    getWindow().removeWindow(editConfigWindow);
-		    initOperationsLayout();
-		}
+	    public void buttonClick(ClickEvent event) {
+		config.updateDependedStates((Collection<MetaProcessState>) dependedStatesTable.getValue());
+		getWindow().removeWindow(editConfigWindow);
+		initOperationsLayout();
 	    }
 	});
-	tableLayout.addComponent(dependedStatesTable);
+	content.addComponent(saveButton);
     }
 
     private void addProcessState(WorkflowMetaType metaType, DomainContainer<MetaProcessState> states) {
