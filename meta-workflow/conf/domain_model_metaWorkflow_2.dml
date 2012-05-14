@@ -23,7 +23,6 @@
  * 
  */
 
-external class .pt.ist.fenixframework.plugins.fileSupport.domain.GenericFile;
 
 class module.metaWorkflow.domain.WorkflowMetaProcess extends module.workflow.domain.WorkflowProcess {
 	String instanceDescription;
