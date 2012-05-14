@@ -24,7 +24,6 @@
  * 
  */
  
-external class .pt.ist.fenixframework.plugins.fileSupport.domain.GenericFile;
  
 class module.workflow.domain.ProcessFile extends .pt.ist.fenixframework.plugins.fileSupport.domain.GenericFile { }
  
