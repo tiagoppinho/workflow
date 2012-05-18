@@ -32,6 +32,7 @@ import java.util.Map;
 import java.util.Set;
 
 import module.metaWorkflow.domain.MetaField;
+import module.metaWorkflow.domain.MetaFieldSet;
 import module.metaWorkflow.domain.MetaProcessState;
 import module.metaWorkflow.domain.MetaProcessStateConfig;
 import module.metaWorkflow.domain.WorkflowMetaType;
@@ -52,6 +53,7 @@ import pt.utl.ist.fenix.tools.util.i18n.Language;
 
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
+import com.vaadin.data.util.ContainerHierarchicalWrapper;
 import com.vaadin.terminal.ThemeResource;
 import com.vaadin.ui.AbstractSelect.MultiSelectMode;
 import com.vaadin.ui.Button;
@@ -65,6 +67,7 @@ import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.Table.ColumnGenerator;
 import com.vaadin.ui.TextField;
+import com.vaadin.ui.TreeTable;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.BaseTheme;
@@ -344,7 +347,7 @@ public class ManageMetaProcessStatesComponent extends CustomComponent implements
 	getWindow().addWindow(editConfigWindow);
 	editConfigWindow.setModal(true);
 	editConfigWindow.setHeight("550px");
-	editConfigWindow.setWidth("400px");
+	editConfigWindow.setWidth("550px");
 
 	VerticalLayout content = new VerticalLayout();
 	editConfigWindow.addComponent(content);
@@ -354,6 +357,37 @@ public class ManageMetaProcessStatesComponent extends CustomComponent implements
 	TabSheet dependenciesTabs = new TabSheet();
 	dependenciesTabs.setHeight("400px");
 	content.addComponent(dependenciesTabs);
+
+	VerticalLayout fieldsLayout = new VerticalLayout();
+	fieldsLayout.setSpacing(true);
+	fieldsLayout.setMargin(true);
+	dependenciesTabs.addTab(fieldsLayout, getMessage("state.activation.conditions.depended.fields"));
+
+	final TreeTable fieldsTable = new TreeTable();
+	fieldsLayout.addComponent(fieldsTable);
+	fieldsTable.setSelectable(true);
+	fieldsTable.setMultiSelect(true);
+	fieldsTable.setMultiSelectMode(MultiSelectMode.SIMPLE);
+	
+	DomainContainer<MetaField> fieldContainer = new DomainContainer<MetaField>(MetaField.class);
+	fieldContainer.setContainerProperties("name", "localizedClassName", "fieldOrder");
+
+	ContainerHierarchicalWrapper fieldContainerWrapper = new ContainerHierarchicalWrapper(fieldContainer);
+	MetaFieldSet fieldSet = config.getMetaProcessState().getWorkflowMetaType().getFieldSet();
+	fieldContainerWrapper.addItem(fieldSet);
+	addFieldHierarchy(fieldContainerWrapper, fieldSet);
+	
+	fieldsTable.setContainerDataSource(fieldContainerWrapper);
+	fieldsTable.setColumnHeader("name", getMessage("module.metaWorkflow.domain.MetaField.name"));
+	fieldsTable.setColumnHeader("localizedClassName", getMessage("module.metaWorkflow.domain.MetaField.localizedClassName"));
+	fieldsTable.setColumnHeader("fieldOrder", getMessage("module.metaWorkflow.domain.MetaField.fieldOrder"));
+	fieldsTable.setCollapsed(fieldSet, false);
+
+	// Pre-select already depended fields
+	for (MetaField dependedField : config.getDependedFields()) {
+	    fieldsTable.select(dependedField);
+	}
+	
 
 	VerticalLayout statesLayout = new VerticalLayout();
 	statesLayout.setSpacing(true);
@@ -393,11 +427,24 @@ public class ManageMetaProcessStatesComponent extends CustomComponent implements
 	    @Override
 	    public void buttonClick(ClickEvent event) {
 		config.updateDependedStates((Collection<MetaProcessState>) dependedStatesTable.getValue());
+		config.updateDependedFields((Collection<MetaField>) fieldsTable.getValue());
 		getWindow().removeWindow(editConfigWindow);
 		initOperationsLayout();
 	    }
 	});
 	content.addComponent(saveButton);
+    }
+
+    public void addFieldHierarchy(ContainerHierarchicalWrapper container, MetaFieldSet fieldSet) {
+	for (MetaField childField : fieldSet.getOrderedChildFields()) {
+	    container.addItem(childField);
+	    container.setParent(childField, fieldSet);
+	    if (childField instanceof MetaFieldSet) {
+		addFieldHierarchy(container, (MetaFieldSet) childField);
+	    } else {
+		container.setChildrenAllowed(childField, false);
+	    }
+	}
     }
 
     private void addProcessState(WorkflowMetaType metaType, DomainContainer<MetaProcessState> states) {

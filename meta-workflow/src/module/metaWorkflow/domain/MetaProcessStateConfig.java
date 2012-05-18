@@ -103,10 +103,41 @@ public class MetaProcessStateConfig extends MetaProcessStateConfig_Base {
 	Collection<MetaProcessState> oldStates = getDependedStates();
 	if (!oldStates.containsAll(newStates) || !newStates.containsAll(oldStates)) {
 	    //There are changes to make
-	    oldStates.clear();
-	    for (MetaProcessState selectedState : newStates) {
-		addDependedStates(selectedState);
+	    Collection<MetaProcessState> statesToRem = new HashSet<MetaProcessState>();
+	    statesToRem.addAll(oldStates);
+	    statesToRem.removeAll(newStates);
+	    for (MetaProcessState stateToRem : statesToRem) {
+		removeDependedStates(stateToRem);
+	    }
+
+	    Collection<MetaProcessState> statesToAdd = new HashSet<MetaProcessState>();
+	    statesToAdd.addAll(newStates);
+	    statesToAdd.removeAll(oldStates);
+	    for (MetaProcessState stateToAdd : statesToAdd) {
+		addDependedStates(stateToAdd);
 	    }
 	}
+    }
+
+    @Service
+    public void updateDependedFields(Collection<MetaField> newFields) {
+	Collection<MetaField> oldFields = getDependedFields();
+	if (!oldFields.containsAll(newFields) || !newFields.containsAll(oldFields)) {
+	    //There are changes to make
+	    Collection<MetaField> fieldsToRem = new HashSet<MetaField>();
+	    fieldsToRem.addAll(oldFields);
+	    fieldsToRem.removeAll(newFields);
+	    for (MetaField stateToRem : fieldsToRem) {
+		removeDependedFields(stateToRem);
+	    }
+
+	    Collection<MetaField> fieldsToAdd = new HashSet<MetaField>();
+	    fieldsToAdd.addAll(newFields);
+	    fieldsToAdd.removeAll(oldFields);
+	    for (MetaField stateToAdd : fieldsToAdd) {
+		addDependedFields(stateToAdd);
+	    }
+	}
+
     }
 }
