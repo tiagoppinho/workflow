@@ -40,6 +40,7 @@ import jvstm.cps.ConsistencyException;
 import module.workflow.activities.ActivityException;
 import module.workflow.activities.ActivityInformation;
 import module.workflow.activities.WorkflowActivity;
+import module.workflow.domain.ProcessDocument;
 import module.workflow.domain.ProcessFile;
 import module.workflow.domain.ProcessFileValidationException;
 import module.workflow.domain.WorkflowProcess;
@@ -48,6 +49,7 @@ import module.workflow.presentationTier.ProcessNodeSelectionMapper;
 import module.workflow.presentationTier.WorkflowLayoutContext;
 import module.workflow.util.FileUploadBeanResolver;
 import module.workflow.util.PresentableProcessState;
+import module.workflow.util.WorkflowDocumentUploadBean;
 import module.workflow.util.WorkflowFileUploadBean;
 import myorg.applicationTier.Authenticate.UserView;
 import myorg.domain.User;
@@ -325,6 +327,28 @@ public class ProcessManagement extends ContextBaseAction {
 	return forward(request, "/workflow/fileUpload.jsp");
     }
 
+    private ActionForward forwardToDocumentUpload(HttpServletRequest request, WorkflowDocumentUploadBean bean) {
+
+	if (!bean.isDefaultUploadInterfaceUsed()) {
+	    request.setAttribute("interface", "/" + bean.getSelectedInstance().getName().replace('.', '/') + "-upload.jsp");
+	}
+	return forward(request, "/workflow/documentUpload.jsp");
+    }
+
+    public ActionForward documentFileUpload(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
+	    final HttpServletResponse response) {
+
+	final WorkflowProcess process = getProcess(request);
+	Class<? extends ProcessDocument> selectedInstance = process.getUploadableFileDocumentTypes().get(0);
+	WorkflowDocumentUploadBean bean = FileUploadBeanResolver.getBeanForProcessDocument(process, selectedInstance);
+	bean.setSelectedInstance(selectedInstance);
+
+	request.setAttribute("bean", bean);
+	request.setAttribute("process", process);
+
+	return forwardToDocumentUpload(request, bean);
+    }
+
     public ActionForward fileUpload(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
 	    final HttpServletResponse response) {
 
@@ -364,11 +388,49 @@ public class ProcessManagement extends ContextBaseAction {
 
     }
 
+    public ActionForward documentUpload(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
+	    final HttpServletResponse response) throws Exception {
+	WorkflowDocumentUploadBean bean = getRenderedObject("uploadFile");
+	final WorkflowProcess process = getProcess(request);
+
+	try {
+	    process.addFileDocument(bean.getSelectedInstance(), bean.getDisplayName(), bean.getFilename(),
+		    consumeInputStream(bean.getInputStream()), bean);
+	} catch (ProcessFileValidationException e) {
+	    request.setAttribute("bean", bean);
+	    request.setAttribute("process", process);
+	    addLocalizedMessage(request, e.getLocalizedMessage());
+	    return forwardToDocumentUpload(request, bean);
+	} catch (DomainException e) {
+	    request.setAttribute("bean", bean);
+	    request.setAttribute("process", process);
+	    addLocalizedMessage(request, e.getLocalizedMessage());
+	    RenderUtils.invalidateViewState();
+	    return forwardToDocumentUpload(request, bean);
+	}
+
+	return viewProcess(process, request);
+
+    }
+
     private WorkflowFileUploadBean fileUploadRoundTrip(Class<? extends ProcessFile> selectedInstance,
 	    final HttpServletRequest request) {
 
 	final WorkflowProcess process = getProcess(request);
 	WorkflowFileUploadBean bean = FileUploadBeanResolver.getBeanForProcessFile(process, selectedInstance);
+	bean.setSelectedInstance(selectedInstance);
+
+	request.setAttribute("bean", bean);
+	request.setAttribute("process", process);
+
+	return bean;
+    }
+
+    private WorkflowDocumentUploadBean documentUploadRoundTrip(Class<? extends ProcessDocument> selectedInstance,
+	    final HttpServletRequest request) {
+
+	final WorkflowProcess process = getProcess(request);
+	WorkflowDocumentUploadBean bean = FileUploadBeanResolver.getBeanForProcessDocument(process, selectedInstance);
 	bean.setSelectedInstance(selectedInstance);
 
 	request.setAttribute("bean", bean);
@@ -387,12 +449,30 @@ public class ProcessManagement extends ContextBaseAction {
 	return forwardToUpload(request, bean);
     }
 
+    public ActionForward uploadDocumentPostBack(final ActionMapping mapping, final ActionForm form,
+	    final HttpServletRequest request, final HttpServletResponse response) {
+	WorkflowDocumentUploadBean bean = getRenderedObject("uploadFile");
+	bean = documentUploadRoundTrip(bean.getSelectedInstance(), request);
+
+	RenderUtils.invalidateViewState("uploadFile");
+
+	return forwardToDocumentUpload(request, bean);
+    }
+
     public ActionForward invalidFileUpload(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
 	    final HttpServletResponse response) {
 	WorkflowFileUploadBean bean = getRenderedObject("uploadFile");
 	bean = fileUploadRoundTrip(bean.getSelectedInstance(), request);
 
 	return forwardToUpload(request, bean);
+    }
+
+    public ActionForward invalidDocumentUpload(final ActionMapping mapping, final ActionForm form,
+	    final HttpServletRequest request, final HttpServletResponse response) {
+	WorkflowDocumentUploadBean bean = getRenderedObject("uploadFile");
+	bean = documentUploadRoundTrip(bean.getSelectedInstance(), request);
+
+	return forwardToDocumentUpload(request, bean);
     }
 
     public ActionForward viewLogs(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
@@ -421,12 +501,47 @@ public class ProcessManagement extends ContextBaseAction {
 	return null;
     }
 
+    public ActionForward downloadFileDocument(final ActionMapping mapping, final ActionForm form,
+	    final HttpServletRequest request, final HttpServletResponse response) throws IOException {
+
+	final ProcessDocument file = getDomainObject(request, "fileId");
+	WorkflowProcess process = file.getProcess();
+	try {
+
+	    if (!file.getDocument().getReadGroup().isMember(UserView.getCurrentUser())) {
+		throw new DomainException("error.cant.access.ProcessDocument");
+	    }
+	    if (process != null) {
+		process.preAccessFile(file);
+	    }
+	    download(response, file.getFilename(), file.getStream(), file.getContentType());
+	    if (process != null) {
+		process.postAccessFile(file);
+	    }
+	    return null;
+	} catch (DomainException ex) {
+	    addLocalizedMessage(request, ex.getLocalizedMessage());
+	    return viewProcess(process, request);
+	}
+    }
+
     public ActionForward removeFile(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
 	    final HttpServletResponse response) {
 
 	final ProcessFile file = getDomainObject(request, "fileId");
 	final WorkflowProcess process = file.getProcess();
 	process.removeFiles(file);
+
+	return viewProcess(process, request);
+
+    }
+
+    public ActionForward removeFileDocument(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
+	    final HttpServletResponse response) {
+
+	final ProcessDocument file = getDomainObject(request, "fileId");
+	final WorkflowProcess process = file.getProcess();
+	process.removeFileDocuments(file);
 
 	return viewProcess(process, request);
 

@@ -40,6 +40,7 @@ import module.workflow.activities.WorkflowActivity;
 import module.workflow.presentationTier.WorkflowLayoutContext;
 import module.workflow.presentationTier.actions.CommentBean;
 import module.workflow.util.ProcessEvaluator;
+import module.workflow.util.WorkflowDocumentUploadBean;
 import module.workflow.util.WorkflowFileUploadBean;
 import myorg.applicationTier.Authenticate.UserView;
 import myorg.domain.User;
@@ -95,6 +96,7 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
 	super();
 	setOjbConcreteClass(getClass().getName());
 	setWorkflowSystem(WorkflowSystem.getInstance());
+	setDocumentsRepository(new ProcessDirNode());
     }
 
     public static void evaluate(final Class processClass, final ProcessEvaluator<WorkflowProcess> processEvaluator,
@@ -418,6 +420,16 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
 	return users;
     }
 
+    public void preAccessFile(ProcessDocument file) {
+	if (isFileSupportAvailable()) {
+	    file.preFileContentAccess();
+	    return;
+	}
+	throw new DomainException("label.error.workflowProcess.noSupportForFiles",
+		DomainException.getResourceFor("resources/WorkflowResources"));
+
+    }
+
     public void preAccessFile(ProcessFile file) {
 	if (isFileSupportAvailable()) {
 	    file.preFileContentAccess();
@@ -429,6 +441,20 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
 
     @Service
     public void postAccessFile(ProcessFile file) {
+	if (isFileSupportAvailable()) {
+	    file.postFileContentAccess();
+	    if (file.shouldFileContentAccessBeLogged()) {
+		String nameToLog = file.getDisplayName() != null ? file.getDisplayName() : file.getFilename();
+		new FileAccessLog(this, UserView.getCurrentUser(), file.getFilename(), nameToLog,
+			BundleUtil.getLocalizedNamedFroClass(file.getClass()));
+	    }
+	} else {
+	    throw new DomainException("label.error.workflowProcess.noSupportForFiles",
+		    DomainException.getResourceFor("resources/WorkflowResources"));
+	}
+    }
+
+    public void postAccessFile(ProcessDocument file) {
 	if (isFileSupportAvailable()) {
 	    file.postFileContentAccess();
 	    if (file.shouldFileContentAccessBeLogged()) {
@@ -473,10 +499,48 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
 
     }
 
+    @Service
+    public <P extends ProcessDocument> P addFileDocument(Class<P> instanceToCreate, String displayName, String filename,
+	    byte[] consumeInputStream, WorkflowDocumentUploadBean bean) throws Exception {
+	if (isFileSupportAvailable()) {
+	    if (!isFileEditionAllowed())
+		throw new DomainException("label.error.workflowProcess.noFileEditionAvailable",
+			DomainException.getResourceFor("resources/WorkflowResources"));
+	    Constructor<P> fileConstructor = instanceToCreate.getConstructor(String.class, String.class, byte[].class,
+		    WorkflowProcess.class);
+	    P file = null;
+	    try {
+		file = fileConstructor.newInstance(new Object[] { displayName, filename, consumeInputStream, this });
+	    } catch (InvocationTargetException e) {
+		if (e.getCause() instanceof IllegalWriteException) {
+		    throw new IllegalWriteException();
+		}
+		throw new Error(e);
+	    }
+	    file.fillInNonDefaultFields(bean);
+
+	    addFileDocuments(file);
+
+	    new FileUploadLog(this, UserView.getCurrentUser(), file.getFilename(), file.getDisplayName(),
+		    BundleUtil.getLocalizedNamedFroClass(file.getClass()));
+	    file.getMetaDataResolver().fillMetaDataBasedOnDocument(file);
+	    return file;
+	}
+	throw new DomainException("label.error.workflowProcess.noSupportForFiles",
+		DomainException.getResourceFor("resources/WorkflowResources"));
+
+    }
+
     @Override
     public void addFiles(ProcessFile file) {
 	file.validateUpload(this);
 	super.addFiles(file);
+    }
+
+    @Override
+    public void addFileDocuments(ProcessDocument fileDocument) {
+	fileDocument.validateUpload(this);
+	super.addFileDocuments(fileDocument);
     }
 
     @Override
@@ -589,6 +653,24 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
 		BundleUtil.getLocalizedNamedFroClass(file.getClass()));
     }
 
+    @Override
+    @Service
+    public void removeFileDocuments(ProcessDocument file) {
+	if (!file.getDocument().getWriteGroup().isMember(UserView.getCurrentUser())) {
+	    throw new DomainException("error.cant.access.ProcessDocument");
+	}
+	if (!file.isPossibleToArchieve()) {
+	    throw new DomainException("error.invalidOperation.tryingToRemoveFileWhenIsNotPossible",
+		    DomainException.getResourceFor("resources/AcquisitionResources"));
+	}
+	super.removeFileDocuments(file);
+	//	addDeletedFiles(file);
+	file.processRemoval();
+	String nameToLog = file.getDisplayName() != null ? file.getDisplayName() : file.getFilename();
+	new FileRemoveLog(this, UserView.getCurrentUser(), file.getFilename(), nameToLog,
+		BundleUtil.getLocalizedNamedFroClass(file.getClass()));
+    }
+
     public List<WorkflowProcessComment> getUnreadCommentsForCurrentUser() {
 	return getUnreadCommentsForUser(UserView.getCurrentUser());
     }
@@ -626,6 +708,21 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
 		comment.addReaders(user);
 	    }
 	}
+    }
+
+    /**
+     * By default a workflow process supports documents attached to it, although
+     * if there's a process where there should be no support for files, override
+     * this method to return false. No upload box will be rendered in the
+     * interface and calling the
+     * {@link WorkflowProcess#addDocument(Class, String, String, byte[], WorkflowFileUploadBean)}
+     * will result in an exception.
+     * 
+     * 
+     * @return true if the process supports documents
+     */
+    public boolean isDocumentSupportAvailable() {
+	return true;
     }
 
     /**
@@ -726,6 +823,21 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
 	return availableClasses;
     }
 
+/**
+     * This list represents all the kind of classes that
+     * {@link WorkflowProcess#addFileDocuments(ProcessDocument) supports. If
+     * {@link WorkflowProcess#addFileDocuments(ProcessDocument) is invoked with some class
+     * that is not in this list an exception is thrown.
+     * 
+     * @return list of classes that extends {@link ProcessDocument} that are allowed to add
+     *         to the process
+     */
+    public List<Class<? extends ProcessDocument>> getAvailableDocumentTypes() {
+	List<Class<? extends ProcessDocument>> availableClasses = new ArrayList<Class<? extends ProcessDocument>>();
+	availableClasses.add(GenericProcessDocument.class);
+	return availableClasses;
+    }
+
     /**
      * This list has to be a subset or the actual list returned by
      * {@link WorkflowProcess#getAvailableFileTypes()}. Only the files in this
@@ -740,6 +852,19 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
 
     /**
      * This list has to be a subset or the actual list returned by
+     * {@link WorkflowProcess#getAvailableDocumentTypes()}. Only the files in
+     * this list will be rendered as possible file options in the upload
+     * interface.
+     * 
+     * @return list of classes that extends {@link ProcessDocument} that are
+     *         able to be uploaded
+     */
+    public List<Class<? extends ProcessDocument>> getUploadableFileDocumentTypes() {
+	return getAvailableDocumentTypes();
+    }
+
+    /**
+     * This list has to be a subset or the actual list returned by
      * {@link WorkflowProcess#getAvailableFileTypes()}. Only the files in this
      * list will be rendered in the process page's file listing.
      * 
@@ -750,16 +875,49 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
 	return getAvailableFileTypes();
     }
 
+    /**
+     * This list has to be a subset or the actual list returned by
+     * {@link WorkflowProcess#getDisplayableFileDocumentTypes()} Only the files
+     * in this list will be rendered in the process page's file listing.
+     * 
+     * @return list of classes that extends ProcessDocument that are displayed
+     *         in the process page
+     */
+    public List<Class<? extends ProcessDocument>> getDisplayableFileDocumentTypes() {
+	return getAvailableDocumentTypes();
+    }
+
     public <T extends ProcessFile> List<T> getFiles(Class<? extends ProcessFile> selectedClass) {
 	List<Class<? extends ProcessFile>> list = new ArrayList<Class<? extends ProcessFile>>();
 	list.add(selectedClass);
 	return getFilesFromList(getFiles(), list);
     }
 
+    public <T extends ProcessDocument> List<T> getFileDocuments(Class<? extends ProcessDocument> selectedClass) {
+	List<Class<? extends ProcessDocument>> list = new ArrayList<Class<? extends ProcessDocument>>();
+	list.add(selectedClass);
+	return getFileDocumentsFromList(getFileDocuments(), list);
+    }
+
+
     private <T extends ProcessFile> List<T> getFilesFromList(List<ProcessFile> list,
 	    List<Class<? extends ProcessFile>> selectedClasses) {
 	List<T> classes = new ArrayList<T>();
 	for (ProcessFile file : list) {
+	    for (Class selectedClass : selectedClasses) {
+		if (file.getClass() == selectedClass) {
+		    classes.add((T) file);
+		}
+
+	    }
+	}
+	return classes;
+    }
+
+    private <T extends ProcessDocument> List<T> getFileDocumentsFromList(List<ProcessDocument> list,
+	    List<Class<? extends ProcessDocument>> selectedClasses) {
+	List<T> classes = new ArrayList<T>();
+	for (ProcessDocument file : list) {
 	    for (Class selectedClass : selectedClasses) {
 		if (file.getClass() == selectedClass) {
 		    classes.add((T) file);
@@ -933,5 +1091,7 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
 	final VirtualHost virtualHost = VirtualHost.getVirtualHostForThread();
 	return virtualHost != null && getWorkflowSystem() == virtualHost.getWorkflowSystem();
     }
+
+
 
 }

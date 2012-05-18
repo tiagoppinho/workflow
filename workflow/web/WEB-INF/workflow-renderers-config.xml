@@ -9,6 +9,16 @@
 	<property name="imageFile" value=""/>
 </renderer>
 
+<renderer type="module.workflow.domain.WorkflowProcess" layout="processDocumentFiles"
+	class="module.workflow.presentationTier.renderers.WorkflowProcessDocuments">
+
+	<property name="downloadFormat"
+		value="/workflowProcessManagement.do?method=downloadFileDocument&amp;fileId=${externalId}&amp;processId=${process.externalId}" />
+	<property name="removeFormat"
+		value="/workflowProcessManagement.do?method=removeFileDocument&amp;fileId=${externalId}&amp;processId=${process.externalId}" />
+	<property name="imageFile" value=""/>
+</renderer>
+
 <renderer type="module.workflow.domain.WorkflowProcess" layout="viewComments"
 	class="module.workflow.presentationTier.renderers.CommentRenderer">
 

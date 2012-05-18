@@ -31,10 +31,17 @@ external class .pt.ist.fenixframework.plugins.fileSupport.domain.GenericFile;
 external class .module.fileManagement.domain.Document;
 external class .module.fileManagement.domain.DirNode;
 external class .myorg.domain.groups.PersistentGroup;
+external class .module.fileManagement.domain.DirNode;
  
+class module.workflow.domain.ProcessDirNode extends .module.fileManagement.domain.DirNode { }
 class module.workflow.domain.ProcessFile extends .pt.ist.fenixframework.plugins.fileSupport.domain.GenericFile { }
 
-class module.workflow.domain.ProcessDocument extends .module.fileManagement.domain.Document { }
+class module.workflow.domain.ProcessDocument { }
+
+/* Class for the 'other' type of files, which should only have a description associated with it */
+class module.workflow.domain.GenericProcessDocument extends module.workflow.domain.ProcessDocument {
+	String genericDescription;
+ }
 
 class module.workflow.domain.WFDocumentsReadPG extends .myorg.domain.groups.PersistentGroup { }
 class module.workflow.domain.WFDocumentsWritePG extends .myorg.domain.groups.PersistentGroup { }
@@ -55,11 +62,9 @@ relation DocumentProcessDocument {
 	}
 }
 
-relation DirNodeWorkflowProcess {
-	.module.fileManagement.domain.DirNode playsRole dirNode;
-	module.workflow.domain.WorkflowProcess playsRole workflowProcesses {
-		multiplicity *;
-	}
+relation ProcessDirNodeWorkflowProcess {
+	module.workflow.domain.ProcessDirNode playsRole documentsRepository;
+	module.workflow.domain.WorkflowProcess playsRole workflowProcess;
 }
 
 relation WorkflowProcessDocument {
@@ -71,16 +76,12 @@ relation WorkflowProcessDocument {
 
 relation WorkflowDocsReadPGWProcess {
 	module.workflow.domain.WFDocumentsReadPG playsRole documentsReadPersistentGroup;
-	module.workflow.domain.WorkflowProcess playsRole processes {
-		multiplicity *;
-	}
+	module.workflow.domain.WorkflowProcess playsRole process;
 }
 
 relation WorkflowDocsWritePGWProcess {
 	module.workflow.domain.WFDocumentsWritePG playsRole documentsWritePersistentGroup;
-	module.workflow.domain.WorkflowProcess playsRole processes {
-		multiplicity *;
-	}
+	module.workflow.domain.WorkflowProcess playsRole process;
 }
 
 /* END: Workflow Document relations */

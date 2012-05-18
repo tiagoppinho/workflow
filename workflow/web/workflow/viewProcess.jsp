@@ -1,3 +1,4 @@
+<%@page import="pt.ist.vaadinframework.fragment.FragmentQuery"%>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="/WEB-INF/struts-bean.tld" prefix="bean"%>
 <%@ taglib uri="/WEB-INF/struts-html.tld" prefix="html"%>
@@ -222,6 +223,88 @@
 	
 										<form action="<%= request.getContextPath() + "/workflowProcessManagement.do" %>" method="post">
 											<input type="hidden" name="method" value="fileUpload"/>
+											<input type="hidden" name="processId" value="<%= processId %>"/>
+	
+											<html:submit><bean:message key="link.uploadFile" bundle="WORKFLOW_RESOURCES"/></html:submit>
+										</form>
+									
+										<%--
+										<input id="addFileButton" type="button" value="<bean:message key="link.uploadFile" bundle="WORKFLOW_RESOURCES"/>"/>
+										<script type="java/textscript">
+											$("#addFileButton").click(function() {
+											window.location = <%= "/workflowProcessManagement.do?method=fileUpload&processId="+processId %>;
+											});
+										</script>
+										--%>
+									</td>
+								</logic:equal>
+							</tr>
+						</table>
+
+					</div>
+				</div>
+				<!-- infobox1 -->
+
+			</td>
+
+		</logic:equal>
+	</tr>
+	<tr>
+			<logic:equal name="process" property="documentSupportAvailable" value="true">
+		<div id="fileAccessLoggedConfirmation" style="display:none; cursor: default"> 
+		        <h3><bean:message key="label.fileAccess.logged.confirmMessage" bundle="WORKFLOW_RESOURCES" /></h3> 
+		        <%-- TODO joanutne: localize Sim e Não --%>
+		        <input type="button" id="yes" value="Sim" /> 
+		        <input type="button" id="no" value="Não" /> 
+		</div> 
+<!-- 			<td class="gutter"></td>
+ -->	
+			<td>	
+				<div class="infobox1 col2-2">
+					<h3><bean:message key="label.documents" bundle="WORKFLOW_RESOURCES"/> <!--<a href="">(9)</a>--></h3>
+					<div>
+
+						<fr:view name="process">
+							<fr:layout name="processDocumentFiles">
+								<fr:property name="classes" value=""/>
+							</fr:layout>
+						</fr:view>
+						
+						<!--
+						<table class="process-files">
+							<tr>
+								<th>18/03/2010</th>
+								<td>Documento - <a href="">suspendisse_egestas.doc</a></td>
+								<td><a href="">(X)</a></td>
+							</tr>
+						</table>
+						<table class="structural mvert0">
+							<tr>
+								<td><a href="">Gerir ficheiros (9)</a></td>
+								<td class="aright">
+									<input type="button" value="+ Adicionar Ficheiro"/>
+								</td>
+							</tr>
+						</table>
+						-->
+						
+						
+						<table class="structural mvert0">
+							<tr>
+								<td>
+								<%-- 	<html:link page=<%="/vaadinContext.do?method=forwardToVaadin#" + new pt.ist.vaadinframework.fragment.FragmentQuery(Management.class).getQueryString()%>">
+										<bean:message key="link.viewFilesDetails" bundle="WORKFLOW_RESOURCES"/>
+									</html:link> --%>
+									<html:link page="#">
+										<bean:message key="link.viewFilesDetails" bundle="WORKFLOW_RESOURCES"/>(TODO)
+									</html:link>
+									
+								</td>
+								<logic:equal name="process" property="fileEditionAllowed" value="true">
+									<td class="aright">
+	
+										<form action="<%= request.getContextPath() + "/workflowProcessManagement.do" %>" method="post">
+											<input type="hidden" name="method" value="documentFileUpload"/>
 											<input type="hidden" name="processId" value="<%= processId %>"/>
 	
 											<html:submit><bean:message key="link.uploadFile" bundle="WORKFLOW_RESOURCES"/></html:submit>

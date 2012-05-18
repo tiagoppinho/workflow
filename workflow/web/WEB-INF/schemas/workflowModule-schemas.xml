@@ -57,6 +57,24 @@
 	</slot>	
 </schema>
 
+<schema name="addDocument-GenericProcessDocument"
+		type="module.workflow.util.WorkflowDocumentUploadBean"
+		bundle="WORKFLOW_RESOURCES">
+	<slot name="selectedInstance" layout="menu-select-postback" key="label.selectedInstance">
+		<property name="providerClass" value="module.workflow.presentationTier.renderers.providers.AvailableDocumentFileClassesProvider"/>
+		<property name="eachLayout" value="name-resolver"/>
+		<property name="nullOptionHidden" value="true"/>
+		<property name="saveOptions" value="true"/>
+	</slot>
+	<slot name="displayName" key="label.filename">
+		<property name="size" value="50"/>
+	</slot>
+	<slot name="inputStream" key="label.document">
+		<property name="fileNameSlot" value="filename" />
+		<property name="size" value="50"/>
+	</slot>	
+</schema>
+
 <schema name="create.queue" type="module.workflow.util.WorkflowQueueBean" bundle="WORKFLOW_RESOURCES">
 	<slot name="name" key="label.queue.name" validator="pt.ist.fenixWebFramework.renderers.validators.RequiredValidator">
 		<property name="size" value="40"/>
