@@ -24,16 +24,70 @@
  * 
  */
  
+
+external class .pt.ist.fenixframework.plugins.fileSupport.domain.GenericFile;
+
+/* External Process Document classes */
+external class .module.fileManagement.domain.Document;
+external class .module.fileManagement.domain.DirNode;
+external class .myorg.domain.groups.PersistentGroup;
  
 class module.workflow.domain.ProcessFile extends .pt.ist.fenixframework.plugins.fileSupport.domain.GenericFile { }
+
+class module.workflow.domain.ProcessDocument extends .module.fileManagement.domain.Document { }
+
+class module.workflow.domain.WFDocumentsReadPG extends .myorg.domain.groups.PersistentGroup { }
+class module.workflow.domain.WFDocumentsWritePG extends .myorg.domain.groups.PersistentGroup { }
  
-relation WorkflowProcessFile {
-	module.workflow.domain.WorkflowProcess playsRole process;
-	module.workflow.domain.ProcessFile playsRole files {
+ //R1 - remove relation
+relation WorkflowProcessFile { 
+	module.workflow.domain.WorkflowProcess playsRole process; 
+	module.workflow.domain.ProcessFile playsRole files { 
+		multiplicity *;
+	} 
+} 
+
+/* START: Workflow Document relations */
+relation DocumentProcessDocument {
+	.module.fileManagement.domain.Document playsRole document;
+	module.workflow.domain.ProcessDocument playsRole processDocuments {
 		multiplicity *;
 	}
 }
 
+relation DirNodeWorkflowProcess {
+	.module.fileManagement.domain.DirNode playsRole dirNode;
+	module.workflow.domain.WorkflowProcess playsRole workflowProcesses {
+		multiplicity *;
+	}
+}
+
+relation WorkflowProcessDocument {
+	module.workflow.domain.WorkflowProcess playsRole process;
+	module.workflow.domain.ProcessDocument playsRole fileDocuments {
+		multiplicity *;
+	}
+}
+
+relation WorkflowDocsReadPGWProcess {
+	module.workflow.domain.WFDocumentsReadPG playsRole documentsReadPersistentGroup;
+	module.workflow.domain.WorkflowProcess playsRole processes {
+		multiplicity *;
+	}
+}
+
+relation WorkflowDocsWritePGWProcess {
+	module.workflow.domain.WFDocumentsWritePG playsRole documentsWritePersistentGroup;
+	module.workflow.domain.WorkflowProcess playsRole processes {
+		multiplicity *;
+	}
+}
+
+/* END: Workflow Document relations */
+
+
+
+//R1 - remove relation
 relation ProcessFileDeletion {
 	module.workflow.domain.WorkflowProcess playsRole processWithDeleteFile;
 	module.workflow.domain.ProcessFile playsRole deletedFiles {
