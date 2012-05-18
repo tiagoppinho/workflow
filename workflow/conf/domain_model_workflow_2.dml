@@ -57,9 +57,7 @@ relation WorkflowProcessFile {
 /* START: Workflow Document relations */
 relation DocumentProcessDocument {
 	.module.fileManagement.domain.Document playsRole document;
-	module.workflow.domain.ProcessDocument playsRole processDocuments {
-		multiplicity *;
-	}
+	module.workflow.domain.ProcessDocument playsRole processDocument;
 }
 
 relation ProcessDirNodeWorkflowProcess {

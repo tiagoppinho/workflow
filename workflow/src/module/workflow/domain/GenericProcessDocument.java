@@ -29,6 +29,11 @@ public class GenericProcessDocument extends GenericProcessDocument_Base {
 	}
 
 	@Override
+	public boolean shouldFileContentAccessBeLogged() {
+	    return true;
+	}
+
+	@Override
 	public Map<String, String> getMetadataKeysAndValuesMap(GenericProcessDocument processDocument) {
 	    HashMap<String, String> hashMap = new HashMap<String, String>();
 	    hashMap.put("Nome atríbuido ao ficheiro", processDocument.getGenericDescription());

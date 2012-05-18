@@ -249,11 +249,14 @@
 
 		</logic:equal>
 	</tr>
+	
+	<%-- ProcessDocuments interface commented out for now 
 	<tr>
 			<logic:equal name="process" property="documentSupportAvailable" value="true">
 		<div id="fileAccessLoggedConfirmation" style="display:none; cursor: default"> 
 		        <h3><bean:message key="label.fileAccess.logged.confirmMessage" bundle="WORKFLOW_RESOURCES" /></h3> 
-		        <%-- TODO joanutne: localize Sim e Não --%>
+		        <%-- TODO joanutne: localize Sim e Não --%> 
+		       <%--
 		        <input type="button" id="yes" value="Sim" /> 
 		        <input type="button" id="no" value="Não" /> 
 		</div> 
@@ -295,8 +298,10 @@
 								<%-- 	<html:link page=<%="/vaadinContext.do?method=forwardToVaadin#" + new pt.ist.vaadinframework.fragment.FragmentQuery(Management.class).getQueryString()%>">
 										<bean:message key="link.viewFilesDetails" bundle="WORKFLOW_RESOURCES"/>
 									</html:link> --%>
-									<html:link page="#">
-										<bean:message key="link.viewFilesDetails" bundle="WORKFLOW_RESOURCES"/>(TODO)
+									<%--
+									
+									<html:link page="/workflowProcessManagement.do?method=viewFileDocumentsDetails" paramId="processId" paramName="process" paramProperty="externalId">
+										<bean:message key="link.viewFilesDetails" bundle="WORKFLOW_RESOURCES"/>
 									</html:link>
 									
 								</td>
@@ -318,6 +323,7 @@
 											});
 										</script>
 										--%>
+										<%--
 									</td>
 								</logic:equal>
 							</tr>
@@ -331,6 +337,7 @@
 
 		</logic:equal>
 	</tr>
+	ProcessDocuments interface commented out for now --%>
 </table>
 
 <div class="clear"></div>

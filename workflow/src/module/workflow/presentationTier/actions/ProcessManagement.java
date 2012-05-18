@@ -506,6 +506,9 @@ public class ProcessManagement extends ContextBaseAction {
 
 	final ProcessDocument file = getDomainObject(request, "fileId");
 	WorkflowProcess process = file.getProcess();
+	if (process == null) {
+	    process = getDomainObject(request, "processId");
+	}
 	try {
 
 	    if (!file.getDocument().getReadGroup().isMember(UserView.getCurrentUser())) {
@@ -555,6 +558,17 @@ public class ProcessManagement extends ContextBaseAction {
 	request.setAttribute("process", process);
 	request.setAttribute("listFiles", listFiles);
 	return forward(request, "/workflow/viewFilesDetails.jsp");
+
+    }
+
+    public ActionForward viewFileDocumentsDetails(final ActionMapping mapping, final ActionForm form,
+	    final HttpServletRequest request, final HttpServletResponse response) {
+
+	final WorkflowProcess process = getProcess(request);
+	List<ProcessDocument> listFiles = process.getFileDocumentsIncludingDeleted(process.getAvailableDocumentTypes(), true);
+	request.setAttribute("process", process);
+	request.setAttribute("listFiles", listFiles);
+	return forward(request, "/workflow/viewFileDocumentsDetails.jsp");
 
     }
 

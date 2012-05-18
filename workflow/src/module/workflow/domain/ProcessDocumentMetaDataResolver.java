@@ -24,6 +24,16 @@ public abstract class ProcessDocumentMetaDataResolver<P extends ProcessDocument>
     public abstract String getMetadataTemplateNameToUseOrCreate();
 
     public abstract Map<String, String> getMetadataKeysAndValuesMap(P processDocument);
+    
+    /**
+     * 
+     * @return if true, the new instance of P (which extends
+     *         {@link ProcessDocument}) will have its access registered, if
+     *         false it will not
+     */
+    public boolean shouldFileContentAccessBeLogged() {
+	return false;
+    }
 
     @SuppressWarnings("unchecked")
     void fillMetaDataBasedOnDocument(ProcessDocument file) {
@@ -35,6 +45,7 @@ public abstract class ProcessDocumentMetaDataResolver<P extends ProcessDocument>
 
 	file.getDocument().setMetadataTemplateAssociated(metadataTemplate);
 	file.getDocument().addMetadata(metadataKeysAndValuesMap);
+	file.getDocument().setSaveAccessLog(shouldFileContentAccessBeLogged());
             
         }
 

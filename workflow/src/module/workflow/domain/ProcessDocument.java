@@ -3,6 +3,7 @@ package module.workflow.domain;
 import java.io.InputStream;
 
 import module.fileManagement.domain.Document;
+import module.fileManagement.domain.FileNode;
 import module.workflow.util.WorkflowDocumentUploadBean;
 
 /**
@@ -24,12 +25,12 @@ public abstract class ProcessDocument extends ProcessDocument_Base {
     }
 
     public final void init(String displayName, String filename, byte[] content, WorkflowProcess process) {
-	//TODO check to see if we already have a ProcessDocument of this class and with the same filename and displayName (?) and if so, create a new version instead of a new Document
 	Document document = new Document(displayName, filename, content);
 	//get the read and write groups per process, if they exist, use them, if not, it's time to create it
 	document.setReadGroup(WFDocumentsReadPG.getOrCreateInstance(process));
 	document.setWriteGroup(WFDocumentsWritePG.getOrCreateInstance(process));
 	document.addVersion(displayName, filename, content);
+	document.addFileNode(new FileNode(process.getDocumentsRepository(), document));
 	setDocument(document);
 	
     }
@@ -82,15 +83,33 @@ public abstract class ProcessDocument extends ProcessDocument_Base {
     }
 
     /**
-     * TODO - make this work while accessing it with the FileManagement
-     * interface as well
      * 
-     * @return true if one should log whenever someone tries to access the
-     *         content of the file, false otherwise
-     * @author João Antunes
+     * @param displayName
+     * @param filename
+     * @param process
+     * @return An existing {@link ProcessDocument}, if one of the same type,
+     *         same displayName and filename exists associated with this
+     *         process, or null if it doesn't
      */
-    public boolean shouldFileContentAccessBeLogged() {
-	return false;
+    public static ProcessDocument getExistingDocument(String displayName, String filename, WorkflowProcess process,
+	    Class<? extends ProcessDocument> clazz) {
+	for (ProcessDocument processDocument : process.getFileDocuments()) {
+	    if (processDocument.getClass().equals(clazz) && processDocument.getDisplayName().equals(displayName)
+		    && processDocument.getFilename().equals(filename)) {
+		return processDocument;
+	    }
+	}
+	return null;
+
+    }
+
+    /**
+     * @return if the access to this instance is logged or not. To change this
+     *         value, per instance, see and override
+     *         {@link ProcessDocumentMetaDataResolver#shouldFileContentAccessBeLogged()}
+     */
+    public final boolean shouldFileContentAccessBeLogged() {
+	return getDocument().mustSaveAccessLog();
     }
 
     public String getFilename() {
@@ -113,6 +132,10 @@ public abstract class ProcessDocument extends ProcessDocument_Base {
      */
     public void processRemoval() {
 
+    }
+
+    public boolean isInTrash() {
+	return !hasProcess();
     }
 
     public String getContentType() {
