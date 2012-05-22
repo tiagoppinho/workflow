@@ -49,7 +49,7 @@ public class StringFieldValue extends StringFieldValue_Base {
 
     @Override
     public boolean isDefined() {
-	return getStringValue() != null;
+	return (getStringValue() != null) && (!getStringValue().isEmpty());
     }
 
     protected StringFieldValue() {

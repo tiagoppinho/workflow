@@ -24,6 +24,8 @@
  */
 package module.metaWorkflow.domain;
 
+import java.util.Comparator;
+
 import jvstm.cps.ConsistencyPredicate;
 import myorg.domain.exceptions.DomainException;
 import pt.ist.fenixWebFramework.services.Service;
@@ -36,6 +38,22 @@ import pt.utl.ist.fenix.tools.util.i18n.MultiLanguageString;
  * 
  */
 public class MetaProcessState extends MetaProcessState_Base {
+    
+    public static Comparator<MetaProcessState> COMPARATOR_BY_POSITION = new Comparator<MetaProcessState>() {
+	@Override
+	public int compare(MetaProcessState state1, MetaProcessState state2) {
+	    int orderComp = state1.getPosition().compareTo(state2.getPosition());
+	    return (orderComp != 0) ? orderComp : COMPARATOR_BY_NAME.compare(state1, state2);
+	}
+    };
+    
+    public static Comparator<MetaProcessState> COMPARATOR_BY_NAME = new Comparator<MetaProcessState>() {
+	@Override
+	public int compare(MetaProcessState state1, MetaProcessState state2) {
+	    int nameComp = state1.getName().getContent().compareTo(state2.getName().getContent());
+	    return (nameComp != 0) ? nameComp : state1.getExternalId().compareTo(state2.getExternalId());
+	}
+    };
 
     public MetaProcessState() {
         super();

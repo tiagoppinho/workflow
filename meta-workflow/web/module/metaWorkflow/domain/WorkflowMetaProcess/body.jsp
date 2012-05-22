@@ -10,6 +10,7 @@
 <%@page import="pt.ist.fenixWebFramework.servlets.filters.contentRewrite.GenericChecksumRewriter"%>
 
 <bean:define id="processOID" name="process" property="externalId" type="java.lang.String"/>
+<bean:define id="process" name="process" type="module.metaWorkflow.domain.WorkflowMetaProcess"/>
 
 <logic:equal name="process" property="open" value="false">
 	<div class="highlightBox mtop05 mbottom15">
@@ -84,7 +85,7 @@
 						</span>
 					</li>
 				</logic:iterate>
-			</ul>	
+			</ul>
 			
 
 			
@@ -122,6 +123,52 @@
 	</div>
 </div>
 
+<div id="states">
+<logic:notEmpty name="process" property="metaType.processStates">
+<table style="text-align: center; width: 100%;">
+	<tr>
+		<td align="center">
+			<table style="border-collapse: separate; border-spacing: 10px;">
+				<tr>
+					<logic:iterate id="state" name="process" property="metaType.processStatesByOrder" type="module.metaWorkflow.domain.MetaProcessState">
+
+						<% final String colorStyle = (state.isActive(process)) ? "background-color: #CEF6CE; border-color: #04B404; " : ""; %>
+						<td style="<%= colorStyle + "border-style: solid; border-width: thin; width: 120px; padding: 5px; border-radius: 2em; -moz-border-radius: 2em;" %>" align="center"
+								title="<%= state.getName().getContent() %>">
+							<%= state.getName().getContent() %>
+							
+						</td>
+					</logic:iterate>
+				</tr>
+			</table>
+		</td>
+	</tr>
+	<tr>
+		<td align="center">
+			<table style="border-collapse: separate; border-spacing: 10px; border-style: dotted; border-width: thin; background-color: #FEFEFE;">
+				<tr>
+					<td align="center">
+						<strong>
+							<bean:message bundle="META_WORKFLOW_RESOURCES" key="label"/>
+						</strong>
+					</td>
+					<td style="border-style: solid; border-width: thin; width: 12px; padding: 5px; border-radius: 2em; -moz-border-radius: 2em;">
+					</td>
+					<td>
+						<bean:message bundle="META_WORKFLOW_RESOURCES" key="module.metaWorkflow.domain.MetaProcessState.not.active"/>
+					</td>
+					<td style="background-color: #CEF6CE; border-color: #04B404; border-style: solid; border-width: thin; width: 12px; padding: 5px; border-radius: 2em; -moz-border-radius: 2em;">
+					</td>
+					<td>
+						<bean:message bundle="META_WORKFLOW_RESOURCES" key="module.metaWorkflow.domain.MetaProcessState.active"/>
+					</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+</table>
+</logic:notEmpty>
+</div>
 
 <h3><fr:view name="process" property="fieldSet.metaField.name.content"/></h3>
 <p>

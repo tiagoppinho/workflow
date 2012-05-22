@@ -71,7 +71,7 @@ public class MetaProcessStateConfig extends MetaProcessStateConfig_Base {
 	    }
 	}
 
-	return definedMetaFields.contains(getDependedFields());
+	return definedMetaFields.containsAll(getDependedFields());
     }
 
     @Service

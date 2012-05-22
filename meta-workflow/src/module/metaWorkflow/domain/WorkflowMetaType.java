@@ -152,6 +152,12 @@ public class WorkflowMetaType extends WorkflowMetaType_Base {
 	return description == null ? 1 : description.getVersion();
     }
 
+    public List<MetaProcessState> getProcessStatesByOrder() {
+	List<MetaProcessState> states = new ArrayList<MetaProcessState>(getProcessStates());
+	Collections.sort(states, MetaProcessState.COMPARATOR_BY_POSITION);
+	return states;
+    }
+
     public List<WorkflowMetaTypeDescription> getOrderedDescriptionHistory() {
 	List<WorkflowMetaTypeDescription> list = new ArrayList<WorkflowMetaTypeDescription>(getDescriptions());
 	Collections.sort(list);

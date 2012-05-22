@@ -54,7 +54,7 @@ public class StringsFieldValue extends StringsFieldValue_Base {
 
     @Override
     public boolean isDefined() {
-	if ((getStringsValue() == null) && (getStringsValue().size() == 0)) {
+	if ((getStringsValue() == null) || (getStringsValue().size() == 0)) {
 	    return false;
 	}
 	for (String string : getStringsValue().getUnmodifiableList()) {
