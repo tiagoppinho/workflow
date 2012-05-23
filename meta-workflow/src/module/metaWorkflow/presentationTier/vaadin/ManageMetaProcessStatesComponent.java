@@ -39,6 +39,7 @@ import module.metaWorkflow.domain.WorkflowMetaType;
 import module.vaadin.ui.BennuTheme;
 import myorg.applicationTier.Authenticate.UserView;
 import myorg.domain.RoleType;
+import myorg.domain.exceptions.DomainException;
 import myorg.util.BundleUtil;
 import pt.ist.fenixframework.pstm.AbstractDomainObject;
 import pt.ist.vaadinframework.annotation.EmbeddedComponent;
@@ -207,9 +208,15 @@ public class ManageMetaProcessStatesComponent extends CustomComponent implements
 				.getName().getContent())) {
 			    @Override
 			    public void onConfirm() {
-				source.unselect(state);
-				states.removeItem(state);
-				state.delete();
+				try {
+				    state.delete();
+				    source.unselect(state);
+				    states.removeItem(state);
+				} catch (DomainException ex) {
+				    ManageMetaProcessStatesComponent.this.getWindow().showNotification(
+					    getMessage("error.while.deleting.state") + "<br/>",
+					    getMessage(ex.getMessage()), Notification.TYPE_ERROR_MESSAGE);
+				}
 			    }
 			};
 			getWindow().addWindow(confirmationWindow);
