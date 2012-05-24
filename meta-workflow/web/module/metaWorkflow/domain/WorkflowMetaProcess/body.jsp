@@ -170,31 +170,32 @@
 </logic:notEmpty>
 </div>
 
-<h3><fr:view name="process" property="fieldSet.metaField.name.content"/></h3>
-<p>
-<logic:empty name="process" property="fieldSet.childFieldValues">
-	<bean:message key="label.noFields" bundle="META_WORKFLOW_RESOURCES" />
-</logic:empty>
-<logic:notEmpty name="process" property="fieldSet.childFieldValues">
-	<table class="tstyle2">
-		<logic:iterate id="field" name="process" property="fieldSet.orderedChildFields">
-			<% request.setAttribute("field", field); %>
-			<bean:define id="fieldId" name="field" property="externalId" type="String"/>
-			
-			<tr>
-				<td class="aright"><fr:view name="field" property="metaField.name.content"/>:</td>
-				<td>
-					<jsp:include page="<%= "../fieldValues/view" + field.getClass().getSimpleName() + ".jsp" %>"/>
-				</td>
-				<td>
-				<wf:activityLink id="<%= "edit-" + fieldId %>" processName="process" activityName="EditFieldValue" scope="request" paramName0="field" paramValue0="<%=fieldId%>">
-					<bean:message bundle="MYORG_RESOURCES" key="link.edit"/>
-				</wf:activityLink>
-				</td>
-			</tr>
-		</logic:iterate>
-	</table>
-</logic:notEmpty>
+<fieldset>
+	<legend><big><strong><fr:view name="process" property="fieldSet.metaField.name.content"/></strong></big></legend>
+	<logic:empty name="process" property="fieldSet.childFieldValues">
+		<bean:message key="label.noFields" bundle="META_WORKFLOW_RESOURCES" />
+	</logic:empty>
+	<logic:notEmpty name="process" property="fieldSet.childFieldValues">
+		<table style="border: none;">
+			<logic:iterate id="field" name="process" property="fieldSet.orderedChildFields">
+				<% request.setAttribute("field", field); %>
+				<bean:define id="fieldId" name="field" property="externalId" type="String"/>
+				
+				<tr>
+					<td class="aright"><strong><fr:view name="field" property="metaField.name.content"/>:</strong></td>
+					<td style="text-align: center; border-left:solid 10px transparent;">
+						<jsp:include page="<%= "../fieldValues/view" + field.getClass().getSimpleName() + ".jsp" %>"/>
+					</td>
+					<td style="border-left:solid 10px transparent;">
+					<wf:activityLink id="<%= "edit-" + fieldId %>" processName="process" activityName="EditFieldValue" scope="request" paramName0="field" paramValue0="<%=fieldId%>">
+						<bean:message bundle="MYORG_RESOURCES" key="link.edit"/>
+					</wf:activityLink>
+					</td>
+				</tr>
+			</logic:iterate>
+		</table>
+	</logic:notEmpty>
+</fieldset>
 
 <%--
 <h3 class="mbottom05"><bean:message key="title.comments" bundle="WORKFLOW_RESOURCES"/></h3>
