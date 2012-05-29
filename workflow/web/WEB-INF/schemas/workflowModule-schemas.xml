@@ -76,7 +76,7 @@
 </schema>
 
 <schema name="create.queue" type="module.workflow.util.WorkflowQueueBean" bundle="WORKFLOW_RESOURCES">
-	<slot name="name" key="label.queue.name" validator="pt.ist.fenixWebFramework.renderers.validators.RequiredValidator">
+	<slot name="name" key="label.queue.name" required="true">
 		<property name="size" value="40"/>
 	</slot>
 </schema>

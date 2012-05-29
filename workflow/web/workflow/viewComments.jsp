@@ -85,7 +85,7 @@ else {
 				<bean:message key="label.addComment" bundle="WORKFLOW_RESOURCES"/>:
 			</td>
 			<td>
-				<fr:edit id="comment-text" name="bean" slot="comment" type="java.lang.String" validator="pt.ist.fenixWebFramework.renderers.validators.RequiredValidator">
+				<fr:edit id="comment-text" name="bean" slot="comment" type="java.lang.String" required="true">
 					<fr:layout name="longText">
 						<fr:property name="rows" value="6"/>
 						<fr:property name="columns" value="60"/>
