@@ -26,13 +26,13 @@
 
 <fr:edit id="fieldBean" name="fieldBean" action="<%="/metaTypeManagement.do?method=addField&metaTypeId=" + metaType.getExternalId() + "&fieldSetId=" + fieldSet.getExternalId() %>">
 	<fr:schema type="module.metaWorkflow.presentationTier.dto.MetaFieldBean" bundle="META_WORKFLOW_RESOURCES">
-		<fr:slot name="fieldClass" layout="menu-select" validator="pt.ist.fenixWebFramework.renderers.validators.RequiredValidator">
+		<fr:slot name="fieldClass" layout="menu-select" required="true">
 			<fr:property name="providerClass" value="module.metaWorkflow.presentationTier.provider.MetaFieldClassProvider"/>
 			<fr:property name="eachSchema" value="metaField.class.fromLabel"/>
 			<fr:property name="eachLayout" value="values"/>
 		</fr:slot>
 		<fr:slot name="name" validator="pt.ist.fenixWebFramework.rendererExtensions.validators.MultiLanguageStringValidator"/>
-		<fr:slot name="order" validator="pt.ist.fenixWebFramework.renderers.validators.RequiredValidator"/>
+		<fr:slot name="order" required="true"/>
 	</fr:schema>
 	<fr:layout name="tabular">
 		<fr:property name="classes" value="tstyle1"/>

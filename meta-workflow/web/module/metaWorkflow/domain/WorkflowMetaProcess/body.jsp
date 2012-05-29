@@ -211,7 +211,7 @@
 		<fr:form action='<%= "/metaWorkflow.do?method=addComment&processId=" + processOID %>'>
 			<div class="addcomment" style="-moz-border-radius-bottomleft: 6px; -moz-border-radius-bottomright: 6px; -webkit-border-bottom-left-radius: 6px; -webkit-border-bottom-right-radius: 6px; padding-left: 130px;">
 				<p class="mbottom05"><bean:message key="label.comment" bundle="WORKFLOW_RESOURCES"/>:</p>
-				<fr:edit id="comment" name="commentBean" slot="string" type="java.lang.String" validator="pt.ist.fenixWebFramework.renderers.validators.RequiredValidator">
+				<fr:edit id="comment" name="commentBean" slot="string" type="java.lang.String" required="true">
 					<fr:layout name="longText">
 						<fr:property name="rows" value="6"/>
 						<fr:property name="columns" value="60"/>

@@ -1,12 +1,12 @@
 <schema name="create.meta.type" type="module.metaWorkflow.util.WorkflowMetaTypeBean" bundle="META_WORKFLOW_RESOURCES">
-	<slot name="name" key="label.metaType.name" validator="pt.ist.fenixWebFramework.renderers.validators.RequiredValidator">
+	<slot name="name" key="label.metaType.name" required="true">
 		<property name="size" value="40"/>
 	</slot>
-	<slot name="organizationModel" key="label.organizational.structure" layout="menu-select" bundle="ORGANIZATION_RESOURCES" validator="pt.ist.fenixWebFramework.renderers.validators.RequiredValidator">
+	<slot name="organizationModel" key="label.organizational.structure" layout="menu-select" bundle="ORGANIZATION_RESOURCES" required="true">
 		<property name="providerClass" value="module.organization.presentationTier.renderers.providers.OrganizationalModelProvider"/>
 		<property name="eachLayout" value="values"/>
 	</slot>
-	<slot name="description" key="label.metaType.description" layout="rich-text" validator="pt.ist.fenixWebFramework.renderers.validators.RequiredValidator">
+	<slot name="description" key="label.metaType.description" layout="rich-text" required="true">
 		<property name="rows" value="20"/>
 		<property name="columns" value="65"/>
 		<property name="config" value="advanced" />
@@ -37,12 +37,12 @@
 </schema>
 
 <schema name="create.meta.process" type="module.metaWorkflow.util.WorkflowMetaProcessBean" bundle="META_WORKFLOW_RESOURCES">
-	<slot name="queue" layout="menu-select" key="label.metaProcess.queue" validator="pt.ist.fenixWebFramework.renderers.validators.RequiredValidator" help="label.metaProcess.info.initialQueue">
+	<slot name="queue" layout="menu-select" key="label.metaProcess.queue" required="true" help="label.metaProcess.info.initialQueue">
 		<property name="providerClass" value="module.metaWorkflow.presentationTier.renderers.providers.AvailableUserQueues"/>
 		<property name="eachLayout" value="values"/>
 		<property name="eachSchema" value="view.queue.name"/>
 	</slot>
-	<slot name="subject" key="label.metaProcess.subject" validator="pt.ist.fenixWebFramework.renderers.validators.RequiredValidator" help="label.metaProcess.info.subject">
+	<slot name="subject" key="label.metaProcess.subject" required="true" help="label.metaProcess.info.subject">
 		<property name="size" value="60"/>
 	</slot>	
 	<slot name="requestor" key="label.metaProcess.requestor" layout="autoComplete">
@@ -55,7 +55,7 @@
 			<property name="key" value="false"/>
 		</validator>		
 	</slot>
-	<slot name="instanceDescription" layout="longText" key="label.metaProcess.instanceDescription" validator="pt.ist.fenixWebFramework.renderers.validators.RequiredValidator" help="label.metaProcess.info.description">
+	<slot name="instanceDescription" layout="longText" key="label.metaProcess.instanceDescription" required="true" help="label.metaProcess.info.description">
 		<property name="rows" value="10"/>
 		<property name="columns" value="60"/>
 	</slot>
@@ -97,12 +97,12 @@
 </schema>
 
 <schema name="edit.metaTypeDescription" type="module.metaWorkflow.domain.WorkflowMetaType" bundle="META_WORKFLOW_RESOURCES">
-	<slot name="currentDescription.description" key="label.metaType.description" layout="rich-text" validator="pt.ist.fenixWebFramework.renderers.validators.RequiredValidator">
+	<slot name="currentDescription.description" key="label.metaType.description" layout="rich-text" required="true">
 		<property name="rows" value="20"/>
 		<property name="columns" value="65"/>
 		<property name="config" value="advanced" />
 	</slot>
-	<slot name="organizationalModel" key="label.organizational.structure" layout="menu-select" bundle="ORGANIZATION_RESOURCES" validator="pt.ist.fenixWebFramework.renderers.validators.RequiredValidator">
+	<slot name="organizationalModel" key="label.organizational.structure" layout="menu-select" bundle="ORGANIZATION_RESOURCES" required="true">
 		<property name="providerClass" value="module.organization.presentationTier.renderers.providers.OrganizationalModelProvider"/>
 		<property name="eachLayout" value="values"/>
 	</slot>
