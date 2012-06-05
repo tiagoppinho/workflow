@@ -5,7 +5,7 @@ package module.workflow.domain;
 
 import java.util.Map;
 
-import module.fileManagement.domain.MetadataTemplate;
+import module.fileManagement.domain.metadata.MetadataTemplate;
 
 /**
  * @author João Antunes (joao.antunes@tagus.ist.utl.pt) - 4 de Mai de 2012
@@ -24,7 +24,7 @@ public abstract class ProcessDocumentMetaDataResolver<P extends ProcessDocument>
     public abstract String getMetadataTemplateNameToUseOrCreate();
 
     public abstract Map<String, String> getMetadataKeysAndValuesMap(P processDocument);
-    
+
     /**
      * 
      * @return if true, the new instance of P (which extends
@@ -46,7 +46,7 @@ public abstract class ProcessDocumentMetaDataResolver<P extends ProcessDocument>
 	file.getDocument().setMetadataTemplateAssociated(metadataTemplate);
 	file.getDocument().addMetadata(metadataKeysAndValuesMap);
 	file.getDocument().setSaveAccessLog(shouldFileContentAccessBeLogged());
-            
-        }
+
+    }
 
 }
