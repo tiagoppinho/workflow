@@ -114,6 +114,7 @@
 						width="60"
 						height="44"
 						key="textField-1"
+						stretchType="RelativeToTallestObject"
 						positionType="Float"/>
 					<box>					<topPen lineWidth="1.0" lineStyle="Solid"/>
 					<leftPen lineWidth="1.0" lineStyle="Solid"/>
@@ -133,6 +134,7 @@
 						width="314"
 						height="44"
 						key="textField-2"
+						stretchType="RelativeToTallestObject"
 						positionType="Float"/>
 					<box>					<topPen lineWidth="1.0" lineStyle="Solid"/>
 					<leftPen lineWidth="1.0" lineStyle="Solid"/>
@@ -152,6 +154,7 @@
 						width="159"
 						height="44"
 						key="textField-3"
+						stretchType="RelativeToTallestObject"
 						positionType="Float"/>
 					<box>					<topPen lineWidth="1.0" lineStyle="Solid"/>
 					<leftPen lineWidth="1.0" lineStyle="Solid"/>
