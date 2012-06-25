@@ -40,6 +40,14 @@ class WorkflowMetaType {
 	Strings suporttedFileClasses;
 }
 
+class WorkflowMetaTypeVersion {
+	boolean published;
+	Integer version;
+	DateTime datePublication;
+	String publicationMotive;
+	String metaTypeDescription;
+}
+
 class MetaField {
 	MultiLanguageString name;
 	Integer fieldOrder (REQUIRED);
@@ -102,6 +110,7 @@ class WorkflowMetaTypeSpecificActivity {
 	String activityClass;
 }
 
+//FENIX-345: TODO remove this class (use the embedded WorkflowMetaTypeVersion)
 class WorkflowMetaTypeDescription {
 	String description;
 	int version;
@@ -124,85 +133,12 @@ class WorkflowUnitQueue extends .module.workflow.domain.WorkflowQueue {
 	
 }
 
-relation WorkflowMetaTypeDescription {
-	WorkflowMetaType playsRole metaType;
-	WorkflowMetaTypeDescription playsRole descriptions {
-		multiplicity *;
-	}
+class WorkflowMetaProcess extends .module.workflow.domain.WorkflowProcess {
+	String instanceDescription;
+	String subject;
+	DateTime creationDate;
+	Boolean open;
 }
 
-relation WorkflowMetaTypeWorkflowMetaTypeSpecificLayout {
-	WorkflowMetaType playsRole metaType;
-	WorkflowMetaTypeSpecificLayout playsRole specificLayout;
-}
-
-relation WorkflowMetaTypeWorkflowMetaTypeSpecificActivity {
-	WorkflowMetaType playsRole metaType;
-	WorkflowMetaTypeSpecificActivity playsRole specificActivities {
-		multiplicity *;
-	}
-}
-
-relation WorkflowInitializerMyOrg {
-	MetaWorkflowInitializer playsRole metaWorkflowInitializer;
-	.myorg.domain.MyOrg playsRole myOrg;
-}
-
-relation WorkflowMetaTypeFieldSet {
-	WorkflowMetaType playsRole metaType;
-	MetaFieldSet playsRole fieldSet {
-		multiplicity 1..1;
-	}
-}
-
-relation MetaFieldMetaFieldSet {
-	MetaField playsRole childFields {
-		multiplicity *;
-	}
-	MetaFieldSet playsRole parentFieldSet;
-}
-
-relation FieldValueFieldSetValue {
-	FieldValue playsRole childFieldValues {
-		multiplicity *;
-	}
-	FieldSetValue playsRole parentFieldSet;
-}
-
-relation FieldValueMetaField {
-	MetaField playsRole metaField;
-	FieldValue playsRole fieldValues {
-		multiplicity *;
-	}
-}
-
-relation WorkflowMetaTypeMetaProcessState {
-	WorkflowMetaType playsRole workflowMetaType;
-	MetaProcessState playsRole processStates {
-		multiplicity *;
-	}
-}
-
-relation MetaProcessStateMetaProcessStateConfig {
-	MetaProcessState playsRole metaProcessState;
-	MetaProcessStateConfig playsRole configs {
-		multiplicity *;
-	}
-}
-
-relation MetaProcessStateConfigMetaProcessState {
-	MetaProcessState playsRole dependedStates {
-		multiplicity *;
-	}
-	MetaProcessStateConfig playsRole dependingConfigs {
-		multiplicity *;
-	}
-}
-relation MetaProcessStateConfigMetaField {
-	MetaField playsRole dependedFields {
-		multiplicity *;
-	}
-	MetaProcessStateConfig playsRole dependingStateConfigs {
-		multiplicity *;
-	}
+class UserRequestor extends .module.metaWorkflow.domain.Requestor {
 }
