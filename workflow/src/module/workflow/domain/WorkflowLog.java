@@ -122,4 +122,12 @@ public abstract class WorkflowLog extends WorkflowLog_Base {
 	return virtualHost != null && getWorkflowSystem() == virtualHost.getWorkflowSystem();
     }
 
+    public void delete() {
+	removeActivityExecutor();
+	removeProcess();
+	removeWorkflowSystem();
+	deleteDomainObject();
+
+    }
+
 }
