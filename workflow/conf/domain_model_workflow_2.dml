@@ -128,7 +128,9 @@ relation Observers {
 }
 
 relation UserLog {
-	myorg.domain.User playsRole activityExecutor;
+	myorg.domain.User playsRole activityExecutor {
+		multiplicity 1..1;
+	}
 	module.workflow.domain.WorkflowLog playsRole userLogs {
 		multiplicity *;
 	} 

@@ -30,7 +30,7 @@
       <tagclass>module.workflow.presentationTier.taglib.ActivitivyLinkTag</tagclass>
       <bodycontent>JSP</bodycontent>
       <info>
-          Generates a link for a given activity
+          Generates a link for a given activity IF IT IS ACTIVE
       </info>
       <attribute>
           <name>processName</name>
@@ -40,6 +40,11 @@
       <attribute>
           <name>activityName</name>
           <required>true</required>
+          <rtexprvalue>true</rtexprvalue>
+      </attribute>
+      <attribute>
+          <name>target</name>
+          <required>false</required>
           <rtexprvalue>true</rtexprvalue>
       </attribute>
       <attribute>

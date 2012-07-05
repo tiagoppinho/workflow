@@ -255,6 +255,12 @@ public abstract class WorkflowActivity<P extends WorkflowProcess, AI extends Act
     /**
      * This is the method that needs contains the activity specific behavior.
      * 
+     * The logs will fetch the logs in the given {@link #getUsedBundle()} the
+     * label: "label.description.{fullClassName}"
+     * 
+     * You can provide arguments to the log label by overriding
+     * {@link #getArgumentsDescription(ActivityInformation)}
+     * 
      * @param activityInformation
      */
     protected abstract void process(AI activityInformation);

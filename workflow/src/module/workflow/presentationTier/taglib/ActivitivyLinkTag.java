@@ -36,6 +36,8 @@ import module.workflow.activities.ActivityInformation;
 import module.workflow.activities.WorkflowActivity;
 import module.workflow.domain.WorkflowProcess;
 
+import org.apache.commons.lang.StringUtils;
+
 /**
  * 
  * @author Pedro Santos
@@ -54,6 +56,8 @@ public class ActivitivyLinkTag extends WorkflowBodyTag {
     private String linkName;
 
     private String id;
+
+    private String target;
 
     private String paramName0;
     private String paramValue0;
@@ -157,6 +161,14 @@ public class ActivitivyLinkTag extends WorkflowBodyTag {
 	parameterMap.put(parameterName, value);
     }
 
+    public String getTarget() {
+	return target;
+    }
+
+    public void setTarget(String target) {
+	this.target = target;
+    }
+
     protected void write(final String text) throws IOException {
 	pageContext.getOut().write(text);
     }
@@ -195,6 +207,13 @@ public class ActivitivyLinkTag extends WorkflowBodyTag {
 		pageContext.getOut().write("id=\"");
 		pageContext.getOut().write(getId());
 		pageContext.getOut().write("\" ");
+
+		if (!StringUtils.isEmpty(getTarget())) {
+		    pageContext.getOut().write("target=\"");
+		    pageContext.getOut().write(getTarget());
+		    pageContext.getOut().write("\" ");
+		}
+
 		pageContext.getOut().write("href=\"");
 		pageContext.getOut().write(getContextPath());
 		pageContext.getOut().write("/workflowProcessManagement.do?method=actionLink&activity=");

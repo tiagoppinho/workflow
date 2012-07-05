@@ -136,7 +136,9 @@ relation WorkflowflowSystemComment {
 }
 
 relation WorkflowflowSystemWorkflowLog {
-	WorkflowSystem playsRole workflowSystem;
+	WorkflowSystem playsRole workflowSystem {
+		multiplicity 1..1;
+	}
 	WorkflowLog playsRole processLogs {
 		multiplicity *;
 	}
@@ -146,7 +148,9 @@ relation WorkflowProcessActivityLog {
 	WorkflowLog playsRole executionLogs {
 		multiplicity *;
 	}
-	WorkflowProcess playsRole process;
+	WorkflowProcess playsRole process {
+		multiplicity 1..1;
+	}
 }
 
 relation WorkflowProcessWorkflowProcessComment {
