@@ -114,7 +114,9 @@ relation WorkflowMetaProcessFieldSetValue {
 
 
 relation WorkflowSystemWorkflowMetaType {
-	.module.workflow.domain.WorkflowSystem playsRole workflowSystem;
+	.module.workflow.domain.WorkflowSystem playsRole workflowSystem {
+		multiplicity 1..1;
+	}
 	WorkflowMetaType playsRole metaTypes {
 		multiplicity *;
 	}

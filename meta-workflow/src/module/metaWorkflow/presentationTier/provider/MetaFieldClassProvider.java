@@ -54,6 +54,10 @@ public class MetaFieldClassProvider implements DataProvider {
 
     @Override
     public Object provide(Object source, Object currentValue) {
+	return getMetaFieldClassesSet();
+    }
+
+    public static Set<Class<? extends MetaField>> getMetaFieldClassesSet() {
 	Set<Class<? extends MetaField>> metaFieldClasses = new TreeSet<Class<? extends MetaField>>(
 		CLASS_COMPARATOR_BY_SIMPLE_NAME_OR_FULL_PACKAGE_NAME);
 	for (DomainClass domainClass : FenixFramework.getDomainModel().getDomainClasses()) {
@@ -68,7 +72,7 @@ public class MetaFieldClassProvider implements DataProvider {
 	return metaFieldClasses;
     }
 
-    private boolean isSubclassOfMetaField(DomainClass domainClass) {
+    private static boolean isSubclassOfMetaField(DomainClass domainClass) {
 	return (domainClass.hasSuperclass() && domainClass.getSuperclass().getFullName().equals(MetaField.class.getName()));
     }
 

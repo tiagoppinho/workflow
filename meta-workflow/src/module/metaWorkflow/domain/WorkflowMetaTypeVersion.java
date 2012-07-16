@@ -9,6 +9,7 @@ import module.metaWorkflow.util.versioning.DiffUtil;
 import module.metaWorkflow.util.versioning.DiffUtil.Revision;
 import myorg.applicationTier.Authenticate.UserView;
 
+import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 
 import pt.ist.fenixWebFramework.services.Service;
@@ -58,12 +59,13 @@ public class WorkflowMetaTypeVersion extends WorkflowMetaTypeVersion_Base implem
 
     private WorkflowMetaTypeVersion(WorkflowMetaTypeVersion workflowMetaTypeVersion) {
 	super();
-	setVersion(workflowMetaTypeVersion.getVersion() + 1);
+	super.setVersion(workflowMetaTypeVersion.getVersion() + 1);
 	if (workflowMetaTypeVersion.getMetaType() == null)
 	    throw new MetaWorkflowDomainException(
 		    "invalid.workflowMetaTypeVersion.given.which.hasnt.a.WorkflowMetaType.associated");
 	setMetaType(workflowMetaTypeVersion.getMetaType());
-	setPublished(false);
+	super.setPublished(false);
+	setMetaTypeDescription(workflowMetaTypeVersion.getMetaTypeDescription());
     }
 
     /**
@@ -89,19 +91,26 @@ public class WorkflowMetaTypeVersion extends WorkflowMetaTypeVersion_Base implem
 	super.setMetaTypeDescription(metaTypeDescription);
     }
 
+    //ignore the publisherOfVersion
     @Override
     public void setPublisherOfVersion(myorg.domain.User publisherOfVersion) {
-	throw new MetaWorkflowDomainException("illegal.usage.use.publish.instead");
+	if (getPublished())
+	    throw new MetaWorkflowDomainException("cant.change.metaTypeDescription.on.published.version");
+	super.setPublisherOfVersion(UserView.getCurrentUser());
     }
 
     @Override
     public void setPublicationMotive(String publicationMotive) {
-	throw new MetaWorkflowDomainException("illegal.usage.use.publish.instead");
+	if (getPublished())
+	    throw new MetaWorkflowDomainException("cant.change.metaTypeDescription.on.published.version");
+	super.setPublicationMotive(publicationMotive);
     }
 
     @Override
     public void setDatePublication(DateTime datePublication) {
-	throw new MetaWorkflowDomainException("illegal.usage.use.publish.instead");
+	if (getPublished())
+	    throw new MetaWorkflowDomainException("cant.change.metaTypeDescription.on.published.version");
+	super.setDatePublication(datePublication);
     }
 
     @Override
@@ -124,8 +133,13 @@ public class WorkflowMetaTypeVersion extends WorkflowMetaTypeVersion_Base implem
     }
 
     @Override
+    @Service
     public void setPublished(boolean published) {
-	throw new MetaWorkflowDomainException("illegal.usage.use.publish.instead");
+	if (!published)
+	    throw new IllegalArgumentException("can't unpublish a version");
+	if (StringUtils.isEmpty(getPublicationMotive()))
+	    throw new MetaWorkflowDomainException("must.have.a.motive");
+	publish(getPublicationMotive());
     }
 
     @Override
@@ -273,5 +287,34 @@ public class WorkflowMetaTypeVersion extends WorkflowMetaTypeVersion_Base implem
 
     public Revision getDiffWith(String description) {
 	return DiffUtil.diff(getMetaTypeDescription(), description);
+    }
+
+    /**
+     * Deletes the metaTypeVersion and all of the associated
+     * {@link MetaProcessState}, {@link MetaProcessStateConfig}, and
+     * {@link MetaField} as long as it is a draft version
+     */
+    @Service
+    public void delete() {
+	if (getPublished())
+	    throw new MetaWorkflowDomainException("delete.published.WorkflowMetaTypeVersion.error");
+
+	//order should be: configs before states; and fields
+
+	for (MetaProcessState processState : getProcessStates()) {
+	    for (MetaProcessStateConfig config : processState.getConfigs()) {
+		config.delete();
+	    }
+	}
+	for (MetaProcessState processState : getProcessStates()) {
+	    processState.delete();
+	}
+
+	getFieldSet().deleteItselfAndAllChildren();
+
+	super.setMetaType(null);
+
+	deleteDomainObject();
+
     }
 }

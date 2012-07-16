@@ -95,6 +95,7 @@ public class ManageMetaTypesComponent extends CustomComponent implements Embedde
 	};
 	DomainContainer<WorkflowMetaType> container = new DomainContainer<WorkflowMetaType>(WorkflowSystem.getInstance()
 		.getMetaTypes(), WorkflowMetaType.class);
+
 	container.setContainerProperties("name", "organizationalModel.name", "availableFileTypes");
 	table.setContainerDataSource(container);
 	table.addGeneratedColumn("", new ColumnGenerator() {
@@ -105,12 +106,12 @@ public class ManageMetaTypesComponent extends CustomComponent implements Embedde
 		HorizontalLayout horizontalLayout = new HorizontalLayout();
 		horizontalLayout.setSpacing(true);
 
-		Button statesButton = new Button(getMessage("link.metaType.manageStates"), new Button.ClickListener() {
+		Button statesButton = new Button(getMessage("link.metaType.manageMetaType"), new Button.ClickListener() {
 		    private static final long serialVersionUID = 1L;
 
 		    @Override
 		    public void buttonClick(ClickEvent event) {
-			EmbeddedApplication.open(getApplication(), ManageMetaProcessStatesComponent.class,
+			EmbeddedApplication.open(getApplication(), ManageMetaTypeComponent.class,
 				((WorkflowMetaType) itemId).getExternalId());
 		    }
 		});
@@ -122,6 +123,7 @@ public class ManageMetaTypesComponent extends CustomComponent implements Embedde
 
 	layout.addComponent(table);
     }
+
 
     private String getMessage(String message) {
 	return BundleUtil.getFormattedStringFromResourceBundle(RESOURCE_BUNDLE, message);

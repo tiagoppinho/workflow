@@ -24,7 +24,9 @@
  */
 package module.metaWorkflow.domain;
 
+import module.metaWorkflow.exceptions.MetaWorkflowDomainException;
 import module.metaWorkflow.presentationTier.dto.MetaFieldBean;
+import pt.ist.fenixWebFramework.services.Service;
 import pt.utl.ist.fenix.tools.util.i18n.MultiLanguageString;
 
 /**
@@ -35,7 +37,12 @@ import pt.utl.ist.fenix.tools.util.i18n.MultiLanguageString;
  */
 public class LocalDateMetaField extends LocalDateMetaField_Base {
 
-    protected LocalDateMetaField() {
+    /**
+     * Note should be avoided its use (only used by
+     * {@link MetaField#duplicatedMetaField()}
+     */
+    @Deprecated
+    public LocalDateMetaField() {
 	super();
     }
 
@@ -59,5 +66,18 @@ public class LocalDateMetaField extends LocalDateMetaField_Base {
 	if (!hasAnyFieldValues()) {
 	    deleteDomainObject();
 	}
+    }
+
+    @Override
+    @Service
+    public void deleteItselfAndAllChildren() throws MetaWorkflowDomainException {
+	if (isPublished())
+	    throw new MetaWorkflowDomainException("cant.delete.a.published.mf");
+	delete();
+    }
+
+    @Override
+    public boolean isPublished() {
+	return getParentFieldSet().isPublished();
     }
 }

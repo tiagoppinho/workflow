@@ -99,17 +99,23 @@
 		
 		<div id="tabs-3">
 			<bean:define id="currentDescription" name="process" property="metaType.currentDescription"/>
+			<bean:define id="currentPublishedWMTVersion" name="process" property="metaType.currentPublishedWMTVersion"/>
 			<div class="mtop05 mbottom15">
-				<fr:view name="currentDescription" property="description" layout="html"/>
+				<fr:view name="currentDescription"  layout="html"/>
 			</div>
 			<p class="mbottom05">
 				<em>
 					<span class="aright">
-					<bean:define id="version" name="currentDescription" property="version"/>
-					<bean:define id="versionOwner" name="currentDescription" property="versionOwner.presentationName"/>
-					<bean:define id="date">
-						<fr:view name="currentDescription" property="date"/>
+					<bean:define id="version" name="currentPublishedWMTVersion" property="version"/>
+					<bean:define id="versionOwner">
+						<logic:notEmpty name="currentPublishedWMTVersion" property="publisherOfVersion">
+							<bean:write name="currentPublishedWMTVersion" property="publisherOfVersion.presentationName"/>
+						</logic:notEmpty>
+						<logic:empty name="currentPublishedWMTVersion" property="publisherOfVersion">
+								<bean:message key="label.unknown" bundle="META_WORKFLOW_RESOURCES"/>
+						</logic:empty>
 					</bean:define>
+					<bean:define id="date" name="currentPublishedWMTVersion" property="datePublication"/>
 					
 						<bean:message key="label.metaTypeDescription.by" bundle="META_WORKFLOW_RESOURCES" arg0="<%= version.toString() %>" arg1="<%= versionOwner.toString() %>" arg2="<%= date.toString()%>"/>
 					</span>

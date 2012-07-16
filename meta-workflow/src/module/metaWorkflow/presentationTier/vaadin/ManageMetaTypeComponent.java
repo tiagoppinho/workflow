@@ -20,6 +20,7 @@ import pt.ist.vaadinframework.data.reflect.DomainContainer;
 import pt.ist.vaadinframework.ui.EmbeddedComponentContainer;
 import pt.ist.vaadinframework.ui.TransactionalTable;
 
+import com.vaadin.data.Property;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.CustomComponent;
@@ -87,51 +88,83 @@ public class ManageMetaTypeComponent extends CustomComponent implements Embedded
 	title.addStyleName(BennuTheme.LABEL_H2);
 	layout.addComponent(title);
 
-	Label versions = new Label(getMessage("label.ManageMetaTypeComponent.versions"));
+	//let's add the back link button
+	Button backButton = new Button(getMessage("label.back"));
+	backButton.setStyleName(BennuTheme.BUTTON_LINK);
+	backButton.setDescription(getMessage("tooltip.back.onManageMetaTypeComponent"));
+	backButton.addListener(new Button.ClickListener() {
+
+	    @Override
+	    public void buttonClick(ClickEvent event) {
+		EmbeddedApplication.back(getApplication());
+
+	    }
+	});
+
+	layout.addComponent(backButton);
+
+	Label versions = new Label(getMessage("label.ManageMetaTypeComponent.versions") + ":");
 	versions.addStyleName(BennuTheme.LABEL_H3);
 	layout.addComponent(versions);
 
 	Table table = new TransactionalTable(RESOURCE_BUNDLE) {
-	    private static final long serialVersionUID = 1L;
-
 	    @Override
-	    protected String formatPropertyValue(Object rowId, Object colId, com.vaadin.data.Property property) {
-		if ("metaProcessesCount".equals(colId)) {
-		    StringBuilder strBuilder = new StringBuilder();
-		    List<WorkflowMetaProcess> metaProcesses = (List<WorkflowMetaProcess>) property
-			    .getValue();
-
-		    metaProcesses.size();
-		    return strBuilder.toString();
-
+	    protected String formatPropertyValue(Object rowId, Object colId, Property property) {
+		if ("version".equals(colId)) {
+		    return getMessage("label.metaType.version") + " " + property.getValue();
 		}
 		return super.formatPropertyValue(rowId, colId, property);
-	    };
+	    }
 	};
 	DomainContainer<WorkflowMetaTypeVersion> container = new DomainContainer<WorkflowMetaTypeVersion>(metaType.getVersions(),
 		WorkflowMetaTypeVersion.class);
-	container.setContainerProperties("version", "metaProcessesCount");
-	table.setContainerDataSource(container);
-	table.addGeneratedColumn("", new ColumnGenerator() {
-	    private static final long serialVersionUID = 1L;
+	container.setContainerProperties("version", "metaProcesses");
 
+	table.setContainerDataSource(container);
+	
+	table.addGeneratedColumn("version", new ColumnGenerator() {
+	    
 	    @Override
-	    public Object generateCell(Table source, final Object itemId, Object columnId) {
+	    public Object generateCell(Table source, Object itemId, Object columnId) {
 		HorizontalLayout horizontalLayout = new HorizontalLayout();
 		horizontalLayout.setSpacing(true);
-
-		Button statesButton = new Button(getMessage("link.metaType.manageStates"), new Button.ClickListener() {
+		
+		final WorkflowMetaTypeVersion metaTypeVersion = (WorkflowMetaTypeVersion) itemId;
+		Property prop = source.getItem(itemId).getItemProperty(columnId);
+		
+		Button statesButton = new Button(getMessage("label.metaType.version") + " " + prop.getValue(), new Button.ClickListener() {
 		    private static final long serialVersionUID = 1L;
 
 		    @Override
 		    public void buttonClick(ClickEvent event) {
-			EmbeddedApplication.open(getApplication(), ManageMetaProcessStatesComponent.class,
-				((WorkflowMetaType) itemId).getExternalId());
+			EmbeddedApplication.open(getApplication(), ManageMetaTypeVersionComponent.class,
+				metaTypeVersion.getExternalId());
 		    }
 		});
 		statesButton.addStyleName(BaseTheme.BUTTON_LINK);
 		horizontalLayout.addComponent(statesButton);
 		return horizontalLayout;
+		
+	    }
+	});
+	//	table.setColumnHeader("metaProcessesCount")
+	table.addGeneratedColumn("metaProcesses", new ColumnGenerator() {
+	    private static final long serialVersionUID = 1L;
+
+	    @Override
+	    public Object generateCell(Table source, final Object itemId, Object columnId) {
+		WorkflowMetaTypeVersion metaTypeVersion = (WorkflowMetaTypeVersion) itemId;
+		if (!metaTypeVersion.getPublished()) {
+		    Label draftLabel = new Label("<p>" + getMessage("ManageMetaTypeComponent.label.draft") + "</p>");
+		    draftLabel.setContentMode(Label.CONTENT_XHTML);
+		    return draftLabel;
+		}
+ else {
+		Property prop = source.getItem(itemId).getItemProperty(columnId);
+		    @SuppressWarnings("unchecked")
+		List<WorkflowMetaProcess> workflowMetaProcesses = (List<WorkflowMetaProcess>) prop.getValue();
+		    return new Label(String.valueOf(workflowMetaProcesses.size()));
+		}
 	    }
 	});
 

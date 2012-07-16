@@ -65,11 +65,6 @@ public class MetaProcessState extends MetaProcessState_Base {
 	setPosition(position);
     }
 
-    public MetaProcessState(WorkflowMetaType metaType, String name, Integer position) {
-	this(name, position);
-	setWorkflowMetaType(metaType);
-    }
-
     public MetaProcessState(WorkflowMetaTypeVersion metaTypeVersion, String name, Integer position) {
 	this(name, position);
 	setWorkflowMetaTypeVersion(metaTypeVersion);
@@ -90,8 +85,8 @@ public class MetaProcessState extends MetaProcessState_Base {
     }
 
     @ConsistencyPredicate
-    public boolean checkHasMetaType() {
-	return hasWorkflowMetaType();
+    public boolean checkHasMetaTypeVersion() {
+	return hasWorkflowMetaTypeVersion();
     }
 
 
@@ -110,8 +105,8 @@ public class MetaProcessState extends MetaProcessState_Base {
      * methods TODO: addConfigs addDependingConfigs
      */
     @Service
-    public static MetaProcessState create(WorkflowMetaType metaType, String name, Integer position) {
-	return new MetaProcessState(metaType, name, position);
+    public static MetaProcessState create(WorkflowMetaTypeVersion metaTypeVersion, String name, Integer position) {
+	return new MetaProcessState(metaTypeVersion, name, position);
     }
 
     @Service
@@ -123,7 +118,27 @@ public class MetaProcessState extends MetaProcessState_Base {
 	    config.delete();
 	}
 	removeWorkflowMetaType();
+	removeWorkflowMetaTypeVersion();
 	deleteDomainObject();
+    }
+
+    @Override
+    public WorkflowMetaType getWorkflowMetaType() {
+	return getWorkflowMetaTypeVersion().getMetaType();
+    }
+
+    public WorkflowMetaType getWorkflowMetaTypeOld() {
+	return super.getWorkflowMetaType();
+    }
+
+    /**
+     * 
+     * @return true if the WorkflowMetaTypeVersion associated with this instance
+     *         is published
+     */
+    public boolean isPublished() {
+	return getWorkflowMetaTypeVersion().getPublished();
+
     }
 
 }

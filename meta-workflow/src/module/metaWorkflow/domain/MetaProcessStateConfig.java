@@ -29,6 +29,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import jvstm.cps.ConsistencyPredicate;
+import module.metaWorkflow.exceptions.MetaWorkflowDomainException;
 import pt.ist.fenixWebFramework.services.Service;
 
 /**
@@ -82,6 +83,8 @@ public class MetaProcessStateConfig extends MetaProcessStateConfig_Base {
 
     @Service
     public void delete() {
+	if (isPublished())
+	    throw new MetaWorkflowDomainException("cant.delete.a.published.state.config");
 	for (MetaField field : getDependedFields()) {
 	    removeDependedFields(field);
 	}
@@ -91,6 +94,22 @@ public class MetaProcessStateConfig extends MetaProcessStateConfig_Base {
 	removeMetaProcessState();
 
 	deleteDomainObject();
+    }
+
+    /**
+     * 
+     * @return true if the {@link WorkflowMetaTypeVersion} associated with this
+     *         config is published or any of the dependent MetaProcessStates
+     *         NOTE: the depended MetaProcessStates should all belong to a
+     *         version, but we check for the case it doesn't. Just in case..
+     */
+    public boolean isPublished() {
+	for (MetaProcessState dependedProcessState : getDependedStates()) {
+	    if (dependedProcessState.isPublished())
+		return true;
+	}
+	return getMetaProcessState().isPublished();
+
     }
 
     @Service

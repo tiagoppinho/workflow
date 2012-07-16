@@ -27,7 +27,7 @@ package module.metaWorkflow.domain;
 import java.util.Set;
 import java.util.TreeSet;
 
-import jvstm.cps.ConsistencyPredicate;
+import module.metaWorkflow.exceptions.MetaWorkflowDomainException;
 import module.metaWorkflow.presentationTier.dto.MetaFieldBean;
 import myorg.util.BundleUtil;
 import pt.ist.fenixWebFramework.services.Service;
@@ -41,7 +41,12 @@ import pt.utl.ist.fenix.tools.util.i18n.MultiLanguageString;
  */
 public class MetaFieldSet extends MetaFieldSet_Base {
 
-    protected MetaFieldSet() {
+    /**
+     * Note should be avoided its use (only used by
+     * {@link MetaField#duplicatedMetaField()}
+     */
+    @Deprecated
+    public MetaFieldSet() {
 	super();
     }
 
@@ -65,11 +70,12 @@ public class MetaFieldSet extends MetaFieldSet_Base {
 	setParentFieldSet(parentFieldSet);
     }
 
-    @Override
-    @ConsistencyPredicate
-    public final boolean checkHasParent() {
-	return super.checkHasParent() || hasMetaType();
-    }
+    //disabled so that we can clone them
+    //    @Override
+    //    @ConsistencyPredicate
+    //    public final boolean checkHasParent() {
+    //	return super.checkHasParent() || hasMetaType();
+    //    }
 
     public Set<MetaField> getOrderedChildFields() {
 	Set<MetaField> orderedFields = new TreeSet<MetaField>(MetaField.COMPARATOR_BY_FIELD_ORDER);
@@ -89,6 +95,8 @@ public class MetaFieldSet extends MetaFieldSet_Base {
     @Override
     @Service
     public void delete() {
+	if (isPublished())
+	    throw new MetaWorkflowDomainException("cant.delete.published.metaFields");
 	if (hasMetaType()) {
 	    throw new Error("Cannot delete the root MetaFieldSet");
 	}
@@ -98,8 +106,33 @@ public class MetaFieldSet extends MetaFieldSet_Base {
 	}
 
 	removeParentFieldSet();
+	removeMetaTypeVersion();
 	if (!hasAnyFieldValues()) {
 	    deleteDomainObject();
 	}
     }
+
+    @Override
+    @Service
+    public void deleteItselfAndAllChildren() throws MetaWorkflowDomainException {
+	for (MetaField metaField : getChildFields()) {
+	    metaField.deleteItselfAndAllChildren();
+	}
+	delete();
+
+    }
+
+    @Override
+    public boolean isPublished() {
+	boolean parentFieldSetPublished = false;
+	boolean metaTypeVersionPublished = false;
+	if (getParentFieldSet() != null) {
+	    parentFieldSetPublished = getParentFieldSet().isPublished();
+	}
+	if (getMetaTypeVersion() != null) {
+	    metaTypeVersionPublished = getMetaTypeVersion().getPublished();
+	}
+	return parentFieldSetPublished || metaTypeVersionPublished;
+    }
+
 }

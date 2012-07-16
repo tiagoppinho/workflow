@@ -24,6 +24,7 @@
  */
 package module.metaWorkflow.domain;
 
+import module.metaWorkflow.exceptions.MetaWorkflowDomainException;
 import module.metaWorkflow.presentationTier.dto.MetaFieldBean;
 import pt.ist.fenixWebFramework.services.Service;
 import pt.utl.ist.fenix.tools.util.i18n.MultiLanguageString;
@@ -36,7 +37,12 @@ import pt.utl.ist.fenix.tools.util.i18n.MultiLanguageString;
  */
 public class DateTimeMetaField extends DateTimeMetaField_Base {
 
-    protected DateTimeMetaField() {
+    /**
+     * Note should be avoided its use (only used by
+     * {@link MetaField#duplicatedMetaField()}
+     */
+    @Deprecated
+    public DateTimeMetaField() {
 	super();
     }
 
@@ -57,11 +63,23 @@ public class DateTimeMetaField extends DateTimeMetaField_Base {
     @Override
     @Service
     public void delete() {
+	if (isPublished())
+	    throw new MetaWorkflowDomainException("error.cant.delete.a.published.metaField");
 	removeParentFieldSet();
 	if (!hasAnyFieldValues()) {
 	    deleteDomainObject();
 	}
     }
 
+    @Override
+    @Service
+    public void deleteItselfAndAllChildren() throws MetaWorkflowDomainException {
+	delete();
+    }
+
+    @Override
+    public boolean isPublished() {
+	return getParentFieldSet().isPublished();
+    }
 
 }

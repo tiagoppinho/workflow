@@ -397,5 +397,13 @@ public class WorkflowMetaType extends WorkflowMetaType_Base {
 "illegal.usage.of.version.creation.use."
 		+ "WorkflowMetaTypeVersion.createNewUnpublishedVersion");
     }
+
+    /**
+     * 
+     * @return true if there is already a MetaTypeVersion on draft
+     */
+    public boolean hasDraftMetaTypeVersion() {
+	return !getLatestWorkflowMetaTypeVersion().getPublished();
+    }
 }
 

@@ -36,6 +36,7 @@ import module.metaWorkflow.domain.MetaFieldSet;
 import module.metaWorkflow.domain.MetaProcessState;
 import module.metaWorkflow.domain.MetaProcessStateConfig;
 import module.metaWorkflow.domain.WorkflowMetaType;
+import module.metaWorkflow.domain.WorkflowMetaTypeVersion;
 import module.vaadin.ui.BennuTheme;
 import myorg.applicationTier.Authenticate.UserView;
 import myorg.domain.RoleType;
@@ -80,7 +81,7 @@ import com.vaadin.ui.themes.BaseTheme;
  * @author João Antunes
  * 
  */
-@EmbeddedComponent(path = { "metaProcessStatesManagement" }, args = { "metaType" })
+@EmbeddedComponent(path = { "metaProcessStatesManagement" }, args = { "metaTypeVersion" })
 public class ManageMetaProcessStatesComponent extends CustomComponent implements EmbeddedComponentContainer {
     private static final String RESOURCE_BUNDLE = "resources/MetaWorkflowResources";
     private static final long serialVersionUID = 1L;
@@ -95,7 +96,8 @@ public class ManageMetaProcessStatesComponent extends CustomComponent implements
 
     private DomainContainer<MetaProcessState> states;
 
-    public ManageMetaProcessStatesComponent() {
+    public ManageMetaProcessStatesComponent(WorkflowMetaTypeVersion metaTypeVersion) {
+	manageStatesInterface(metaTypeVersion);
     }
 
     public static abstract class ConfirmationWindow extends Window {
@@ -144,34 +146,27 @@ public class ManageMetaProcessStatesComponent extends CustomComponent implements
 	abstract public void onConfirm();
     }
 
-    private void manageStatesInterface(final WorkflowMetaType metaType) {
+    private void manageStatesInterface(final WorkflowMetaTypeVersion metaTypeVersion) {
 	VerticalLayout headerLayout = new VerticalLayout();
 	setCompositionRoot(headerLayout);
-	headerLayout.setSpacing(true);
-
-	Label statesTitle = new Label(getMessage("label.metaType.manageStates"));
-	statesTitle.addStyleName(BennuTheme.LABEL_H2);
-	headerLayout.addComponent(statesTitle);
-
-	Label metaTypeTitle = new Label(getMessage("label.metaType") + ": " + metaType.getName());
-	metaTypeTitle.addStyleName(BennuTheme.LABEL_H3);
-	headerLayout.addComponent(metaTypeTitle);
+	ManageMetaTypeVersionComponent.addOperationTitleAndMetaTypeName(headerLayout, "label.metaType.manageStates",
+		metaTypeVersion);
 
 	final HorizontalLayout content = new HorizontalLayout();
 	content.setSpacing(true);
 	headerLayout.addComponent(content);
-	initContent(content, metaType);
+	initContent(content, metaTypeVersion);
     }
 
-    private void initContent(final HorizontalLayout content, final WorkflowMetaType metaType) {
-	DomainItem<WorkflowMetaType> metaTypeDI = new DomainItem<WorkflowMetaType>(metaType);
+    private void initContent(final HorizontalLayout content, final WorkflowMetaTypeVersion metaTypeVersion) {
+	DomainItem<WorkflowMetaTypeVersion> metaTypeDI = new DomainItem<WorkflowMetaTypeVersion>(metaTypeVersion);
 	states = (DomainContainer<MetaProcessState>) metaTypeDI.getItemProperty("processStates");
 	states.setContainerProperties("name", "position");
 
 	VerticalLayout tableLayout = new VerticalLayout();
 	tableLayout.setSpacing(true);
 	content.addComponent(tableLayout);
-	initTableLayout(tableLayout, metaType);
+	initTableLayout(tableLayout, metaTypeVersion);
 
 	operationsLayout = new VerticalLayout();
 	operationsLayout.setSpacing(true);
@@ -180,12 +175,14 @@ public class ManageMetaProcessStatesComponent extends CustomComponent implements
 	form.setFormFieldFactory(new DefaultFieldFactory(RESOURCE_BUNDLE));
 	form.addSubmitButton();
 
+	ManageMetaTypeVersionComponent.readOnlyOrDisabledIfPublished(form, metaTypeVersion);
+
 	stateTable.addListener(new ValueChangeListener() {
 	    @Override
 	    public void valueChange(ValueChangeEvent event) {
 		selectedState = (MetaProcessState) event.getProperty().getValue();
 		if (selectedState != null) {
-		    initOperationsLayout();
+		    initOperationsLayout(metaTypeVersion);
 		} else {
 		    operationsLayout.removeAllComponents();
 		}
@@ -193,7 +190,7 @@ public class ManageMetaProcessStatesComponent extends CustomComponent implements
 	});
     }
 
-    private void initTableLayout(VerticalLayout tableLayout, final WorkflowMetaType metaType) {
+    private void initTableLayout(VerticalLayout tableLayout, final WorkflowMetaTypeVersion metaTypeVersion) {
 	stateTable.setContainerDataSource(states);
 	stateTable.setSelectable(true);
 	stateTable.setImmediate(true);
@@ -224,6 +221,7 @@ public class ManageMetaProcessStatesComponent extends CustomComponent implements
 		});
 		buttonRemove.setIcon(new ThemeResource("../runo/icons/16/cancel.png"));
 		buttonRemove.addStyleName(BennuTheme.BUTTON_SMALL);
+		ManageMetaTypeVersionComponent.readOnlyOrDisabledIfPublished(buttonRemove, metaTypeVersion);
 		return buttonRemove;
 	    }
 	});
@@ -232,14 +230,17 @@ public class ManageMetaProcessStatesComponent extends CustomComponent implements
 	Button buttonAdd = new Button(getMessage("link.processState.add"), new Button.ClickListener() {
 	    @Override
 	    public void buttonClick(ClickEvent event) {
-		addProcessState(metaType, states);
+		addProcessState(metaTypeVersion, states);
 	    }
 	});
 	buttonAdd.addStyleName(BaseTheme.BUTTON_LINK);
+	ManageMetaTypeVersionComponent.readOnlyOrDisabledIfPublished(buttonAdd, metaTypeVersion);
 	tableLayout.addComponent(buttonAdd);
     }
 
-    private void initOperationsLayout() {
+
+
+    private void initOperationsLayout(final WorkflowMetaTypeVersion metaTypeVersion) {
 	operationsLayout.removeAllComponents();
 	operationsLayout.addComponent(form);
 	form.setItemDataSource(stateTable.getItem(selectedState), Arrays.asList(new Object[] { "name", "position" }));
@@ -260,7 +261,7 @@ public class ManageMetaProcessStatesComponent extends CustomComponent implements
 		HorizontalLayout configLayout = new HorizontalLayout();
 		configLayout.setSpacing(true);
 		conditionsPanel.addComponent(configLayout);
-		initConfigLayout(config, configLayout);
+		initConfigLayout(config, configLayout, metaTypeVersion);
 
 		if (configIterator.hasNext()) {
 		    Label or = new Label(getMessage("state.activation.conditions.or"));
@@ -273,14 +274,16 @@ public class ManageMetaProcessStatesComponent extends CustomComponent implements
 	    @Override
 	    public void buttonClick(ClickEvent event) {
 		addStateConfig(selectedState);
-		initOperationsLayout();
+		initOperationsLayout(metaTypeVersion);
 	    }
 	});
 	addConfigButton.addStyleName(BaseTheme.BUTTON_LINK);
+	ManageMetaTypeVersionComponent.readOnlyOrDisabledIfPublished(addConfigButton, metaTypeVersion);
 	operationsLayout.addComponent(addConfigButton);
     }
 
-    private void initConfigLayout(final MetaProcessStateConfig config, HorizontalLayout configLayout) {
+    private void initConfigLayout(final MetaProcessStateConfig config, HorizontalLayout configLayout,
+	    final WorkflowMetaTypeVersion metaTypeVersion) {
 	Iterator<MetaProcessState> dependedStatesIterator = config.getDependedStates().iterator();
 	Iterator<MetaField> dependedFieldsIterator = config.getDependedFields().iterator();
 
@@ -328,10 +331,11 @@ public class ManageMetaProcessStatesComponent extends CustomComponent implements
 	    @Override
 	    public void buttonClick(ClickEvent event) {
 		deleteStateConfig(config);
-		initOperationsLayout();
+		initOperationsLayout(metaTypeVersion);
 	    }
 	});
 	deleteConfigButton.addStyleName(BaseTheme.BUTTON_LINK);
+	ManageMetaTypeVersionComponent.readOnlyOrDisabledIfPublished(deleteConfigButton, metaTypeVersion);
 	configLayout.addComponent(deleteConfigButton);
 
 	configLayout.addComponent(new Label(", "));
@@ -340,16 +344,17 @@ public class ManageMetaProcessStatesComponent extends CustomComponent implements
 		new Button.ClickListener() {
 	    @Override
 	    public void buttonClick(ClickEvent event) {
-		openEditConfigWindow(config);
+			openEditConfigWindow(config, metaTypeVersion);
 	    }
 	});
 	editConfigButton.addStyleName(BaseTheme.BUTTON_LINK);
+	ManageMetaTypeVersionComponent.readOnlyOrDisabledIfPublished(editConfigButton, metaTypeVersion);
 	configLayout.addComponent(editConfigButton);
     }
 
     private static final String NEW_STATE_LABEL = "new.state.name";
 
-    private void openEditConfigWindow(final MetaProcessStateConfig config) {
+    private void openEditConfigWindow(final MetaProcessStateConfig config, final WorkflowMetaTypeVersion metaTypeVersion) {
 	final Window editConfigWindow = new Window(getMessage("state.activation.conditions.depended.change"));
 	getWindow().addWindow(editConfigWindow);
 	editConfigWindow.setModal(true);
@@ -436,7 +441,7 @@ public class ManageMetaProcessStatesComponent extends CustomComponent implements
 		config.updateDependedStates((Collection<MetaProcessState>) dependedStatesTable.getValue());
 		config.updateDependedFields((Collection<MetaField>) fieldsTable.getValue());
 		getWindow().removeWindow(editConfigWindow);
-		initOperationsLayout();
+		initOperationsLayout(metaTypeVersion);
 	    }
 	});
 	content.addComponent(saveButton);
@@ -454,8 +459,8 @@ public class ManageMetaProcessStatesComponent extends CustomComponent implements
 	}
     }
 
-    private void addProcessState(WorkflowMetaType metaType, DomainContainer<MetaProcessState> states) {
-	MetaProcessState newState = MetaProcessState.create(metaType, getMessage(NEW_STATE_LABEL), 1);
+    private void addProcessState(WorkflowMetaTypeVersion metaTypeVersion, DomainContainer<MetaProcessState> states) {
+	MetaProcessState newState = MetaProcessState.create(metaTypeVersion, getMessage(NEW_STATE_LABEL), 1);
 	states.addItem(newState);
 	stateTable.setValue(newState);
 	stateTable.sort();
@@ -483,7 +488,7 @@ public class ManageMetaProcessStatesComponent extends CustomComponent implements
 
     @Override
     public void setArguments(Map<String, String> arg0) {
-	WorkflowMetaType metaType = AbstractDomainObject.fromExternalId(arg0.get("metaType"));
-	manageStatesInterface(metaType);
+	WorkflowMetaTypeVersion metaTypeVersion = AbstractDomainObject.fromExternalId(arg0.get("metaTypeVersion"));
+	manageStatesInterface(metaTypeVersion);
     }
 }

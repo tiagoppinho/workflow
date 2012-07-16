@@ -88,15 +88,20 @@ public abstract class MetaField extends MetaField_Base {
 	    return new MetaFieldSet(bean, parentFieldSet);
 	}
 
-	throw new RuntimeException("Unknown MetaField: " + bean.getFieldClass().getName());
+	throw new MetaWorkflowDomainException("error.invalid.meta.field.class", bean.getFieldClass().getName());
+    }
+
+    public boolean isRootMetaFieldSet() {
+	return getParentFieldSet() == null && this instanceof MetaFieldSet && ((MetaFieldSet) this).getMetaTypeVersion() != null;
     }
 
     /* TODO START: protection against published things FENIX-345: */
 
-    @ConsistencyPredicate
-    public boolean checkHasParent() {
-	return hasParentFieldSet();
-    }
+    //Disabled to be able to 'clone' MetaFields
+    //    @ConsistencyPredicate
+    //    public boolean checkHasParent() {
+    //	return hasParentFieldSet();
+    //    }
 
     @ConsistencyPredicate
     public boolean checkHasName() {
@@ -110,6 +115,10 @@ public abstract class MetaField extends MetaField_Base {
 	}
 
 	return true;
+    }
+
+    public String getPresentationName() {
+	return getLocalizedClassName() + " - " + getName().getContent();
     }
 
     public String getLocalizedClassName() {
@@ -154,5 +163,23 @@ public abstract class MetaField extends MetaField_Base {
     public abstract FieldValue createFieldValue();
 
     public abstract void delete();
+
+    /**
+     * Deletes all of the children, and then deletes itself NOTE: If the
+     * WorkflowMetaTypeVersion which is associated with it is published, it
+     * throws an exception If it has no children, it deletes itself
+     * 
+     * @throws MetaWorkflowDomainException
+     *             if any of the children can't be deleted
+     */
+    abstract public void deleteItselfAndAllChildren() throws MetaWorkflowDomainException;
+
+    /**
+     * 
+     * @return true if the WorkflowMetaTypeVersion associated with it is
+     *         published. False otherwise
+     */
+    public abstract boolean isPublished();
+
 
 }
