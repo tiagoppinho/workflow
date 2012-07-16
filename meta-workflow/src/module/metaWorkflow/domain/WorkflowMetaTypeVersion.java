@@ -5,6 +5,12 @@ import java.util.List;
 import java.util.Map;
 
 import module.metaWorkflow.exceptions.MetaWorkflowDomainException;
+import module.metaWorkflow.util.versioning.DiffUtil;
+import module.metaWorkflow.util.versioning.DiffUtil.Revision;
+import myorg.applicationTier.Authenticate.UserView;
+
+import org.joda.time.DateTime;
+
 import pt.ist.fenixWebFramework.services.Service;
 
 public class WorkflowMetaTypeVersion extends WorkflowMetaTypeVersion_Base implements Comparable<WorkflowMetaTypeVersion> {
@@ -14,6 +20,11 @@ public class WorkflowMetaTypeVersion extends WorkflowMetaTypeVersion_Base implem
 	super();
 	super.setVersion(FIRST_VERSION);
 	super.setPublished(false);
+    }
+
+    public WorkflowMetaTypeVersion(String description) {
+	this();
+	setMetaTypeDescription(description);
     }
     /**
      * Note: Deprecated, use the TODO
@@ -38,7 +49,7 @@ public class WorkflowMetaTypeVersion extends WorkflowMetaTypeVersion_Base implem
 	    }
 
 	    super.setFieldSet(metaType.getFieldSetOld());
-	    super.setPublished(true);
+	    super.setMetaTypeDescription(metaType.getCurrentDescriptionOld().getDescription());
 	}
 
 	setMetaType(metaType);
@@ -55,7 +66,44 @@ public class WorkflowMetaTypeVersion extends WorkflowMetaTypeVersion_Base implem
 	setPublished(false);
     }
 
+    /**
+     * 
+     * @param publicationMotive
+     *            the motive of this version, why it was created
+     */
+    public void publish(String publicationMotive) {
+	if (getPublished())
+	    throw new MetaWorkflowDomainException("already.published");
+	super.setPublisherOfVersion(UserView.getCurrentUser());
+	super.setPublicationMotive(publicationMotive);
+	super.setDatePublication(new DateTime());
+	super.setPublished(true);
+    }
+
     /* START: Protecting setters and getters section */
+
+    @Override
+    public void setMetaTypeDescription(String metaTypeDescription) {
+	if (getPublished())
+	    throw new MetaWorkflowDomainException("cant.change.metaTypeDescription.on.published.version");
+	super.setMetaTypeDescription(metaTypeDescription);
+    }
+
+    @Override
+    public void setPublisherOfVersion(myorg.domain.User publisherOfVersion) {
+	throw new MetaWorkflowDomainException("illegal.usage.use.publish.instead");
+    }
+
+    @Override
+    public void setPublicationMotive(String publicationMotive) {
+	throw new MetaWorkflowDomainException("illegal.usage.use.publish.instead");
+    }
+
+    @Override
+    public void setDatePublication(DateTime datePublication) {
+	throw new MetaWorkflowDomainException("illegal.usage.use.publish.instead");
+    }
+
     @Override
     public void setMetaType(WorkflowMetaType metaType) {
 	if (getMetaType() != null)
@@ -65,7 +113,7 @@ public class WorkflowMetaTypeVersion extends WorkflowMetaTypeVersion_Base implem
 
     @Override
     public void setVersion(Integer version) {
-	throw new IllegalAccessError("protected method, not for direct use");
+	throw new MetaWorkflowDomainException("protected method, not for direct use");
     }
 
     @Override
@@ -77,9 +125,7 @@ public class WorkflowMetaTypeVersion extends WorkflowMetaTypeVersion_Base implem
 
     @Override
     public void setPublished(boolean published) {
-	if (getPublished() && !published && hasAnyMetaProcesses())
-	    throw new MetaWorkflowDomainException("cant.unpublish.with.existing.metaprocess.instances");
-	super.setPublished(published);
+	throw new MetaWorkflowDomainException("illegal.usage.use.publish.instead");
     }
 
     @Override
@@ -189,6 +235,10 @@ public class WorkflowMetaTypeVersion extends WorkflowMetaTypeVersion_Base implem
 
 		//copy all of the depended states as well and use the new ones
 		for (MetaProcessState oldDependedMPS : config.getDependedStates()) {
+		    MetaProcessState metaProcessState = oldToNewMProcessStateMap.get(oldDependedMPS);
+		    if (metaProcessState == null) {
+			throw new MetaWorkflowDomainException("illegal.state.no.new.metaProcessState.assigned.on.copying");
+		    }
 		    newConfig.addDependedStates(oldToNewMProcessStateMap.get(oldDependedMPS));
 		}
 	    }
@@ -213,4 +263,15 @@ public class WorkflowMetaTypeVersion extends WorkflowMetaTypeVersion_Base implem
 	return Integer.valueOf(getVersion().compareTo(otherMetaTypeVersion.getVersion()));
     }
 
+    /*
+     * metaWorkflowDescription - ex WorkflowMetaTypeDescription methods
+     */
+
+    public Revision getDiffWithVersion(int version) {
+	return getDiffWith(getMetaType().getDescriptionAtVersion(version - 1));
+    }
+
+    public Revision getDiffWith(String description) {
+	return DiffUtil.diff(getMetaTypeDescription(), description);
+    }
 }

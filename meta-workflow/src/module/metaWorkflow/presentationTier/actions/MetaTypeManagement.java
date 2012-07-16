@@ -170,8 +170,8 @@ public class MetaTypeManagement extends ContextBaseAction {
 	    Integer version2 = Integer.valueOf(revision2);
 
 	    WorkflowMetaType metaType = getDomainObject(request, "metaTypeId");
-	    WorkflowMetaTypeDescription descriptionV1 = metaType.getDescriptionAtVersion(version1);
-	    WorkflowMetaTypeDescription descriptionV2 = metaType.getDescriptionAtVersion(version2);
+	    WorkflowMetaTypeDescription descriptionV1 = metaType.getDescriptionAtVersionOld(version1);
+	    WorkflowMetaTypeDescription descriptionV2 = metaType.getDescriptionAtVersionOld(version2);
 
 	    request.setAttribute("version1", descriptionV1);
 	    request.setAttribute("version2", descriptionV2);

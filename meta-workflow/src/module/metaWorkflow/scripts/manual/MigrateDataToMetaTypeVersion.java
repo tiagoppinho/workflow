@@ -44,6 +44,8 @@ public class MigrateDataToMetaTypeVersion extends WriteCustomTask {
 		    if (!workflowMetaType.hasAnyVersions()) {
 			//let's create the new version which will use the relations 
 			WorkflowMetaTypeVersion metaTypeVersion = new WorkflowMetaTypeVersion(workflowMetaType);
+			metaTypeVersion
+				.publish("Migração de dados, corrido a partir da Task de migração MigrateDataToMetaTypeVersion");
 			migratedWorkflowMetaTypes++;
 		    }
 		}

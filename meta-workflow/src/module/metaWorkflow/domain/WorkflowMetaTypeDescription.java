@@ -60,7 +60,7 @@ public class WorkflowMetaTypeDescription extends WorkflowMetaTypeDescription_Bas
     }
 
     public Revision getDiffWithVersion(int version) {
-	return getDiffWith(getMetaType().getDescriptionAtVersion(version - 1));
+	return getDiffWith(getMetaType().getDescriptionAtVersionOld(version - 1));
     }
 
     public Revision getDiffWith(WorkflowMetaTypeDescription description) {
