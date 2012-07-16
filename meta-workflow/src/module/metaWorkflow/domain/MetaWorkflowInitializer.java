@@ -26,15 +26,12 @@ package module.metaWorkflow.domain;
 
 import javax.servlet.http.HttpServletRequest;
 
-import module.dashBoard.WidgetRegister.WidgetAditionPredicate;
-import module.dashBoard.domain.DashBoardPanel;
 import module.metaWorkflow.presentationTier.actions.OrganizationModelPluginAction.QueueView;
 import module.organization.presentationTier.actions.OrganizationModelAction;
 import module.workflow.presentationTier.actions.ProcessManagement;
 import module.workflow.presentationTier.actions.ProcessManagement.ProcessRequestHandler;
 import myorg.domain.ModuleInitializer;
 import myorg.domain.MyOrg;
-import myorg.domain.User;
 import myorg.util.VariantBean;
 import pt.ist.fenixWebFramework.services.Service;
 
@@ -100,6 +97,7 @@ public class MetaWorkflowInitializer extends MetaWorkflowInitializer_Base implem
 		});
 
 	OrganizationModelAction.partyViewHookManager.register(new QueueView());
+
     }
 
 }

@@ -24,10 +24,13 @@
  */
 package module.metaWorkflow.domain;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.Comparator;
 
 import jvstm.cps.ConsistencyPredicate;
+import module.metaWorkflow.exceptions.MetaWorkflowDomainException;
 import module.metaWorkflow.presentationTier.dto.MetaFieldBean;
 import myorg.util.BundleUtil;
 
@@ -88,6 +91,8 @@ public abstract class MetaField extends MetaField_Base {
 	throw new RuntimeException("Unknown MetaField: " + bean.getFieldClass().getName());
     }
 
+    /* TODO START: protection against published things FENIX-345: */
+
     @ConsistencyPredicate
     public boolean checkHasParent() {
 	return hasParentFieldSet();
@@ -109,6 +114,37 @@ public abstract class MetaField extends MetaField_Base {
 
     public String getLocalizedClassName() {
 	return BundleUtil.getStringFromResourceBundle("resources/MetaWorkflowResources", "label." + getClass().getName());
+    }
+
+    /**
+     * @author João Antunes
+     * @return a {@link MetaField} with its inner values replicated. The
+     *         relations of the MetaField are not replicated
+     */
+    protected final MetaField duplicatedMetaField() {
+	Constructor<? extends MetaField> constructor;
+	MetaField newInstance;
+	try {
+	    constructor = this.getClass().getConstructor();
+	    newInstance = constructor.newInstance();
+	} catch (InstantiationException e) {
+	    throw new MetaWorkflowDomainException("couldnt.create.duplicateMetaField", e);
+	} catch (IllegalAccessException e) {
+	    throw new MetaWorkflowDomainException("couldnt.create.duplicateMetaField", e);
+	} catch (IllegalArgumentException e) {
+	    throw new MetaWorkflowDomainException("couldnt.create.duplicateMetaField", e);
+	} catch (InvocationTargetException e) {
+	    throw new MetaWorkflowDomainException("couldnt.create.duplicateMetaField", e);
+	} catch (NoSuchMethodException e) {
+	    throw new MetaWorkflowDomainException("couldnt.create.duplicateMetaField", e);
+	} catch (SecurityException e) {
+	    throw new MetaWorkflowDomainException("couldnt.create.duplicateMetaField", e);
+	}
+	if (newInstance != null) {
+	newInstance.setName(getName());
+	newInstance.setFieldOrder(getFieldOrder());
+	}
+	return newInstance;
     }
 
     /**

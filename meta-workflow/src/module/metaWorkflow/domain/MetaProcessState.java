@@ -70,6 +70,25 @@ public class MetaProcessState extends MetaProcessState_Base {
 	setWorkflowMetaType(metaType);
     }
 
+    public MetaProcessState(WorkflowMetaTypeVersion metaTypeVersion, String name, Integer position) {
+	this(name, position);
+	setWorkflowMetaTypeVersion(metaTypeVersion);
+    }
+
+    public MetaProcessState(WorkflowMetaTypeVersion metaTypeVersion, MultiLanguageString name, Integer position) {
+	this();
+	setName(name);
+	setPosition(position);
+	setWorkflowMetaTypeVersion(metaTypeVersion);
+    }
+
+
+    public MetaProcessState(MultiLanguageString name, Integer position) {
+	this();
+	setName(name);
+	setPosition(position);
+    }
+
     @ConsistencyPredicate
     public boolean checkHasMetaType() {
 	return hasWorkflowMetaType();
@@ -85,6 +104,11 @@ public class MetaProcessState extends MetaProcessState_Base {
 	return false;
     }
 
+    /*
+     * TODO START: protection against published things FENIX-345:
+     * 
+     * methods TODO: addConfigs addDependingConfigs
+     */
     @Service
     public static MetaProcessState create(WorkflowMetaType metaType, String name, Integer position) {
 	return new MetaProcessState(metaType, name, position);
@@ -101,4 +125,5 @@ public class MetaProcessState extends MetaProcessState_Base {
 	removeWorkflowMetaType();
 	deleteDomainObject();
     }
+
 }

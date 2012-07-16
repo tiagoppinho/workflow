@@ -30,6 +30,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import module.metaWorkflow.exceptions.MetaWorkflowDomainException;
 import module.organization.domain.OrganizationalModel;
 import module.workflow.domain.ProcessFile;
 import module.workflow.domain.WorkflowQueue;
@@ -53,7 +54,7 @@ import pt.utl.ist.fenix.tools.util.i18n.MultiLanguageString;
  */
 public class WorkflowMetaType extends WorkflowMetaType_Base {
 
-    public WorkflowMetaType(String name, String description, OrganizationalModel model) {
+    protected WorkflowMetaType(String name, String description, OrganizationalModel model, WorkflowMetaTypeVersion version) {
 	super();
 	super.setWorkflowSystem(WorkflowSystem.getInstance());
 	super.setName(name);
@@ -66,6 +67,7 @@ public class WorkflowMetaType extends WorkflowMetaType_Base {
 		"resources/MetaWorkflowResources", "label.rootFieldSetPT")).with(Language.en,
 		BundleUtil.getStringFromResourceBundle("resources/MetaWorkflowResources", "label.rootFieldSetEN"));
 	super.setFieldSet(new MetaFieldSet(rootFieldSetName, 1));
+	super.addVersions(version);
     }
 
     @Override
@@ -82,6 +84,7 @@ public class WorkflowMetaType extends WorkflowMetaType_Base {
     public WorkflowMetaTypeDescription getCurrentDescription() {
 	return Collections.max(getDescriptions());
     }
+
 
     public void setFileClasses(List<Class<? extends ProcessFile>> classNames) {
 	List<String> fileTypes = new ArrayList<String>();
@@ -129,7 +132,8 @@ public class WorkflowMetaType extends WorkflowMetaType_Base {
     @Service
     public static WorkflowMetaType createNewMetaType(String name, String description, OrganizationalModel model,
 	    List<Class<? extends ProcessFile>> classNames) {
-	WorkflowMetaType type = new WorkflowMetaType(name, description, model);
+	WorkflowMetaTypeVersion workflowMetaTypeVersion = new WorkflowMetaTypeVersion();
+	WorkflowMetaType type = new WorkflowMetaType(name, description, model, workflowMetaTypeVersion);
 	type.setFileClasses(classNames);
 
 	return type;
@@ -232,4 +236,152 @@ public class WorkflowMetaType extends WorkflowMetaType_Base {
 	}
 	return queuesForUser;
     }
+
+    /**
+     * @author João Antunes
+     * @return the latest {@link WorkflowMetaTypeVersion}, either published or
+     *         unpublished
+     */
+    public WorkflowMetaTypeVersion getLatestWorkflowMetaTypeVersion() {
+	return Collections.max(getVersions());
+    }
+
+    /**
+     * @author João Antunes
+     * @return the most recent published {@link WorkflowMetaTypeVersion}
+     */
+    public WorkflowMetaTypeVersion getCurrentPublishedWMTVersion() {
+	WorkflowMetaTypeVersion metaTypeVersionToReturn = null;
+	for (WorkflowMetaTypeVersion metaTypeVersion : getVersions()) {
+	    if (metaTypeVersion.getPublished()
+		    && (metaTypeVersionToReturn == null || metaTypeVersion.getVersion() > metaTypeVersionToReturn.getVersion()))
+		metaTypeVersionToReturn = metaTypeVersion;
+	}
+	return metaTypeVersionToReturn;
+    }
+
+    //FENIX-345: Migrated getter and setter methods
+
+    //MetaProcesses START TODO: Sets and so on ?! (not really if not used)
+
+    @Override
+    public List<WorkflowMetaProcess> getMetaProcesses() {
+	List<WorkflowMetaProcess> listMetaProcesses = new ArrayList<WorkflowMetaProcess>();
+	for (WorkflowMetaTypeVersion version : getVersions()) {
+	    listMetaProcesses.addAll(version.getMetaProcesses());
+	}
+	return listMetaProcesses;
+    }
+
+    //FENIX-345: TODO remove method after migration
+    public List<WorkflowMetaProcess> getMetaProcessesOld() {
+	return super.getMetaProcesses();
+    }
+    
+    @Override
+    public void addMetaProcesses(WorkflowMetaProcess metaProcesses) {
+	getCurrentPublishedWMTVersion().addMetaProcesses(metaProcesses);
+    }
+
+    //FENIX-345: TODO remove method after migration
+    public void addMetaProcessesOld(WorkflowMetaProcess metaProcesses) {
+        super.addMetaProcesses(metaProcesses);
+    }
+
+    @Override
+    public void removeMetaProcesses(WorkflowMetaProcess metaProcesses) {
+	for (WorkflowMetaTypeVersion version : getVersions()) {
+	    version.removeMetaProcesses(metaProcesses);
+	}
+    }
+
+    //FENIX-345: TODO remove method after migration
+    public void removeMetaProcessesOld(WorkflowMetaProcess metaProcesses) {
+	super.removeMetaProcesses(metaProcesses);
+    }
+
+    //MetaProcesses END
+
+    //MetaProcessState START TODO: Sets and so on ?! (not really if not used)
+    
+    @Override
+    public List<MetaProcessState> getProcessStates() {
+	return getProcessStates(getLatestWorkflowMetaTypeVersion());
+    }
+
+    public List<MetaProcessState> getProcessStatesOfCurrentPublishedVersion() {
+	return getProcessStates(getCurrentPublishedWMTVersion());
+    }
+
+    public List<MetaProcessState> getProcessStates(WorkflowMetaTypeVersion version) {
+	return version.getProcessStates();
+    }
+
+    //FENIX-345: TODO remove method after migration
+    public List<MetaProcessState> getProcessStatesOld() {
+	return super.getProcessStates();
+    }
+
+    @Override
+    public void addProcessStates(MetaProcessState processStates) {
+	//by default let's add to the latest, if it is already published, then we have a problem
+	//TODO maybe create a new unpublished version if the last version is published (?)
+	addProcessStates(processStates, getLatestWorkflowMetaTypeVersion());
+    }
+
+    public void addProcessStates(MetaProcessState processState, WorkflowMetaTypeVersion version) {
+	version.addProcessStates(processState);
+    }
+
+    //FENIX-345: TODO remove method after migration
+    public void addProcessStatesOld(MetaProcessState processStates) {
+	super.addProcessStates(processStates);
+    }
+
+    /**
+     * Removes the {@link MetaProcessState} from the last version that is
+     * available
+     */
+    @Override
+    public void removeProcessStates(MetaProcessState processStates) {
+	getLatestWorkflowMetaTypeVersion().removeProcessStates(processStates);
+    }
+
+    //FENIX-345: TODO remove method after migration
+    public void removeProcessStatesOld(MetaProcessState processStates) {
+	super.removeProcessStates(processStates);
+    }
+
+    //MetaProcessState END
+
+    //MetaFieldSet START TODO (sets and all ? not really if not really used)
+    @Override
+    public MetaFieldSet getFieldSet() {
+	return getLatestWorkflowMetaTypeVersion().getFieldSet();
+    }
+
+    //FENIX-345: TODO remove method after migration
+    public MetaFieldSet getFieldSetOld() {
+	return super.getFieldSet();
+    }
+
+    @Override
+    public void setFieldSet(MetaFieldSet fieldSet) {
+	getLatestWorkflowMetaTypeVersion().setFieldSet(fieldSet);
+    }
+
+    //FENIX-345: TODO remove method after migration
+    public void setFieldSetOld(MetaFieldSet fieldSet) {
+	super.setFieldSet(fieldSet);
+    }
+    //MetaFieldSet END
+
+    //protecting the adds and removes of versions
+    @Override
+    public void addVersions(WorkflowMetaTypeVersion versions) {
+	throw new MetaWorkflowDomainException(
+"illegal.usage.of.version.creation.use."
+		+ "WorkflowMetaTypeVersion.createNewUnpublishedVersion");
+    }
 }
+

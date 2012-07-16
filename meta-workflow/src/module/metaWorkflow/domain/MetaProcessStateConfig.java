@@ -74,6 +74,7 @@ public class MetaProcessStateConfig extends MetaProcessStateConfig_Base {
 	return definedMetaFields.containsAll(getDependedFields());
     }
 
+    /* TODO START: protection against published things FENIX-345: */
     @Service
     public static MetaProcessStateConfig create(MetaProcessState state) {
 	return new MetaProcessStateConfig(state);
