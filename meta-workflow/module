@@ -1,2 +1,0 @@
-name=metaWorkflow
-depends=core, workflow-module, dashBoard, organization, scheduler, lucene, email-module, remote, bennu-vaadin
