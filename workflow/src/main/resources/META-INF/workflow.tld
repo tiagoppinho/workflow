@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+
+<!DOCTYPE taglib
+
+  PUBLIC "-//Sun Microsystems, Inc.//DTD JSP Tag Library 1.1//EN"
+
+  "http://java.sun.com/j2ee/dtds/web-jsptaglibrary_1_1.dtd">
+
+
+
+<taglib>
+
+
+
+  <tlibversion>1.0</tlibversion>
+
+  <jspversion>1.1</jspversion>
+
+  <shortname>Workflow Tag Library</shortname>
+
+  <uri>http://fenix-ashes.ist.utl.pt/workflow</uri>
+
+  <info>
+
+    Allows to create links into activities of a workflow process 
+
+  </info>
+ <tag>
+      <name>activityLink</name>
+      <tagclass>module.workflow.presentationTier.taglib.ActivitivyLinkTag</tagclass>
+      <bodycontent>JSP</bodycontent>
+      <info>
+          Generates a link for a given activity IF IT IS ACTIVE
+      </info>
+      <attribute>
+          <name>processName</name>
+          <required>true</required>
+          <rtexprvalue>true</rtexprvalue>
+      </attribute>
+      <attribute>
+          <name>activityName</name>
+          <required>true</required>
+          <rtexprvalue>true</rtexprvalue>
+      </attribute>
+      <attribute>
+          <name>target</name>
+          <required>false</required>
+          <rtexprvalue>true</rtexprvalue>
+      </attribute>
+      <attribute>
+          <name>paramName0</name>
+          <required>false</required>
+          <rtexprvalue>true</rtexprvalue>
+      </attribute>
+        <attribute>
+          <name>paramValue0</name>
+          <required>false</required>
+          <rtexprvalue>true</rtexprvalue>
+      </attribute>
+        <attribute>
+          <name>paramName1</name>
+          <required>false</required>
+          <rtexprvalue>true</rtexprvalue>
+      </attribute>
+        <attribute>
+          <name>paramValue1</name>
+          <required>false</required>
+          <rtexprvalue>true</rtexprvalue>
+      </attribute>
+        <attribute>
+          <name>paramName2</name>
+          <required>false</required>
+          <rtexprvalue>true</rtexprvalue>
+      </attribute>
+        <attribute>
+          <name>paramValue2</name>
+          <required>false</required>
+          <rtexprvalue>true</rtexprvalue>
+      </attribute>
+        <attribute>
+          <name>paramName3</name>
+          <required>false</required>
+          <rtexprvalue>true</rtexprvalue>
+      </attribute>
+       <attribute>
+          <name>paramValue3</name>
+          <required>false</required>
+          <rtexprvalue>true</rtexprvalue>
+      </attribute>
+      <attribute>
+          <name>scope</name>
+          <required>false</required>
+          <rtexprvalue>true</rtexprvalue>
+      </attribute>
+       <attribute>
+          <name>id</name>
+          <required>false</required>
+          <rtexprvalue>true</rtexprvalue>
+      </attribute>
+  </tag>
+  
+  <tag>
+      <name>activityName</name>
+      <tagclass>module.workflow.presentationTier.taglib.ActivityNameTag</tagclass>
+      <bodycontent>JSP</bodycontent>
+      <info>
+          Generates the name of the process
+      </info>
+      <attribute>
+          <name>processName</name>
+          <required>true</required>
+          <rtexprvalue>true</rtexprvalue>
+      </attribute>
+      <attribute>
+          <name>activityName</name>
+          <required>true</required>
+          <rtexprvalue>true</rtexprvalue>
+      </attribute>
+      <attribute>
+      <name>scope</name>
+          <required>false</required>
+          <rtexprvalue>true</rtexprvalue>
+      </attribute>
+   </tag>
+   
+     <tag>
+      <name>isActive</name>
+      <tagclass>module.workflow.presentationTier.taglib.IsActiveActivityTag</tagclass>
+      <bodycontent>JSP</bodycontent>
+      <info>
+          Generates the name of the process
+      </info>
+      <attribute>
+          <name>processName</name>
+          <required>true</required>
+          <rtexprvalue>true</rtexprvalue>
+      </attribute>
+      <attribute>
+          <name>activityName</name>
+          <required>true</required>
+          <rtexprvalue>true</rtexprvalue>
+      </attribute>
+      <attribute>
+      <name>scope</name>
+          <required>false</required>
+          <rtexprvalue>true</rtexprvalue>
+      </attribute>
+   </tag>
+  
+  </taglib>

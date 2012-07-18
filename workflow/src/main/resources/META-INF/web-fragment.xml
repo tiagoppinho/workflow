@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-fragment xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-fragment_3_0.xsd"
+    version="3.0">
+    <name>workflow-module</name>
+
+    <ordering>
+        <after>
+            <!-- [START OF BENNU GENERATED FRAGMENT] -->
+            <name>bennu-core</name>
+            <name>fenix-web-framework</name>
+            <name>content</name>
+            <name>bennu-vaadin</name>
+            <name>file-management</name>
+            <name>lucene</name>
+            <name>lucene-indexing-plugin</name>
+            <name>dashboard</name>
+            <name>organization</name>
+            <name>scheduler</name>
+            <name>scheduler-plugin</name>
+            <name>file-support</name>
+            <name>file-support-plugin</name>
+            <!-- [END OF BENNU GENERATED FRAGMENT] -->
+        </after>
+        <before>
+            <others />
+        </before>
+    </ordering>
+
+    <servlet>
+        <servlet-name>ForwardToProcessServlet</servlet-name>
+        <servlet-class>module.workflow.presentationTier.servlet.ForwardToProcessServlet</servlet-class>
+        <load-on-startup>4</load-on-startup>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>ForwardToProcessServlet</servlet-name>
+        <url-pattern>/ForwardToProcess/*</url-pattern>
+    </servlet-mapping>
+</web-fragment>

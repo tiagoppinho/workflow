@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE renderers-config SYSTEM "../fenix-renderers-config.dtd" []>
+<renderers-config>
+
+<renderer type="module.workflow.domain.WorkflowProcess" layout="processFiles"
+	class="module.workflow.presentationTier.renderers.WorkflowProcessFiles">
+
+	<property name="downloadFormat"
+		value="/workflowProcessManagement.do?method=downloadFile&amp;fileId=${externalId}&amp;processId=${process.externalId}" />
+	<property name="removeFormat"
+		value="/workflowProcessManagement.do?method=removeFile&amp;fileId=${externalId}&amp;processId=${process.externalId}" />
+	<property name="imageFile" value=""/>
+</renderer>
+
+<renderer type="module.workflow.domain.WorkflowProcess" layout="processDocumentFiles"
+	class="module.workflow.presentationTier.renderers.WorkflowProcessDocuments">
+
+	<property name="downloadFormat"
+		value="/workflowProcessManagement.do?method=downloadFileDocument&amp;fileId=${externalId}&amp;processId=${process.externalId}" />
+	<property name="removeFormat"
+		value="/workflowProcessManagement.do?method=removeFileDocument&amp;fileId=${externalId}&amp;processId=${process.externalId}" />
+	<property name="imageFile" value=""/>
+</renderer>
+
+<renderer type="module.workflow.domain.WorkflowProcess" layout="viewComments"
+	class="module.workflow.presentationTier.renderers.CommentRenderer">
+
+	  <property name="commentBlockClasses" value="comment dataBox roundCorners"/>
+	  <property name="nameClasses" value="bold"/>
+	  <property name="photoClasses" value="photoHolder"/>
+	  <property name="bodyClasses" value="aleft"/>
+	  <property name="photoUrl" value="https://fenix.ist.utl.pt/publico/retrievePersonalPhoto.do?method=retrieveByUUID&amp;contentContextPath_PATH=/homepage&amp;uuid=${username}"/>
+	  <property name="reverseOrder" value="false"/>
+	  <property name="observerBundle" value="WORKFLOW_RESOURCES"/>
+	  <property name="observerKey" value="label.marker.observer"/>
+	  <property name="observerClass" value="observerClass"/>
+	  <property name="showOnlyUnreadComments" value="false"/>
+</renderer>
+
+<renderer type="module.workflow.domain.WorkflowProcess" layout="viewUnreadComments"
+	class="module.workflow.presentationTier.renderers.CommentRenderer">
+
+	  <property name="commentBlockClasses" value="comment dataBox roundCorners"/>
+	  <property name="nameClasses" value="bold"/>
+	  <property name="photoClasses" value="photoHolder"/>
+	  <property name="bodyClasses" value="aleft"/>
+	  <property name="photoUrl" value="https://fenix.ist.utl.pt/publico/retrievePersonalPhoto.do?method=retrieveByUUID&amp;contentContextPath_PATH=/homepage&amp;uuid=${username}"/>
+	  <property name="reverseOrder" value="false"/>
+	  <property name="observerBundle" value="WORKFLOW_RESOURCES"/>
+	  <property name="observerKey" value="label.marker.observer"/>
+	  <property name="observerClass" value="observerClass"/>
+	  <property name="showOnlyUnreadComments" value="true"/>
+</renderer>
+
+<renderer type="module.workflow.presentationTier.actions.UserNotificationBean" layout="viewCommenters"
+	class="module.workflow.presentationTier.renderers.NotifyUsers">
+	  <property name="unableToNotifyClasses" value="unableToNotify"/>
+</renderer>
+
+<renderer type="module.workflow.presentationTier.actions.QueueNotificationBean" layout="viewQueues"
+	class="module.workflow.presentationTier.renderers.NotifyQueues">
+	  <property name="unableToNotifyClasses" value="unableToNotify"/>
+</renderer>
+
+<renderer
+	type="module.workflow.util.HasPresentableProcessState"
+	layout="process-state-view"
+	class="module.workflow.presentationTier.renderers.ProcessStateRenderer">
+	<property name="classes" value="process-state" />
+	<property name="cancelledClasses" value="process-state-cancelled"/>
+	<property name="numberClasses" value="states" />
+	<property name="gutterClasses" value="states-cross"/>
+	<property name="selectedClasses" value="selected"/>
+	<property name="descriptionClasses" value="state-desc" />
+</renderer>
+</renderers-config>
