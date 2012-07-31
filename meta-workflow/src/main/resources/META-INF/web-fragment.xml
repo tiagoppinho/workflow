@@ -13,6 +13,7 @@
    <name>workflow</name>
    <name>content</name>
    <name>file-management</name>
+   <name>web-service-utils</name>
    <name>file-support</name>
    <name>file-support-plugin</name>
    <name>dashboard</name>
@@ -22,8 +23,6 @@
    <name>scheduler-plugin</name>
    <name>lucene</name>
    <name>email-dispatch</name>
-   <name>remote</name>
-   <name>remote-plugin</name>
    <name>bennu-vaadin</name>
    <!-- [END OF BENNU GENERATED FRAGMENT] -->
 		</after>
