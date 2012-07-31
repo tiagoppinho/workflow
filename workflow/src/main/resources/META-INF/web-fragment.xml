@@ -12,6 +12,7 @@
             <name>content</name>
             <name>bennu-vaadin</name>
             <name>file-management</name>
+            <name>web-service-utils</name>
             <name>lucene</name>
             <name>lucene-indexing-plugin</name>
             <name>dashboard</name>
