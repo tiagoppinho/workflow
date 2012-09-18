@@ -122,7 +122,9 @@ relation NodeMappingNode {
 }
 
 relation WorkflowflowSystemWorkflowProcess {
-	WorkflowSystem playsRole workflowSystem;
+	WorkflowSystem playsRole workflowSystem {
+		multiplicity 1..1;
+	}
 	WorkflowProcess playsRole processes {
 		multiplicity *;
 	}
@@ -179,7 +181,9 @@ relation QueueHistory {
 }
 
 relation WorkflowSystemWorkflowQueue {
-	WorkflowSystem playsRole workflowSystem;
+	WorkflowSystem playsRole workflowSystem {
+		multiplicity 1..1;
+	}
 	WorkflowQueue playsRole workflowQueues {
 		multiplicity *;
 	}
