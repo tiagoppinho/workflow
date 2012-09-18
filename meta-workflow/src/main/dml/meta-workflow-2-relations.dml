@@ -82,7 +82,9 @@ relation WorkflowMetaProcessWorkflowMetaType {
 	WorkflowMetaProcess playsRole metaProcesses {
 		multiplicity *;
 	}
-	WorkflowMetaType playsRole metaType;
+	WorkflowMetaType playsRole metaType {
+		multiplicity 1..1;
+	}
 }
 
 //FENIX-345: refactor - added relation
