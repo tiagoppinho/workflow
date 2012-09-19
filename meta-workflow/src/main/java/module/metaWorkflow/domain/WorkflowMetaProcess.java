@@ -131,6 +131,7 @@ public class WorkflowMetaProcess extends WorkflowMetaProcess_Base {
     protected void init(WorkflowMetaType type, String subject, String instanceDescription, WorkflowQueue queue,
 	    Requestor requestor) {
 	setMetaType(type);
+	setMetaTypeVersion(type.getCurrentPublishedWMTVersion());
 	setSubject(subject);
 	setProcessNumber(new LocalDate().getYear() + "-" + type.getNextIdentifier());
 	setCreator(UserView.getCurrentUser());
