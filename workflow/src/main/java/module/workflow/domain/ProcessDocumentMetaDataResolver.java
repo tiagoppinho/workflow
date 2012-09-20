@@ -5,6 +5,9 @@ package module.workflow.domain;
 
 import java.util.Map;
 
+import pt.ist.bennu.core.domain.groups.PersistentGroup;
+
+import module.fileManagement.domain.Document;
 import module.fileManagement.domain.metadata.MetadataTemplate;
 
 /**
@@ -24,6 +27,21 @@ public abstract class ProcessDocumentMetaDataResolver<P extends ProcessDocument>
     public abstract String getMetadataTemplateNameToUseOrCreate();
 
     public abstract Map<String, String> getMetadataKeysAndValuesMap(P processDocument);
+
+    /**
+     * 
+     * @return The {@link PersistentGroup#getClass()} to be used on the Document
+     *         to control the read capabilities {@link Document#getReadGroup()}
+     */
+    public abstract Class<? extends AbstractWFDocsGroup> getReadGroupClass();
+
+    /**
+     * 
+     * @return The {@link PersistentGroup#getClass()} to be used on the Document
+     *         to control the write capabilities
+     *         {@link Document#getWriteGroup()}
+     */
+    public abstract Class<? extends AbstractWFDocsGroup> getWriteGroupClass();
 
     /**
      * 
@@ -48,5 +66,6 @@ public abstract class ProcessDocumentMetaDataResolver<P extends ProcessDocument>
 	file.getDocument().setSaveAccessLog(shouldFileContentAccessBeLogged());
 
     }
+
 
 }

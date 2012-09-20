@@ -37,6 +37,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import jvstm.cps.ConsistencyException;
+import module.fileManagement.domain.FileNode;
+import module.fileManagement.presentationTier.servlet.DownloadDocumentServlet;
 import module.workflow.activities.ActivityException;
 import module.workflow.activities.ActivityInformation;
 import module.workflow.activities.WorkflowActivity;
@@ -45,6 +47,7 @@ import module.workflow.domain.ProcessFile;
 import module.workflow.domain.ProcessFileValidationException;
 import module.workflow.domain.WorkflowProcess;
 import module.workflow.domain.WorkflowProcessComment;
+import module.workflow.domain.exceptions.WorkflowDomainException;
 import module.workflow.presentationTier.ProcessNodeSelectionMapper;
 import module.workflow.presentationTier.WorkflowLayoutContext;
 import module.workflow.util.FileUploadBeanResolver;
@@ -511,13 +514,14 @@ public class ProcessManagement extends ContextBaseAction {
 	}
 	try {
 
-	    if (!file.getDocument().getReadGroup().isMember(UserView.getCurrentUser())) {
-		throw new DomainException("error.cant.access.ProcessDocument");
-	    }
 	    if (process != null) {
 		process.preAccessFile(file);
 	    }
-	    download(response, file.getFilename(), file.getStream(), file.getContentType());
+	    FileNode accessibleFileNode = file.getFileNode();
+	    if (accessibleFileNode == null) {
+		throw new WorkflowDomainException("cant.find.access.to.file", file.getDisplayName());
+	    }
+	    DownloadDocumentServlet.downloadDocument(request, response, accessibleFileNode);
 	    if (process != null) {
 		process.postAccessFile(file);
 	    }

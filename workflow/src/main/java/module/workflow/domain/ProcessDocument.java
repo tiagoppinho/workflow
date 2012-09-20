@@ -2,6 +2,10 @@ package module.workflow.domain;
 
 import java.io.InputStream;
 
+import pt.ist.bennu.core.domain.groups.UnionGroup;
+
+import module.fileManagement.domain.AbstractFileNode;
+import module.fileManagement.domain.DirNode;
 import module.fileManagement.domain.Document;
 import module.fileManagement.domain.FileNode;
 import module.workflow.util.WorkflowDocumentUploadBean;
@@ -14,25 +18,43 @@ import module.workflow.util.WorkflowDocumentUploadBean;
  *         metadata) on a workflow process
  */
 public abstract class ProcessDocument extends ProcessDocument_Base {
-    
-    public  ProcessDocument() {
-        super();
-    }
-    
-    public ProcessDocument(String displayName, String filename, byte[] content, WorkflowProcess process) {
+
+    public ProcessDocument() {
 	super();
-	init(displayName, filename, content, process);
     }
 
-    public final void init(String displayName, String filename, byte[] content, WorkflowProcess process) {
-	Document document = new Document(displayName, filename, content);
-	//get the read and write groups per process, if they exist, use them, if not, it's time to create it
-	document.setReadGroup(WFDocumentsReadPG.getOrCreateInstance(process));
-	document.setWriteGroup(WFDocumentsWritePG.getOrCreateInstance(process));
-	document.addVersion(displayName, filename, content);
-	document.addFileNode(new FileNode(process.getDocumentsRepository(), document));
-	setDocument(document);
+    public ProcessDocument(final FileNode associatedFileNode) {
+	super();
+	init(associatedFileNode);
 	
+	
+    }
+    
+    @Deprecated
+    public void delete() {
+	getDocument().delete();
+	setProcess(null);
+	deleteDomainObject();
+    }
+
+    public final void init(final FileNode associatedFileNode) {
+	this.setProcess(((ProcessDirNode) associatedFileNode.getParent()).getWorkflowProcess());
+	this.setDocument(associatedFileNode.getDocument());
+	AbstractWFDocsGroup readGroup = AbstractWFDocsGroup.getOrCreateInstance(getProcess(), this.getMetaDataResolver().getReadGroupClass());
+	AbstractWFDocsGroup writeGroup = AbstractWFDocsGroup.getOrCreateInstance(getProcess(), this.getMetaDataResolver().getWriteGroupClass());
+	if (this.getDocument().hasReadGroup())
+	{
+	    this.getDocument().setReadGroup(UnionGroup.getOrCreateUnionGroup(getDocument().getReadGroup(), readGroup));
+	} else {
+	    this.getDocument().setReadGroup(readGroup);
+	}
+	
+	if (this.getDocument().hasWriteGroup())
+	{
+	    this.getDocument().setWriteGroup(UnionGroup.getOrCreateUnionGroup(getDocument().getWriteGroup(), writeGroup));
+	} else {
+	    this.getDocument().setWriteGroup(writeGroup);
+	}
     }
 
     /**
@@ -57,7 +79,18 @@ public abstract class ProcessDocument extends ProcessDocument_Base {
 
     }
 
-    public abstract void validateUpload(WorkflowProcess process);
+    /**
+     * Validates if this file is valid to be associated with the workflowProcess
+     * 
+     * @param workflowProcess
+     *            the process to which this file is being associated
+     * 
+     * @throws module.workflow.domain.ProcessFileValidationException
+     *             if does not validate
+     * 
+     * 
+     */
+    public abstract void validateUpload(WorkflowProcess process) throws ProcessFileValidationException;
 
     /**
      * Method used to fill in the fields that might be declared on
@@ -83,25 +116,30 @@ public abstract class ProcessDocument extends ProcessDocument_Base {
     }
 
     /**
+     * TODO: remove
      * 
      * @param displayName
      * @param filename
      * @param process
-     * @return An existing {@link ProcessDocument}, if one of the same type,
-     *         same displayName and filename exists associated with this
-     *         process, or null if it doesn't
+     * @return An existing {@link ProcessDocument}, if one of the same
+     *         displayName and filename exists associated with this process, or
+     *         null if it doesn't public static ProcessDocument
+     *         getExistingDocument(String displayName, String filename,
+     *         WorkflowProcess process, Class<? extends ProcessDocument> clazz)
+     *         { ProcessDirNode documentsRepository =
+     *         process.getDocumentsRepository(); AbstractFileNode nodeFound =
+     *         documentsRepository.searchNode(displayName); if (nodeFound ==
+     *         null) { return null; } //seen that the DocumentRepository offers
+     *         a flat repository i.e. no dirs, let's throw an error //if we
+     *         found something that is a dir or that cannot be converted to
+     *         ProcessDocument if (!(nodeFound instanceof FileNode) ||
+     *         ((FileNode) nodeFound).getDocument().getProcessDocument() ==
+     *         null) throw new Error("no.dirs.or.other.files.allowed.here");
+     *         return (ProcessDocument) (((FileNode)
+     *         nodeFound).getDocument().getProcessDocument());
+     * 
+     *         }
      */
-    public static ProcessDocument getExistingDocument(String displayName, String filename, WorkflowProcess process,
-	    Class<? extends ProcessDocument> clazz) {
-	for (ProcessDocument processDocument : process.getFileDocuments()) {
-	    if (processDocument.getClass().equals(clazz) && processDocument.getDisplayName().equals(displayName)
-		    && processDocument.getFilename().equals(filename)) {
-		return processDocument;
-	    }
-	}
-	return null;
-
-    }
 
     /**
      * @return if the access to this instance is logged or not. To change this
@@ -134,13 +172,30 @@ public abstract class ProcessDocument extends ProcessDocument_Base {
 
     }
 
-    public boolean isInTrash() {
-	return !hasProcess();
-    }
+    //    public boolean isInTrash() {
+    //	getDocument().
+    //    }
 
     public String getContentType() {
 	return getDocument().getLastVersionedFile().getContentType();
     }
 
+    /**
+     * 
+     * @return a fileNode associated with this {@link ProcessDocument}. if none
+     *         is found on the {@link WorkflowProcess#getDocumentsRepository()},
+     *         it will search on the deleted items i.e. trash
+     */
+    public final FileNode getFileNode() {
+	FileNode fileNodeToReturn = null;
+	ProcessDirNode documentsRepository = getProcess().getDocumentsRepository();
+	fileNodeToReturn = getDocument().getFileNode(documentsRepository);
+	if (fileNodeToReturn == null) {
+	    DirNode trash = documentsRepository.getTrash();
+	    fileNodeToReturn = getDocument().getFileNode(trash);
+	}
+	return fileNodeToReturn;
+
+    }
 
 }

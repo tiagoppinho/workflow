@@ -504,37 +504,28 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
 
     @Service
     public <P extends ProcessDocument> P addFileDocument(Class<P> instanceToCreate, String displayName, String filename,
-	    byte[] consumeInputStream, WorkflowDocumentUploadBean bean) throws Exception {
+	    byte[] content, WorkflowDocumentUploadBean bean) throws Exception {
 	if (isFileSupportAvailable()) {
 	    if (!isFileEditionAllowed())
+		//in reality, this should be checked also by the PersistentGroups associated with the ProcessDirNode
 		throw new DomainException("label.error.workflowProcess.noFileEditionAvailable",
 			DomainException.getResourceFor("resources/WorkflowResources"));
 	    //let's see if we already have a ProcessDocument with the same filename & displayName or not
-	    P existingDocument = (P) ProcessDocument.getExistingDocument(displayName, filename, this, instanceToCreate);
-	    if (existingDocument == null) {
+	    
+	    ProcessDocument processDocument = getDocumentsRepository().uploadDocument(content, displayName, filename,
+		    instanceToCreate);
 
-		Constructor<P> fileConstructor = instanceToCreate.getConstructor(String.class, String.class, byte[].class,
-			WorkflowProcess.class);
-		try {
-		    existingDocument = fileConstructor
-			    .newInstance(new Object[] { displayName, filename, consumeInputStream, this });
-		} catch (InvocationTargetException e) {
-		    if (e.getCause() instanceof IllegalWriteException) {
-			throw new IllegalWriteException();
-		    }
-		    throw new Error(e);
-		}
-	    } else {
-		existingDocument.getDocument().addVersion(displayName, filename, consumeInputStream);
-	    }
-	    existingDocument.fillInNonDefaultFields(bean);
+	    processDocument.fillInNonDefaultFields(bean);
 
-	    addFileDocuments(existingDocument);
+	    addFileDocuments(processDocument);
+	    
+	    new FileUploadLog(this, UserView.getCurrentUser(), processDocument.getFilename(), processDocument.getDisplayName(),
+		    BundleUtil.getLocalizedNamedFroClass(processDocument.getClass()));
 
-	    new FileUploadLog(this, UserView.getCurrentUser(), existingDocument.getFilename(), existingDocument.getDisplayName(),
-		    BundleUtil.getLocalizedNamedFroClass(existingDocument.getClass()));
-	    existingDocument.getMetaDataResolver().fillMetaDataBasedOnDocument(existingDocument);
-	    return existingDocument;
+	    processDocument.getMetaDataResolver().fillMetaDataBasedOnDocument(processDocument);
+	    
+	    
+	    return (P) processDocument;
 	}
 	throw new DomainException("label.error.workflowProcess.noSupportForFiles",
 		DomainException.getResourceFor("resources/WorkflowResources"));
@@ -667,7 +658,7 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
     @Service
     public void removeFileDocuments(ProcessDocument file) {
 	removeTiesWithFileDocument(file);
-	file.getDocument().getFileNode(this.getDocumentsRepository()).trash(new ContextPath(this.getDocumentsRepository()));
+	file.getFileNode().trash(new ContextPath(getDocumentsRepository()));
     }
 
     /**
@@ -677,15 +668,12 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
      * @param document
      *            the document to remove it iwth
      */
-    public void removeTiesWithFileDocument(ProcessDocument document) {
-	if (!document.getDocument().getWriteGroup().isMember(UserView.getCurrentUser())) {
-	    throw new DomainException("error.cant.access.ProcessDocument");
-	}
+    @SuppressWarnings("unused")
+    private void removeTiesWithFileDocument(ProcessDocument document) {
 	if (!document.isPossibleToArchieve()) {
 	    throw new DomainException("error.invalidOperation.tryingToRemoveFileWhenIsNotPossible",
 		    DomainException.getResourceFor("resources/AcquisitionResources"));
 	}
-	super.removeFileDocuments(document);
 
 	document.processRemoval();
 	String nameToLog = document.getDisplayName() != null ? document.getDisplayName() : document.getFilename();
@@ -839,6 +827,7 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
      * @return list of classes that extends ProcessFile that are allowed to add
      *         to the process
      */
+    @SuppressWarnings("static-method")
     public List<Class<? extends ProcessFile>> getAvailableFileTypes() {
 	List<Class<? extends ProcessFile>> availableClasses = new ArrayList<Class<? extends ProcessFile>>();
 	availableClasses.add(ProcessFile.class);
@@ -854,6 +843,7 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
      * @return list of classes that extends {@link ProcessDocument} that are allowed to add
      *         to the process
      */
+    @SuppressWarnings("static-method")
     public List<Class<? extends ProcessDocument>> getAvailableDocumentTypes() {
 	List<Class<? extends ProcessDocument>> availableClasses = new ArrayList<Class<? extends ProcessDocument>>();
 	availableClasses.add(GenericProcessDocument.class);
@@ -922,6 +912,7 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
     }
 
 
+
     private <T extends ProcessFile> List<T> getFilesFromList(List<ProcessFile> list,
 	    List<Class<? extends ProcessFile>> selectedClasses) {
 	List<T> classes = new ArrayList<T>();
@@ -936,19 +927,24 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
 	return classes;
     }
 
-
     private <T extends ProcessDocument> List<T> getFileDocumentsFromList(List<ProcessDocument> list,
-	    List<Class<? extends ProcessDocument>> selectedClasses) {
+	    List<Class<? extends ProcessDocument>> selectedClasses, boolean includeDeleted) {
 	List<T> classes = new ArrayList<T>();
 	for (ProcessDocument file : list) {
 	    for (Class selectedClass : selectedClasses) {
-		if (file.getClass() == selectedClass) {
+		if (file.getClass() == selectedClass && (includeDeleted || !file.getFileNode().isInTrash())) {
 		    classes.add((T) file);
 		}
 
 	    }
 	}
 	return classes;
+
+    }
+
+    private <T extends ProcessDocument> List<T> getFileDocumentsFromList(List<ProcessDocument> list,
+	    List<Class<? extends ProcessDocument>> selectedClasses) {
+	return getFileDocumentsFromList(list, selectedClasses, false);
     }
 
     public <T extends ProcessFile> List<T> getFilesIncludingDeleted(List<Class<? extends ProcessFile>> selectedClasses,
@@ -975,11 +971,10 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
 	    List<Class<? extends ProcessDocument>> selectedClasses, boolean sortedByFileName) {
 	ArrayList<ProcessDocument> classes = new ArrayList<ProcessDocument>();
 	classes.addAll(getFileDocuments());
-	classes.addAll(getDeletedFileDocuments());
 	if (!sortedByFileName) {
-	    return getFileDocumentsFromList(classes, selectedClasses);
+	    return getFileDocumentsFromList(classes, selectedClasses, true);
 	}
-	ArrayList<T> processFiles = (ArrayList<T>) getFileDocumentsFromList(classes, selectedClasses);
+	ArrayList<T> processFiles = (ArrayList<T>) getFileDocumentsFromList(classes, selectedClasses, true);
 	Collections.sort(processFiles, new Comparator<ProcessDocument>() {
 
 	    @Override
@@ -991,14 +986,16 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
 
     }
 
+    //TODO FENIX-343
     private Collection<? extends ProcessDocument> getDeletedFileDocuments() {
-	Collection<ProcessDocument> deletedProcessDocuments = new ArrayList<ProcessDocument>();
-	for (AbstractFileNode abstractFileNode : getDocumentsRepository().getTrash().getChild()) {
-	    if (abstractFileNode.isFile() && ((FileNode) abstractFileNode).getDocument().getProcessDocument() != null) {
-		deletedProcessDocuments.add(((FileNode) abstractFileNode).getDocument().getProcessDocument());
-	    }
-	}
-	return deletedProcessDocuments;
+	//	Collection<ProcessDocument> deletedProcessDocuments = new ArrayList<ProcessDocument>();
+	//	for (AbstractFileNode abstractFileNode : getDocumentsRepository().getTrash().getChild()) {
+	//	    if (abstractFileNode.isFile() && ((FileNode) abstractFileNode).getDocument().getProcessDocument() != null) {
+	//		deletedProcessDocuments.add(((FileNode) abstractFileNode).getDocument().getProcessDocument());
+	//	    }
+	//	}
+	//	return deletedProcessDocuments;
+	return null;
     }
 
     @Override

@@ -98,6 +98,7 @@ width: 45px !important;
 			</tr>
 		<logic:iterate id="document" name="listFiles" type="module.workflow.domain.ProcessDocument">
 			<bean:define id="file" name="document" property="document.lastVersionedFile"/>
+			<bean:define id="fileNode" name="document" property="fileNode"/>
 			<bean:define id="documentId" name="document" property="externalId" type="java.lang.String"/>
 				<tr>
 					<td class="file-date">
@@ -109,15 +110,15 @@ width: 45px !important;
 					</td>
 					<td class="file-name"><div><bean:write name="file" property="filename"/></div></td>
 					<td class="file-desc"><div><bean:write name="file" property="displayName"/></div></td>
-					<td class="file-type"><%=BundleUtil.getLocalizedNamedFroClass(file.getClass())%></td>
+					<td class="file-type"><%=BundleUtil.getLocalizedNamedFroClass(document.getClass())%></td>
 					<td class="file-ash"><div><bean:write name="file" property="hexSHA1MessageDigest"/></div></td>
 					<td><fr:view name="file" property="filesize" layout="fileSize"/></td>
-					<logic:notEmpty name="document" property="process">
+					<logic:equal name="fileNode" property="inTrash" value="false" >
 						<td class="file-state"><bean:message bundle="WORKFLOW_RESOURCES" key="label.fileStatus.active"/></td>
-					</logic:notEmpty>
-					<logic:empty name="document" property="process">
+					</logic:equal>
+					<logic:equal name="fileNode" property="inTrash" value="true" >
 						<td class="file-state"><bean:message bundle="WORKFLOW_RESOURCES" key="label.fileStatus.deleted"/></td>
-					</logic:empty>
+					</logic:equal>
 					<td class="file-download"><span>(<html:link page='<%= "/workflowProcessManagement.do?method=downloadFileDocument&fileId=" + documentId %>' paramId="processId" paramName="process" paramProperty="externalId"><bean:message key="link.downloadFile" bundle="WORKFLOW_RESOURCES"/></html:link>)</span></td>
 				</tr>
 		</logic:iterate>

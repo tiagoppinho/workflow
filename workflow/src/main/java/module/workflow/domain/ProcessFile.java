@@ -96,7 +96,7 @@ public class ProcessFile extends ProcessFile_Base {
      * @throws module.workflow.domain.ProcessFileValidationException
      *             if does not validate
      */
-    public void validateUpload(WorkflowProcess workflowProcess) {
+    public void validateUpload(WorkflowProcess workflowProcess) throws ProcessFileValidationException {
 
     }
 

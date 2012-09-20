@@ -1,8 +1,12 @@
 package module.workflow.domain;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import pt.ist.bennu.core.util.ClassNameBundle;
+
+import module.fileManagement.domain.FileNode;
 import module.workflow.util.WorkflowDocumentUploadBean;
 
 /**
@@ -13,12 +17,18 @@ import module.workflow.util.WorkflowDocumentUploadBean;
  *         description
  * 
  */
+@ClassNameBundle(bundle = "resources/WorkflowResources")
 public class GenericProcessDocument extends GenericProcessDocument_Base {
     
     public  GenericProcessDocument() {
         super();
     }
     
+    public GenericProcessDocument(final FileNode associatedFileNode) {
+	super();
+	init(associatedFileNode);
+    }
+
     public class GenericPDMetaDataResolver extends ProcessDocumentMetaDataResolver<GenericProcessDocument> {
 
 	private static final String TEMPLATE = "Outros";
@@ -35,18 +45,22 @@ public class GenericProcessDocument extends GenericProcessDocument_Base {
 
 	@Override
 	public Map<String, String> getMetadataKeysAndValuesMap(GenericProcessDocument processDocument) {
-	    HashMap<String, String> hashMap = new HashMap<String, String>();
-	    hashMap.put("Nome atríbuido ao ficheiro", processDocument.getGenericDescription());
-	    return hashMap;
+	    //	    hashMap.put("Nome atríbuido ao ficheiro", processDocument.getGenericDescription());
+	    return Collections.emptyMap();
+	}
+
+	@Override
+	public Class<? extends AbstractWFDocsGroup> getReadGroupClass() {
+	    return WFDocsDefaultReadGroup.class;
+	}
+
+	@Override
+	public Class<? extends AbstractWFDocsGroup> getWriteGroupClass() {
+	    return WFDocsDefaultWriteGroup.class;
 	}
 
     }
 
-    public GenericProcessDocument(String displayName, String filename, byte[] content, WorkflowProcess process) {
-	super();
-	init(displayName, filename, content, process);
-
-    }
     @Override
     public ProcessDocumentMetaDataResolver<GenericProcessDocument> getMetaDataResolver() {
 	return new GenericPDMetaDataResolver();

@@ -1,18 +1,25 @@
 package module.workflow.domain;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.util.List;
+
 import module.fileManagement.domain.AbstractFileNode;
+import module.fileManagement.domain.ContextPath;
 import module.fileManagement.domain.DirNode;
 import module.fileManagement.domain.FileNode;
 import module.fileManagement.domain.log.AccessFileLog;
 import module.fileManagement.domain.log.FileLog;
+import module.workflow.domain.exceptions.WorkflowDomainException;
 import pt.ist.bennu.core.domain.exceptions.DomainException;
+import pt.ist.fenixframework.pstm.IllegalWriteException;
 import dml.runtime.Relation;
 import dml.runtime.RelationListener;
 
 public class ProcessDirNode extends ProcessDirNode_Base {
 
-    static {
-	//relation listener for the access logs
+ /*   static {
+	//relation listener for the access logs - TODO
 	FileNode.FileLogFileNode.addListener(new RelationListener<FileNode, FileLog>() {
 
 	    @Override
@@ -48,7 +55,7 @@ public class ProcessDirNode extends ProcessDirNode_Base {
 	    }
 	});
 
-	//relation listener for the 'deletion' of a file i.e. sending it to the trash
+	//relation listener for the 'deletion' of a file i.e. sending it to the trash - TODO - or not!!
 	AbstractFileNode.DirNodeAbstractFileNode.addListener(new RelationListener<AbstractFileNode, DirNode>() {
 
 	    @Override
@@ -81,14 +88,14 @@ public class ProcessDirNode extends ProcessDirNode_Base {
 	    }
 	});
 
-    }
+    } */
 
     public ProcessDirNode(WorkflowProcess process) {
 	super();
 	if (process.getDocumentsRepository() != null)
 	    throw new DomainException("error.this.process.already.has.a.repository");
-	setReadGroup(WFDocumentsReadPG.getOrCreateInstance(process));
-	setWriteGroup(WFDocumentsWritePG.getOrCreateInstance(process));
+	setReadGroup(WFDocsDefaultReadGroup.getOrCreateInstance(process));
+	setWriteGroup(WFDocsDefaultWriteGroup.getOrCreateInstance(process));
 	setWorkflowProcess(process);
 	setQuota(Long.MAX_VALUE); // no limit for the quota of the processes
 	createTrashFolder();
@@ -98,6 +105,77 @@ public class ProcessDirNode extends ProcessDirNode_Base {
     @Override
     public boolean checkParent() {
 	return hasParent() ? true : hasWorkflowProcess();
+    }
+    
+    /**
+     * 
+     * @param content
+     * @param fileDescription
+     * @param fileName
+     * @return
+     */
+    @SuppressWarnings("unchecked")
+    <P extends ProcessDocument> P uploadDocument(byte[] content, final String displayName, final String fileName,
+	    final Class<P> processDocClass)
+    {
+	//let's see if we already have any document with that name and type
+	AbstractFileNode nodeFound = searchNode(displayName);
+
+	//seen that the DocumentRepository offers a flat repository i.e. no dirs, let's throw an error
+	//if we found something that is a dir or that cannot be converted to ProcessDocument
+	if (nodeFound != null
+		&& (!(nodeFound instanceof FileNode) || ((FileNode) nodeFound).getDocument().getProcessDocuments() == null))
+	    throw new Error("no.dirs.or.other.files.allowed.here");
+	ProcessDocument existingProcessDocument = null;
+	//if the associated ProcessDocument found is not of the same type of the one that we were supposed to create,
+	//let's throw a DomainException
+	if (nodeFound != null)
+	{
+	    existingProcessDocument = getProcessDocument((FileNode) nodeFound);
+	    if (!(existingProcessDocument.getClass().equals(processDocClass)))
+		    throw new WorkflowDomainException("cant.create.document.other.type.same.name.exists", displayName);
+	}
+	
+	FileNode fileNode = createFile(content, displayName, fileName, content.length, new ContextPath(this));
+
+	if (existingProcessDocument == null) {
+	    try {
+	    Constructor<P> fileConstructor;
+		fileConstructor = processDocClass.getConstructor(FileNode.class);
+		existingProcessDocument = fileConstructor.newInstance(new Object[] { fileNode });
+	    } catch (InvocationTargetException e) {
+		if (e.getCause() instanceof IllegalWriteException) {
+		    throw new IllegalWriteException();
+		}
+		throw new Error(e);
+	    }
+ catch (NoSuchMethodException | IllegalAccessException | InstantiationException | SecurityException e1) {
+		throw new Error(e1);
+	    }
+
+	}
+
+
+	return (P) existingProcessDocument;
+	
+    }
+    
+   
+    /**
+     * 
+     * @param node the {@link FileNode} associated with the ProcessDocument
+     * @return the {@link ProcessDocument} associated with the node, under this ProcessDirNode, or null if none is found
+     */
+    private ProcessDocument getProcessDocument(FileNode node)
+    {
+	if (!this.equals(node.getParent()))
+	    return null;
+	for (ProcessDocument processDocument : node.getDocument().getProcessDocuments()) {
+	    if (processDocument.getProcess().equals(getWorkflowProcess()))
+		return processDocument;
+	}
+	return null;
+	
     }
 
 }
