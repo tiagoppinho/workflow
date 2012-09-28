@@ -27,13 +27,6 @@
 class module.workflow.domain.ProcessDirNode extends .module.fileManagement.domain.DirNode { }
 class module.workflow.domain.ProcessFile extends .pt.ist.fenixframework.plugins.fileSupport.domain.GenericFile { }
 
-class module.workflow.domain.ProcessDocument { }
-
-/* Class for the 'other' type of files, which should only have a description associated with it */
-class module.workflow.domain.GenericProcessDocument extends module.workflow.domain.ProcessDocument {
-	String genericDescription;
- }
-
 //TODO REMOVE
 class module.workflow.domain.WFDocumentsReadPG extends .pt.ist.bennu.core.domain.groups.PersistentGroup { }
 class module.workflow.domain.WFDocumentsWritePG extends .pt.ist.bennu.core.domain.groups.PersistentGroup { }
@@ -45,7 +38,12 @@ class module.workflow.domain.WFDocsDefaultWriteGroup extends module.workflow.dom
  
  //R1 - remove relation
 relation WorkflowProcessFile { 
-	module.workflow.domain.WorkflowProcess playsRole process; 
+	module.workflow.domain.WorkflowProcess playsRole process {
+	// for now, it cannot be 1..1 because a processFile can just have a relationship of deletedFiles
+	// when the FM and WF are integrated, it can be 1..1 TODO
+	//	multiplicity 1..1;
+		multiplicity 0..1;
+	}
 	module.workflow.domain.ProcessFile playsRole files { 
 		multiplicity *;
 	} 
@@ -54,12 +52,14 @@ relation WorkflowProcessFile {
 
 /* START: Workflow Document relations */
 
-relation DocumentProcessDocument {
+relation DocumentProcessFile {
 	.module.fileManagement.domain.Document playsRole document {
-		multiplicity 1..1;
+		//multiplicity 1..1;
+		//For now, let's stick with 0..1 untill all is migrated
+		multiplicity 0..1;
 	}
 	
-	module.workflow.domain.ProcessDocument playsRole processDocuments {
+	module.workflow.domain.ProcessFile playsRole processDocuments {
 		multiplicity *;
 	}
 }
@@ -71,15 +71,6 @@ relation ProcessDirNodeWorkflowProcess {
 	}
 	module.workflow.domain.WorkflowProcess playsRole workflowProcess {
 		multiplicity 1..1;
-	}
-}
-
-relation WorkflowProcessDocument {
-	module.workflow.domain.WorkflowProcess playsRole process {
-		multiplicity 1..1;
-	}
-	module.workflow.domain.ProcessDocument playsRole fileDocuments {
-		multiplicity *;
 	}
 }
 

@@ -28,7 +28,6 @@ import java.lang.reflect.Constructor;
 import java.util.HashMap;
 import java.util.Map;
 
-import module.workflow.domain.ProcessDocument;
 import module.workflow.domain.ProcessFile;
 import module.workflow.domain.WorkflowProcess;
 
@@ -70,34 +69,34 @@ public class FileUploadBeanResolver {
 	beanMap.remove(processFileClass);
     }
 
-    private static Map<Class<? extends ProcessDocument>, Class<? extends WorkflowDocumentUploadBean>> beanDocumentMap = new HashMap<Class<? extends ProcessDocument>, Class<? extends WorkflowDocumentUploadBean>>();
-
-    public static <T extends WorkflowDocumentUploadBean> T getBeanForProcessDocument(WorkflowProcess process,
-	    Class<? extends ProcessDocument> clazz) {
-	    Class<? extends WorkflowDocumentUploadBean> beanClass = beanDocumentMap.get(clazz);
-	if (beanClass == null) {
-	    return (T) new WorkflowDocumentUploadBean(process);
-	} else {
-	    try {
-		Constructor<? extends WorkflowDocumentUploadBean> constructor = beanClass.getConstructor(WorkflowProcess.class);
-		return (T) constructor.newInstance(process);
-	    } catch (Exception e) {
-		e.printStackTrace();
-		return (T) new WorkflowDocumentUploadBean(process);
-	    }
-	}
-    }
-
-    public static void registerBeanForProcessDocument(Class<? extends ProcessDocument> processFileClass,
-	    Class<? extends WorkflowDocumentUploadBean> beanClass) {
-	if (beanDocumentMap.get(processFileClass) != null) {
-	    throw new RuntimeException("error.adding.already.existing.binding");
-	}
-	beanDocumentMap.put(processFileClass, beanClass);
-    }
-
-    public static void unregisterBeanForProcessDocument(Class<? extends ProcessDocument> processFileClass) {
-	beanDocumentMap.remove(processFileClass);
-    }
+    //    private static Map<Class<? extends ProcessDocument>, Class<? extends WorkflowDocumentUploadBean>> beanDocumentMap = new HashMap<Class<? extends ProcessDocument>, Class<? extends WorkflowDocumentUploadBean>>();
+    //
+    //    public static <T extends WorkflowDocumentUploadBean> T getBeanForProcessDocument(WorkflowProcess process,
+    //	    Class<? extends ProcessDocument> clazz) {
+    //	    Class<? extends WorkflowDocumentUploadBean> beanClass = beanDocumentMap.get(clazz);
+    //	if (beanClass == null) {
+    //	    return (T) new WorkflowDocumentUploadBean(process);
+    //	} else {
+    //	    try {
+    //		Constructor<? extends WorkflowDocumentUploadBean> constructor = beanClass.getConstructor(WorkflowProcess.class);
+    //		return (T) constructor.newInstance(process);
+    //	    } catch (Exception e) {
+    //		e.printStackTrace();
+    //		return (T) new WorkflowDocumentUploadBean(process);
+    //	    }
+    //	}
+    //    }
+    //
+    //    public static void registerBeanForProcessDocument(Class<? extends ProcessDocument> processFileClass,
+    //	    Class<? extends WorkflowDocumentUploadBean> beanClass) {
+    //	if (beanDocumentMap.get(processFileClass) != null) {
+    //	    throw new RuntimeException("error.adding.already.existing.binding");
+    //	}
+    //	beanDocumentMap.put(processFileClass, beanClass);
+    //    }
+    //
+    //    public static void unregisterBeanForProcessDocument(Class<? extends ProcessDocument> processFileClass) {
+    //	beanDocumentMap.remove(processFileClass);
+    //    }
 
 }

@@ -27,12 +27,12 @@ package module.workflow.presentationTier.renderers;
 import java.util.Iterator;
 import java.util.List;
 
-import module.workflow.domain.ProcessDocument;
+import module.workflow.domain.ProcessFile;
 import module.workflow.domain.WorkflowProcess;
-import pt.ist.bennu.core.util.BundleUtil;
 
 import org.apache.commons.lang.StringUtils;
 
+import pt.ist.bennu.core.util.BundleUtil;
 import pt.ist.fenixWebFramework.renderers.OutputRenderer;
 import pt.ist.fenixWebFramework.renderers.components.HtmlBlockContainer;
 import pt.ist.fenixWebFramework.renderers.components.HtmlComponent;
@@ -82,17 +82,17 @@ public class WorkflowProcessDocuments extends OutputRenderer {
 
 		HtmlBlockContainer container = new HtmlBlockContainer();
 
-		List<Class<? extends ProcessDocument>> displayableFileTypes = process.getDisplayableFileDocumentTypes();
-		for (Class<? extends ProcessDocument> fileType : displayableFileTypes) {
+		List<Class<? extends ProcessFile>> displayableFileTypes = process.getDisplayableFileDocumentTypes();
+		for (Class<? extends ProcessFile> fileType : displayableFileTypes) {
 		    container.addChild(generate(process, fileType, displayableFileTypes.size() > 1));
 		}
 
 		return container;
 	    }
 
-	    private HtmlComponent generate(WorkflowProcess process, Class<? extends ProcessDocument> fileType,
+	    private HtmlComponent generate(WorkflowProcess process, Class<? extends ProcessFile> fileType,
 		    boolean shouldShowLabel) {
-		List<? extends ProcessDocument> files = process.getFileDocuments(fileType);
+		List<? extends ProcessFile> files = process.getFileDocuments(fileType);
 
 		HtmlBlockContainer blockContainer = new HtmlBlockContainer();
 		HtmlParagraphContainer container = new HtmlParagraphContainer();
@@ -105,10 +105,13 @@ public class WorkflowProcessDocuments extends OutputRenderer {
 		if (shouldShowLabel && files.isEmpty()) {
 		    container.addChild(new HtmlText("-"));
 		} else {
-		    Iterator<? extends ProcessDocument> iterator = files.iterator();
+		    Iterator<? extends ProcessFile> iterator = files.iterator();
 
 		    while (iterator.hasNext()) {
-			ProcessDocument file = iterator.next();
+			ProcessFile file = iterator.next();
+
+			if (!file.isInNewStructure())
+			    continue;
 
 			HtmlLink downloadLink = new HtmlLink();
 			String filename = file.getDisplayName();
@@ -148,7 +151,7 @@ public class WorkflowProcessDocuments extends OutputRenderer {
 
 	    }
 
-	    private HtmlComponent accessConfirmation(ProcessDocument file) {
+	    private HtmlComponent accessConfirmation(ProcessFile file) {
 		HtmlScript script = new HtmlScript();
 		script.setContentType("text/javascript");
 		String displayName = file.getDisplayName();
@@ -163,7 +166,7 @@ public class WorkflowProcessDocuments extends OutputRenderer {
 		return script;
 	    }
 
-	    private HtmlComponent removeConfirmation(ProcessDocument file) {
+	    private HtmlComponent removeConfirmation(ProcessFile file) {
 		HtmlScript script = new HtmlScript();
 		script.setContentType("text/javascript");
 		String displayName = file.getDisplayName();

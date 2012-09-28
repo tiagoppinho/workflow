@@ -24,10 +24,18 @@
  */
 package module.workflow.domain;
 
+import java.io.InputStream;
+import java.util.Collections;
+import java.util.Map;
+
+import module.fileManagement.domain.DirNode;
+import module.fileManagement.domain.FileNode;
 import module.workflow.util.WorkflowFileUploadBean;
-import pt.ist.bennu.core.util.ClassNameBundle;
 
 import org.apache.commons.lang.StringUtils;
+
+import pt.ist.bennu.core.domain.groups.UnionGroup;
+import pt.ist.bennu.core.util.ClassNameBundle;
 
 /**
  * 
@@ -36,6 +44,8 @@ import org.apache.commons.lang.StringUtils;
  * @author Luis Cruz
  * @author Paulo Abrantes
  * @author Susana Fernandes
+ * 
+ *         TODO: make abstract
  * 
  */
 @ClassNameBundle(bundle = "resources/WorkflowResources")
@@ -48,6 +58,150 @@ public class ProcessFile extends ProcessFile_Base {
     public ProcessFile(String displayName, String filename, byte[] content) {
 	super();
 	init(displayName, filename, content);
+    }
+
+    public ProcessFile(final FileNode associatedFileNode) {
+	super();
+	init(associatedFileNode);
+    }
+
+    public final void init(final FileNode associatedFileNode) {
+	this.setProcess(((ProcessDirNode) associatedFileNode.getParent()).getWorkflowProcess());
+	this.setDocument(associatedFileNode.getDocument());
+	AbstractWFDocsGroup readGroup = AbstractWFDocsGroup.getOrCreateInstance(getProcess(), this.getMetaDataResolver()
+		.getReadGroupClass());
+	AbstractWFDocsGroup writeGroup = AbstractWFDocsGroup.getOrCreateInstance(getProcess(), this.getMetaDataResolver()
+		.getWriteGroupClass());
+	if (this.getDocument().hasReadGroup()) {
+	    this.getDocument().setReadGroup(UnionGroup.getOrCreateUnionGroup(getDocument().getReadGroup(), readGroup));
+	} else {
+	    this.getDocument().setReadGroup(readGroup);
+	}
+
+	if (this.getDocument().hasWriteGroup()) {
+	    this.getDocument().setWriteGroup(UnionGroup.getOrCreateUnionGroup(getDocument().getWriteGroup(), writeGroup));
+	} else {
+	    this.getDocument().setWriteGroup(writeGroup);
+	}
+    }
+
+    /**
+     * TODO: remove
+     * 
+     * @param displayName
+     * @param filename
+     * @param process
+     * @return An existing {@link ProcessDocument}, if one of the same
+     *         displayName and filename exists associated with this process, or
+     *         null if it doesn't public static ProcessDocument
+     *         getExistingDocument(String displayName, String filename,
+     *         WorkflowProcess process, Class<? extends ProcessDocument> clazz)
+     *         { ProcessDirNode documentsRepository =
+     *         process.getDocumentsRepository(); AbstractFileNode nodeFound =
+     *         documentsRepository.searchNode(displayName); if (nodeFound ==
+     *         null) { return null; } //seen that the DocumentRepository offers
+     *         a flat repository i.e. no dirs, let's throw an error //if we
+     *         found something that is a dir or that cannot be converted to
+     *         ProcessDocument if (!(nodeFound instanceof FileNode) ||
+     *         ((FileNode) nodeFound).getDocument().getProcessDocument() ==
+     *         null) throw new Error("no.dirs.or.other.files.allowed.here");
+     *         return (ProcessDocument) (((FileNode)
+     *         nodeFound).getDocument().getProcessDocument());
+     * 
+     *         }
+     */
+
+    @Override
+    public String getFilename() {
+	if (getDocument() == null) {
+	    return super.getFilename();
+	} else
+	    return getDocument().getFileName();
+    }
+
+    @Override
+    public String getDisplayName() {
+	if (getDocument() == null)
+	    return super.getDisplayName();
+	else {
+	    return getDocument().getDisplayName();
+	}
+    }
+
+    @Override
+    public InputStream getStream() {
+	if (getDocument() == null) {
+	    return super.getStream();
+	} else
+	return getDocument().getLastVersionedFile().getStream();
+    }
+
+    //    public boolean isInTrash() {
+    //	getDocument().
+    //    }
+
+    public class GenericPDMetaDataResolver extends ProcessDocumentMetaDataResolver<ProcessFile> {
+
+	private static final String TEMPLATE = "Outros";
+
+	@Override
+	public String getMetadataTemplateNameToUseOrCreate() {
+	    return TEMPLATE;
+	}
+
+	@Override
+	public boolean shouldFileContentAccessBeLogged() {
+	    return true;
+	}
+
+	@Override
+	public Map<String, String> getMetadataKeysAndValuesMap(ProcessFile processDocument) {
+	    //	    hashMap.put("Nome atríbuido ao ficheiro", processDocument.getGenericDescription());
+	    return Collections.emptyMap();
+	}
+
+	@Override
+	public Class<? extends AbstractWFDocsGroup> getReadGroupClass() {
+	    return WFDocsDefaultReadGroup.class;
+	}
+
+	@Override
+	public Class<? extends AbstractWFDocsGroup> getWriteGroupClass() {
+	    return WFDocsDefaultWriteGroup.class;
+	}
+
+    }
+
+    public ProcessDocumentMetaDataResolver<ProcessFile> getMetaDataResolver() {
+	return new GenericPDMetaDataResolver();
+    }
+
+    @Override
+    public String getContentType() {
+	if (getDocument() == null) {
+	    return super.getContentType();
+	} else
+	return getDocument().getLastVersionedFile().getContentType();
+    }
+
+    /**
+     * 
+     * @return a fileNode associated with this {@link ProcessDocument}. if none
+     *         is found on the {@link WorkflowProcess#getDocumentsRepository()},
+     *         it will search on the deleted items i.e. trash
+     */
+    public final FileNode getFileNode() {
+	if (getDocument() == null)
+	    return null;
+	FileNode fileNodeToReturn = null;
+	ProcessDirNode documentsRepository = getProcess().getDocumentsRepository();
+	fileNodeToReturn = getDocument().getFileNode(documentsRepository);
+	if (fileNodeToReturn == null) {
+	    DirNode trash = documentsRepository.getTrash();
+	    fileNodeToReturn = getDocument().getFileNode(trash);
+	}
+	return fileNodeToReturn;
+
     }
 
     public void fillInNonDefaultFields(WorkflowFileUploadBean bean) {
@@ -86,6 +240,15 @@ public class ProcessFile extends ProcessFile_Base {
 	return false;
     }
 
+    // TODO: use this format
+    //    /**
+    //     * @return if the access to this instance is logged or not. To change this
+    //     *         value, per instance, see and override
+    //     *         {@link ProcessDocumentMetaDataResolver#shouldFileContentAccessBeLogged()}
+    //     */
+    //    public final boolean shouldFileContentAccessBeLogged() {
+    //	return getDocument().mustSaveAccessLog();
+    //    }
 
     /**
      * Validates if this file is valid to be associated with the workflowProcess
@@ -95,6 +258,7 @@ public class ProcessFile extends ProcessFile_Base {
      * 
      * @throws module.workflow.domain.ProcessFileValidationException
      *             if does not validate
+     * 
      */
     public void validateUpload(WorkflowProcess workflowProcess) throws ProcessFileValidationException {
 
@@ -141,6 +305,7 @@ public class ProcessFile extends ProcessFile_Base {
     public void delete() {
 	removeProcess();
 	removeProcessWithDeleteFile();
+	getDocument().delete();
 	super.delete();
     }
 
@@ -154,6 +319,14 @@ public class ProcessFile extends ProcessFile_Base {
 
     }
 
+    /**
+     * Temporary method TODO remove it when migration is done
+     * 
+     * @return true if this ProcessFile is supported on the new structure
+     */
+    public boolean isInNewStructure() {
+	return getDocument() != null;
+    }
 
     public boolean isArchieved() {
 	return getProcess() == null && getProcessWithDeleteFile() != null;

@@ -115,7 +115,7 @@ public class ProcessDirNode extends ProcessDirNode_Base {
      * @return
      */
     @SuppressWarnings("unchecked")
-    <P extends ProcessDocument> P uploadDocument(byte[] content, final String displayName, final String fileName,
+    <P extends ProcessFile> P uploadDocument(byte[] content, final String displayName, final String fileName,
 	    final Class<P> processDocClass)
     {
 	//let's see if we already have any document with that name and type
@@ -126,7 +126,7 @@ public class ProcessDirNode extends ProcessDirNode_Base {
 	if (nodeFound != null
 		&& (!(nodeFound instanceof FileNode) || ((FileNode) nodeFound).getDocument().getProcessDocuments() == null))
 	    throw new Error("no.dirs.or.other.files.allowed.here");
-	ProcessDocument existingProcessDocument = null;
+	ProcessFile existingProcessDocument = null;
 	//if the associated ProcessDocument found is not of the same type of the one that we were supposed to create,
 	//let's throw a DomainException
 	if (nodeFound != null)
@@ -163,14 +163,16 @@ public class ProcessDirNode extends ProcessDirNode_Base {
    
     /**
      * 
-     * @param node the {@link FileNode} associated with the ProcessDocument
-     * @return the {@link ProcessDocument} associated with the node, under this ProcessDirNode, or null if none is found
+     * @param node
+     *            the {@link FileNode} associated with the ProcessDocument
+     * @return the {@link ProcessFile} associated with the node, under this
+     *         ProcessDirNode, or null if none is found
      */
-    private ProcessDocument getProcessDocument(FileNode node)
+    private ProcessFile getProcessDocument(FileNode node)
     {
 	if (!this.equals(node.getParent()))
 	    return null;
-	for (ProcessDocument processDocument : node.getDocument().getProcessDocuments()) {
+	for (ProcessFile processDocument : node.getDocument().getProcessDocuments()) {
 	    if (processDocument.getProcess().equals(getWorkflowProcess()))
 		return processDocument;
 	}

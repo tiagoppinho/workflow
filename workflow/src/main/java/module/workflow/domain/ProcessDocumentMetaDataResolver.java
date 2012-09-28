@@ -17,7 +17,7 @@ import module.fileManagement.domain.metadata.MetadataTemplate;
  *         to use the Metadata on already existing documents, into domain data.
  * 
  */
-public abstract class ProcessDocumentMetaDataResolver<P extends ProcessDocument> {
+public abstract class ProcessDocumentMetaDataResolver<P extends ProcessFile> {
 
     /**
      * 
@@ -54,7 +54,7 @@ public abstract class ProcessDocumentMetaDataResolver<P extends ProcessDocument>
     }
 
     @SuppressWarnings("unchecked")
-    void fillMetaDataBasedOnDocument(ProcessDocument file) {
+    void fillMetaDataBasedOnDocument(ProcessFile file) {
 	MetadataTemplate metadataTemplate = MetadataTemplate.getOrCreateInstance(getMetadataTemplateNameToUseOrCreate());
 
 	Map<String, String> metadataKeysAndValuesMap = getMetadataKeysAndValuesMap((P) file);

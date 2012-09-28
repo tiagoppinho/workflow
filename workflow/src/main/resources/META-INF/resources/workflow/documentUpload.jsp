@@ -14,7 +14,7 @@
 
 <bean:define id="selectedInstance" name="bean" property="selectedInstance.simpleName"/>
 
-<bean:define id="schema" value="<%= "addDocument-" + selectedInstance%>" toScope="request"/>
+<bean:define id="schema" value="<%= "addFile-" + selectedInstance%>" toScope="request"/>
 
 
 <%
