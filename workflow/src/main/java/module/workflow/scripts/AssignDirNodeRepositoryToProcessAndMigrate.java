@@ -3,19 +3,14 @@
  */
 package module.workflow.scripts;
 
-import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
-
-import org.apache.commons.collections.map.HashedMap;
 
 import module.fileManagement.domain.DirNode;
 import module.workflow.domain.AbstractWFDocsGroup;
@@ -31,6 +26,7 @@ import pt.ist.bennu.core.domain.VirtualHost;
 import pt.ist.bennu.core.domain.groups.PersistentGroup;
 import pt.ist.bennu.core.domain.scheduler.ReadCustomTask;
 import pt.ist.bennu.core.domain.scheduler.TransactionalThread;
+import pt.ist.fenixframework.pstm.AbstractDomainObject;
 
 /**
  * @author João Antunes (joao.antunes@tagus.ist.utl.pt) - 15 de Mai de 2012
@@ -51,17 +47,19 @@ public class AssignDirNodeRepositoryToProcessAndMigrate extends ReadCustomTask {
     public static final boolean DRY_RUN = false;
 
     static class MigrateProcesses extends TransactionalThread {
-	private final List<WorkflowProcess> processes;
+	private final List<String> processes = new ArrayList<String>();
 
 	MigrateProcesses(List<WorkflowProcess> processes) {
-	    this.processes = processes;
+	    for (WorkflowProcess process : processes) {
+		this.processes.add(process.getExternalId());
+	    }
 	}
 
 	@SuppressWarnings("unused")
 	@Override
 	public void transactionalRun() {
-
-	    for (WorkflowProcess process : this.processes) {
+	    for (String processId : this.processes) {
+		WorkflowProcess process = AbstractDomainObject.fromExternalId(processId);
 		if (process.getDocumentsRepository() == null) {
 		    if (!DRY_RUN)
 			new ProcessDirNode(process);
@@ -200,6 +198,8 @@ public class AssignDirNodeRepositoryToProcessAndMigrate extends ReadCustomTask {
 	    ArrayList<WorkflowProcess> processesToProcess = new ArrayList<WorkflowProcess>();
 	    Iterator<WorkflowProcess> iterator = processes.iterator();
 	    do {
+		totalProcesses++;
+		processesToProcess.add(iterator.next());
 		if (processesToProcess.size() >= 100 || !iterator.hasNext()) {
 		    MigrateProcesses migrateProcesses = new MigrateProcesses(processesToProcess);
 		    migrateProcesses.start();
@@ -211,8 +211,6 @@ public class AssignDirNodeRepositoryToProcessAndMigrate extends ReadCustomTask {
 		    }
 		    processesToProcess = new ArrayList<WorkflowProcess>();
 		}
-		totalProcesses++;
-		processesToProcess.add(iterator.next());
 
 	    } while (iterator.hasNext());
 
