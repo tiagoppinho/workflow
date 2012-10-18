@@ -35,7 +35,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
-import module.fileManagement.domain.ContextPath;
 import module.workflow.activities.ActivityInformation;
 import module.workflow.activities.WorkflowActivity;
 import module.workflow.presentationTier.WorkflowLayoutContext;
@@ -96,7 +95,7 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
 	super();
 	setOjbConcreteClass(getClass().getName());
 	setWorkflowSystem(WorkflowSystem.getInstance());
-	new ProcessDirNode(this); // makes the setWorkflowProcess inside of it
+	//new ProcessDirNode(this); // makes the setWorkflowProcess inside of it
     }
 
     public static void evaluate(final Class processClass, final ProcessEvaluator<WorkflowProcess> processEvaluator,
@@ -476,35 +475,6 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
 
     }
 
-    @Service
-    public <P extends ProcessFile> P addFileDocument(Class<P> instanceToCreate, String displayName, String filename,
-	    byte[] content, WorkflowFileUploadBean bean) throws Exception {
-	if (isFileSupportAvailable()) {
-	    if (!isFileEditionAllowed())
-		//in reality, this should be checked also by the PersistentGroups associated with the ProcessDirNode
-		throw new DomainException("label.error.workflowProcess.noFileEditionAvailable",
-			DomainException.getResourceFor("resources/WorkflowResources"));
-	    //let's see if we already have a ProcessFile with the same filename & displayName or not
-	    
-	    ProcessFile ProcessFile = getDocumentsRepository().uploadDocument(content, displayName, filename,
-		    instanceToCreate);
-
-	    ProcessFile.fillInNonDefaultFields(bean);
-
-	    addFiles(ProcessFile);
-	    
-	    new FileUploadLog(this, UserView.getCurrentUser(), ProcessFile.getFilename(), ProcessFile.getDisplayName(),
-		    BundleUtil.getLocalizedNamedFroClass(ProcessFile.getClass()));
-
-	    ProcessFile.getMetaDataResolver().fillMetaDataBasedOnDocument(ProcessFile);
-	    
-	    
-	    return (P) ProcessFile;
-	}
-	throw new DomainException("label.error.workflowProcess.noSupportForFiles",
-		DomainException.getResourceFor("resources/WorkflowResources"));
-
-    }
 
     @Override
     public void addFiles(ProcessFile file) {
@@ -622,11 +592,6 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
 		BundleUtil.getLocalizedNamedFroClass(file.getClass()));
     }
 
-    @Service
-    public void removeFileDocuments(ProcessFile file) {
-	removeTiesWithFileDocument(file);
-	file.getFileNode().trash(new ContextPath(getDocumentsRepository()));
-    }
 
     /**
      * Removes the Process's ties with the {@link ProcessFile} and adds a log of
@@ -872,14 +837,6 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
 	return getFilesFromList(getFiles(), list);
     }
 
-    public <T extends ProcessFile> List<T> getFileDocuments(Class<? extends ProcessFile> selectedClass) {
-	List<Class<? extends ProcessFile>> list = new ArrayList<Class<? extends ProcessFile>>();
-	list.add(selectedClass);
-	return getFileDocumentsFromList(getFiles(), list);
-    }
-
-
-
     private <T extends ProcessFile> List<T> getFilesFromList(List<ProcessFile> list,
 	    List<Class<? extends ProcessFile>> selectedClasses) {
 	List<T> classes = new ArrayList<T>();
@@ -892,28 +849,6 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
 	    }
 	}
 	return classes;
-    }
-
-    private <T extends ProcessFile> List<T> getFileDocumentsFromList(List<ProcessFile> list,
-	    List<Class<? extends ProcessFile>> selectedClasses, boolean includeDeleted) {
-	List<T> classes = new ArrayList<T>();
-	for (ProcessFile file : list) {
-	    if (!file.isInNewStructure())
-		continue;
-	    for (Class selectedClass : selectedClasses) {
-		if (file.getClass() == selectedClass && (includeDeleted || !file.getFileNode().isInTrash())) {
-		    classes.add((T) file);
-		}
-
-	    }
-	}
-	return classes;
-
-    }
-
-    private <T extends ProcessFile> List<T> getFileDocumentsFromList(List<ProcessFile> list,
-	    List<Class<? extends ProcessFile>> selectedClasses) {
-	return getFileDocumentsFromList(list, selectedClasses, false);
     }
 
     public <T extends ProcessFile> List<T> getFilesIncludingDeleted(List<Class<? extends ProcessFile>> selectedClasses,
@@ -936,24 +871,6 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
 
     }
 
-    public <T extends ProcessFile> List<T> getFileDocumentsIncludingDeleted(List<Class<? extends ProcessFile>> selectedClasses,
-	    boolean sortedByFileName) {
-	ArrayList<ProcessFile> classes = new ArrayList<ProcessFile>();
-	classes.addAll(getFiles());
-	if (!sortedByFileName) {
-	    return getFileDocumentsFromList(classes, selectedClasses, true);
-	}
-	ArrayList<T> processFiles = (ArrayList<T>) getFileDocumentsFromList(classes, selectedClasses, true);
-	Collections.sort(processFiles, new Comparator<ProcessFile>() {
-
-	    @Override
-	    public int compare(ProcessFile o1, ProcessFile o2) {
-		return o1.getFilename().compareTo(o2.getFilename());
-	    }
-	});
-	return processFiles;
-
-    }
 
     //TODO FENIX-343
     private Collection<? extends ProcessFile> getDeletedFileDocuments() {

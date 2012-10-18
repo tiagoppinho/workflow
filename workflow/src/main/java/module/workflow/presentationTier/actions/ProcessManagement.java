@@ -37,8 +37,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import jvstm.cps.ConsistencyException;
-import module.fileManagement.domain.FileNode;
-import module.fileManagement.presentationTier.servlet.DownloadDocumentServlet;
 import module.workflow.activities.ActivityException;
 import module.workflow.activities.ActivityInformation;
 import module.workflow.activities.WorkflowActivity;
@@ -46,7 +44,6 @@ import module.workflow.domain.ProcessFile;
 import module.workflow.domain.ProcessFileValidationException;
 import module.workflow.domain.WorkflowProcess;
 import module.workflow.domain.WorkflowProcessComment;
-import module.workflow.domain.exceptions.WorkflowDomainException;
 import module.workflow.presentationTier.ProcessNodeSelectionMapper;
 import module.workflow.presentationTier.WorkflowLayoutContext;
 import module.workflow.util.FileUploadBeanResolver;
@@ -389,30 +386,7 @@ public class ProcessManagement extends ContextBaseAction {
 
     }
 
-    public ActionForward documentUpload(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
-	    final HttpServletResponse response) throws Exception {
-	WorkflowFileUploadBean bean = getRenderedObject("uploadFile");
-	final WorkflowProcess process = getProcess(request);
 
-	try {
-	    process.addFileDocument(bean.getSelectedInstance(), bean.getDisplayName(), bean.getFilename(),
-		    consumeInputStream(bean.getInputStream()), bean);
-	} catch (ProcessFileValidationException e) {
-	    request.setAttribute("bean", bean);
-	    request.setAttribute("process", process);
-	    addLocalizedMessage(request, e.getLocalizedMessage());
-	    return forwardToDocumentUpload(request, bean);
-	} catch (DomainException e) {
-	    request.setAttribute("bean", bean);
-	    request.setAttribute("process", process);
-	    addLocalizedMessage(request, e.getLocalizedMessage());
-	    RenderUtils.invalidateViewState();
-	    return forwardToDocumentUpload(request, bean);
-	}
-
-	return viewProcess(process, request);
-
-    }
 
     private WorkflowFileUploadBean fileUploadRoundTrip(Class<? extends ProcessFile> selectedInstance,
 	    final HttpServletRequest request) {
@@ -492,33 +466,6 @@ public class ProcessManagement extends ContextBaseAction {
 	return null;
     }
 
-    public ActionForward downloadFileDocument(final ActionMapping mapping, final ActionForm form,
-	    final HttpServletRequest request, final HttpServletResponse response) throws IOException {
-
-	final ProcessFile file = getDomainObject(request, "fileId");
-	WorkflowProcess process = file.getProcess();
-	if (process == null) {
-	    process = getDomainObject(request, "processId");
-	}
-	try {
-
-	    if (process != null) {
-		process.preAccessFile(file);
-	    }
-	    FileNode accessibleFileNode = file.getFileNode();
-	    if (accessibleFileNode == null) {
-		throw new WorkflowDomainException("cant.find.access.to.file", file.getDisplayName());
-	    }
-	    DownloadDocumentServlet.downloadDocument(request, response, accessibleFileNode);
-	    if (process != null) {
-		process.postAccessFile(file);
-	    }
-	    return null;
-	} catch (DomainException ex) {
-	    addLocalizedMessage(request, ex.getLocalizedMessage());
-	    return viewProcess(process, request);
-	}
-    }
 
     public ActionForward removeFile(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
 	    final HttpServletResponse response) {
@@ -531,16 +478,6 @@ public class ProcessManagement extends ContextBaseAction {
 
     }
 
-    public ActionForward removeFileDocument(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
-	    final HttpServletResponse response) {
-
-	final ProcessFile file = getDomainObject(request, "fileId");
-	final WorkflowProcess process = file.getProcess();
-	process.removeFileDocuments(file);
-
-	return viewProcess(process, request);
-
-    }
 
     public ActionForward viewFilesDetails(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
 	    final HttpServletResponse response) {
@@ -553,16 +490,6 @@ public class ProcessManagement extends ContextBaseAction {
 
     }
 
-    public ActionForward viewFileDocumentsDetails(final ActionMapping mapping, final ActionForm form,
-	    final HttpServletRequest request, final HttpServletResponse response) {
-
-	final WorkflowProcess process = getProcess(request);
-	List<ProcessFile> listFiles = process.getFileDocumentsIncludingDeleted(process.getAvailableDocumentTypes(), true);
-	request.setAttribute("process", process);
-	request.setAttribute("listFiles", listFiles);
-	return forward(request, "/workflow/viewFileDocumentsDetails.jsp");
-
-    }
 
     private <T extends WorkflowProcess> WorkflowActivity<T, ActivityInformation<T>> getActivity(WorkflowProcess process,
 	    HttpServletRequest request) {
