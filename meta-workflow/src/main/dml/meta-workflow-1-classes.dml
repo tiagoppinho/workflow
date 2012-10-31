@@ -118,7 +118,6 @@ class WorkflowMetaTypeDescription {
 }
 
 class Requestor {
-	String ojbConcreteClass;
 }
 
 class ExternalRequestor extends Requestor {
