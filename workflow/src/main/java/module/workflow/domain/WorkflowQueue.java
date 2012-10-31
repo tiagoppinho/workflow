@@ -34,10 +34,11 @@ import java.util.Set;
 import module.organization.domain.Person;
 import module.workflow.presentationTier.WorkflowQueueLayoutContext;
 import module.workflow.util.WorkflowQueueBean;
-import pt.ist.bennu.core.applicationTier.Authenticate.UserView;
-import pt.ist.bennu.core.domain.User;
 
 import org.apache.commons.collections.Predicate;
+
+import pt.ist.bennu.core.applicationTier.Authenticate.UserView;
+import pt.ist.bennu.core.domain.User;
 
 /**
  * 
@@ -62,7 +63,6 @@ public abstract class WorkflowQueue extends WorkflowQueue_Base {
     protected WorkflowQueue() {
 	super();
 	super.setWorkflowSystem(WorkflowSystem.getInstance());
-	super.setOjbConcreteClass(this.getClass().getName());
     }
 
     protected void init(String name) {

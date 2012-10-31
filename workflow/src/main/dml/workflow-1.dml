@@ -44,12 +44,10 @@ class WorkflowSystem {
 }
 
 class WorkflowProcess implements .pt.ist.bennu.core.domain.VirtualHostAware {
-	String ojbConcreteClass;
 	String processNumber;
 }
 
 class WorkflowLog implements .pt.ist.bennu.core.domain.VirtualHostAware {
-	String ojbConcreteClass;
 	DateTime whenOperationWasRan;
 	Strings descriptionArguments;
 }
@@ -79,7 +77,6 @@ class WorkflowProcessComment implements .pt.ist.bennu.core.domain.VirtualHostAwa
 
 class WorkflowQueue implements .pt.ist.bennu.core.domain.VirtualHostAware {
 	String name;
-	String ojbConcreteClass;
 } 
 
 	class WorkflowUserGroupQueue extends WorkflowQueue {

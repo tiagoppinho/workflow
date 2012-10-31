@@ -26,12 +26,11 @@ package module.workflow.domain;
 
 import java.util.Comparator;
 
-import pt.ist.bennu.core.domain.User;
-import pt.ist.bennu.core.domain.VirtualHost;
-
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
 
+import pt.ist.bennu.core.domain.User;
+import pt.ist.bennu.core.domain.VirtualHost;
 import pt.utl.ist.fenix.tools.util.Strings;
 
 /**
@@ -66,7 +65,6 @@ public abstract class WorkflowLog extends WorkflowLog_Base {
 
     public WorkflowLog() {
 	super.setWorkflowSystem(WorkflowSystem.getInstance());
-	super.setOjbConcreteClass(this.getClass().getName());
 	super.setWhenOperationWasRan(new DateTime());
     }
 

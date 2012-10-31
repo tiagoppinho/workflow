@@ -93,7 +93,6 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
 
     public WorkflowProcess() {
 	super();
-	setOjbConcreteClass(getClass().getName());
 	setWorkflowSystem(WorkflowSystem.getInstance());
 	//new ProcessDirNode(this); // makes the setWorkflowProcess inside of it
     }
