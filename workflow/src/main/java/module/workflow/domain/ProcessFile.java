@@ -24,10 +24,18 @@
  */
 package module.workflow.domain;
 
+import java.io.InputStream;
+
+import javax.annotation.Nonnull;
+
+import module.fileManagement.domain.DirNode;
+import module.fileManagement.domain.Document;
+import module.fileManagement.domain.FileNode;
 import module.workflow.util.WorkflowFileUploadBean;
 
 import org.apache.commons.lang.StringUtils;
 
+import pt.ist.bennu.core.domain.groups.UnionGroup;
 import pt.ist.bennu.core.util.ClassNameBundle;
 
 /**
@@ -53,7 +61,30 @@ public class ProcessFile extends ProcessFile_Base {
 	init(displayName, filename, content);
     }
 
+    public ProcessFile(final FileNode associatedFileNode) {
+	super();
+	init(associatedFileNode);
+    }
 
+    public final void init(final FileNode associatedFileNode) {
+	this.setProcess(ProcessDirNode.getProcess(associatedFileNode));
+	this.setDocument(associatedFileNode.getDocument());
+	AbstractWFDocsGroup readGroup = AbstractWFDocsGroup.getOrCreateInstance(getProcess(), this.getMetaDataResolver()
+		.getReadGroupClass());
+	AbstractWFDocsGroup writeGroup = AbstractWFDocsGroup.getOrCreateInstance(getProcess(), this.getMetaDataResolver()
+		.getWriteGroupClass());
+	if (this.getDocument().hasReadGroup()) {
+	    this.getDocument().setReadGroup(UnionGroup.getOrCreateUnionGroup(getDocument().getReadGroup(), readGroup));
+	} else {
+	    this.getDocument().setReadGroup(readGroup);
+	}
+
+	if (this.getDocument().hasWriteGroup()) {
+	    this.getDocument().setWriteGroup(UnionGroup.getOrCreateUnionGroup(getDocument().getWriteGroup(), writeGroup));
+	} else {
+	    this.getDocument().setWriteGroup(writeGroup);
+	}
+    }
 
     /**
      * TODO: remove
@@ -81,9 +112,81 @@ public class ProcessFile extends ProcessFile_Base {
      *         }
      */
 
+    @Override
+    public String getFilename() {
+	if (getDocument() == null) {
+	    return super.getFilename();
+	} else
+	    return getDocument().getFileName();
+    }
 
+    @Override
+    public String getDisplayName() {
+	if (getDocument() == null)
+	    return super.getDisplayName();
+	else {
+	    return getDocument().getDisplayName();
+	}
+    }
 
+    @Override
+    public InputStream getStream() {
+	if (getDocument() == null) {
+	    return super.getStream();
+	} else
+	return getDocument().getLastVersionedFile().getStream();
+    }
 
+    //    public boolean isInTrash() {
+    //	getDocument().
+    //    }
+
+    public static class GenericPDMetaDataResolver extends ProcessDocumentMetaDataResolver<ProcessFile> {
+
+	@Override
+	public boolean shouldFileContentAccessBeLogged() {
+	    return true;
+	}
+
+	@Override
+	public @Nonnull
+	Class<? extends AbstractWFDocsGroup> getWriteGroupClass() {
+	    return WFDocsDefaultWriteGroup.class;
+	}
+
+    }
+
+    public ProcessDocumentMetaDataResolver<? extends ProcessFile> getMetaDataResolver() {
+	return new GenericPDMetaDataResolver();
+    }
+
+    @Override
+    public String getContentType() {
+	if (getDocument() == null) {
+	    return super.getContentType();
+	} else
+	return getDocument().getLastVersionedFile().getContentType();
+    }
+
+    /**
+     * 
+     * @return a fileNode associated with this {@link ProcessDocument}. if none
+     *         is found on the {@link WorkflowProcess#getDocumentsRepository()},
+     *         it will search on the deleted items i.e. trash
+     */
+    public final FileNode getFileNode() {
+	if (getDocument() == null)
+	    return null;
+	FileNode fileNodeToReturn = null;
+	ProcessDirNode documentsRepository = getProcess().getDocumentsRepository();
+	fileNodeToReturn = getDocument().getFileNode(documentsRepository.getDirNode());
+	if (fileNodeToReturn == null) {
+	    DirNode trash = documentsRepository.getTrash();
+	    fileNodeToReturn = getDocument().getFileNode(trash);
+	}
+	return fileNodeToReturn;
+
+    }
 
     public void fillInNonDefaultFields(WorkflowFileUploadBean bean) {
 
@@ -132,6 +235,10 @@ public class ProcessFile extends ProcessFile_Base {
     //    }
 
     /**
+     * TODO: Remove this method. This will be done by the isMember of the
+     * {@link Document#getWriteGroup()} which will guarantee that the user can
+     * make the changes
+     * 
      * Validates if this file is valid to be associated with the workflowProcess
      * 
      * @param workflowProcess
@@ -139,7 +246,6 @@ public class ProcessFile extends ProcessFile_Base {
      * 
      * @throws module.workflow.domain.ProcessFileValidationException
      *             if does not validate
-     * 
      */
     public void validateUpload(WorkflowProcess workflowProcess) throws ProcessFileValidationException {
 
@@ -186,7 +292,7 @@ public class ProcessFile extends ProcessFile_Base {
     public void delete() {
 	removeProcess();
 	removeProcessWithDeleteFile();
-	//getDocument().delete();
+	getDocument().delete();
 	super.delete();
     }
 
@@ -200,6 +306,14 @@ public class ProcessFile extends ProcessFile_Base {
 
     }
 
+    /**
+     * Temporary method TODO remove it when migration is done
+     * 
+     * @return true if this ProcessFile is supported on the new structure
+     */
+    public boolean isInNewStructure() {
+	return getDocument() != null;
+    }
 
     public boolean isArchieved() {
 	return getProcess() == null && getProcessWithDeleteFile() != null;
