@@ -248,20 +248,20 @@
 			</td>
 
 		</logic:equal>
-		
 	</tr>
 	
-	<%-- ProcessDocuments interface commented out for now  --%>
+	<%-- ProcessDocuments interface commented out for now 
 	<tr>
 			<logic:equal name="process" property="documentSupportAvailable" value="true">
 		<div id="fileAccessLoggedConfirmation" style="display:none; cursor: default"> 
 		        <h3><bean:message key="label.fileAccess.logged.confirmMessage" bundle="WORKFLOW_RESOURCES" /></h3> 
 		        <%-- TODO joanutne: localize Sim e Não --%> 
+		       <%--
 		        <input type="button" id="yes" value="Sim" /> 
 		        <input type="button" id="no" value="Não" /> 
 		</div> 
-		<td class="gutter"></td>
-	
+<!-- 			<td class="gutter"></td>
+ -->	
 			<td>	
 				<div class="infobox1 col2-2">
 					<h3><bean:message key="label.documents" bundle="WORKFLOW_RESOURCES"/> <!--<a href="">(9)</a>--></h3>
@@ -273,6 +273,24 @@
 							</fr:layout>
 						</fr:view>
 						
+						<!--
+						<table class="process-files">
+							<tr>
+								<th>18/03/2010</th>
+								<td>Documento - <a href="">suspendisse_egestas.doc</a></td>
+								<td><a href="">(X)</a></td>
+							</tr>
+						</table>
+						<table class="structural mvert0">
+							<tr>
+								<td><a href="">Gerir ficheiros (9)</a></td>
+								<td class="aright">
+									<input type="button" value="+ Adicionar Ficheiro"/>
+								</td>
+							</tr>
+						</table>
+						-->
+						
 						
 						<table class="structural mvert0">
 							<tr>
@@ -280,6 +298,7 @@
 								<%-- 	<html:link page=<%="/vaadinContext.do?method=forwardToVaadin#" + new pt.ist.vaadinframework.fragment.FragmentQuery(Management.class).getQueryString()%>">
 										<bean:message key="link.viewFilesDetails" bundle="WORKFLOW_RESOURCES"/>
 									</html:link> --%>
+									<%--
 									
 									<html:link page="/workflowProcessManagement.do?method=viewFileDocumentsDetails" paramId="processId" paramName="process" paramProperty="externalId">
 										<bean:message key="link.viewFilesDetails" bundle="WORKFLOW_RESOURCES"/>
@@ -304,6 +323,7 @@
 											});
 										</script>
 										--%>
+										<%--
 									</td>
 								</logic:equal>
 							</tr>
@@ -317,7 +337,7 @@
 
 		</logic:equal>
 	</tr>
-	<%-- ProcessDocuments interface commented out for now --%>
+	ProcessDocuments interface commented out for now --%>
 </table>
 
 <div class="clear"></div>
