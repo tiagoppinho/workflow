@@ -191,20 +191,11 @@ public class ProcessManagement extends ContextBaseAction {
     private Method getMethod(String methodName, Class<? extends ActivityInformation> activityClass,
 	    Class<? extends Object> argumentClass) {
 	Method method = null;
-	try {
-	    method = activityClass.getMethod(methodName, argumentClass);
-	} catch (NoSuchMethodException e) {
-	    /*
-	     * There's the chance that we just had a mismatch about the argument
-	     * classes. For example. the method is defined for a super class and
-	     * we were looking for a subclass. So in order to try to recover
-	     * we'll try to look for a method with the name 'methodName'.
-	     */
-	    for (Method declaredMethod : activityClass.getMethods()) {
-		if (declaredMethod.getName().equals(methodName)) {
-		    method = declaredMethod;
-		    break;
-		}
+	while (!argumentClass.equals(Object.class)) {
+	    try {
+		return activityClass.getMethod(methodName, argumentClass);
+	    } catch (NoSuchMethodException e) {
+		argumentClass = argumentClass.getSuperclass();
 	    }
 	}
 	return method;

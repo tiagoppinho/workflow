@@ -24,69 +24,18 @@
  * 
  */
  
-//class module.workflow.domain.ProcessDirNode extends .module.fileManagement.domain.DirNode { }
 class module.workflow.domain.ProcessFile extends .pt.ist.fenixframework.plugins.fileSupport.domain.GenericFile { }
 
-
-//TODO to be applied in workflow-2.0-SNAPSHOT and later versions 
-//class module.workflow.domain.AbstractWFDocsGroup extends .pt.ist.bennu.core.domain.groups.PersistentGroup { }
-//class module.workflow.domain.WFDocsDefaultReadGroup extends module.workflow.domain.AbstractWFDocsGroup { }
-//class module.workflow.domain.WFDocsDefaultWriteGroup extends module.workflow.domain.WFDocsDefaultReadGroup { }
  
  //R1 - remove relation
 relation WorkflowProcessFile { 
 	module.workflow.domain.WorkflowProcess playsRole process {
-	// for now, it cannot be 1..1 because a processFile can just have a relationship of deletedFiles
-	// when the FM and WF are integrated, it can be 1..1 TODO
-	//	multiplicity 1..1;
 		multiplicity 0..1;
 	}
 	module.workflow.domain.ProcessFile playsRole files { 
 		multiplicity *;
 	} 
 } 
-
-
-/* START: Workflow Document relations */
-
-//TODO to be applied in workflow-2.0-SNAPSHOT and later versions 
-//relation DocumentProcessFile {
-//	.module.fileManagement.domain.Document playsRole document {
-//		//multiplicity 1..1;
-//		//For now, let's stick with 0..1 untill all is migrated
-//		multiplicity 0..1;
-//	}
-//	
-//	module.workflow.domain.ProcessFile playsRole processDocuments {
-//		multiplicity *;
-//	}
-//}
-
-
-//TODO to be applied in workflow-2.0-SNAPSHOT and later versions 
-//relation ProcessDirNodeWorkflowProcess {
-//	module.workflow.domain.ProcessDirNode playsRole documentsRepository {
-//		multiplicity 1..1;
-//	}
-//	module.workflow.domain.WorkflowProcess playsRole workflowProcess {
-//		multiplicity 1..1;
-//	}
-//}
-
-
-//TODO to be applied in workflow-2.0-SNAPSHOT and later versions 
-//relation AbstractWFDocsGroup {
-//	module.workflow.domain.AbstractWFDocsGroup playsRole processDocumentsPersistentGroups {
-//		multiplicity *;
-//	}
-//	module.workflow.domain.WorkflowProcess playsRole process {
-//		multiplicity 1..1;
-//	}
-//}
-
-/* END: Workflow Document relations */
-
-
 
 //R1 - remove relation
 relation ProcessFileDeletion {
