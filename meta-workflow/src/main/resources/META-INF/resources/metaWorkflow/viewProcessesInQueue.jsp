@@ -45,7 +45,7 @@
 
 <logic:notEmpty name="displayProcesses">
 		<div>
-			<fr:view name="displayProcesses" schema="view.metaProcesses.list.inQueueContext">
+			<fr:view name="displayProcesses" schema="view.metaProcesses.list.withState">
 				<fr:layout name="tabular">
 					<fr:property name="classes" value="tstyle3"/>
 				</fr:layout>

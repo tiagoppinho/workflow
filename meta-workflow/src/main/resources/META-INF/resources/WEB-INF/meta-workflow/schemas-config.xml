@@ -215,7 +215,4 @@
 		<property name="subSchema" value="view.user.shortPresentationName"/>
 	</slot>
 </schema>
-
-<schema name="view.metaProcesses.list.inQueueContext" extends="view.metaProcesses.list.withState" type="module.metaWorkflow.domain.WorkflowMetaProcess" bundle="META_WORKFLOW_RESOURCES">
-	<remove name="currentQueue"/>
-</schema></schemas>
+</schemas>
