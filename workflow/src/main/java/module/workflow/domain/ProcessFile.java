@@ -24,6 +24,7 @@
  */
 package module.workflow.domain;
 
+import jvstm.cps.ConsistencyPredicate;
 import module.workflow.util.WorkflowFileUploadBean;
 
 import org.apache.commons.lang.StringUtils;
@@ -83,6 +84,11 @@ public class ProcessFile extends ProcessFile_Base {
 
 
 
+    @ConsistencyPredicate
+    public boolean checkConnectedWithProcess() {
+	return hasProcess() || hasProcessWithDeleteFile();
+
+    }
 
 
     public void fillInNonDefaultFields(WorkflowFileUploadBean bean) {
