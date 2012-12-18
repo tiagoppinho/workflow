@@ -245,27 +245,19 @@ public class ActivitivyLinkTag extends WorkflowBodyTag {
 	setId(activity.getClass().getSimpleName() + "-" + content.hashCode());
     }
 
-    /*
-     * This hack is needed so even if we close the tag on the line below the
-     * content no white spaces are added to the output creating a nasty link
-     * underline on white spaces.
-     */
-    @Override
-    public int doAfterBody() throws JspException {
-	if (bodyContent != null) {
-	    String value = bodyContent.getString().trim();
-	    if (value.length() > 0)
-		content.append(value);
-	}
-	return (SKIP_BODY);
-    }
-
     @Override
     public int doEndTag() throws JspException {
 	WorkflowProcess process = getWorkflowProcess();
 	WorkflowActivity<WorkflowProcess, ActivityInformation<WorkflowProcess>> activity = process.getActivity(getActivityName());
 	if (activity.isActive(process)) {
 	    try {
+		String trimmedBody = (bodyContent != null) ? bodyContent.getString().trim() : null;
+		if (!StringUtils.isEmpty(trimmedBody)) {
+		    content.append(trimmedBody);
+		} else {
+		    content.append(activity.getLocalizedName());
+		}
+
 		content.trimToSize();
 		content.append("</a>");
 		if (activity.hasHelpMessage()) {
@@ -277,8 +269,7 @@ public class ActivitivyLinkTag extends WorkflowBodyTag {
 	    }
 	}
 	release();
-	return super.doAfterBody();
-
+	return super.doEndTag();
     }
 
     private void generateHelpFor(StringBuilder content,
