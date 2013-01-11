@@ -13,12 +13,12 @@ import module.metaWorkflow.exceptions.MetaWorkflowDomainException;
 import module.metaWorkflow.presentationTier.dto.MetaFieldBean;
 import module.metaWorkflow.presentationTier.provider.MetaFieldClassProvider;
 import module.vaadin.ui.BennuTheme;
-import pt.ist.bennu.core.applicationTier.Authenticate.UserView;
-import pt.ist.bennu.core.domain.RoleType;
-import pt.ist.bennu.core.util.BundleUtil;
 
 import org.vaadin.dialogs.ConfirmDialog;
 
+import pt.ist.bennu.core.applicationTier.Authenticate.UserView;
+import pt.ist.bennu.core.domain.RoleType;
+import pt.ist.bennu.core.util.BundleUtil;
 import pt.ist.fenixframework.pstm.AbstractDomainObject;
 import pt.ist.vaadinframework.annotation.EmbeddedComponent;
 import pt.ist.vaadinframework.data.reflect.DomainContainer;
@@ -89,7 +89,6 @@ public class ManageMetaFieldsComponent extends CustomComponent implements Embedd
     private MetaField selectedMetaField = null;
 
     private void manageMetaFieldsInterface(final WorkflowMetaTypeVersion metaTypeVersion) {
-
 	VerticalLayout rootVerticalLayout = new VerticalLayout();
 	setCompositionRoot(rootVerticalLayout);
 	ManageMetaTypeVersionComponent
@@ -135,18 +134,15 @@ public class ManageMetaFieldsComponent extends CustomComponent implements Embedd
 
 	//add the selection listener
 	metaFieldTree.addListener(new ValueChangeListener() {
-
 	    @Override
 	    public void valueChange(ValueChangeEvent event) {
 		Object value = event.getProperty().getValue();
 		if (value != null) {
 		    selectedMetaField = (MetaField) value;
 		    setupMFEOperationsLayout(metaTypeVersion, metaFieldTree, metaFieldsWrapper);
-
 		} else {
 		    metaFieldEditOperationsLayout.removeAllComponents();
 		}
-
 	    }
 	});
 
@@ -166,7 +162,6 @@ public class ManageMetaFieldsComponent extends CustomComponent implements Embedd
 	addMetaFieldLayout.setSizeUndefined();
 
 	//let's get all of the types of meta fields that exist
-
 	final NativeSelect metaFieldTypeSelect = new NativeSelect("label.selectMetaFieldType",
 		MetaFieldClassProvider.getMetaFieldClassesSet());
 
@@ -193,7 +188,6 @@ public class ManageMetaFieldsComponent extends CustomComponent implements Embedd
 		} else {
 		    parentMetaFieldSet = metaTypeVersion.getFieldSet();
 		}
-
 		try {
 		    MetaField newMetaField = MetaField.createMetaField(metaFieldBean, parentMetaFieldSet);
 		    wrapChildFields(metaFieldsWrapper, newMetaField);
@@ -206,19 +200,15 @@ public class ManageMetaFieldsComponent extends CustomComponent implements Embedd
 		    getWindow().showNotification(getMessage("error.creating.field.caption"), ex.getLocalizedMessage(),
 			    Notification.TYPE_ERROR_MESSAGE);
 		}
-
 	    }
 	});
 
 	Button cancelButton = new Button(getMessage("label.cancel"), new Button.ClickListener() {
-
 	    @Override
 	    public void buttonClick(ClickEvent event) {
 		addMetaFieldWindow.getParent().removeWindow(addMetaFieldWindow);
-
 	    }
 	});
-	//adding the two recently created create and cancel buttons
 	addMetaFieldLayout.addComponent(createMetaFieldButton);
 	addMetaFieldLayout.addComponent(cancelButton);
 
@@ -234,7 +224,6 @@ public class ManageMetaFieldsComponent extends CustomComponent implements Embedd
 		} else {
 		    getWindow().addWindow(addMetaFieldWindow);
 		}
-
 	    }
 	});
 	addMetaFieldButton.addStyleName(BennuTheme.BUTTON_LINK);
@@ -249,7 +238,6 @@ public class ManageMetaFieldsComponent extends CustomComponent implements Embedd
 	mainContentPanel.addComponent(metaFieldEditOperationsLayout);
 
 	rootVerticalLayout.addComponent(mainContentPanel);
-
     }
 
     private void setupMFEOperationsLayout(WorkflowMetaTypeVersion metaTypeVersion, final Tree metaFieldTree,
@@ -259,65 +247,53 @@ public class ManageMetaFieldsComponent extends CustomComponent implements Embedd
 	} else {
 	    metaFieldEditOperationsLayout.removeAllComponents();
 	}
-	if (selectedMetaField != null && !selectedMetaField.isRootMetaFieldSet()) {
-
-	//the form to change the name
-	TransactionalForm metaFieldForm = new TransactionalForm(RESOURCE_BUNDLE);
-	metaFieldForm.setFormFieldFactory(new DefaultFieldFactory(RESOURCE_BUNDLE));
-	metaFieldForm.addSubmitButton();
+	if (selectedMetaField != null && !isRootMetaFieldSet(selectedMetaField)) {
+	    //the form to change the name
+	    TransactionalForm metaFieldForm = new TransactionalForm(RESOURCE_BUNDLE);
+	    metaFieldForm.setFormFieldFactory(new DefaultFieldFactory(RESOURCE_BUNDLE));
+	    metaFieldForm.addSubmitButton();
 
 	    //	    ((HintedProperty<?>) metaFieldTree.getItem(selectedMetaField).getItemProperty("name")).addHint(new Required());
 
-	metaFieldForm.setItemDataSource(metaFieldTree.getItem(selectedMetaField),
-		Arrays.asList(new Object[] { "name", "fieldOrder" }));
-	metaFieldForm.setWriteThrough(false);
+	    metaFieldForm.setItemDataSource(metaFieldTree.getItem(selectedMetaField),
+		    Arrays.asList(new Object[] { "name", "fieldOrder" }));
+	    metaFieldForm.setWriteThrough(false);
 
+	    ManageMetaTypeVersionComponent.readOnlyOrDisabledIfPublished(metaFieldForm, metaTypeVersion);
+	    metaFieldEditOperationsLayout.addComponent(metaFieldForm);
 
-	if (selectedMetaField != null && selectedMetaField.isRootMetaFieldSet())
-	    metaFieldForm.setEnabled(false);
-
-	ManageMetaTypeVersionComponent.readOnlyOrDisabledIfPublished(metaFieldForm, metaTypeVersion);
-	metaFieldEditOperationsLayout.addComponent(metaFieldForm);
-
-	//let's add a button to remove the field
-	Button removeField = new Button(getMessage("label.removeField"), new Button.ClickListener() {
-
-	    @Override
-	    public void buttonClick(ClickEvent event) {
+	    Button removeField = new Button(getMessage("label.removeField"), new Button.ClickListener() {
+		@Override
+		public void buttonClick(ClickEvent event) {
 		    MetaFieldSet parentFieldSet = selectedMetaField.getParentFieldSet();
-		if (selectedMetaField instanceof MetaFieldSet && ((MetaFieldSet) selectedMetaField).hasAnyChildFields()) {
-		    ConfirmDialog.show(getWindow(), getMessage("label.confirm.deletion.fieldSet.with.children.title"),
-			    getMessage("label.confirm.deletion.fieldSet.with.children"), getMessage("label.yes"),
-			    getMessage("label.no"), new ConfirmDialog.Listener() {
-
-				@Override
-				public void onClose(ConfirmDialog dialog) {
-				    if (dialog.isConfirmed())
-					selectedMetaField.deleteItselfAndAllChildren();
+		    if (selectedMetaField instanceof MetaFieldSet && ((MetaFieldSet) selectedMetaField).hasAnyChildFields()) {
+			ConfirmDialog.show(getWindow(), getMessage("label.confirm.deletion.fieldSet.with.children.title"),
+				getMessage("label.confirm.deletion.fieldSet.with.children"), getMessage("label.yes"),
+				getMessage("label.no"), new ConfirmDialog.Listener() {
+				    @Override
+				    public void onClose(ConfirmDialog dialog) {
+					if (dialog.isConfirmed())
+					    selectedMetaField.deleteItselfAndAllChildren();
 					metaFieldsWrapper.removeItemRecursively(selectedMetaField);
 					metaFieldTree.removeItem(selectedMetaField);
-
-
-				}
-			    });
-		} else {
-		    selectedMetaField.deleteItselfAndAllChildren();
+				    }
+				});
+		    } else {
+			selectedMetaField.deleteItselfAndAllChildren();
 			metaFieldTree.removeItem(selectedMetaField);
-
-		}
-
+		    }
 		    if (parentFieldSet != null) {
 			metaFieldsWrapper.setChildrenAllowed(parentFieldSet, parentFieldSet.hasAnyChildFields());
 		    }
-
-
-	    }
-
-	});
-	ManageMetaTypeVersionComponent.readOnlyOrDisabledIfPublished(removeField, metaTypeVersion);
-	metaFieldEditOperationsLayout.addComponent(removeField);
+		}
+	    });
+	    ManageMetaTypeVersionComponent.readOnlyOrDisabledIfPublished(removeField, metaTypeVersion);
+	    metaFieldEditOperationsLayout.addComponent(removeField);
 	}
+    }
 
+    private boolean isRootMetaFieldSet(MetaField metaField) {
+	return (metaField instanceof MetaFieldSet) && ((MetaFieldSet) metaField).isRoot();
     }
 
     private VerticalLayout metaFieldEditOperationsLayout = null;
@@ -332,7 +308,6 @@ public class ManageMetaFieldsComponent extends CustomComponent implements Embedd
 	    for (MetaField childField : fieldSet.getChildFields()) {
 		wrapChildFields(metaFieldsWrapper, childField);
 	    }
-
 	} else {
 	    metaFieldsWrapper.addItem(field);
 	    if (field.getParentFieldSet() != null) {
@@ -342,7 +317,5 @@ public class ManageMetaFieldsComponent extends CustomComponent implements Embedd
 	    metaFieldsWrapper.setParent(field, field.getParentFieldSet());
 	    metaFieldsWrapper.setChildrenAllowed(field, false);
 	}
-
     }
-
 }

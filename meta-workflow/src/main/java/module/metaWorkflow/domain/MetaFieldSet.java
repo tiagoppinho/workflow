@@ -112,6 +112,10 @@ public class MetaFieldSet extends MetaFieldSet_Base {
 	}
     }
 
+    public boolean isRoot() {
+	return hasMetaTypeVersion();
+    }
+
     @Override
     @Service
     public void deleteItselfAndAllChildren() throws MetaWorkflowDomainException {

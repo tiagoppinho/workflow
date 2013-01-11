@@ -32,10 +32,10 @@ import java.util.Comparator;
 import jvstm.cps.ConsistencyPredicate;
 import module.metaWorkflow.exceptions.MetaWorkflowDomainException;
 import module.metaWorkflow.presentationTier.dto.MetaFieldBean;
-import pt.ist.bennu.core.util.BundleUtil;
 
 import org.apache.commons.lang.StringUtils;
 
+import pt.ist.bennu.core.util.BundleUtil;
 import pt.ist.fenixWebFramework.services.Service;
 import pt.utl.ist.fenix.tools.util.i18n.Language;
 import pt.utl.ist.fenix.tools.util.i18n.MultiLanguageString;
@@ -71,27 +71,11 @@ public abstract class MetaField extends MetaField_Base {
 
     @Service
     public static MetaField createMetaField(MetaFieldBean bean, MetaFieldSet parentFieldSet) {
-	if (StringMetaField.class == bean.getFieldClass()) {
-	    return new StringMetaField(bean, parentFieldSet);
+	try {
+	    return bean.getFieldClass().getConstructor(MetaFieldBean.class, MetaFieldSet.class).newInstance(bean, parentFieldSet);
+	} catch (InstantiationException | InvocationTargetException | IllegalAccessException | NoSuchMethodException ex) {
+	    throw new MetaWorkflowDomainException("error.invalid.meta.field.class", ex, bean.getFieldClass().getName());
 	}
-	if (StringsMetaField.class == bean.getFieldClass()) {
-	    return new StringsMetaField(bean, parentFieldSet);
-	}
-	if (DateTimeMetaField.class == bean.getFieldClass()) {
-	    return new DateTimeMetaField(bean, parentFieldSet);
-	}
-	if (LocalDateMetaField.class == bean.getFieldClass()) {
-	    return new LocalDateMetaField(bean, parentFieldSet);
-	}
-	if (MetaFieldSet.class == bean.getFieldClass()) {
-	    return new MetaFieldSet(bean, parentFieldSet);
-	}
-
-	throw new MetaWorkflowDomainException("error.invalid.meta.field.class", bean.getFieldClass().getName());
-    }
-
-    public boolean isRootMetaFieldSet() {
-	return getParentFieldSet() == null && this instanceof MetaFieldSet && ((MetaFieldSet) this).getMetaTypeVersion() != null;
     }
 
     /* TODO START: protection against published things FENIX-345: */
@@ -135,22 +119,13 @@ public abstract class MetaField extends MetaField_Base {
 	try {
 	    constructor = this.getClass().getConstructor();
 	    newInstance = constructor.newInstance();
-	} catch (InstantiationException e) {
-	    throw new MetaWorkflowDomainException("couldnt.create.duplicateMetaField", e);
-	} catch (IllegalAccessException e) {
-	    throw new MetaWorkflowDomainException("couldnt.create.duplicateMetaField", e);
-	} catch (IllegalArgumentException e) {
-	    throw new MetaWorkflowDomainException("couldnt.create.duplicateMetaField", e);
-	} catch (InvocationTargetException e) {
-	    throw new MetaWorkflowDomainException("couldnt.create.duplicateMetaField", e);
-	} catch (NoSuchMethodException e) {
-	    throw new MetaWorkflowDomainException("couldnt.create.duplicateMetaField", e);
-	} catch (SecurityException e) {
+	} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+		| NoSuchMethodException | SecurityException e) {
 	    throw new MetaWorkflowDomainException("couldnt.create.duplicateMetaField", e);
 	}
 	if (newInstance != null) {
-	newInstance.setName(getName());
-	newInstance.setFieldOrder(getFieldOrder());
+	    newInstance.setName(getName());
+	    newInstance.setFieldOrder(getFieldOrder());
 	}
 	return newInstance;
     }
@@ -179,6 +154,5 @@ public abstract class MetaField extends MetaField_Base {
      *         published. False otherwise
      */
     public abstract boolean isPublished();
-
 
 }

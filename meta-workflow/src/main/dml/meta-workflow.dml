@@ -1,6 +1,7 @@
 package module.metaWorkflow.domain;
+
 /*
- * @(#)domain_model_metaWorkflow_2.dml
+ * @(#)domain_model_metaWorkflow.dml
  *
  * Copyright 2009 Instituto Superior Tecnico
  * Founding Authors: João Figueiredo, Luis Cruz, Paulo Abrantes, Susana Fernandes
@@ -24,7 +25,122 @@ package module.metaWorkflow.domain;
  * 
  */
 
+valueType pt.utl.ist.fenix.tools.util.Strings as Strings {
+	externalizeWith {
+		String exportAsString();
+	}
 
+	internalizeWith importFromString();
+}
+
+class WorkflowMetaType {
+	String name;
+	String requestHandler;
+	Integer processCounter;
+	Strings suporttedFileClasses;
+}
+
+class WorkflowMetaTypeVersion {
+	boolean published;
+	Integer version;
+	DateTime datePublication;
+	String publicationMotive;
+	String metaTypeDescription;
+}
+
+class MetaField {
+	MultiLanguageString name;
+	Integer fieldOrder (REQUIRED);
+	String ojbConcreteClass (REQUIRED);
+}
+
+	class MetaFieldSet extends MetaField {
+	}
+	
+	class StringMetaField extends MetaField {
+	}
+	
+	class StringsMetaField extends MetaField {
+	}
+	
+	class DateTimeMetaField extends MetaField {
+	}
+	
+	class LocalDateMetaField extends MetaField {
+	}
+
+class FieldValue {
+	String ojbConcreteClass (REQUIRED);
+}
+
+	class FieldSetValue extends FieldValue {
+	}
+	
+	class StringFieldValue extends FieldValue {
+		String stringValue;
+	}
+	
+	class StringsFieldValue extends FieldValue {
+		Strings stringsValue;
+	}
+	
+	class DateTimeFieldValue extends FieldValue {
+		DateTime dateTimeValue;
+	}
+	
+	class LocalDateFieldValue extends FieldValue {
+		LocalDate localDateValue;
+	}
+
+class MetaProcessState {
+	MultiLanguageString name;
+	Integer position (REQUIRED);
+}
+
+class MetaProcessStateConfig {
+}
+
+class WorkflowMetaTypeSpecificLayout {
+	String body;
+	String shortBody;
+	String header;
+}
+
+class WorkflowMetaTypeSpecificActivity {
+	String activityClass;
+}
+
+//FENIX-345: TODO remove this class (use the embedded WorkflowMetaTypeVersion)
+class WorkflowMetaTypeDescription {
+	String description;
+	int version;
+	DateTime date;
+}
+
+class Requestor {
+}
+
+class ExternalRequestor extends Requestor {
+	String name;
+	String email;
+}
+
+class MetaWorkflowInitializer {
+}
+
+class WorkflowUnitQueue extends .module.workflow.domain.WorkflowQueue {
+	
+}
+
+class WorkflowMetaProcess extends .module.workflow.domain.WorkflowProcess {
+	String instanceDescription;
+	String subject;
+	DateTime creationDate;
+	Boolean open;
+}
+
+class UserRequestor extends .module.metaWorkflow.domain.Requestor {
+}
 
 relation WorkflowUnitQueueUnit {
 	WorkflowUnitQueue playsRole queues {
@@ -77,7 +193,7 @@ relation WorkflowMetaTypeOrganizationModel {
 	.module.organization.domain.OrganizationalModel playsRole organizationalModel;
 }
 
-//FENIX-345: refactor, remove this relation
+//FENIX-345: TODO refactor, remove this relation
 relation WorkflowMetaProcessWorkflowMetaType {
 	WorkflowMetaProcess playsRole metaProcesses {
 		multiplicity *;
@@ -87,7 +203,6 @@ relation WorkflowMetaProcessWorkflowMetaType {
 	}
 }
 
-//FENIX-345: refactor - added relation
 relation WorkflowMetaProcessWorkflowMetaTypeVersion {
 	WorkflowMetaProcess playsRole metaProcesses {
 		multiplicity *;
@@ -95,7 +210,6 @@ relation WorkflowMetaProcessWorkflowMetaTypeVersion {
 	WorkflowMetaTypeVersion playsRole metaTypeVersion;
 }
 
-//FENIX-345: refactor - added relation
 relation WorkflowMetaTypeVersionWorkflowMetaType {
 	WorkflowMetaTypeVersion playsRole versions {
 		multiplicity *;
@@ -105,15 +219,12 @@ relation WorkflowMetaTypeVersionWorkflowMetaType {
 	}
 }
 
-
-
 relation WorkflowMetaProcessFieldSetValue {
 	WorkflowMetaProcess playsRole process;
 	FieldSetValue playsRole fieldSet {
 		multiplicity 1..1;
 	}
 }
-
 
 relation WorkflowSystemWorkflowMetaType {
 	.module.workflow.domain.WorkflowSystem playsRole workflowSystem {
@@ -124,7 +235,6 @@ relation WorkflowSystemWorkflowMetaType {
 	}
 }
 
-//FENIX-345: refactor - added relation
 relation WorkflowSystemWorkflowMetaTypeVersion {
 	.module.workflow.domain.WorkflowSystem playsRole workflowSystem;
 	WorkflowMetaTypeVersion playsRole metaTypeVersions {
@@ -154,7 +264,6 @@ relation UserWorkflowMetaProcess {
 }
 
 relation MetaTypeObserver {
-
 	.pt.ist.bennu.core.domain.User playsRole metaTypeObservers {
 		multiplicity *;
 	}
@@ -162,10 +271,6 @@ relation MetaTypeObserver {
 		multiplicity *;
 	}
 }
-
-
-//CUT
-
 
 relation WorkflowMetaTypeDescription {
 	WorkflowMetaType playsRole metaType;
@@ -191,7 +296,7 @@ relation WorkflowInitializerMyOrg {
 	.pt.ist.bennu.core.domain.MyOrg playsRole myOrg;
 }
 
-//FENIX-345: refactor, remove this relation
+//FENIX-345: TODO refactor, remove this relation
 relation WorkflowMetaTypeFieldSet {
 	WorkflowMetaType playsRole metaType;
 	MetaFieldSet playsRole fieldSet {
@@ -199,7 +304,6 @@ relation WorkflowMetaTypeFieldSet {
 	}
 }
 
-//FENIX-345: refactor - added relation
 relation WorkflowMetaTypeVersionFieldSet {
 	WorkflowMetaTypeVersion playsRole metaTypeVersion;
 	MetaFieldSet playsRole fieldSet {
@@ -207,7 +311,6 @@ relation WorkflowMetaTypeVersionFieldSet {
 	}
 }
 	
-
 relation MetaFieldMetaFieldSet {
 	MetaField playsRole childFields {
 		multiplicity *;
@@ -230,7 +333,7 @@ relation FieldValueMetaField {
 }
 
 
-//FENIX-345: refactor, remove this relation
+//FENIX-345: TODO refactor, remove this relation
 relation WorkflowMetaTypeMetaProcessState {
 	WorkflowMetaType playsRole workflowMetaType;
 	MetaProcessState playsRole processStates {
@@ -238,15 +341,13 @@ relation WorkflowMetaTypeMetaProcessState {
 	}
 }
 
-//FENIX-345: refactor - added relation
 relation WorkflowMetaTypeVersionMetaProcessState {
 	WorkflowMetaTypeVersion playsRole workflowMetaTypeVersion;
 	MetaProcessState playsRole processStates {
 		multiplicity *;
 	}
 }
-	
-	
+
 relation WorkflowMetaTypeVersionUser {
 	WorkflowMetaTypeVersion playsRole publishedWorkflowMetaTypeVersions {
 		multiplicity *;
@@ -269,6 +370,7 @@ relation MetaProcessStateConfigMetaProcessState {
 		multiplicity *;
 	}
 }
+
 relation MetaProcessStateConfigMetaField {
 	MetaField playsRole dependedFields {
 		multiplicity *;
