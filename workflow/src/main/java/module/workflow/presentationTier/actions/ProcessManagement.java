@@ -81,6 +81,7 @@ import pt.ist.fenixframework.pstm.AbstractDomainObject;
 @Mapping(path = "/workflowProcessManagement")
 public class ProcessManagement extends ContextBaseAction {
 
+
     public static final String workflowManagementURL = "/workflowProcessManagement.do?method=viewProcess&processId=";
 
     public static Map<Class<? extends WorkflowProcess>, ProcessRequestHandler<? extends WorkflowProcess>> handlers = new HashMap<Class<? extends WorkflowProcess>, ProcessRequestHandler<? extends WorkflowProcess>>();
