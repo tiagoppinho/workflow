@@ -31,6 +31,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.annotation.Nonnull;
+
 import jvstm.cps.ConsistencyPredicate;
 import module.metaWorkflow.activities.ChangeMetaQueue;
 import module.metaWorkflow.activities.ChangeRequestor;
@@ -45,21 +47,24 @@ import module.workflow.activities.RemoveObserver;
 import module.workflow.activities.StealProcess;
 import module.workflow.activities.TakeProcess;
 import module.workflow.activities.WorkflowActivity;
+import module.workflow.domain.AbstractWFDocsGroup;
+import module.workflow.domain.ProcessDocumentMetaDataResolver;
 import module.workflow.domain.ProcessFile;
+import module.workflow.domain.WFDocsDefaultWriteGroup;
 import module.workflow.domain.WorkflowProcess;
 import module.workflow.domain.WorkflowQueue;
 import module.workflow.presentationTier.WorkflowLayoutContext;
+
+import org.apache.commons.lang.StringUtils;
+import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
+
 import pt.ist.bennu.core.applicationTier.Authenticate.UserView;
 import pt.ist.bennu.core.domain.User;
 import pt.ist.bennu.core.domain.VirtualHost;
 import pt.ist.bennu.core.domain.exceptions.DomainException;
 import pt.ist.bennu.core.util.BundleUtil;
 import pt.ist.bennu.core.util.ClassNameBundle;
-
-import org.apache.commons.lang.StringUtils;
-import org.joda.time.DateTime;
-import org.joda.time.LocalDate;
-
 import pt.ist.emailNotifier.domain.Email;
 import pt.ist.fenixWebFramework.services.Service;
 import pt.ist.fenixframework.plugins.luceneIndexing.domain.IndexDocument;
@@ -321,7 +326,37 @@ public class WorkflowMetaProcess extends WorkflowMetaProcess_Base {
     public boolean isFileEditionAllowed(User userEditingFiles) {
 	return isOpen()
 		&& (isUserAbleToAccessCurrentQueues(userEditingFiles) || (getCurrentOwner() != null && getCurrentOwner().equals(
-		userEditingFiles)));
+			userEditingFiles)));
+    }
+
+    public static class WorkflowMetaProcessMetadataResolver extends ProcessDocumentMetaDataResolver<ProcessFile> {
+
+	public final static String SUBJECT = "Assunto";
+
+	public final static String META_TYPE = "Meta tipo";
+
+	public final static String INSTANCE_DESCRIPTION = "Informação";
+
+	public final static String REQUESTOR = "Requisitante";
+
+	@Override
+	public @Nonnull
+	Class<? extends AbstractWFDocsGroup> getWriteGroupClass() {
+	    return WFDocsDefaultWriteGroup.class;
+	}
+
+	@Override
+	public java.util.Map<String, String> getMetadataKeysAndValuesMap(ProcessFile processDocument) {
+	    WorkflowMetaProcess metaProcess = (WorkflowMetaProcess) processDocument.getProcess();
+	    Map<String, String> metadataKeysAndValuesMap = super.getMetadataKeysAndValuesMap(processDocument);
+	    //	    metadataKeysAndValuesMap.put(SUBJECT, metaProcess.getSubject());
+	    metadataKeysAndValuesMap.put(META_TYPE, metaProcess.getMetaType().getName());
+	    //	    metadataKeysAndValuesMap.put(INSTANCE_DESCRIPTION, metaProcess.getInstanceDescription());
+	    //	    metadataKeysAndValuesMap.put(REQUESTOR, metaProcess.getRequestor().getShortName());
+
+	    return metadataKeysAndValuesMap;
+	}
+
     }
 
 }
