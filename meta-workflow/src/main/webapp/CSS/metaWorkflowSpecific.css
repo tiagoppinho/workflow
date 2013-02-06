@@ -1,0 +1,116 @@
+
+ul.operations {
+	margin: 0;
+	padding-top: 0;
+	padding-left: 1.3em;
+}
+ul.operations li {
+	margin-top: 0;
+	padding-top: 0;
+}
+
+.documents {
+	margin: 1em 0;
+}
+.documents p {
+	margin: 0.25em 0 !important;
+	background: url(../images/metaWorkflowDoc.gif) left 5px no-repeat;
+	padding: 0 0 0 14px;
+}
+.documents em {
+}
+/***********************************************/	
+/**************** comments *********************/
+
+div.comment {
+	margin-bottom: 1.5em;
+}
+div.comment p {
+	margin-bottom: 0 !important;
+}
+div.comment p span {
+	margin-bottom: 0 !important;
+	font-weight: bold !important;
+}
+div.comment div {
+	margin-top: 0;
+}
+
+/********************************************/
+/********** metaworklow process ************/
+
+.photoHolder {
+	vertical-align: top;
+	width: 112px;
+	height: 100px;
+	text-align: left;
+	padding-left: 1em;
+}
+.photoHolder img {
+	border: 1px solid #ddd;
+	padding: 5px;
+	width: 75%;
+}
+.dotted {
+	border: 1px dotted #aaa; 
+	padding-right: 1em; 
+	padding-left: 1em;	
+}
+
+.comment {
+	border: 1px dotted #aaa;
+	padding: 1em 0; 
+	margin: 1em 0;
+}
+.comment table td p span {
+	font-weight: normal;
+}
+
+.addcomment {
+	border-top: 2px solid #ddd;
+	padding: 0 0 0.5em 0;
+	background: #f5f5f5;
+	margin: 1em 0;
+}
+.addcomment form div {
+	border-top: 1px solid #ddd;
+}
+
+
+
+table.mtlist {
+	margin-top: 1em;
+	width: 100%;
+}
+table.mtlist div {
+	background: #eee;
+}
+table.mtlist table {
+	border-collapse: collapse;
+	width: 100%;
+	border: 1px solid #ddd;
+}
+table.mtlist table th {
+	text-align: left;
+	font-weight: normal;
+	text-align: center;
+	border-top: 3px solid #ddd;
+	border-bottom: 1px solid #ddd;
+	padding: 3px 6px;
+}
+table.mtlist table td {
+	text-align: center;
+	padding: 3px 6px !important;
+	border-top: 1px solid #ddd;
+	border-bottom: 1px solid #ddd;
+	background: #fff;
+}
+table.mtlist td {
+	vertical-align: top;
+}
+table.mtlist td table td {
+	vertical-align: middle;
+}
+table.mtlist table td.smalltxt {
+	font-size: 0.9em;
+}

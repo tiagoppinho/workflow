@@ -1,0 +1,381 @@
+package module.metaWorkflow.domain;
+
+/*
+ * @(#)domain_model_metaWorkflow.dml
+ *
+ * Copyright 2009 Instituto Superior Tecnico
+ * Founding Authors: João Figueiredo, Luis Cruz, Paulo Abrantes, Susana Fernandes
+ * 
+ *      https://fenix-ashes.ist.utl.pt/
+ * 
+ *   This file is part of the MyOrg web application infrastructure.
+ *
+ *   MyOrg is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU Lesser General Public License as published
+ *   by the Free Software Foundation, either version 3 of the License, or
+ *   (at your option) any later version.*
+ *
+ *   MyOrg is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *   GNU Lesser General Public License for more details.
+ *
+ *   You should have received a copy of the GNU Lesser General Public License
+ *   along with MyOrg. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ */
+
+valueType pt.utl.ist.fenix.tools.util.Strings as Strings {
+	externalizeWith {
+		String exportAsString();
+	}
+
+	internalizeWith importFromString();
+}
+
+class WorkflowMetaType {
+	String name;
+	String requestHandler;
+	Integer processCounter;
+	Strings suporttedFileClasses;
+}
+
+class WorkflowMetaTypeVersion {
+	boolean published;
+	Integer version;
+	DateTime datePublication;
+	String publicationMotive;
+	String metaTypeDescription;
+}
+
+class MetaField {
+	MultiLanguageString name;
+	Integer fieldOrder (REQUIRED);
+	String ojbConcreteClass (REQUIRED);
+}
+
+	class MetaFieldSet extends MetaField {
+	}
+	
+	class StringMetaField extends MetaField {
+	}
+	
+	class StringsMetaField extends MetaField {
+	}
+	
+	class DateTimeMetaField extends MetaField {
+	}
+	
+	class LocalDateMetaField extends MetaField {
+	}
+
+class FieldValue {
+	String ojbConcreteClass (REQUIRED);
+}
+
+	class FieldSetValue extends FieldValue {
+	}
+	
+	class StringFieldValue extends FieldValue {
+		String stringValue;
+	}
+	
+	class StringsFieldValue extends FieldValue {
+		Strings stringsValue;
+	}
+	
+	class DateTimeFieldValue extends FieldValue {
+		DateTime dateTimeValue;
+	}
+	
+	class LocalDateFieldValue extends FieldValue {
+		LocalDate localDateValue;
+	}
+
+class MetaProcessState {
+	MultiLanguageString name;
+	Integer position (REQUIRED);
+}
+
+class MetaProcessStateConfig {
+}
+
+class WorkflowMetaTypeSpecificLayout {
+	String body;
+	String shortBody;
+	String header;
+}
+
+class WorkflowMetaTypeSpecificActivity {
+	String activityClass;
+}
+
+//FENIX-345: TODO remove this class (use the embedded WorkflowMetaTypeVersion)
+class WorkflowMetaTypeDescription {
+	String description;
+	int version;
+	DateTime date;
+}
+
+class Requestor {
+}
+
+class ExternalRequestor extends Requestor {
+	String name;
+	String email;
+}
+
+class MetaWorkflowInitializer {
+}
+
+class WorkflowUnitQueue extends .module.workflow.domain.WorkflowQueue {
+	
+}
+
+class WorkflowMetaProcess extends .module.workflow.domain.WorkflowProcess {
+	String instanceDescription;
+	String subject;
+	DateTime creationDate;
+	Boolean open;
+}
+
+class UserRequestor extends .module.metaWorkflow.domain.Requestor {
+}
+
+relation WorkflowUnitQueueUnit {
+	WorkflowUnitQueue playsRole queues {
+		multiplicity *;
+	}
+	.module.organization.domain.Unit playsRole unit;
+}
+
+relation WorkflowUnitQueueAccountabilityType {
+	WorkflowUnitQueue playsRole usedQueues {
+		multiplicity *;
+	}
+	.module.organization.domain.AccountabilityType playsRole accountabilityTypes {
+		multiplicity *;
+	}
+}
+
+relation WorkflowQueueWorkflowMetaType {
+	.module.workflow.domain.WorkflowQueue playsRole queues {
+		multiplicity *;
+	}
+	WorkflowMetaType playsRole metaType;
+}
+ 
+relation WorkflowMetaTypeAccountabilityType {
+	WorkflowMetaType playsRole workflowMetaTypes {
+		multiplicity *;
+	}
+	.module.organization.domain.AccountabilityType playsRole supportedAccountabilityTypes {
+		multiplicity *;
+	}
+}
+
+relation RequestorWorkflowMetaProcess {
+	WorkflowMetaProcess playsRole process {
+		multiplicity *;
+	}
+	Requestor playsRole requestor;
+}
+ 
+relation UserRequestorUser {
+	.pt.ist.bennu.core.domain.User playsRole user;
+	Requestor playsRole requestor;
+}
+
+relation WorkflowMetaTypeOrganizationModel {
+	WorkflowMetaType playsRole metaType {
+		multiplicity *;
+	}
+	.module.organization.domain.OrganizationalModel playsRole organizationalModel;
+}
+
+//FENIX-345: TODO refactor, remove this relation
+relation WorkflowMetaProcessWorkflowMetaType {
+	WorkflowMetaProcess playsRole metaProcesses {
+		multiplicity *;
+	}
+	WorkflowMetaType playsRole metaType {
+		multiplicity 1..1;
+	}
+}
+
+relation WorkflowMetaProcessWorkflowMetaTypeVersion {
+	WorkflowMetaProcess playsRole metaProcesses {
+		multiplicity *;
+	}
+	WorkflowMetaTypeVersion playsRole metaTypeVersion;
+}
+
+relation WorkflowMetaTypeVersionWorkflowMetaType {
+	WorkflowMetaTypeVersion playsRole versions {
+		multiplicity *;
+	}
+	WorkflowMetaType playsRole metaType {
+		multiplicity 1..1;
+	}
+}
+
+relation WorkflowMetaProcessFieldSetValue {
+	WorkflowMetaProcess playsRole process;
+	FieldSetValue playsRole fieldSet {
+		multiplicity 1..1;
+	}
+}
+
+relation WorkflowSystemWorkflowMetaType {
+	.module.workflow.domain.WorkflowSystem playsRole workflowSystem {
+		multiplicity 1..1;
+	}
+	WorkflowMetaType playsRole metaTypes {
+		multiplicity *;
+	}
+}
+
+relation WorkflowSystemWorkflowMetaTypeVersion {
+	.module.workflow.domain.WorkflowSystem playsRole workflowSystem;
+	WorkflowMetaTypeVersion playsRole metaTypeVersions {
+		multiplicity *;
+	}
+}
+
+relation WorkflowSystemWorkflowMetaTypeDescription {
+	.module.workflow.domain.WorkflowSystem playsRole workflowSystem;
+	WorkflowMetaTypeDescription playsRole metaTypeDescriptions {
+		multiplicity *;
+	}
+}
+
+relation UserWorkflowMetaTypeDescription {
+	.pt.ist.bennu.core.domain.User playsRole versionOwner;
+	WorkflowMetaTypeDescription playsRole metaTypeDescriptions {
+		multiplicity *;
+	}
+}
+
+relation UserWorkflowMetaProcess {
+	.pt.ist.bennu.core.domain.User playsRole creator;
+	WorkflowMetaProcess playsRole metaProcesses {
+		multiplicity *;
+	}
+}
+
+relation MetaTypeObserver {
+	.pt.ist.bennu.core.domain.User playsRole metaTypeObservers {
+		multiplicity *;
+	}
+	WorkflowMetaType playsRole observedMetaTypes {
+		multiplicity *;
+	}
+}
+
+relation WorkflowMetaTypeDescription {
+	WorkflowMetaType playsRole metaType;
+	WorkflowMetaTypeDescription playsRole descriptions {
+		multiplicity *;
+	}
+}
+
+relation WorkflowMetaTypeWorkflowMetaTypeSpecificLayout {
+	WorkflowMetaType playsRole metaType;
+	WorkflowMetaTypeSpecificLayout playsRole specificLayout;
+}
+
+relation WorkflowMetaTypeWorkflowMetaTypeSpecificActivity {
+	WorkflowMetaType playsRole metaType;
+	WorkflowMetaTypeSpecificActivity playsRole specificActivities {
+		multiplicity *;
+	}
+}
+
+relation WorkflowInitializerMyOrg {
+	MetaWorkflowInitializer playsRole metaWorkflowInitializer;
+	.pt.ist.bennu.core.domain.MyOrg playsRole myOrg;
+}
+
+//FENIX-345: TODO refactor, remove this relation
+relation WorkflowMetaTypeFieldSet {
+	WorkflowMetaType playsRole metaType;
+	MetaFieldSet playsRole fieldSet {
+		multiplicity 0..1;
+	}
+}
+
+relation WorkflowMetaTypeVersionFieldSet {
+	WorkflowMetaTypeVersion playsRole metaTypeVersion;
+	MetaFieldSet playsRole fieldSet {
+		multiplicity 1..1;
+	}
+}
+	
+relation MetaFieldMetaFieldSet {
+	MetaField playsRole childFields {
+		multiplicity *;
+	}
+	MetaFieldSet playsRole parentFieldSet;
+}
+
+relation FieldValueFieldSetValue {
+	FieldValue playsRole childFieldValues {
+		multiplicity *;
+	}
+	FieldSetValue playsRole parentFieldSet;
+}
+
+relation FieldValueMetaField {
+	MetaField playsRole metaField;
+	FieldValue playsRole fieldValues {
+		multiplicity *;
+	}
+}
+
+
+//FENIX-345: TODO refactor, remove this relation
+relation WorkflowMetaTypeMetaProcessState {
+	WorkflowMetaType playsRole workflowMetaType;
+	MetaProcessState playsRole processStates {
+		multiplicity *;
+	}
+}
+
+relation WorkflowMetaTypeVersionMetaProcessState {
+	WorkflowMetaTypeVersion playsRole workflowMetaTypeVersion;
+	MetaProcessState playsRole processStates {
+		multiplicity *;
+	}
+}
+
+relation WorkflowMetaTypeVersionUser {
+	WorkflowMetaTypeVersion playsRole publishedWorkflowMetaTypeVersions {
+		multiplicity *;
+	}
+	.pt.ist.bennu.core.domain.User playsRole publisherOfVersion;
+}
+
+relation MetaProcessStateMetaProcessStateConfig {
+	MetaProcessState playsRole metaProcessState;
+	MetaProcessStateConfig playsRole configs {
+		multiplicity *;
+	}
+}
+
+relation MetaProcessStateConfigMetaProcessState {
+	MetaProcessState playsRole dependedStates {
+		multiplicity *;
+	}
+	MetaProcessStateConfig playsRole dependingConfigs {
+		multiplicity *;
+	}
+}
+
+relation MetaProcessStateConfigMetaField {
+	MetaField playsRole dependedFields {
+		multiplicity *;
+	}
+	MetaProcessStateConfig playsRole dependingStateConfigs {
+		multiplicity *;
+	}
+}
