@@ -44,62 +44,62 @@ public class ActivityInformation<P extends WorkflowProcess> implements Serializa
     private boolean forwardFromInput;
 
     public boolean isForwardedFromInput() {
-	return forwardFromInput;
+        return forwardFromInput;
     }
 
     public void markHasForwardedFromInput() {
-	this.forwardFromInput = true;
+        this.forwardFromInput = true;
     }
 
     public String getActivityName() {
-	return activityName;
+        return activityName;
     }
 
     public void setActivity(WorkflowActivity<? extends WorkflowProcess, ? extends ActivityInformation> activity) {
-	this.activityName = activity.getName();
-	this.activityClass = activity.getClass();
-	this.localizedName = activity.getLocalizedName();
+        this.activityName = activity.getName();
+        this.activityClass = activity.getClass();
+        this.localizedName = activity.getLocalizedName();
     }
 
     public ActivityInformation(P process, WorkflowActivity<? extends WorkflowProcess, ? extends ActivityInformation> activity) {
-	setProcess(process);
-	setActivity(activity);
-	forwardFromInput = false;
+        setProcess(process);
+        setActivity(activity);
+        forwardFromInput = false;
     }
 
     public P getProcess() {
-	return process;
+        return process;
     }
 
     public String getLocalizedName() {
-	return localizedName;
+        return localizedName;
     }
 
     public void setLocalizedName(String localizedName) {
-	this.localizedName = localizedName;
+        this.localizedName = localizedName;
     }
 
     public void setProcess(P process) {
-	this.process = process;
+        this.process = process;
     }
 
     public boolean hasAllneededInfo() {
-	return true;
+        return true;
     }
 
     public void execute() {
-	getActivity().execute(this);
+        getActivity().execute(this);
     }
 
     public WorkflowActivity<P, ActivityInformation<P>> getActivity() {
-	return getProcess().getActivity(getActivityName());
+        return getProcess().getActivity(getActivityName());
     }
 
     public Class getActivityClass() {
-	return this.activityClass;
+        return this.activityClass;
     }
 
     public String getUsedSchema() {
-	return "activityInformation." + getActivityClass().getSimpleName();
+        return "activityInformation." + getActivityClass().getSimpleName();
     }
 }

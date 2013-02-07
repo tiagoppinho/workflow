@@ -42,33 +42,33 @@ import pt.utl.ist.fenix.tools.util.Strings;
 public class ActivityLog extends ActivityLog_Base {
 
     protected ActivityLog() {
-	super();
+        super();
     }
 
     public ActivityLog(WorkflowProcess process, User person, String operationName, String... argumentsDescription) {
-	super();
-	init(process, person, argumentsDescription);
-	setOperation(operationName);
+        super();
+        init(process, person, argumentsDescription);
+        setOperation(operationName);
     }
 
     @Override
     public String getDescription() {
-	WorkflowActivity<WorkflowProcess, ActivityInformation<WorkflowProcess>> activity = getProcess().getActivity(
-		getOperation());
+        WorkflowActivity<WorkflowProcess, ActivityInformation<WorkflowProcess>> activity =
+                getProcess().getActivity(getOperation());
 
-	Strings arguments = getDescriptionArguments();
-	if (arguments != null && !arguments.isEmpty()) {
-	    return BundleUtil.getFormattedStringFromResourceBundle(activity.getUsedBundle(), "label.description."
-		    + activity.getClass().getName(), getDescriptionArguments().toArray(new String[] {}));
-	} else {
-	    return activity.getLocalizedName();
-	}
+        Strings arguments = getDescriptionArguments();
+        if (arguments != null && !arguments.isEmpty()) {
+            return BundleUtil.getFormattedStringFromResourceBundle(activity.getUsedBundle(), "label.description."
+                    + activity.getClass().getName(), getDescriptionArguments().toArray(new String[] {}));
+        } else {
+            return activity.getLocalizedName();
+        }
     }
 
     @Override
     public boolean isConnectedToCurrentHost() {
-	final VirtualHost virtualHost = VirtualHost.getVirtualHostForThread();
-	return virtualHost != null && getWorkflowSystem() == virtualHost.getWorkflowSystem();
+        final VirtualHost virtualHost = VirtualHost.getVirtualHostForThread();
+        return virtualHost != null && getWorkflowSystem() == virtualHost.getWorkflowSystem();
     }
 
 }

@@ -47,40 +47,40 @@ public class WorkflowUserGroupQueueBean extends WorkflowQueueBean {
     private User userToAdd;
 
     public WorkflowUserGroupQueueBean() {
-	super();
-	users = new HashSet<User>();
-	setUserToAdd(null);
+        super();
+        users = new HashSet<User>();
+        setUserToAdd(null);
     }
 
     public Set<User> getUsers() {
-	return users;
+        return users;
     }
 
     public void addUser(User user) {
-	this.users.add(user);
+        this.users.add(user);
     }
 
     public User getUserToAdd() {
-	return userToAdd;
+        return userToAdd;
     }
 
     public void setUserToAdd(User user) {
-	this.userToAdd = user;
+        this.userToAdd = user;
     }
 
     @Override
     protected void fillQueueFields(WorkflowQueue queue) {
-	for (User user : ((WorkflowUserGroupQueue) queue).getUsers()) {
-	    users.add(user);
-	}
+        for (User user : ((WorkflowUserGroupQueue) queue).getUsers()) {
+            users.add(user);
+        }
     }
 
     @Override
     @Service
     public WorkflowUserGroupQueue createWorkflowQueue() {
-	List<User> usersList = new ArrayList<User>();
-	usersList.addAll(getUsers());
+        List<User> usersList = new ArrayList<User>();
+        usersList.addAll(getUsers());
 
-	return new WorkflowUserGroupQueue(getName(), usersList);
+        return new WorkflowUserGroupQueue(getName(), usersList);
     }
 }

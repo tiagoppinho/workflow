@@ -43,37 +43,37 @@ public class ChangeQueueInformation<T extends WorkflowProcess> extends ActivityI
     private List<WorkflowQueue> queuesToAdd;
 
     public ChangeQueueInformation(T process, ChangeQueue<T> activity) {
-	super(process, activity);
-	queuesToRemove = new ArrayList<WorkflowQueue>(process.getCurrentQueuesSet());
-	queuesToRemove.retainAll(UserView.getCurrentUser().getQueues());
+        super(process, activity);
+        queuesToRemove = new ArrayList<WorkflowQueue>(process.getCurrentQueuesSet());
+        queuesToRemove.retainAll(UserView.getCurrentUser().getQueues());
     }
 
     @Override
     public boolean hasAllneededInfo() {
-	return isForwardedFromInput();
+        return isForwardedFromInput();
     }
 
     public void setQueuesToRemove(List<WorkflowQueue> queuesToRemove) {
-	this.queuesToRemove = queuesToRemove;
+        this.queuesToRemove = queuesToRemove;
     }
 
     public List<WorkflowQueue> getQueuesToRemove() {
-	return queuesToRemove;
+        return queuesToRemove;
     }
 
     public boolean hasAnyQueuesToRemove() {
-	return !queuesToRemove.isEmpty();
+        return !queuesToRemove.isEmpty();
     }
 
     public void setQueuesToAdd(List<WorkflowQueue> queuesToAdd) {
-	this.queuesToAdd = queuesToAdd;
+        this.queuesToAdd = queuesToAdd;
     }
 
     public List<WorkflowQueue> getQueuesToAdd() {
-	return queuesToAdd;
+        return queuesToAdd;
     }
 
     public boolean hasAnyQueuesToAdd() {
-	return !queuesToAdd.isEmpty();
+        return !queuesToAdd.isEmpty();
     }
 }

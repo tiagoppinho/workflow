@@ -43,12 +43,12 @@ public class FileIndexer {
 
     public static void indexFilesInProcess(IndexDocument document, WorkflowProcess process) {
 
-	FileMetadata parsedFiles = MetadataParserChain.parseFiles(process.getFiles());
+        FileMetadata parsedFiles = MetadataParserChain.parseFiles(process.getFiles());
 
-	if (parsedFiles.hasContent()) {
-	    for (String key : parsedFiles.keySet()) {
-		document.indexField(WorkflowProcessIndex.FILE, parsedFiles.getObject(key));
-	    }
-	}
+        if (parsedFiles.hasContent()) {
+            for (String key : parsedFiles.keySet()) {
+                document.indexField(WorkflowProcessIndex.FILE, parsedFiles.getObject(key));
+            }
+        }
     }
 }

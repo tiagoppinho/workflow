@@ -24,9 +24,9 @@
  */
 package module.workflow.presentationTier.renderers.providers;
 
-import pt.ist.fenixWebFramework.renderers.DataProvider;
 import module.workflow.domain.WorkflowProcess;
 import pt.ist.bennu.core.presentationTier.renderers.providers.AbstractDomainClassProvider;
+import pt.ist.fenixWebFramework.renderers.DataProvider;
 
 /**
  * 
@@ -38,17 +38,17 @@ public class ProcessesClassesProvider extends AbstractDomainClassProvider implem
 
     @Override
     protected Class getSuperClass() {
-	return WorkflowProcess.class;
+        return WorkflowProcess.class;
     }
 
     @Override
     protected boolean shouldContainerAbstractClasses() {
-	return true;
+        return true;
     }
 
     @Override
     protected boolean shouldContainSuperClass() {
-	return false;
+        return false;
     }
 
 }

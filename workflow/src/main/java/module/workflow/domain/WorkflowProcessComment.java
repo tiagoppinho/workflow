@@ -28,11 +28,10 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Set;
 
-import pt.ist.bennu.core.domain.User;
-import pt.ist.bennu.core.domain.VirtualHost;
-
 import org.joda.time.DateTime;
 
+import pt.ist.bennu.core.domain.User;
+import pt.ist.bennu.core.domain.VirtualHost;
 import pt.ist.fenixframework.plugins.luceneIndexing.domain.interfaces.Indexable;
 import pt.ist.fenixframework.plugins.luceneIndexing.domain.interfaces.Searchable;
 
@@ -47,36 +46,37 @@ public class WorkflowProcessComment extends WorkflowProcessComment_Base implemen
 
     public final static Comparator<WorkflowProcessComment> COMPARATOR = new Comparator<WorkflowProcessComment>() {
 
-	public int compare(WorkflowProcessComment o1, WorkflowProcessComment o2) {
-	    return o1.getDate().compareTo(o2.getDate());
-	}
+        @Override
+        public int compare(WorkflowProcessComment o1, WorkflowProcessComment o2) {
+            return o1.getDate().compareTo(o2.getDate());
+        }
 
     };
 
     public final static Comparator<WorkflowProcessComment> REVERSE_COMPARATOR = Collections.reverseOrder(COMPARATOR);
 
     public WorkflowProcessComment(WorkflowProcess process, User commenter, String comment) {
-	super();
-	setComment(comment);
-	setCommenter(commenter);
-	setDate(new DateTime());
-	setProcess(process);
-	setWorkflowSystem(WorkflowSystem.getInstance());
+        super();
+        setComment(comment);
+        setCommenter(commenter);
+        setDate(new DateTime());
+        setProcess(process);
+        setWorkflowSystem(WorkflowSystem.getInstance());
     }
 
     public boolean isUnreadBy(User user) {
-	return !getReaders().contains(user);
+        return !getReaders().contains(user);
     }
 
     @Override
     public Set<Indexable> getObjectsToIndex() {
-	return Collections.singleton((Indexable) getProcess());
+        return Collections.singleton((Indexable) getProcess());
     }
 
     @Override
     public boolean isConnectedToCurrentHost() {
-	final VirtualHost virtualHost = VirtualHost.getVirtualHostForThread();
-	return virtualHost != null && getWorkflowSystem() == virtualHost.getWorkflowSystem();
+        final VirtualHost virtualHost = VirtualHost.getVirtualHostForThread();
+        return virtualHost != null && getWorkflowSystem() == virtualHost.getWorkflowSystem();
     }
 
 }

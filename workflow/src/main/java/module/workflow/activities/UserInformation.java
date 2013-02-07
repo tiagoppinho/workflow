@@ -39,20 +39,20 @@ public class UserInformation<T extends WorkflowProcess> extends ActivityInformat
     private User user;
 
     public UserInformation(T process, WorkflowActivity<T, UserInformation<T>> activity) {
-	super(process, activity);
-	setUser(null);
+        super(process, activity);
+        setUser(null);
     }
 
     public void setUser(User user) {
-	this.user = user;
+        this.user = user;
     }
 
     public User getUser() {
-	return user;
+        return user;
     }
 
     @Override
     public boolean hasAllneededInfo() {
-	return getUser() != null;
+        return getUser() != null;
     }
 }

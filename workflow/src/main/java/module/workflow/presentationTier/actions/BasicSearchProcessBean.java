@@ -42,24 +42,24 @@ public class BasicSearchProcessBean implements Serializable {
     String processId;
 
     public String getProcessId() {
-	return processId;
+        return processId;
     }
 
     public void setProcessId(String processId) {
-	this.processId = processId;
+        this.processId = processId;
     }
 
     @SuppressWarnings("unchecked")
     public Set<WorkflowProcess> search() {
-	return (Set<WorkflowProcess>) (processId == null ? Collections.emptySet() : WorkflowProcess.getAllProcesses(
-		WorkflowProcess.class, new Predicate() {
+        return (Set<WorkflowProcess>) (processId == null ? Collections.emptySet() : WorkflowProcess.getAllProcesses(
+                WorkflowProcess.class, new Predicate() {
 
-		    @Override
-		    public boolean evaluate(Object arg0) {
-			return processId.trim().equals(((WorkflowProcess) arg0).getProcessNumber());
-		    }
+                    @Override
+                    public boolean evaluate(Object arg0) {
+                        return processId.trim().equals(((WorkflowProcess) arg0).getProcessNumber());
+                    }
 
-		}));
+                }));
     }
 
 }

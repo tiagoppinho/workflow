@@ -41,23 +41,23 @@ public class EditFieldValueInfo extends ActivityInformation<WorkflowMetaProcess>
     private FieldValueBean fieldBean;
 
     public EditFieldValueInfo(WorkflowMetaProcess process, EditFieldValue activity) {
-	super(process, activity);
+        super(process, activity);
     }
 
     public void setField(FieldValue fieldValue) {
-	setFieldBean(fieldValue.createFieldValueBean());
+        setFieldBean(fieldValue.createFieldValueBean());
     }
 
     public void setFieldBean(FieldValueBean fieldBean) {
-	this.fieldBean = fieldBean;
+        this.fieldBean = fieldBean;
     }
 
     public FieldValueBean getFieldBean() {
-	return fieldBean;
+        return fieldBean;
     }
 
     @Override
     public boolean hasAllneededInfo() {
-	return super.hasAllneededInfo() && isForwardedFromInput();
+        return super.hasAllneededInfo() && isForwardedFromInput();
     }
 }

@@ -38,48 +38,48 @@ import pt.utl.ist.fenix.tools.util.i18n.MultiLanguageString;
 public class DateTimeMetaField extends DateTimeMetaField_Base {
 
     /**
-     * Note should be avoided its use (only used by
-     * {@link MetaField#duplicatedMetaField()}
+     * Note should be avoided its use (only used by {@link MetaField#duplicatedMetaField()}
      */
     @Deprecated
     public DateTimeMetaField() {
-	super();
+        super();
     }
 
     public DateTimeMetaField(MultiLanguageString name, Integer order, MetaFieldSet parentFieldSet) {
-	this();
-	init(name, order, parentFieldSet);
+        this();
+        init(name, order, parentFieldSet);
     }
 
     public DateTimeMetaField(final MetaFieldBean bean, MetaFieldSet parentFieldSet) {
-	this(bean.getName(), bean.getOrder(), parentFieldSet);
+        this(bean.getName(), bean.getOrder(), parentFieldSet);
     }
 
     @Override
     public FieldValue createFieldValue() {
-	return new DateTimeFieldValue(this);
+        return new DateTimeFieldValue(this);
     }
 
     @Override
     @Service
     public void delete() {
-	if (isPublished())
-	    throw new MetaWorkflowDomainException("error.cant.delete.a.published.metaField");
-	removeParentFieldSet();
-	if (!hasAnyFieldValues()) {
-	    deleteDomainObject();
-	}
+        if (isPublished()) {
+            throw new MetaWorkflowDomainException("error.cant.delete.a.published.metaField");
+        }
+        removeParentFieldSet();
+        if (!hasAnyFieldValues()) {
+            deleteDomainObject();
+        }
     }
 
     @Override
     @Service
     public void deleteItselfAndAllChildren() throws MetaWorkflowDomainException {
-	delete();
+        delete();
     }
 
     @Override
     public boolean isPublished() {
-	return getParentFieldSet().isPublished();
+        return getParentFieldSet().isPublished();
     }
 
 }

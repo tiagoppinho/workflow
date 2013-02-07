@@ -38,15 +38,15 @@ public class AvailableFileClassesProvider implements DataProvider {
 
     @Override
     public Converter getConverter() {
-	return null;
+        return null;
     }
 
     @Override
     public Object provide(Object source, Object current) {
 
-	WorkflowFileUploadBean bean = (WorkflowFileUploadBean) source;
-	WorkflowProcess process = bean.getProcess();
-	return process.getUploadableFileTypes();
+        WorkflowFileUploadBean bean = (WorkflowFileUploadBean) source;
+        WorkflowProcess process = bean.getProcess();
+        return process.getUploadableFileTypes();
     }
 
 }

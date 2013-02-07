@@ -49,33 +49,33 @@ import pt.utl.ist.fenix.tools.util.i18n.MultiLanguageString;
 public abstract class MetaField extends MetaField_Base {
 
     public static Comparator<MetaField> COMPARATOR_BY_FIELD_ORDER = new Comparator<MetaField>() {
-	@Override
-	public int compare(MetaField field0, MetaField field1) {
-	    int comparison = field0.getFieldOrder().compareTo(field1.getFieldOrder());
-	    if (comparison != 0) {
-		return comparison;
-	    }
-	    return field0.getExternalId().compareTo(field1.getExternalId());
-	}
+        @Override
+        public int compare(MetaField field0, MetaField field1) {
+            int comparison = field0.getFieldOrder().compareTo(field1.getFieldOrder());
+            if (comparison != 0) {
+                return comparison;
+            }
+            return field0.getExternalId().compareTo(field1.getExternalId());
+        }
     };
 
     protected MetaField() {
-	super();
+        super();
     }
 
     protected void init(MultiLanguageString name, Integer order, MetaFieldSet parentFieldSet) {
-	this.setName(name);
-	this.setFieldOrder(order);
-	this.setParentFieldSet(parentFieldSet);
+        this.setName(name);
+        this.setFieldOrder(order);
+        this.setParentFieldSet(parentFieldSet);
     }
 
     @Service
     public static MetaField createMetaField(MetaFieldBean bean, MetaFieldSet parentFieldSet) {
-	try {
-	    return bean.getFieldClass().getConstructor(MetaFieldBean.class, MetaFieldSet.class).newInstance(bean, parentFieldSet);
-	} catch (InstantiationException | InvocationTargetException | IllegalAccessException | NoSuchMethodException ex) {
-	    throw new MetaWorkflowDomainException("error.invalid.meta.field.class", ex, bean.getFieldClass().getName());
-	}
+        try {
+            return bean.getFieldClass().getConstructor(MetaFieldBean.class, MetaFieldSet.class).newInstance(bean, parentFieldSet);
+        } catch (InstantiationException | InvocationTargetException | IllegalAccessException | NoSuchMethodException ex) {
+            throw new MetaWorkflowDomainException("error.invalid.meta.field.class", ex, bean.getFieldClass().getName());
+        }
     }
 
     /* TODO START: protection against published things FENIX-345: */
@@ -88,24 +88,24 @@ public abstract class MetaField extends MetaField_Base {
 
     @ConsistencyPredicate
     public boolean checkHasName() {
-	Collection<Language> allLanguages = getName().getAllLanguages();
+        Collection<Language> allLanguages = getName().getAllLanguages();
 
-	for (Language language : allLanguages) {
-	    String content = getName().getContent(language);
-	    if (StringUtils.isEmpty(content)) {
-		return false;
-	    }
-	}
+        for (Language language : allLanguages) {
+            String content = getName().getContent(language);
+            if (StringUtils.isEmpty(content)) {
+                return false;
+            }
+        }
 
-	return true;
+        return true;
     }
 
     public String getPresentationName() {
-	return getLocalizedClassName() + " - " + getName().getContent();
+        return getLocalizedClassName() + " - " + getName().getContent();
     }
 
     public String getLocalizedClassName() {
-	return BundleUtil.getStringFromResourceBundle("resources/MetaWorkflowResources", "label." + getClass().getName());
+        return BundleUtil.getStringFromResourceBundle("resources/MetaWorkflowResources", "label." + getClass().getName());
     }
 
     /**
@@ -114,20 +114,20 @@ public abstract class MetaField extends MetaField_Base {
      *         relations of the MetaField are not replicated
      */
     protected final MetaField duplicatedMetaField() {
-	Constructor<? extends MetaField> constructor;
-	MetaField newInstance;
-	try {
-	    constructor = this.getClass().getConstructor();
-	    newInstance = constructor.newInstance();
-	} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
-		| NoSuchMethodException | SecurityException e) {
-	    throw new MetaWorkflowDomainException("couldnt.create.duplicateMetaField", e);
-	}
-	if (newInstance != null) {
-	    newInstance.setName(getName());
-	    newInstance.setFieldOrder(getFieldOrder());
-	}
-	return newInstance;
+        Constructor<? extends MetaField> constructor;
+        MetaField newInstance;
+        try {
+            constructor = this.getClass().getConstructor();
+            newInstance = constructor.newInstance();
+        } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+                | NoSuchMethodException | SecurityException e) {
+            throw new MetaWorkflowDomainException("couldnt.create.duplicateMetaField", e);
+        }
+        if (newInstance != null) {
+            newInstance.setName(getName());
+            newInstance.setFieldOrder(getFieldOrder());
+        }
+        return newInstance;
     }
 
     /**

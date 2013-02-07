@@ -44,38 +44,38 @@ public class SetOjbConcreteClassOnMetaAndValueFields extends CustomTask implemen
 
     @Override
     public void doIt() {
-	WorkflowSystem system = WorkflowSystem.getInstance();
+        WorkflowSystem system = WorkflowSystem.getInstance();
 
-	List<WorkflowMetaType> metaTypes = system.getMetaTypes();
+        List<WorkflowMetaType> metaTypes = system.getMetaTypes();
 
-	for (WorkflowMetaType workflowMetaType : metaTypes) {
-	    MetaFieldSet fieldSet = workflowMetaType.getFieldSet();
-	    setOjbConcteteClassOnMetaField(fieldSet);
-	}
+        for (WorkflowMetaType workflowMetaType : metaTypes) {
+            MetaFieldSet fieldSet = workflowMetaType.getFieldSet();
+            setOjbConcteteClassOnMetaField(fieldSet);
+        }
     }
 
     void setOjbConcteteClassOnMetaField(final MetaField metaField) {
-	metaField.setOjbConcreteClass(metaField.getClass().getName());
+        metaField.setOjbConcreteClass(metaField.getClass().getName());
 
-	List<FieldValue> fieldValues = metaField.getFieldValues();
-	for (FieldValue fieldValue : fieldValues) {
-	    fieldValue.setOjbConcreteClass(fieldValue.getClass().getName());
-	}
+        List<FieldValue> fieldValues = metaField.getFieldValues();
+        for (FieldValue fieldValue : fieldValues) {
+            fieldValue.setOjbConcreteClass(fieldValue.getClass().getName());
+        }
 
-	if (metaField instanceof MetaFieldSet) {
-	    MetaFieldSet metaFieldSet = (MetaFieldSet) metaField;
+        if (metaField instanceof MetaFieldSet) {
+            MetaFieldSet metaFieldSet = (MetaFieldSet) metaField;
 
-	    List<MetaField> childFields = metaFieldSet.getChildFields();
-	    for (MetaField child : childFields) {
-		setOjbConcteteClassOnMetaField(child);
-	    }
-	}
+            List<MetaField> childFields = metaFieldSet.getChildFields();
+            for (MetaField child : childFields) {
+                setOjbConcteteClassOnMetaField(child);
+            }
+        }
     }
 
     @Override
     public void run() {
-	Transaction.withTransaction(false, this);
-	out.println("Done.");
+        Transaction.withTransaction(false, this);
+        out.println("Done.");
     }
 
 }

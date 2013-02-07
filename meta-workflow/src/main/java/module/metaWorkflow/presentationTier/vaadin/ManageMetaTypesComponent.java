@@ -64,74 +64,73 @@ public class ManageMetaTypesComponent extends CustomComponent implements Embedde
     private static final long serialVersionUID = 1L;
 
     public ManageMetaTypesComponent() {
-	VerticalLayout layout = new VerticalLayout();
-	setCompositionRoot(layout);
-	layout.setSpacing(true);
+        VerticalLayout layout = new VerticalLayout();
+        setCompositionRoot(layout);
+        layout.setSpacing(true);
 
-	Label title = new Label(getMessage("label.metaType.managament"));
-	title.addStyleName(BennuTheme.LABEL_H2);
-	layout.addComponent(title);
+        Label title = new Label(getMessage("label.metaType.managament"));
+        title.addStyleName(BennuTheme.LABEL_H2);
+        layout.addComponent(title);
 
-	Table table = new TransactionalTable(RESOURCE_BUNDLE) {
-	    private static final long serialVersionUID = 1L;
+        Table table = new TransactionalTable(RESOURCE_BUNDLE) {
+            private static final long serialVersionUID = 1L;
 
-	    @Override
-	    protected String formatPropertyValue(Object rowId, Object colId, com.vaadin.data.Property property) {
-		if ("availableFileTypes".equals(colId)) {
-		    StringBuilder strBuilder = new StringBuilder();
-		    List<Class<? extends ProcessFile>> fileClasses = (List<Class<? extends ProcessFile>>) property.getValue();
-		    Iterator<Class<? extends ProcessFile>> fileIterator = fileClasses.iterator();
-		    while (fileIterator.hasNext()) {
-			strBuilder.append(BundleUtil.getLocalizedNamedFroClass(fileIterator.next()));
-			if (fileIterator.hasNext()) {
-			    strBuilder.append(", ");
-			}
-		    }
-		    return strBuilder.toString();
-		    
-		}
-		return super.formatPropertyValue(rowId, colId, property);
-	    };
-	};
-	DomainContainer<WorkflowMetaType> container = new DomainContainer<WorkflowMetaType>(WorkflowSystem.getInstance()
-		.getMetaTypes(), WorkflowMetaType.class);
+            @Override
+            protected String formatPropertyValue(Object rowId, Object colId, com.vaadin.data.Property property) {
+                if ("availableFileTypes".equals(colId)) {
+                    StringBuilder strBuilder = new StringBuilder();
+                    List<Class<? extends ProcessFile>> fileClasses = (List<Class<? extends ProcessFile>>) property.getValue();
+                    Iterator<Class<? extends ProcessFile>> fileIterator = fileClasses.iterator();
+                    while (fileIterator.hasNext()) {
+                        strBuilder.append(BundleUtil.getLocalizedNamedFroClass(fileIterator.next()));
+                        if (fileIterator.hasNext()) {
+                            strBuilder.append(", ");
+                        }
+                    }
+                    return strBuilder.toString();
 
-	container.setContainerProperties("name", "organizationalModel.name", "availableFileTypes");
-	table.setContainerDataSource(container);
-	table.addGeneratedColumn("", new ColumnGenerator() {
-	    private static final long serialVersionUID = 1L;
+                }
+                return super.formatPropertyValue(rowId, colId, property);
+            };
+        };
+        DomainContainer<WorkflowMetaType> container =
+                new DomainContainer<WorkflowMetaType>(WorkflowSystem.getInstance().getMetaTypes(), WorkflowMetaType.class);
 
-	    @Override
-	    public Object generateCell(Table source, final Object itemId, Object columnId) {
-		HorizontalLayout horizontalLayout = new HorizontalLayout();
-		horizontalLayout.setSpacing(true);
+        container.setContainerProperties("name", "organizationalModel.name", "availableFileTypes");
+        table.setContainerDataSource(container);
+        table.addGeneratedColumn("", new ColumnGenerator() {
+            private static final long serialVersionUID = 1L;
 
-		Button statesButton = new Button(getMessage("link.metaType.manageMetaType"), new Button.ClickListener() {
-		    private static final long serialVersionUID = 1L;
+            @Override
+            public Object generateCell(Table source, final Object itemId, Object columnId) {
+                HorizontalLayout horizontalLayout = new HorizontalLayout();
+                horizontalLayout.setSpacing(true);
 
-		    @Override
-		    public void buttonClick(ClickEvent event) {
-			EmbeddedApplication.open(getApplication(), ManageMetaTypeComponent.class,
-				((WorkflowMetaType) itemId).getExternalId());
-		    }
-		});
-		statesButton.addStyleName(BaseTheme.BUTTON_LINK);
-		horizontalLayout.addComponent(statesButton);
-		return horizontalLayout;
-	    }
-	});
+                Button statesButton = new Button(getMessage("link.metaType.manageMetaType"), new Button.ClickListener() {
+                    private static final long serialVersionUID = 1L;
 
-	layout.addComponent(table);
+                    @Override
+                    public void buttonClick(ClickEvent event) {
+                        EmbeddedApplication.open(getApplication(), ManageMetaTypeComponent.class,
+                                ((WorkflowMetaType) itemId).getExternalId());
+                    }
+                });
+                statesButton.addStyleName(BaseTheme.BUTTON_LINK);
+                horizontalLayout.addComponent(statesButton);
+                return horizontalLayout;
+            }
+        });
+
+        layout.addComponent(table);
     }
 
-
     private String getMessage(String message) {
-	return BundleUtil.getFormattedStringFromResourceBundle(RESOURCE_BUNDLE, message);
+        return BundleUtil.getFormattedStringFromResourceBundle(RESOURCE_BUNDLE, message);
     }
 
     @Override
     public boolean isAllowedToOpen(Map<String, String> arguments) {
-	return UserView.getCurrentUser().hasRoleType(RoleType.MANAGER);
+        return UserView.getCurrentUser().hasRoleType(RoleType.MANAGER);
     }
 
     @Override

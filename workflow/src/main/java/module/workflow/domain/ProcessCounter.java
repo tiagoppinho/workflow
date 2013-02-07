@@ -38,7 +38,7 @@ import pt.ist.bennu.core.util.BundleUtil;
 public class ProcessCounter {
 
     public static final Comparator<ProcessCounter> COMPARATOR = new Comparator<ProcessCounter>() {
-        
+
         @Override
         public int compare(ProcessCounter o1, ProcessCounter o2) {
             final Class c1 = o1.getProcessClass();
@@ -55,37 +55,36 @@ public class ProcessCounter {
     private final Class clazz;
 
     public ProcessCounter(final Class clazz) {
-	this.clazz = clazz;
+        this.clazz = clazz;
     }
 
     public Class getProcessClass() {
-	return clazz;
+        return clazz;
     }
 
     public Class getProcessClassForForwarding() {
-	return getProcessClass();
+        return getProcessClass();
     }
 
     public int getCount() {
-	int result = 0;
-	final User requestingUser = UserView.getCurrentUser();
-	for (final WorkflowProcess process : WorkflowSystem.getInstance().getProcesses()) {
-	    try {
-		if (shouldCountProcess(process, requestingUser)) {
-		    result++;
-		}
-	    } catch (final Throwable t) {
-		t.printStackTrace();
-		//throw new Error(t);
-	    }
-	}
+        int result = 0;
+        final User requestingUser = UserView.getCurrentUser();
+        for (final WorkflowProcess process : WorkflowSystem.getInstance().getProcesses()) {
+            try {
+                if (shouldCountProcess(process, requestingUser)) {
+                    result++;
+                }
+            } catch (final Throwable t) {
+                t.printStackTrace();
+                //throw new Error(t);
+            }
+        }
         return result;
     }
 
     protected boolean shouldCountProcess(final WorkflowProcess process, final User requestingUser) {
-	return clazz.isAssignableFrom(process.getClass())
-		&& process.isAccessible(requestingUser)
-		&& process.hasAnyAvailableActivity(requestingUser, true);
+        return clazz.isAssignableFrom(process.getClass()) && process.isAccessible(requestingUser)
+                && process.hasAnyAvailableActivity(requestingUser, true);
     }
 
 }

@@ -42,42 +42,42 @@ import dml.DomainClass;
 public class MetaFieldClassProvider implements DataProvider {
 
     public static Comparator<Class<?>> CLASS_COMPARATOR_BY_SIMPLE_NAME_OR_FULL_PACKAGE_NAME = new Comparator<Class<?>>() {
-	@Override
-	public int compare(Class<?> class0, Class<?> class1) {
-	    int comparison = class0.getSimpleName().compareTo(class1.getSimpleName());
-	    if (comparison != 0) {
-		return comparison;
-	    }
-	    return class0.getName().compareTo(class1.getName());
-	}
+        @Override
+        public int compare(Class<?> class0, Class<?> class1) {
+            int comparison = class0.getSimpleName().compareTo(class1.getSimpleName());
+            if (comparison != 0) {
+                return comparison;
+            }
+            return class0.getName().compareTo(class1.getName());
+        }
     };
 
     @Override
     public Object provide(Object source, Object currentValue) {
-	return getMetaFieldClassesSet();
+        return getMetaFieldClassesSet();
     }
 
     public static Set<Class<? extends MetaField>> getMetaFieldClassesSet() {
-	Set<Class<? extends MetaField>> metaFieldClasses = new TreeSet<Class<? extends MetaField>>(
-		CLASS_COMPARATOR_BY_SIMPLE_NAME_OR_FULL_PACKAGE_NAME);
-	for (DomainClass domainClass : FenixFramework.getDomainModel().getDomainClasses()) {
-	    if (isSubclassOfMetaField(domainClass)) {
-		try {
-		    metaFieldClasses.add((Class<? extends MetaField>) Class.forName(domainClass.getFullName()));
-		} catch (ClassNotFoundException ex) {
-		    throw new RuntimeException("Domain class not found: " + domainClass.getFullName(), ex);
-		}
-	    }
-	}
-	return metaFieldClasses;
+        Set<Class<? extends MetaField>> metaFieldClasses =
+                new TreeSet<Class<? extends MetaField>>(CLASS_COMPARATOR_BY_SIMPLE_NAME_OR_FULL_PACKAGE_NAME);
+        for (DomainClass domainClass : FenixFramework.getDomainModel().getDomainClasses()) {
+            if (isSubclassOfMetaField(domainClass)) {
+                try {
+                    metaFieldClasses.add((Class<? extends MetaField>) Class.forName(domainClass.getFullName()));
+                } catch (ClassNotFoundException ex) {
+                    throw new RuntimeException("Domain class not found: " + domainClass.getFullName(), ex);
+                }
+            }
+        }
+        return metaFieldClasses;
     }
 
     private static boolean isSubclassOfMetaField(DomainClass domainClass) {
-	return (domainClass.hasSuperclass() && domainClass.getSuperclass().getFullName().equals(MetaField.class.getName()));
+        return (domainClass.hasSuperclass() && domainClass.getSuperclass().getFullName().equals(MetaField.class.getName()));
     }
 
     @Override
     public Converter getConverter() {
-	return null;
+        return null;
     }
 }

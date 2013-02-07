@@ -36,6 +36,6 @@ public class AvailableQueueTypes extends AbstractDomainClassProvider {
 
     @Override
     protected Class getSuperClass() {
-	return WorkflowQueue.class;
+        return WorkflowQueue.class;
     }
 }

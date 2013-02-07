@@ -40,38 +40,38 @@ public class WorkflowFileUploadBean extends FileUploadBean {
     private boolean instanceLock;
 
     public Class<? extends ProcessFile> getSelectedInstance() {
-	return selectedInstance;
+        return selectedInstance;
     }
 
     public void setSelectedInstance(Class<? extends ProcessFile> selectedInstance) {
-	this.selectedInstance = selectedInstance;
+        this.selectedInstance = selectedInstance;
     }
 
     public boolean isInstanceLock() {
-	return instanceLock;
+        return instanceLock;
     }
 
     public void setInstanceLock(boolean instanceLock) {
-	this.instanceLock = instanceLock;
+        this.instanceLock = instanceLock;
     }
 
     public void setProcess(WorkflowProcess process, Class<? extends ProcessFile> selectedInstance) {
-	setProcess(process);
-	setSelectedInstance(selectedInstance);
-	this.instanceLock = true;
+        setProcess(process);
+        setSelectedInstance(selectedInstance);
+        this.instanceLock = true;
     }
 
     public WorkflowFileUploadBean(WorkflowProcess process) {
-	setProcess(process);
-	this.instanceLock = false;
+        setProcess(process);
+        this.instanceLock = false;
     }
 
     public <T extends WorkflowProcess> T getProcess() {
-	return (T) this.process;
+        return (T) this.process;
     }
 
     public void setProcess(WorkflowProcess process) {
-	this.process = process;
+        this.process = process;
     }
 
     /**
@@ -84,7 +84,7 @@ public class WorkflowFileUploadBean extends FileUploadBean {
      * By default it returns true
      */
     public boolean isDefaultUploadInterfaceUsed() {
-	return true;
+        return true;
     }
 
 }

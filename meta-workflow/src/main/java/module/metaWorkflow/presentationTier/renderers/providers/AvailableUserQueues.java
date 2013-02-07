@@ -41,16 +41,16 @@ public class AvailableUserQueues implements DataProvider {
 
     @Override
     public Converter getConverter() {
-	return null;
+        return null;
     }
 
     @Override
     public Object provide(Object source, Object value) {
-	User user = UserView.getCurrentUser();
-	if (user == null) {
-	    return Collections.EMPTY_LIST;
-	}
+        User user = UserView.getCurrentUser();
+        if (user == null) {
+            return Collections.EMPTY_LIST;
+        }
 
-	return WorkflowMetaType.getAllQueuesForUser(user);
+        return WorkflowMetaType.getAllQueuesForUser(user);
     }
 }

@@ -37,12 +37,12 @@ public class AvailableWorkflowMetaTypes implements DataProvider {
 
     @Override
     public Converter getConverter() {
-	return null;
+        return null;
     }
 
     @Override
     public Object provide(Object arg0, Object arg1) {
-	return WorkflowSystem.getInstance().getMetaTypesSet();
+        return WorkflowSystem.getInstance().getMetaTypesSet();
     }
 
 }

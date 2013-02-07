@@ -37,21 +37,21 @@ public class TakeProcess<T extends WorkflowProcess> extends WorkflowActivity<T, 
 
     @Override
     public boolean isActive(T process, User user) {
-	return process.isTicketSupportAvailable() && !process.isUserObserver(user) && process.getCurrentOwner() == null;
+        return process.isTicketSupportAvailable() && !process.isUserObserver(user) && process.getCurrentOwner() == null;
     }
 
     @Override
     protected void process(ActivityInformation<T> information) {
-	information.getProcess().takeProcess();
+        information.getProcess().takeProcess();
     }
 
     @Override
     public boolean isUserAwarenessNeeded(T process, User user) {
-	return false;
+        return false;
     }
-    
+
     @Override
     public boolean isVisible() {
-	return false;
+        return false;
     }
 }

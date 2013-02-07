@@ -38,46 +38,46 @@ import pt.utl.ist.fenix.tools.util.i18n.MultiLanguageString;
 public class LocalDateMetaField extends LocalDateMetaField_Base {
 
     /**
-     * Note should be avoided its use (only used by
-     * {@link MetaField#duplicatedMetaField()}
+     * Note should be avoided its use (only used by {@link MetaField#duplicatedMetaField()}
      */
     @Deprecated
     public LocalDateMetaField() {
-	super();
+        super();
     }
 
     public LocalDateMetaField(MultiLanguageString name, Integer order, MetaFieldSet parentFieldSet) {
-	this();
-	init(name, order, parentFieldSet);
+        this();
+        init(name, order, parentFieldSet);
     }
 
     public LocalDateMetaField(MetaFieldBean bean, MetaFieldSet parentFieldSet) {
-	this(bean.getName(), bean.getOrder(), parentFieldSet);
+        this(bean.getName(), bean.getOrder(), parentFieldSet);
     }
 
     @Override
     public FieldValue createFieldValue() {
-	return new LocalDateFieldValue(this);
+        return new LocalDateFieldValue(this);
     }
 
     @Override
     public void delete() {
-	removeParentFieldSet();
-	if (!hasAnyFieldValues()) {
-	    deleteDomainObject();
-	}
+        removeParentFieldSet();
+        if (!hasAnyFieldValues()) {
+            deleteDomainObject();
+        }
     }
 
     @Override
     @Service
     public void deleteItselfAndAllChildren() throws MetaWorkflowDomainException {
-	if (isPublished())
-	    throw new MetaWorkflowDomainException("cant.delete.a.published.mf");
-	delete();
+        if (isPublished()) {
+            throw new MetaWorkflowDomainException("cant.delete.a.published.mf");
+        }
+        delete();
     }
 
     @Override
     public boolean isPublished() {
-	return getParentFieldSet().isPublished();
+        return getParentFieldSet().isPublished();
     }
 }

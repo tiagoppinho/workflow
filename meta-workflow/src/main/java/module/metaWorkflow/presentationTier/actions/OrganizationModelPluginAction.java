@@ -43,25 +43,25 @@ public class OrganizationModelPluginAction extends ContextBaseAction {
 
     public static class QueueView extends PartyViewHook {
 
-	@Override
-	public String hook(final HttpServletRequest request, final OrganizationalModel organizationalModel, final Party party) {
-	    return "/module/metaWorkflow/organizationModelQueueView.jsp";
-	}
+        @Override
+        public String hook(final HttpServletRequest request, final OrganizationalModel organizationalModel, final Party party) {
+            return "/module/metaWorkflow/organizationModelQueueView.jsp";
+        }
 
-	@Override
-	public String getViewName() {
-	    return "03_queueView";
-	}
+        @Override
+        public String getViewName() {
+            return "03_queueView";
+        }
 
-	@Override
-	public String getPresentationName() {
-	    return BundleUtil.getStringFromResourceBundle("resources.MetaWorkflowResources", "label.queueView");
-	}
+        @Override
+        public String getPresentationName() {
+            return BundleUtil.getStringFromResourceBundle("resources.MetaWorkflowResources", "label.queueView");
+        }
 
-	@Override
-	public boolean isAvailableFor(final Party party) {
-	    return party != null && party.isUnit();
-	}
+        @Override
+        public boolean isAvailableFor(final Party party) {
+            return party != null && party.isUnit();
+        }
     }
 
 }

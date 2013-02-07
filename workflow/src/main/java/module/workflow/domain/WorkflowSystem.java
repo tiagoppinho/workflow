@@ -49,49 +49,49 @@ public class WorkflowSystem extends WorkflowSystem_Base {
 
     public static class VirtualHostMyOrgRelationListener extends RelationAdapter<VirtualHost, MyOrg> {
 
-	@Override
-	public void beforeRemove(VirtualHost vh, MyOrg myorg) {
-	    vh.removeWorkflowSystem();
-	    super.beforeRemove(vh, myorg);
-	}
+        @Override
+        public void beforeRemove(VirtualHost vh, MyOrg myorg) {
+            vh.removeWorkflowSystem();
+            super.beforeRemove(vh, myorg);
+        }
     }
 
     static {
-	VirtualHost.MyOrgVirtualHost.addListener(new VirtualHostMyOrgRelationListener());
+        VirtualHost.MyOrgVirtualHost.addListener(new VirtualHostMyOrgRelationListener());
 
-	WidgetRegister.registerWidget(ProcessListWidget.class);
-	WidgetRegister.registerWidget(QuickViewWidget.class);
-	WidgetRegister.registerWidget(UnreadCommentsWidget.class);
+        WidgetRegister.registerWidget(ProcessListWidget.class);
+        WidgetRegister.registerWidget(QuickViewWidget.class);
+        WidgetRegister.registerWidget(UnreadCommentsWidget.class);
 
-	RequestChecksumFilter.registerFilterRule(new ChecksumPredicate() {
-	    @Override
-	    public boolean shouldFilter(HttpServletRequest httpServletRequest) {
-		return !(httpServletRequest.getRequestURI().endsWith("/workflowProcessManagement.do")
-			&& httpServletRequest.getQueryString() != null && httpServletRequest.getQueryString().contains(
-			"method=viewTypeDescription"));
-	    }
-	});
+        RequestChecksumFilter.registerFilterRule(new ChecksumPredicate() {
+            @Override
+            public boolean shouldFilter(HttpServletRequest httpServletRequest) {
+                return !(httpServletRequest.getRequestURI().endsWith("/workflowProcessManagement.do")
+                        && httpServletRequest.getQueryString() != null && httpServletRequest.getQueryString().contains(
+                        "method=viewTypeDescription"));
+            }
+        });
     }
 
     private WorkflowSystem(final VirtualHost virtualHost) {
-	super();
-	virtualHost.setWorkflowSystem(this);
+        super();
+        virtualHost.setWorkflowSystem(this);
     }
 
     public static WorkflowSystem getInstance() {
-	final VirtualHost virtualHostForThread = VirtualHost.getVirtualHostForThread();
-	return virtualHostForThread == null ? null : virtualHostForThread.getWorkflowSystem();
+        final VirtualHost virtualHostForThread = VirtualHost.getVirtualHostForThread();
+        return virtualHostForThread == null ? null : virtualHostForThread.getWorkflowSystem();
     }
 
     @Service
     public static void createSystem(final VirtualHost virtualHost) {
-	if (!virtualHost.hasWorkflowSystem() || virtualHost.getWorkflowSystem().getVirtualHostCount() > 1) {
-	    new WorkflowSystem(virtualHost);
-	}
+        if (!virtualHost.hasWorkflowSystem() || virtualHost.getWorkflowSystem().getVirtualHostCount() > 1) {
+            new WorkflowSystem(virtualHost);
+        }
     }
 
     @Service
     public void setForVirtualHost(final VirtualHost virtualHost) {
-	virtualHost.setWorkflowSystem(this);
+        virtualHost.setWorkflowSystem(this);
     }
 }

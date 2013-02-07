@@ -34,24 +34,24 @@ import pt.ist.bennu.core.domain.User;
 public class UserRequestor extends UserRequestor_Base {
 
     public UserRequestor(User user) {
-	super();
-	setUser(user);
+        super();
+        setUser(user);
     }
 
     @Override
     public String getEmail() {
-	// TODO: implement method
-	return null;
+        // TODO: implement method
+        return null;
     }
 
     @Override
     public String getName() {
-	return getUser().getPresentationName();
+        return getUser().getPresentationName();
     }
 
     @Override
     public String getShortName() {
-	return getUser().getShortPresentationName();
+        return getUser().getShortPresentationName();
     }
 
 }

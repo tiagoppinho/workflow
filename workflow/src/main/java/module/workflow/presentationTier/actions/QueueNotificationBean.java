@@ -50,24 +50,24 @@ public class QueueNotificationBean implements Serializable {
     private final WorkflowQueue queue;
 
     public QueueNotificationBean(WorkflowQueue queue, WorkflowProcess process) {
-	this.queue = queue;
-	this.ableToNotify = process.isSystemAbleToNotifyQueue(queue);
+        this.queue = queue;
+        this.ableToNotify = process.isSystemAbleToNotifyQueue(queue);
     }
 
     public boolean isAbleToNotify() {
-	return ableToNotify;
+        return ableToNotify;
     }
 
     public void setAbleToNotify(boolean ableToNotify) {
-	this.ableToNotify = ableToNotify;
+        this.ableToNotify = ableToNotify;
     }
 
     public Set<User> getUsers() {
-	HashSet<User> usersSetToReturn = new HashSet<User>();
-	for (Person person : getQueue().getPersons()) {
-	    usersSetToReturn.add(person.getUser());
-	}
-	return usersSetToReturn;
+        HashSet<User> usersSetToReturn = new HashSet<User>();
+        for (Person person : getQueue().getPersons()) {
+            usersSetToReturn.add(person.getUser());
+        }
+        return usersSetToReturn;
     }
 
     //    public void setUser(User user) {
@@ -76,15 +76,15 @@ public class QueueNotificationBean implements Serializable {
 
     @Override
     public int hashCode() {
-	return getQueue().hashCode();
+        return getQueue().hashCode();
     }
 
     @Override
     public boolean equals(Object obj) {
-	return obj instanceof QueueNotificationBean && ((QueueNotificationBean) obj).getQueue() == getQueue();
+        return obj instanceof QueueNotificationBean && ((QueueNotificationBean) obj).getQueue() == getQueue();
     }
 
     public WorkflowQueue getQueue() {
-	return queue;
+        return queue;
     }
 }

@@ -37,56 +37,56 @@ import pt.utl.ist.fenix.tools.util.Strings;
 public class StringsFieldValue extends StringsFieldValue_Base {
 
     public class StringsFieldValueBean extends FieldValueBean {
-	private Strings value;
+        private Strings value;
 
-	public StringsFieldValueBean(Strings value) {
-	    this.value = value;
-	}
+        public StringsFieldValueBean(Strings value) {
+            this.value = value;
+        }
 
-	public Strings getStringsValue() {
-	    return value;
-	}
+        public Strings getStringsValue() {
+            return value;
+        }
 
-	public void setStringsValue(Strings value) {
-	    this.value = value;
-	}
+        public void setStringsValue(Strings value) {
+            this.value = value;
+        }
     }
 
     @Override
     public boolean isDefined() {
-	if ((getStringsValue() == null) || (getStringsValue().size() == 0)) {
-	    return false;
-	}
-	for (String string : getStringsValue().getUnmodifiableList()) {
-	    if (!StringUtils.isEmpty(string)) {
-		return true;
-	    }
-	}
-	return false;
+        if ((getStringsValue() == null) || (getStringsValue().size() == 0)) {
+            return false;
+        }
+        for (String string : getStringsValue().getUnmodifiableList()) {
+            if (!StringUtils.isEmpty(string)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public StringsFieldValue() {
-	super();
+        super();
     }
 
     public StringsFieldValue(StringsMetaField metaField) {
-	this();
-	setMetaField(metaField);
+        this();
+        setMetaField(metaField);
     }
 
     public StringsFieldValue(StringsMetaField metaField, FieldSetValue parent, Strings value) {
-	this(metaField);
-	setParentFieldSet(parent);
-	setStringsValue(value);
+        this(metaField);
+        setParentFieldSet(parent);
+        setStringsValue(value);
     }
 
     @Override
     public FieldValueBean createFieldValueBean() {
-	return new StringsFieldValueBean(getStringsValue());
+        return new StringsFieldValueBean(getStringsValue());
     }
 
     @Override
     public void writeValueFromBean(FieldValueBean bean) {
-	setStringsValue(((StringsFieldValueBean) bean).getStringsValue());
+        setStringsValue(((StringsFieldValueBean) bean).getStringsValue());
     }
 }

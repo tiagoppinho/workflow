@@ -37,7 +37,8 @@ import pt.ist.bennu.core.presentationTier.LayoutContext;
  */
 public class WorkflowQueueLayoutContext extends LayoutContext {
 
-    private static Map<Class<? extends WorkflowQueue>, String> creationPageRegister = new HashMap<Class<? extends WorkflowQueue>, String>();
+    private static Map<Class<? extends WorkflowQueue>, String> creationPageRegister =
+            new HashMap<Class<? extends WorkflowQueue>, String>();
 
     public static final String DEFAULT_CREATE = "create.jsp";
     public static final String DEFAULT_EDIT = "edit.jsp";
@@ -48,45 +49,45 @@ public class WorkflowQueueLayoutContext extends LayoutContext {
     private String view;
 
     public String getCreateQueue() {
-	return create;
+        return create;
     }
 
     public void setCreateQueue(String create) {
-	this.create = create;
+        this.create = create;
     }
 
     public String getEditQueue() {
-	return edit;
+        return edit;
     }
 
     public void setEditQueue(String edit) {
-	this.edit = edit;
+        this.edit = edit;
     }
 
     public String getViewQueue() {
-	return view;
+        return view;
     }
 
     public void setViewQueue(String view) {
-	this.view = view;
+        this.view = view;
     }
 
     public static void registerCreationPage(Class<? extends WorkflowQueue> instanceType, String page) {
-	creationPageRegister.put(instanceType, page);
+        creationPageRegister.put(instanceType, page);
     }
 
     public static String getBootstrapFor(Class<? extends WorkflowQueue> instanceType) {
-	String page = creationPageRegister.get(instanceType);
-	return page == null ? "/" + instanceType.getName().replace(".", "/") + "/" + DEFAULT_CREATE : page;
+        String page = creationPageRegister.get(instanceType);
+        return page == null ? "/" + instanceType.getName().replace(".", "/") + "/" + DEFAULT_CREATE : page;
     }
 
     public static WorkflowQueueLayoutContext getDefaultLayout(WorkflowQueue queue) {
-	String folder = "/" + queue.getClass().getName().replace(".", "/") + "/";
-	WorkflowQueueLayoutContext layout = new WorkflowQueueLayoutContext();
-	layout.setCreateQueue(folder + DEFAULT_CREATE);
-	layout.setEditQueue(folder + DEFAULT_EDIT);
-	layout.setViewQueue(folder + DEFAULT_VIEW);
+        String folder = "/" + queue.getClass().getName().replace(".", "/") + "/";
+        WorkflowQueueLayoutContext layout = new WorkflowQueueLayoutContext();
+        layout.setCreateQueue(folder + DEFAULT_CREATE);
+        layout.setEditQueue(folder + DEFAULT_EDIT);
+        layout.setViewQueue(folder + DEFAULT_VIEW);
 
-	return layout;
+        return layout;
     }
 }

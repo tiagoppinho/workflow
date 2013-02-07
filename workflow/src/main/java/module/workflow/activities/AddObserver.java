@@ -36,31 +36,32 @@ public class AddObserver<T extends WorkflowProcess> extends WorkflowActivity<T, 
 
     @Override
     public boolean isActive(T process, User user) {
-	return process.isObserverSupportAvailable() && !process.isUserObserver(user)
-		&& (process.getCurrentOwner() == null || process.getCurrentOwner() == user);
+        return process.isObserverSupportAvailable() && !process.isUserObserver(user)
+                && (process.getCurrentOwner() == null || process.getCurrentOwner() == user);
     }
 
     @Override
     protected void process(UserInformation<T> information) {
-	information.getProcess().addObservers(information.getUser());
+        information.getProcess().addObservers(information.getUser());
     }
 
+    @Override
     public boolean isUserAwarenessNeeded(T process, User user) {
-	return false;
+        return false;
     }
 
     @Override
     public boolean isVisible() {
-	return false;
+        return false;
     }
 
     @Override
     public ActivityInformation<T> getActivityInformation(T process) {
-	return new UserInformation<T>(process, this);
+        return new UserInformation<T>(process, this);
     }
 
     @Override
     protected String[] getArgumentsDescription(UserInformation<T> activityInformation) {
-	return new String[] { activityInformation.getUser().getPresentationName() };
+        return new String[] { activityInformation.getUser().getPresentationName() };
     }
 }

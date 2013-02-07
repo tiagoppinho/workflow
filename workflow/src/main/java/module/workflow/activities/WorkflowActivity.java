@@ -57,7 +57,7 @@ public abstract class WorkflowActivity<P extends WorkflowProcess, AI extends Act
      * @return Current Logged User
      */
     protected User getLoggedPerson() {
-	return UserView.getCurrentUser();
+        return UserView.getCurrentUser();
     }
 
     /**
@@ -67,7 +67,7 @@ public abstract class WorkflowActivity<P extends WorkflowProcess, AI extends Act
      *         owner of the process or the process has no owner at all.
      */
     protected boolean isCurrentUserProcessOwner(P process) {
-	return process.getCurrentOwner() == null || isProcessTakenByCurrentUser(process);
+        return process.getCurrentOwner() == null || isProcessTakenByCurrentUser(process);
     }
 
     /**
@@ -78,7 +78,7 @@ public abstract class WorkflowActivity<P extends WorkflowProcess, AI extends Act
      *         activity has no owner at all.
      */
     protected boolean isUserProcessOwner(P process, User user) {
-	return process.getCurrentOwner() == null || isProcessTakenByUser(process, user);
+        return process.getCurrentOwner() == null || isProcessTakenByUser(process, user);
     }
 
     /**
@@ -87,7 +87,7 @@ public abstract class WorkflowActivity<P extends WorkflowProcess, AI extends Act
      * @return true if the process is taken by someone
      */
     protected boolean isProcessTaken(P process) {
-	return process.getCurrentOwner() != null;
+        return process.getCurrentOwner() != null;
     }
 
     /**
@@ -97,7 +97,7 @@ public abstract class WorkflowActivity<P extends WorkflowProcess, AI extends Act
      *         activity
      */
     protected boolean isProcessTakenByCurrentUser(P process) {
-	return isProcessTakenByUser(process, getLoggedPerson());
+        return isProcessTakenByUser(process, getLoggedPerson());
     }
 
     /**
@@ -108,8 +108,8 @@ public abstract class WorkflowActivity<P extends WorkflowProcess, AI extends Act
      * 
      */
     protected boolean isProcessTakenByUser(P process, User user) {
-	User taker = process.getCurrentOwner();
-	return taker != null && taker == user;
+        User taker = process.getCurrentOwner();
+        return taker != null && taker == user;
     }
 
     /**
@@ -120,8 +120,8 @@ public abstract class WorkflowActivity<P extends WorkflowProcess, AI extends Act
      * @param user
      */
     protected ActivityLog logExecution(P process, String operationName, User user, AI activityInfo,
-	    String... argumentsDescription) {
-	return process.logExecution(getLoggedPerson(), operationName, argumentsDescription);
+            String... argumentsDescription) {
+        return process.logExecution(getLoggedPerson(), operationName, argumentsDescription);
     }
 
     /**
@@ -133,27 +133,26 @@ public abstract class WorkflowActivity<P extends WorkflowProcess, AI extends Act
      * @param activityInformation
      */
     @Service
-	public final void execute(AI activityInformation) {
-		P process = activityInformation.getProcess();
-		checkConditionsFor(process);
-		ActivityLog log = null;
-		if (shouldLogActivity(activityInformation)) {
-			log = logExecution(process, getClass().getSimpleName(),
-					getLoggedPerson(), activityInformation,
-					getArgumentsDescription(activityInformation));
-		}
-		process(activityInformation);
-		notifyUsers(process);
+    public final void execute(AI activityInformation) {
+        P process = activityInformation.getProcess();
+        checkConditionsFor(process);
+        ActivityLog log = null;
+        if (shouldLogActivity(activityInformation)) {
+            log =
+                    logExecution(process, getClass().getSimpleName(), getLoggedPerson(), activityInformation,
+                            getArgumentsDescription(activityInformation));
+        }
+        process(activityInformation);
+        notifyUsers(process);
 
-	}
-    
+    }
+
     /**
      * @param activityInformation the {@link ActivityInformation} to help decide
      * @return true if this activity should be logged, false otherwise
      */
-    protected boolean shouldLogActivity(AI activityInformation)
-    {
-    	return true;
+    protected boolean shouldLogActivity(AI activityInformation) {
+        return true;
     }
 
     /**
@@ -167,23 +166,23 @@ public abstract class WorkflowActivity<P extends WorkflowProcess, AI extends Act
      *         locazation string
      */
     protected String[] getArgumentsDescription(AI activityInformation) {
-	return null;
+        return null;
     }
 
     public static class NotActiveActivityException extends ActivityException {
 
-	public NotActiveActivityException(final String activityName) {
-	    super(BundleUtil.getFormattedStringFromResourceBundle("resources.WorkflowResources",
-		    "activities.messages.exception.notActive", activityName), activityName);
-	}
-	
+        public NotActiveActivityException(final String activityName) {
+            super(BundleUtil.getFormattedStringFromResourceBundle("resources.WorkflowResources",
+                    "activities.messages.exception.notActive", activityName), activityName);
+        }
+
     }
 
     private void checkConditionsFor(final P process) {
-	if (!isActive(process)) {
-	    final String activityName = getLocalizedName();
-	    throw new NotActiveActivityException(activityName);
-	}
+        if (!isActive(process)) {
+            final String activityName = getLocalizedName();
+            throw new NotActiveActivityException(activityName);
+        }
     }
 
     /**
@@ -192,7 +191,7 @@ public abstract class WorkflowActivity<P extends WorkflowProcess, AI extends Act
      * @return activity name
      */
     public String getName() {
-	return getClass().getSimpleName();
+        return getClass().getSimpleName();
     }
 
     /**
@@ -204,7 +203,7 @@ public abstract class WorkflowActivity<P extends WorkflowProcess, AI extends Act
      * @param process
      */
     protected void notifyUsers(P process) {
-	// do nothing
+        // do nothing
     }
 
     /**
@@ -214,7 +213,7 @@ public abstract class WorkflowActivity<P extends WorkflowProcess, AI extends Act
      * @return true if the process is active for the current user
      */
     public boolean isActive(P process) {
-	return isActive(process, getLoggedPerson());
+        return isActive(process, getLoggedPerson());
     }
 
     /**
@@ -237,7 +236,7 @@ public abstract class WorkflowActivity<P extends WorkflowProcess, AI extends Act
      */
 
     public boolean isUserAwarenessNeeded(P process) {
-	return isUserAwarenessNeeded(process, getLoggedPerson());
+        return isUserAwarenessNeeded(process, getLoggedPerson());
     }
 
     /**
@@ -250,7 +249,7 @@ public abstract class WorkflowActivity<P extends WorkflowProcess, AI extends Act
      */
 
     public boolean isUserAwarenessNeeded(P process, User user) {
-	return true;
+        return true;
     }
 
     /**
@@ -259,8 +258,7 @@ public abstract class WorkflowActivity<P extends WorkflowProcess, AI extends Act
      * The logs will fetch the logs in the given {@link #getUsedBundle()} the
      * label: "label.description.{fullClassName}"
      * 
-     * You can provide arguments to the log label by overriding
-     * {@link #getArgumentsDescription(ActivityInformation)}
+     * You can provide arguments to the log label by overriding {@link #getArgumentsDescription(ActivityInformation)}
      * 
      * @param activityInformation
      */
@@ -271,12 +269,12 @@ public abstract class WorkflowActivity<P extends WorkflowProcess, AI extends Act
      * @return The localized activity name used in the interfaces.
      */
     public String getLocalizedName() {
-	try {
-	    return BundleUtil.getStringFromResourceBundle(getUsedBundle(), "activity." + getClass().getSimpleName());
-	} catch (java.util.MissingResourceException e) {
-	    e.printStackTrace();
-	    return getClass().getSimpleName();
-	}
+        try {
+            return BundleUtil.getStringFromResourceBundle(getUsedBundle(), "activity." + getClass().getSimpleName());
+        } catch (java.util.MissingResourceException e) {
+            e.printStackTrace();
+            return getClass().getSimpleName();
+        }
     }
 
     /**
@@ -287,7 +285,7 @@ public abstract class WorkflowActivity<P extends WorkflowProcess, AI extends Act
      * @return an ActivityInformation or subclass
      */
     public ActivityInformation<P> getActivityInformation(P process) {
-	return new ActivityInformation<P>(process, this);
+        return new ActivityInformation<P>(process, this);
     }
 
     /**
@@ -301,7 +299,7 @@ public abstract class WorkflowActivity<P extends WorkflowProcess, AI extends Act
      * @return by default returns true
      */
     public boolean isDefaultInputInterfaceUsed() {
-	return true;
+        return true;
     }
 
     /**
@@ -313,7 +311,7 @@ public abstract class WorkflowActivity<P extends WorkflowProcess, AI extends Act
      * @return by default false
      */
     public boolean isConfirmationNeeded(P process) {
-	return false;
+        return false;
     }
 
     /**
@@ -325,7 +323,7 @@ public abstract class WorkflowActivity<P extends WorkflowProcess, AI extends Act
      * @return Localized confirmation message
      */
     public String getLocalizedConfirmationMessage(P process) {
-	return getLocalizedConfirmationMessage();
+        return getLocalizedConfirmationMessage();
     }
 
     /**
@@ -335,7 +333,7 @@ public abstract class WorkflowActivity<P extends WorkflowProcess, AI extends Act
      * @return Localized confirmation message
      */
     public String getLocalizedConfirmationMessage() {
-	return BundleUtil.getStringFromResourceBundle(getUsedBundle(), "activity.confirmation." + getClass().getName());
+        return BundleUtil.getStringFromResourceBundle(getUsedBundle(), "activity.confirmation." + getClass().getName());
     }
 
     /**
@@ -348,7 +346,7 @@ public abstract class WorkflowActivity<P extends WorkflowProcess, AI extends Act
      * @return name of the used bundle
      */
     public String getUsedBundle() {
-	return "resources/WorkflowResources";
+        return "resources/WorkflowResources";
     }
 
     /**
@@ -360,7 +358,7 @@ public abstract class WorkflowActivity<P extends WorkflowProcess, AI extends Act
      *         otherwise
      */
     public boolean isVisible() {
-	return true;
+        return true;
     }
 
     /**
@@ -375,13 +373,13 @@ public abstract class WorkflowActivity<P extends WorkflowProcess, AI extends Act
      *         activity
      */
     public boolean hasHelpMessage() {
-	final ResourceBundle resourceBundle = ResourceBundle.getBundle(getUsedBundle(), Language.getLocale());
-	try {
-	    resourceBundle.getString("label." + getClass().getName() + ".help");
-	} catch (MissingResourceException e) {
-	    return false;
-	}
-	return true;
+        final ResourceBundle resourceBundle = ResourceBundle.getBundle(getUsedBundle(), Language.getLocale());
+        try {
+            resourceBundle.getString("label." + getClass().getName() + ".help");
+        } catch (MissingResourceException e) {
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -390,6 +388,6 @@ public abstract class WorkflowActivity<P extends WorkflowProcess, AI extends Act
      * @return Localized help message
      */
     public String getHelpMessage() {
-	return BundleUtil.getStringFromResourceBundle(getUsedBundle(), "label." + getClass().getName() + ".help");
+        return BundleUtil.getStringFromResourceBundle(getUsedBundle(), "label." + getClass().getName() + ".help");
     }
 }

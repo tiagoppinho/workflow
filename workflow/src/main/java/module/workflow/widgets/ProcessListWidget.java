@@ -47,28 +47,28 @@ public class ProcessListWidget extends WidgetController {
 
     @Override
     public void doView(WidgetRequest request) {
-	final Set<ProcessCounter> processCounters = new TreeSet<ProcessCounter>(ProcessCounter.COMPARATOR);
-	processCounters.addAll(this.processCounters);
-	request.setAttribute("pendingProcessList", processCounters);
+        final Set<ProcessCounter> processCounters = new TreeSet<ProcessCounter>(ProcessCounter.COMPARATOR);
+        processCounters.addAll(this.processCounters);
+        request.setAttribute("pendingProcessList", processCounters);
     }
 
     @Override
     public String getWidgetDescription() {
-	return BundleUtil.getStringFromResourceBundle("resources/WorkflowResources", "widget.description.processListWidget");
+        return BundleUtil.getStringFromResourceBundle("resources/WorkflowResources", "widget.description.processListWidget");
     }
 
     @Override
     public boolean isHelpModeSupported() {
-	return true;
+        return true;
     }
 
     @Override
     public String getHelp() {
-	return BundleUtil.getStringFromResourceBundle("resources/WorkflowResources", "widget.help.processListWidget");
+        return BundleUtil.getStringFromResourceBundle("resources/WorkflowResources", "widget.help.processListWidget");
     }
 
     public static void register(final ProcessCounter processCounter) {
-	processCounters.add(processCounter);
+        processCounters.add(processCounter);
     }
 
 }

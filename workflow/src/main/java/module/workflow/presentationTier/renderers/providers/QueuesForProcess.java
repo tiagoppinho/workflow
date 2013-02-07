@@ -50,31 +50,31 @@ public class QueuesForProcess implements DataProvider {
 
     @Override
     public Converter getConverter() {
-	return null;
+        return null;
     }
 
     @Override
     public Object provide(Object source, Object currentValue) {
-	CommentBean bean = (CommentBean) source;
-	Set<QueueNotificationBean> availableQueuesToNotify = new HashSet<QueueNotificationBean>();
-	WorkflowProcess process = bean.getProcess();
+        CommentBean bean = (CommentBean) source;
+        Set<QueueNotificationBean> availableQueuesToNotify = new HashSet<QueueNotificationBean>();
+        WorkflowProcess process = bean.getProcess();
 
-	for (WorkflowQueue queue : process.getQueueHistory()) {
-	    availableQueuesToNotify.add(new QueueNotificationBean(queue, process));
-	}
-	for (WorkflowQueue currentQueue : process.getCurrentQueues()) {
-	    availableQueuesToNotify.add(new QueueNotificationBean(currentQueue, process));
-	}
+        for (WorkflowQueue queue : process.getQueueHistory()) {
+            availableQueuesToNotify.add(new QueueNotificationBean(queue, process));
+        }
+        for (WorkflowQueue currentQueue : process.getCurrentQueues()) {
+            availableQueuesToNotify.add(new QueueNotificationBean(currentQueue, process));
+        }
 
-	//	return new ArrayList<UserNotificationBean>(availablePeopleToNotify);
-	return availableQueuesToNotify;
+        //	return new ArrayList<UserNotificationBean>(availablePeopleToNotify);
+        return availableQueuesToNotify;
     }
 
     private List<UserNotificationBean> getWorkers(WorkflowProcess process) {
-	List<UserNotificationBean> moreBeans = new ArrayList<UserNotificationBean>();
-	for (User user : process.getProcessWorkers()) {
-	    moreBeans.add(new UserNotificationBean(user, process));
-	}
-	return moreBeans;
+        List<UserNotificationBean> moreBeans = new ArrayList<UserNotificationBean>();
+        for (User user : process.getProcessWorkers()) {
+            moreBeans.add(new UserNotificationBean(user, process));
+        }
+        return moreBeans;
     }
 }

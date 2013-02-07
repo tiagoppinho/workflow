@@ -41,16 +41,16 @@ public class CurrentUserQueues implements DataProvider {
 
     @Override
     public Converter getConverter() {
-	return null;
+        return null;
     }
 
     @Override
     public Object provide(Object source, Object value) {
-	User user = UserView.getCurrentUser();
-	if (user == null) {
-	    return Collections.EMPTY_LIST;
-	}
+        User user = UserView.getCurrentUser();
+        if (user == null) {
+            return Collections.EMPTY_LIST;
+        }
 
-	return WorkflowQueue.getQueuesForUser(user);
+        return WorkflowQueue.getQueuesForUser(user);
     }
 }

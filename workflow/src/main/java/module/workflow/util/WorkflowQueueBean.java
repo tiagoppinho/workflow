@@ -44,47 +44,47 @@ public class WorkflowQueueBean implements Serializable {
     private WorkflowQueue queue;
 
     public WorkflowQueueBean(WorkflowQueue queue) {
-	setQueue(queue);
+        setQueue(queue);
     }
 
     public WorkflowQueueBean() {
-	setQueue(null);
+        setQueue(null);
     }
 
     public String getName() {
-	return name;
+        return name;
     }
 
     public void setName(String name) {
-	this.name = name;
+        this.name = name;
     }
 
     //TODO probably put this method abstract and override it on its subclasses
     public Class<? extends WorkflowQueue> getQueueType() {
-	return queueType;
+        return queueType;
     }
 
     public void setQueueType(Class<? extends WorkflowQueue> queueType) {
-	this.queueType = queueType;
+        this.queueType = queueType;
     }
 
     public WorkflowQueue getQueue() {
-	return queue;
+        return queue;
     }
 
     public void setQueue(WorkflowQueue queue) {
-	this.queue = queue;
-	if (queue != null) {
-	    setName(queue.getName());
-	    fillQueueFields(queue);
-	}
+        this.queue = queue;
+        if (queue != null) {
+            setName(queue.getName());
+            fillQueueFields(queue);
+        }
     }
 
     protected void fillQueueFields(WorkflowQueue queue) {
 
     }
-    
+
     public WorkflowQueue createWorkflowQueue() {
-	throw new RuntimeException("only subclasses can create workflow queues");
+        throw new RuntimeException("only subclasses can create workflow queues");
     }
 }

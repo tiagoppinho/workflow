@@ -36,32 +36,31 @@ import org.apache.commons.collections.Predicate;
 
 /**
  * 
- *         Class used to count unread comments on WorkflowProcess objects given
- *         at the constructor {@link WorkflowProcess}. Used by the
- *         {@link UnreadCommentsWidget}
+ * Class used to count unread comments on WorkflowProcess objects given
+ * at the constructor {@link WorkflowProcess}. Used by the {@link UnreadCommentsWidget}
  * 
  * 
  * @author João Antunes
  * 
  */
 public class WorkflowCommentCounter {
-    
 
     Class classToFilter;
 
     public Class getClassToFilter() {
-	return classToFilter;
+        return classToFilter;
     }
 
     public void setClassToFilter(Class classToFilter) {
-	this.classToFilter = classToFilter;
+        this.classToFilter = classToFilter;
     }
 
     public WorkflowCommentCounter(Class workflowClass) {
-	Class<WorkflowProcess> workflowProcessClass = WorkflowProcess.class;
-	if (!workflowProcessClass.isAssignableFrom(workflowClass))
-	    throw new IllegalArgumentException("Wrong class type provided to the WorkflowCommentCounter");
-	this.classToFilter = workflowClass;
+        Class<WorkflowProcess> workflowProcessClass = WorkflowProcess.class;
+        if (!workflowProcessClass.isAssignableFrom(workflowClass)) {
+            throw new IllegalArgumentException("Wrong class type provided to the WorkflowCommentCounter");
+        }
+        this.classToFilter = workflowClass;
     }
 
     /**
@@ -73,29 +72,29 @@ public class WorkflowCommentCounter {
      */
     public Set<WorkflowProcess> getProcessesWithUnreadComments(final Person person, final String className) {
 
-	Set<WorkflowProcess> processes = new HashSet<WorkflowProcess>();
-	Predicate searchPredicate = new Predicate() {
+        Set<WorkflowProcess> processes = new HashSet<WorkflowProcess>();
+        Predicate searchPredicate = new Predicate() {
 
+            @Override
+            public boolean evaluate(Object arg0) {
+                if (className != null && classToFilter.toString().contentEquals(className)) {
+                    return classToFilter.isAssignableFrom(arg0.getClass())
+                            && ((WorkflowProcess) arg0).hasUnreadCommentsForUser(person.getUser());
+                } else if (className != null) {
+                    return false;
+                }
+                return classToFilter.isAssignableFrom(arg0.getClass())
+                        && ((WorkflowProcess) arg0).hasUnreadCommentsForUser(person.getUser());
+            }
+        };
 
-	    @Override
-	    public boolean evaluate(Object arg0) {
-		if (className != null && classToFilter.toString().contentEquals(className))
-		    return classToFilter.isAssignableFrom(arg0.getClass())
-		    && ((WorkflowProcess) arg0).hasUnreadCommentsForUser(person.getUser());
-		else if (className != null)
-		    return false;
-		return classToFilter.isAssignableFrom(arg0.getClass())
-			&& ((WorkflowProcess) arg0).hasUnreadCommentsForUser(person.getUser());
-	    }
-	};
-
-	for (WorkflowLog log : person.getUser().getUserLogs()) {
-	    WorkflowProcess process = log.getProcess();
-	    if (searchPredicate.evaluate(process)) {
-		processes.add(process);
-	    }
-	}
-	return processes;
+        for (WorkflowLog log : person.getUser().getUserLogs()) {
+            WorkflowProcess process = log.getProcess();
+            if (searchPredicate.evaluate(process)) {
+                processes.add(process);
+            }
+        }
+        return processes;
 
     }
 

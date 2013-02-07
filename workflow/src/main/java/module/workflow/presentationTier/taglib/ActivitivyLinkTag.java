@@ -77,255 +77,255 @@ public class ActivitivyLinkTag extends WorkflowBodyTag {
 
     @Override
     public String getId() {
-	return id;
+        return id;
     }
 
     @Override
     public void setId(String id) {
-	this.id = id;
+        this.id = id;
     }
 
     public String getLinkName() {
-	return linkName;
+        return linkName;
     }
 
     public void setLinkName(String linkName) {
-	this.linkName = linkName;
+        this.linkName = linkName;
     }
 
     public String getParamName0() {
-	return paramName0;
+        return paramName0;
     }
 
     public void setParamName0(String paramName0) {
-	this.paramName0 = paramName0;
+        this.paramName0 = paramName0;
     }
 
     public String getParamValue0() {
-	return paramValue0;
+        return paramValue0;
     }
 
     public void setParamValue0(String paramValue0) {
-	this.paramValue0 = paramValue0;
+        this.paramValue0 = paramValue0;
     }
 
     public String getParamName1() {
-	return paramName1;
+        return paramName1;
     }
 
     public void setParamName1(String paramName1) {
-	this.paramName1 = paramName1;
+        this.paramName1 = paramName1;
     }
 
     public String getParamValue1() {
-	return paramValue1;
+        return paramValue1;
     }
 
     public void setParamValue1(String paramValue1) {
-	this.paramValue1 = paramValue1;
+        this.paramValue1 = paramValue1;
     }
 
     public String getParamName2() {
-	return paramName2;
+        return paramName2;
     }
 
     public void setParamName2(String paramName2) {
-	this.paramName2 = paramName2;
+        this.paramName2 = paramName2;
     }
 
     public String getParamValue2() {
-	return paramValue2;
+        return paramValue2;
     }
 
     public void setParamValue2(String paramValue2) {
-	this.paramValue2 = paramValue2;
+        this.paramValue2 = paramValue2;
     }
 
     public String getParamName3() {
-	return paramName3;
+        return paramName3;
     }
 
     public void setParamName3(String paramName3) {
-	this.paramName3 = paramName3;
+        this.paramName3 = paramName3;
     }
 
     public String getParamValue3() {
-	return paramValue3;
+        return paramValue3;
     }
 
     public void setParamValue3(String paramValue3) {
-	this.paramValue3 = paramValue3;
+        this.paramValue3 = paramValue3;
     }
 
     public void setParameter(String parameterName, String value) {
-	parameterMap.put(parameterName, value);
+        parameterMap.put(parameterName, value);
     }
 
     public String getTarget() {
-	return target;
+        return target;
     }
 
     public void setTarget(String target) {
-	this.target = target;
+        this.target = target;
     }
 
     protected void write(final String text) throws IOException {
-	pageContext.getOut().write(text);
+        pageContext.getOut().write(text);
     }
 
     protected String getContextPath() {
-	final HttpServletRequest httpServletRequest = (HttpServletRequest) pageContext.getRequest();
-	return httpServletRequest.getContextPath();
+        final HttpServletRequest httpServletRequest = (HttpServletRequest) pageContext.getRequest();
+        return httpServletRequest.getContextPath();
     }
 
     protected void generateParameterMap() {
-	if (paramName0 != null) {
-	    setParameter(paramName0, paramValue0);
-	}
-	if (paramName1 != null) {
-	    setParameter(paramName1, paramValue1);
-	}
-	if (paramName2 != null) {
-	    setParameter(paramName2, paramValue2);
-	}
-	if (paramName3 != null) {
-	    setParameter(paramName3, paramValue3);
-	}
+        if (paramName0 != null) {
+            setParameter(paramName0, paramValue0);
+        }
+        if (paramName1 != null) {
+            setParameter(paramName1, paramValue1);
+        }
+        if (paramName2 != null) {
+            setParameter(paramName2, paramValue2);
+        }
+        if (paramName3 != null) {
+            setParameter(paramName3, paramValue3);
+        }
     }
 
     @Override
     public int doStartTag() throws JspException {
-	generateParameterMap();
-	WorkflowProcess process = getWorkflowProcess();
-	WorkflowActivity<WorkflowProcess, ActivityInformation<WorkflowProcess>> activity = getActivity();
-	if (activity.isActive(process)) {
-	    try {
-		if (getId() == null) {
-		    generateId(activity);
-		}
-		pageContext.getOut().write("<a ");
-		pageContext.getOut().write("id=\"");
-		pageContext.getOut().write(getId());
-		pageContext.getOut().write("\" ");
+        generateParameterMap();
+        WorkflowProcess process = getWorkflowProcess();
+        WorkflowActivity<WorkflowProcess, ActivityInformation<WorkflowProcess>> activity = getActivity();
+        if (activity.isActive(process)) {
+            try {
+                if (getId() == null) {
+                    generateId(activity);
+                }
+                pageContext.getOut().write("<a ");
+                pageContext.getOut().write("id=\"");
+                pageContext.getOut().write(getId());
+                pageContext.getOut().write("\" ");
 
-		if (!StringUtils.isEmpty(getTarget())) {
-		    pageContext.getOut().write("target=\"");
-		    pageContext.getOut().write(getTarget());
-		    pageContext.getOut().write("\" ");
-		}
+                if (!StringUtils.isEmpty(getTarget())) {
+                    pageContext.getOut().write("target=\"");
+                    pageContext.getOut().write(getTarget());
+                    pageContext.getOut().write("\" ");
+                }
 
-		pageContext.getOut().write("href=\"");
-		pageContext.getOut().write(getContextPath());
-		pageContext.getOut().write("/workflowProcessManagement.do?method=actionLink&activity=");
-		pageContext.getOut().write(getActivityName());
-		pageContext.getOut().write("&processId=");
-		pageContext.getOut().write(process.getExternalId());
-		pageContext.getOut().write("&parameters=");
-		pageContext.getOut().write(getParameters());
-		pageContext.getOut().write(getParameterString());
-		pageContext.getOut().write("\">");
+                pageContext.getOut().write("href=\"");
+                pageContext.getOut().write(getContextPath());
+                pageContext.getOut().write("/workflowProcessManagement.do?method=actionLink&activity=");
+                pageContext.getOut().write(getActivityName());
+                pageContext.getOut().write("&processId=");
+                pageContext.getOut().write(process.getExternalId());
+                pageContext.getOut().write("&parameters=");
+                pageContext.getOut().write(getParameters());
+                pageContext.getOut().write(getParameterString());
+                pageContext.getOut().write("\">");
 
-		if (activity.isConfirmationNeeded(process)) {
-		    pageContext.getOut().write(
-			    "<script type=\"text/javascript\">linkConfirmationHook('" + getId() + "', '"
-				    + activity.getLocalizedConfirmationMessage(process) + "','" + activity.getLocalizedName()
-				    + "');</script>");
+                if (activity.isConfirmationNeeded(process)) {
+                    pageContext.getOut().write(
+                            "<script type=\"text/javascript\">linkConfirmationHook('" + getId() + "', '"
+                                    + activity.getLocalizedConfirmationMessage(process) + "','" + activity.getLocalizedName()
+                                    + "');</script>");
 
-		}
-	    } catch (Exception e) {
-		e.printStackTrace();
-	    }
-	    return EVAL_BODY_BUFFERED;
-	}
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return EVAL_BODY_BUFFERED;
+        }
 
-	return SKIP_BODY;
+        return SKIP_BODY;
     }
 
     private void generateId(WorkflowActivity<WorkflowProcess, ActivityInformation<WorkflowProcess>> activity) {
-	setId(activity.getClass().getSimpleName() + "-" + content.hashCode());
+        setId(activity.getClass().getSimpleName() + "-" + content.hashCode());
     }
 
     @Override
     public int doEndTag() throws JspException {
-	WorkflowProcess process = getWorkflowProcess();
-	WorkflowActivity<WorkflowProcess, ActivityInformation<WorkflowProcess>> activity = process.getActivity(getActivityName());
-	if (activity.isActive(process)) {
-	    try {
-		String trimmedBody = (bodyContent != null) ? bodyContent.getString().trim() : null;
-		if (!StringUtils.isEmpty(trimmedBody)) {
-		    content.append(trimmedBody);
-		} else {
-		    content.append(activity.getLocalizedName());
-		}
+        WorkflowProcess process = getWorkflowProcess();
+        WorkflowActivity<WorkflowProcess, ActivityInformation<WorkflowProcess>> activity = process.getActivity(getActivityName());
+        if (activity.isActive(process)) {
+            try {
+                String trimmedBody = (bodyContent != null) ? bodyContent.getString().trim() : null;
+                if (!StringUtils.isEmpty(trimmedBody)) {
+                    content.append(trimmedBody);
+                } else {
+                    content.append(activity.getLocalizedName());
+                }
 
-		content.trimToSize();
-		content.append("</a>");
-		if (activity.hasHelpMessage()) {
-		    generateHelpFor(content, activity);
-		}
-		pageContext.getOut().write(content.toString());
-	    } catch (IOException e) {
-		e.printStackTrace();
-	    }
-	}
-	release();
-	return super.doEndTag();
+                content.trimToSize();
+                content.append("</a>");
+                if (activity.hasHelpMessage()) {
+                    generateHelpFor(content, activity);
+                }
+                pageContext.getOut().write(content.toString());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        release();
+        return super.doEndTag();
     }
 
     private void generateHelpFor(StringBuilder content,
-	    WorkflowActivity<WorkflowProcess, ActivityInformation<WorkflowProcess>> activity) {
+            WorkflowActivity<WorkflowProcess, ActivityInformation<WorkflowProcess>> activity) {
 
-	String id = "help-" + activity.getName() + "-" + System.currentTimeMillis();
-	String getDocument = "document.getElementById('" + id + "')";
+        String id = "help-" + activity.getName() + "-" + System.currentTimeMillis();
+        String getDocument = "document.getElementById('" + id + "')";
 
-	content.append("<div id=\"").append(id).append("\"").append(" onmouseout=\"").append(getDocument).append(".className='")
-		.append(ActivitivyLinkTag.TOOL_TIP_CLOSE).append("';\" onmouseover=\"").append(getDocument)
-		.append(".className='").append(ActivitivyLinkTag.TOOL_TIP_OPEN).append("';\" class=\"\"").append(
-			"><span>(?)</span><div class=\"").append(TEXT_CLASSES).append("\"><p>").append(activity.getHelpMessage())
-		.append("</p></div></div>").append("<script type=\"text/javascript\">").append(getDocument).append(
-			".className=\"").append(ActivitivyLinkTag.TOOL_TIP_CLOSE).append("\"").append(";</script>");
+        content.append("<div id=\"").append(id).append("\"").append(" onmouseout=\"").append(getDocument).append(".className='")
+                .append(ActivitivyLinkTag.TOOL_TIP_CLOSE).append("';\" onmouseover=\"").append(getDocument)
+                .append(".className='").append(ActivitivyLinkTag.TOOL_TIP_OPEN).append("';\" class=\"\"")
+                .append("><span>(?)</span><div class=\"").append(TEXT_CLASSES).append("\"><p>").append(activity.getHelpMessage())
+                .append("</p></div></div>").append("<script type=\"text/javascript\">").append(getDocument)
+                .append(".className=\"").append(ActivitivyLinkTag.TOOL_TIP_CLOSE).append("\"").append(";</script>");
 
     }
 
     private String getParameters() {
-	StringBuffer buffer = new StringBuffer("");
-	Iterator<String> iterator = parameterMap.keySet().iterator();
-	while (iterator.hasNext()) {
-	    buffer.append(iterator.next());
-	    if (iterator.hasNext()) {
-		buffer.append(",");
-	    }
-	}
-	return buffer.toString();
+        StringBuffer buffer = new StringBuffer("");
+        Iterator<String> iterator = parameterMap.keySet().iterator();
+        while (iterator.hasNext()) {
+            buffer.append(iterator.next());
+            if (iterator.hasNext()) {
+                buffer.append(",");
+            }
+        }
+        return buffer.toString();
     }
 
     private String getParameterString() {
-	StringBuffer buffer = new StringBuffer("");
-	Iterator<String> iterator = parameterMap.keySet().iterator();
-	while (iterator.hasNext()) {
-	    String key = iterator.next();
-	    buffer.append("&");
-	    buffer.append(key);
-	    buffer.append("=");
-	    buffer.append(parameterMap.get(key));
-	}
-	return buffer.toString();
+        StringBuffer buffer = new StringBuffer("");
+        Iterator<String> iterator = parameterMap.keySet().iterator();
+        while (iterator.hasNext()) {
+            String key = iterator.next();
+            buffer.append("&");
+            buffer.append(key);
+            buffer.append("=");
+            buffer.append(parameterMap.get(key));
+        }
+        return buffer.toString();
     }
 
     @Override
     public void release() {
-	parameterMap.clear();
-	content = new StringBuilder();
-	paramName0 = null;
-	paramValue0 = null;
-	paramName1 = null;
-	paramValue1 = null;
-	paramName2 = null;
-	paramValue2 = null;
-	paramName3 = null;
-	paramValue3 = null;
-	linkName = null;
-	id = null;
-	super.release();
+        parameterMap.clear();
+        content = new StringBuilder();
+        paramName0 = null;
+        paramValue0 = null;
+        paramName1 = null;
+        paramValue1 = null;
+        paramName2 = null;
+        paramValue2 = null;
+        paramName3 = null;
+        paramValue3 = null;
+        linkName = null;
+        id = null;
+        super.release();
     }
 }

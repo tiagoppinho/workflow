@@ -40,48 +40,49 @@ public class NodeMapping extends NodeMapping_Base implements Comparable<NodeMapp
 
     public static class NodeListenner extends RelationAdapter<Node, MyOrg> {
 
-	@Override
-	public void afterRemove(final Node node, final MyOrg myorg) {
-	    if (node != null && myorg != null) {
-		for (; !node.getNodeMapping().isEmpty(); node.getNodeMapping().get(0).delete())
-		    ;
-	    }
-	}
+        @Override
+        public void afterRemove(final Node node, final MyOrg myorg) {
+            if (node != null && myorg != null) {
+                for (; !node.getNodeMapping().isEmpty(); node.getNodeMapping().get(0).delete()) {
+                    ;
+                }
+            }
+        }
 
     }
 
     static {
-	Node.MyOrgNode.addListener(new NodeListenner());
+        Node.MyOrgNode.addListener(new NodeListenner());
     }
 
     protected NodeMapping(Node node, int order) {
-	super();
-	setNodeOrder(order);
-	setNode(node);
-	setWorkflowSystem(WorkflowSystem.getInstance());
+        super();
+        setNodeOrder(order);
+        setNode(node);
+        setWorkflowSystem(WorkflowSystem.getInstance());
     }
 
     @Service
     public static NodeMapping createNodeMapping(Node node, int order) {
-	return new NodeMapping(node, order);
+        return new NodeMapping(node, order);
     }
 
     public void delete() {
-	removeWorkflowSystem();
-	removeProcessMapping();
-	removeNode();
-	super.deleteDomainObject();
+        removeWorkflowSystem();
+        removeProcessMapping();
+        removeNode();
+        super.deleteDomainObject();
     }
 
     @Override
     public int compareTo(NodeMapping o) {
-	return getNodeOrder() - o.getNodeOrder();
+        return getNodeOrder() - o.getNodeOrder();
     }
 
     @Override
     public boolean isConnectedToCurrentHost() {
-	final VirtualHost virtualHost = VirtualHost.getVirtualHostForThread();
-	return virtualHost != null && getWorkflowSystem() == virtualHost.getWorkflowSystem();
+        final VirtualHost virtualHost = VirtualHost.getVirtualHostForThread();
+        return virtualHost != null && getWorkflowSystem() == virtualHost.getWorkflowSystem();
     }
 
 }

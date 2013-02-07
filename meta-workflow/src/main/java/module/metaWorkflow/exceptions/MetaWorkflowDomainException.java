@@ -10,21 +10,21 @@ import pt.utl.ist.fenix.tools.util.i18n.Language;
 
 /**
  * @author João Antunes (joao.antunes@tagus.ist.utl.pt) - 14 de Jun de 2012
- *
+ * 
  * 
  */
 public class MetaWorkflowDomainException extends DomainException {
 
     @Override
     public ResourceBundle getBundle() {
-	return ResourceBundle.getBundle("resources/MetaWorkflowResources", Language.getLocale());
+        return ResourceBundle.getBundle("resources/MetaWorkflowResources", Language.getLocale());
     }
 
     /**
      * 
      */
     public MetaWorkflowDomainException() {
-	super();
+        super();
     }
 
     /**
@@ -32,7 +32,7 @@ public class MetaWorkflowDomainException extends DomainException {
      * @param args
      */
     public MetaWorkflowDomainException(String key, String... args) {
-	super(key, args);
+        super(key, args);
     }
 
     /**
@@ -41,7 +41,7 @@ public class MetaWorkflowDomainException extends DomainException {
      * @param args
      */
     public MetaWorkflowDomainException(String key, ResourceBundle bundle, String... args) {
-	super(key, bundle, args);
+        super(key, bundle, args);
     }
 
     /**
@@ -50,7 +50,7 @@ public class MetaWorkflowDomainException extends DomainException {
      * @param args
      */
     public MetaWorkflowDomainException(String key, Throwable cause, String... args) {
-	super(key, cause, args);
+        super(key, cause, args);
     }
 
     /**
@@ -60,7 +60,7 @@ public class MetaWorkflowDomainException extends DomainException {
      * @param args
      */
     public MetaWorkflowDomainException(String key, Throwable cause, ResourceBundle bundle, String... args) {
-	super(key, cause, bundle, args);
+        super(key, cause, bundle, args);
     }
 
 }

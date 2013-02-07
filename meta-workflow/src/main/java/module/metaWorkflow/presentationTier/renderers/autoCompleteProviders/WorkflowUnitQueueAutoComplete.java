@@ -43,27 +43,27 @@ public class WorkflowUnitQueueAutoComplete implements AutoCompleteProvider {
 
     @Override
     public Collection getSearchResults(Map<String, String> argsMap, String value, int maxCount) {
-	Set<WorkflowQueue> queues = new HashSet<WorkflowQueue>();
-	String[] values = StringNormalizer.normalize(value).toLowerCase().split(" ");
+        Set<WorkflowQueue> queues = new HashSet<WorkflowQueue>();
+        String[] values = StringNormalizer.normalize(value).toLowerCase().split(" ");
 
-	final Collection<WorkflowUnitQueue> lookUpQueues = WorkflowUnitQueue.readAll();
-	for (WorkflowQueue queue : lookUpQueues) {
-	    final String normalizedQueueName = StringNormalizer.normalize(queue.getName()).toLowerCase();
+        final Collection<WorkflowUnitQueue> lookUpQueues = WorkflowUnitQueue.readAll();
+        for (WorkflowQueue queue : lookUpQueues) {
+            final String normalizedQueueName = StringNormalizer.normalize(queue.getName()).toLowerCase();
 
-	    if (hasMatch(values, normalizedQueueName)) {
-		queues.add(queue);
-	    }
-	}
-	return queues;
+            if (hasMatch(values, normalizedQueueName)) {
+                queues.add(queue);
+            }
+        }
+        return queues;
     }
 
     private boolean hasMatch(String[] input, String queueNameParts) {
-	for (final String namePart : input) {
-	    if (queueNameParts.indexOf(namePart) == -1) {
-		return false;
-	    }
-	}
-	return true;
+        for (final String namePart : input) {
+            if (queueNameParts.indexOf(namePart) == -1) {
+                return false;
+            }
+        }
+        return true;
     }
 
 }

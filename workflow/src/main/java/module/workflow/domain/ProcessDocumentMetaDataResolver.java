@@ -40,61 +40,57 @@ public abstract class ProcessDocumentMetaDataResolver<P extends ProcessFile> {
      *         retrieved or to be created if it doesn't exist
      */
     public String getMetadataTemplateNameToUseOrCreate(Class<? extends ProcessFile> classToUse) {
-	return BundleUtil.getLocalizedNamedFroClass(classToUse);
+        return BundleUtil.getLocalizedNamedFroClass(classToUse);
     }
 
     public Map<String, String> getMetadataKeysAndValuesMap(P processDocument) {
-	Map<String, String> metadataMap = new HashMap<String, String>();
-	metadataMap.put(PROCESS_IDENTIFIER, processDocument.getProcess().getProcessNumber());
-	metadataMap.put(PROCESS_TYPE, BundleUtil.getLocalizedNamedFroClass(processDocument.getProcess().getClass()));
-	return metadataMap;
+        Map<String, String> metadataMap = new HashMap<String, String>();
+        metadataMap.put(PROCESS_IDENTIFIER, processDocument.getProcess().getProcessNumber());
+        metadataMap.put(PROCESS_TYPE, BundleUtil.getLocalizedNamedFroClass(processDocument.getProcess().getClass()));
+        return metadataMap;
     }
 
     /**
      * 
      * @return The {@link PersistentGroup#getClass()} to be used on the Document
-     *         to control the read capabilities {@link Document#getReadGroup()}
-     *         the default is {@link WFDocsDefaultReadGroup}
+     *         to control the read capabilities {@link Document#getReadGroup()} the default is {@link WFDocsDefaultReadGroup}
      */
     public @Nonnull
     Class<? extends AbstractWFDocsGroup> getReadGroupClass() {
-	return WFDocsDefaultReadGroup.class;
+        return WFDocsDefaultReadGroup.class;
     }
 
     /**
      * 
      * @return The {@link PersistentGroup#getClass()} to be used on the Document
-     *         to control the write capabilities
-     *         {@link Document#getWriteGroup()}
+     *         to control the write capabilities {@link Document#getWriteGroup()}
      */
     public abstract @Nonnull
     Class<? extends AbstractWFDocsGroup> getWriteGroupClass();
 
     /**
      * 
-     * @return if true, the new instance of P (which extends
-     *         {@link ProcessDocument}) will have its access registered, if
+     * @return if true, the new instance of P (which extends {@link ProcessDocument}) will have its access registered, if
      *         false it will not
      */
     public boolean shouldFileContentAccessBeLogged() {
-	return false;
+        return false;
     }
 
     @SuppressWarnings("unchecked")
     public void fillMetaDataBasedOnDocument(ProcessFile file) {
-	MetadataTemplate metadataTemplate = MetadataTemplate.getOrCreateInstance(getMetadataTemplateNameToUseOrCreate(file
-		.getClass()));
+        MetadataTemplate metadataTemplate =
+                MetadataTemplate.getOrCreateInstance(getMetadataTemplateNameToUseOrCreate(file.getClass()));
 
-	Map<String, String> metadataKeysAndValuesMap = getMetadataKeysAndValuesMap((P) file);
+        Map<String, String> metadataKeysAndValuesMap = getMetadataKeysAndValuesMap((P) file);
 
-	metadataTemplate.addKeysStrings(metadataKeysAndValuesMap.keySet());
+        metadataTemplate.addKeysStrings(metadataKeysAndValuesMap.keySet());
 
-	file.getDocument().setMetadataTemplateAssociated(metadataTemplate);
-	//TODO change the method to addOrAppendMetadata - so that nothing is lost
-	file.getDocument().addMetadata(metadataKeysAndValuesMap);
-	file.getDocument().setSaveAccessLog(shouldFileContentAccessBeLogged());
+        file.getDocument().setMetadataTemplateAssociated(metadataTemplate);
+        //TODO change the method to addOrAppendMetadata - so that nothing is lost
+        file.getDocument().addMetadata(metadataKeysAndValuesMap);
+        file.getDocument().setSaveAccessLog(shouldFileContentAccessBeLogged());
 
     }
-
 
 }

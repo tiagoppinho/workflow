@@ -49,9 +49,12 @@ package module.metaWorkflow.presentationTier.actions;
  * 
  */
 
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.apache.struts.action.ActionForm;
+import org.apache.struts.action.ActionForward;
+import org.apache.struts.action.ActionMapping;
 
 import pt.ist.bennu.core.domain.RoleType;
 import pt.ist.bennu.core.domain.VirtualHost;
@@ -59,11 +62,6 @@ import pt.ist.bennu.core.domain.contents.ActionNode;
 import pt.ist.bennu.core.domain.contents.Node;
 import pt.ist.bennu.core.domain.groups.UserGroup;
 import pt.ist.bennu.core.presentationTier.actions.ContextBaseAction;
-
-import org.apache.struts.action.ActionForm;
-import org.apache.struts.action.ActionForward;
-import org.apache.struts.action.ActionMapping;
-
 import pt.ist.bennu.vaadin.domain.contents.VaadinNode;
 import pt.ist.fenixWebFramework.servlets.functionalities.CreateNodeAction;
 import pt.ist.fenixWebFramework.struts.annotations.Mapping;
@@ -78,37 +76,35 @@ import pt.ist.fenixWebFramework.struts.annotations.Mapping;
  */
 public class MetaWorkflowInterfaceCreation extends ContextBaseAction {
 
-    @CreateNodeAction(bundle = "META_WORKFLOW_RESOURCES", key = "add.node.workflow.metaInterface", groupKey = "label.module.metaWorkflow")
+    @CreateNodeAction(bundle = "META_WORKFLOW_RESOURCES", key = "add.node.workflow.metaInterface",
+            groupKey = "label.module.metaWorkflow")
     public final ActionForward createWorkflowNode(final ActionMapping mapping, final ActionForm form,
-	    final HttpServletRequest request, final HttpServletResponse response) throws Exception {
-	final VirtualHost virtualHost = getDomainObject(request, "virtualHostToManageId");
-	final Node node = getDomainObject(request, "parentOfNodesToManageId");
+            final HttpServletRequest request, final HttpServletResponse response) throws Exception {
+        final VirtualHost virtualHost = getDomainObject(request, "virtualHostToManageId");
+        final Node node = getDomainObject(request, "parentOfNodesToManageId");
 
-	final Node homeNode = ActionNode.createActionNode(virtualHost, node, "/metaWorkflow", "viewOpenProcessesInMyQueues",
-		"resources.MetaWorkflowResources", "link.topBar.MetaWorkflow", UserGroup.getInstance());
-	    
+        final Node homeNode =
+                ActionNode.createActionNode(virtualHost, node, "/metaWorkflow", "viewOpenProcessesInMyQueues",
+                        "resources.MetaWorkflowResources", "link.topBar.MetaWorkflow", UserGroup.getInstance());
 
-	ActionNode.createActionNode(virtualHost, homeNode, "/metaWorkflow", "prepareCreateProcess",
-		"resources.MetaWorkflowResources", "link.sideBar.metaWorkflow.createProcess", UserGroup.getInstance());
-	
-	ActionNode.createActionNode(virtualHost, homeNode, "/metaWorkflow", "viewOpenProcessesInMyQueues",
-		"resources.MetaWorkflowResources", "link.sideBar.metaWorkflow.dashBoard", UserGroup.getInstance());
-	
-	ActionNode.createActionNode(virtualHost, homeNode, "/metaWorkflow", "search",
- "resources.MetaWorkflowResources",
-		"link.sideBar.metaWorkflow.search", UserGroup.getInstance());
+        ActionNode.createActionNode(virtualHost, homeNode, "/metaWorkflow", "prepareCreateProcess",
+                "resources.MetaWorkflowResources", "link.sideBar.metaWorkflow.createProcess", UserGroup.getInstance());
 
-	ActionNode.createActionNode(virtualHost, homeNode, "/metaTypeManagement", "manageMetaType",
-		"resources.MetaWorkflowResources", "link.sideBar.metaWorkflow.manageMetaType",
-		pt.ist.bennu.core.domain.groups.Role.getRole(RoleType.MANAGER));
-	
-	
-	
-	VaadinNode.createVaadinNode(virtualHost, homeNode, "resources.MetaWorkflowResources",
-		"link.sideBar.metaWorkflow.manageMetaType", "metaTypeManagement",
-		pt.ist.bennu.core.domain.groups.Role.getRole(RoleType.MANAGER));
+        ActionNode.createActionNode(virtualHost, homeNode, "/metaWorkflow", "viewOpenProcessesInMyQueues",
+                "resources.MetaWorkflowResources", "link.sideBar.metaWorkflow.dashBoard", UserGroup.getInstance());
 
-	return forwardToMuneConfiguration(request, virtualHost, node);
+        ActionNode.createActionNode(virtualHost, homeNode, "/metaWorkflow", "search", "resources.MetaWorkflowResources",
+                "link.sideBar.metaWorkflow.search", UserGroup.getInstance());
+
+        ActionNode.createActionNode(virtualHost, homeNode, "/metaTypeManagement", "manageMetaType",
+                "resources.MetaWorkflowResources", "link.sideBar.metaWorkflow.manageMetaType",
+                pt.ist.bennu.core.domain.groups.Role.getRole(RoleType.MANAGER));
+
+        VaadinNode.createVaadinNode(virtualHost, homeNode, "resources.MetaWorkflowResources",
+                "link.sideBar.metaWorkflow.manageMetaType", "metaTypeManagement",
+                pt.ist.bennu.core.domain.groups.Role.getRole(RoleType.MANAGER));
+
+        return forwardToMuneConfiguration(request, virtualHost, node);
     }
 
 }

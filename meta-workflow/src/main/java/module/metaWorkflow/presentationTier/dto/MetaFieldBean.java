@@ -46,27 +46,27 @@ public class MetaFieldBean implements Serializable {
     private int order;
 
     public void setFieldClass(Class<? extends MetaField> fieldClass) {
-	this.fieldClass = fieldClass;
+        this.fieldClass = fieldClass;
     }
 
     public Class<? extends MetaField> getFieldClass() {
-	return fieldClass;
+        return fieldClass;
     }
 
     public void setName(MultiLanguageString name) {
-	this.name = name;
+        this.name = name;
     }
 
     public MultiLanguageString getName() {
-	return name;
+        return name;
     }
 
     public void setOrder(int order) {
-	this.order = order;
+        this.order = order;
     }
 
     public int getOrder() {
-	return order;
+        return order;
     }
 
 }

@@ -43,39 +43,39 @@ public class WorkflowMetaProcessBean implements Serializable {
     User requestor;
 
     public WorkflowMetaProcessBean() {
-	setQueue(null);
-	setRequestor(null);
+        setQueue(null);
+        setRequestor(null);
     }
 
     public String getSubject() {
-	return subject;
+        return subject;
     }
 
     public void setSubject(String subject) {
-	this.subject = subject;
+        this.subject = subject;
     }
 
     public String getInstanceDescription() {
-	return instanceDescription;
+        return instanceDescription;
     }
 
     public void setInstanceDescription(String instanceDescription) {
-	this.instanceDescription = instanceDescription;
+        this.instanceDescription = instanceDescription;
     }
 
     public WorkflowQueue getQueue() {
-	return queue;
+        return queue;
     }
 
     public void setQueue(WorkflowQueue queue) {
-	this.queue = queue;
+        this.queue = queue;
     }
 
     public User getRequestor() {
-	return requestor;
+        return requestor;
     }
 
     public void setRequestor(User user) {
-	this.requestor = user;
+        this.requestor = user;
     }
 }

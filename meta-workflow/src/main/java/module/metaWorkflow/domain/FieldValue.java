@@ -40,49 +40,49 @@ import jvstm.cps.ConsistencyPredicate;
 public abstract class FieldValue extends FieldValue_Base {
 
     public abstract class FieldValueBean implements Serializable {
-	private static final long serialVersionUID = 1L;
+        private static final long serialVersionUID = 1L;
 
-	public void writeValueToField() {
-	    writeValueFromBean(this);
-	}
+        public void writeValueToField() {
+            writeValueFromBean(this);
+        }
 
-	public Class<? extends FieldValue> getFieldClass() {
-	    return FieldValue.this.getClass();
-	}
+        public Class<? extends FieldValue> getFieldClass() {
+            return FieldValue.this.getClass();
+        }
 
-	public String getFieldName() {
-	    return getMetaField().getName().getContent();
-	}
+        public String getFieldName() {
+            return getMetaField().getName().getContent();
+        }
     }
 
     public static Comparator<FieldValue> COMPARATOR_BY_FIELD_ORDER = new Comparator<FieldValue>() {
-	@Override
-	public int compare(FieldValue field0, FieldValue field1) {
-	    return MetaField.COMPARATOR_BY_FIELD_ORDER.compare(field0.getMetaField(), field1.getMetaField());
-	}
+        @Override
+        public int compare(FieldValue field0, FieldValue field1) {
+            return MetaField.COMPARATOR_BY_FIELD_ORDER.compare(field0.getMetaField(), field1.getMetaField());
+        }
     };
 
     protected FieldValue() {
-	super();
+        super();
     }
 
     @ConsistencyPredicate
     public boolean checkHasParent() {
-	return hasParentFieldSet();
+        return hasParentFieldSet();
     }
 
     public boolean isFieldSet() {
-	return false;
+        return false;
     }
 
     public WorkflowMetaProcess getProcess() {
-	return getParentFieldSet().getProcess();
+        return getParentFieldSet().getProcess();
     }
 
     public Set<FieldValue> getAllFields() {
-	Set<FieldValue> fieldSet = new HashSet<FieldValue>();
-	fieldSet.add(this);
-	return fieldSet;
+        Set<FieldValue> fieldSet = new HashSet<FieldValue>();
+        fieldSet.add(this);
+        return fieldSet;
     }
 
     abstract public boolean isDefined();

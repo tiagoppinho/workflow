@@ -23,7 +23,7 @@ public class WorkflowDomainException extends DomainException {
      * @param args
      */
     public WorkflowDomainException(String key, String... args) {
-	super(key, bundle, args);
+        super(key, bundle, args);
     }
 
     /**
@@ -32,7 +32,7 @@ public class WorkflowDomainException extends DomainException {
      * @param args
      */
     public WorkflowDomainException(String key, Throwable cause, String... args) {
-	super(key, cause, bundle, args);
+        super(key, cause, bundle, args);
     }
 
 }

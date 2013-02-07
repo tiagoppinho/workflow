@@ -40,21 +40,21 @@ public class OpenMetaProcess extends WorkflowActivity<WorkflowMetaProcess, Activ
 
     @Override
     public boolean isActive(WorkflowMetaProcess process, User user) {
-	return !process.isOpen() && (process.isUserAbleToAccessCurrentQueues(user) || process.isTakenByPerson(user));
+        return !process.isOpen() && (process.isUserAbleToAccessCurrentQueues(user) || process.isTakenByPerson(user));
     }
 
     @Override
     public String getUsedBundle() {
-	return "resources/MetaWorkflowResources";
+        return "resources/MetaWorkflowResources";
     }
 
     @Override
     protected void process(ActivityInformation<WorkflowMetaProcess> activityInformation) {
-	activityInformation.getProcess().open();
+        activityInformation.getProcess().open();
     }
 
     @Override
     public boolean isUserAwarenessNeeded(WorkflowMetaProcess process, User user) {
-	return false;
+        return false;
     }
 }

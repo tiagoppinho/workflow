@@ -38,47 +38,46 @@ import pt.utl.ist.fenix.tools.util.i18n.MultiLanguageString;
 public class StringMetaField extends StringMetaField_Base {
 
     /**
-     * Note should be avoided its use (only used by
-     * {@link MetaField#duplicatedMetaField()}
+     * Note should be avoided its use (only used by {@link MetaField#duplicatedMetaField()}
      */
     @Deprecated
     public StringMetaField() {
-	super();
+        super();
     }
 
     public StringMetaField(MultiLanguageString name, int order, MetaFieldSet parentFieldSet) {
-	this();
-	init(name, order, parentFieldSet);
+        this();
+        init(name, order, parentFieldSet);
     }
 
     public StringMetaField(MetaFieldBean bean, MetaFieldSet parentFieldSet) {
-	this(bean.getName(), bean.getOrder(), parentFieldSet);
+        this(bean.getName(), bean.getOrder(), parentFieldSet);
     }
 
     @Override
     public StringFieldValue createFieldValue() {
-	return new StringFieldValue(this);
+        return new StringFieldValue(this);
     }
 
     @Override
     @Service
     public void delete() {
-	removeParentFieldSet();
-	if (!hasAnyFieldValues()) {
-	    deleteDomainObject();
-	}
+        removeParentFieldSet();
+        if (!hasAnyFieldValues()) {
+            deleteDomainObject();
+        }
     }
 
     @Override
     @Service
     public void deleteItselfAndAllChildren() throws MetaWorkflowDomainException {
-	delete();
+        delete();
 
     }
 
     @Override
     public boolean isPublished() {
-	return getParentFieldSet().isPublished();
+        return getParentFieldSet().isPublished();
     }
 
 }

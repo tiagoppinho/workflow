@@ -57,129 +57,130 @@ public class WorkflowProcessDocuments extends OutputRenderer {
     private String removeFormat;
 
     public String getDownloadFormat() {
-	return downloadFormat;
+        return downloadFormat;
     }
 
     public void setDownloadFormat(String downloadFormat) {
-	this.downloadFormat = downloadFormat;
+        this.downloadFormat = downloadFormat;
     }
 
     public String getRemoveFormat() {
-	return removeFormat;
+        return removeFormat;
     }
 
     public void setRemoveFormat(String removeFormat) {
-	this.removeFormat = removeFormat;
+        this.removeFormat = removeFormat;
     }
 
     @Override
     protected Layout getLayout(Object arg0, Class arg1) {
-	return new Layout() {
+        return new Layout() {
 
-	    @Override
-	    public HtmlComponent createComponent(Object arg0, Class arg1) {
-		WorkflowProcess process = (WorkflowProcess) arg0;
+            @Override
+            public HtmlComponent createComponent(Object arg0, Class arg1) {
+                WorkflowProcess process = (WorkflowProcess) arg0;
 
-		HtmlBlockContainer container = new HtmlBlockContainer();
+                HtmlBlockContainer container = new HtmlBlockContainer();
 
-		List<Class<? extends ProcessFile>> displayableFileTypes = process.getDisplayableFileTypes();
-		for (Class<? extends ProcessFile> fileType : displayableFileTypes) {
-		    container.addChild(generate(process, fileType, displayableFileTypes.size() > 1));
-		}
+                List<Class<? extends ProcessFile>> displayableFileTypes = process.getDisplayableFileTypes();
+                for (Class<? extends ProcessFile> fileType : displayableFileTypes) {
+                    container.addChild(generate(process, fileType, displayableFileTypes.size() > 1));
+                }
 
-		return container;
-	    }
+                return container;
+            }
 
-	    private HtmlComponent generate(WorkflowProcess process, Class<? extends ProcessFile> fileType, boolean shouldShowLabel) {
-		List<? extends ProcessFile> files = process.getFileDocuments(fileType);
+            private HtmlComponent generate(WorkflowProcess process, Class<? extends ProcessFile> fileType, boolean shouldShowLabel) {
+                List<? extends ProcessFile> files = process.getFileDocuments(fileType);
 
-		HtmlBlockContainer blockContainer = new HtmlBlockContainer();
-		HtmlParagraphContainer container = new HtmlParagraphContainer();
-		blockContainer.addChild(container);
+                HtmlBlockContainer blockContainer = new HtmlBlockContainer();
+                HtmlParagraphContainer container = new HtmlParagraphContainer();
+                blockContainer.addChild(container);
 
-		if (shouldShowLabel) {
-		    container.addChild(new HtmlText(BundleUtil.getLocalizedNamedFroClass(fileType) + ": "));
-		}
+                if (shouldShowLabel) {
+                    container.addChild(new HtmlText(BundleUtil.getLocalizedNamedFroClass(fileType) + ": "));
+                }
 
-		if (shouldShowLabel && files.isEmpty()) {
-		    container.addChild(new HtmlText("-"));
-		} else {
-		    Iterator<? extends ProcessFile> iterator = files.iterator();
+                if (shouldShowLabel && files.isEmpty()) {
+                    container.addChild(new HtmlText("-"));
+                } else {
+                    Iterator<? extends ProcessFile> iterator = files.iterator();
 
-		    while (iterator.hasNext()) {
-			ProcessFile file = iterator.next();
+                    while (iterator.hasNext()) {
+                        ProcessFile file = iterator.next();
 
-			if (!file.isInNewStructure())
-			    continue;
+                        if (!file.isInNewStructure()) {
+                            continue;
+                        }
 
-			HtmlLink downloadLink = new HtmlLink();
-			String filename = file.getDisplayName();
-			if (StringUtils.isEmpty(filename)) {
-			    filename = file.getFilename();
-			}
-			//joantune: taking care of the confirmation action in case this is 
-			//a file whose access is logged
-			downloadLink.setId("access-" + file.getExternalId());
-			downloadLink.setIndented(false);
-			downloadLink.setBody(new HtmlText(filename));
-			downloadLink.setUrl(RenderUtils.getFormattedProperties(getDownloadFormat(), file));
-			container.addChild(downloadLink);
-			if (file.shouldFileContentAccessBeLogged()) {
-			    container.addChild(accessConfirmation(file));
-			}
+                        HtmlLink downloadLink = new HtmlLink();
+                        String filename = file.getDisplayName();
+                        if (StringUtils.isEmpty(filename)) {
+                            filename = file.getFilename();
+                        }
+                        //joantune: taking care of the confirmation action in case this is 
+                        //a file whose access is logged
+                        downloadLink.setId("access-" + file.getExternalId());
+                        downloadLink.setIndented(false);
+                        downloadLink.setBody(new HtmlText(filename));
+                        downloadLink.setUrl(RenderUtils.getFormattedProperties(getDownloadFormat(), file));
+                        container.addChild(downloadLink);
+                        if (file.shouldFileContentAccessBeLogged()) {
+                            container.addChild(accessConfirmation(file));
+                        }
 
-			if (file.isPossibleToArchieve() && file.getProcess().isFileEditionAllowed()) {
+                        if (file.isPossibleToArchieve() && file.getProcess().isFileEditionAllowed()) {
 
-			    HtmlLink removeLink = new HtmlLink();
-			    removeLink.setIndented(false);
-			    removeLink.setId("remove-" + file.getExternalId());
-			    removeLink.setBody(new HtmlText("("
-				    + RenderUtils.getResourceString("WORKFLOW_RESOURCES", "link.removeFile") + ")"));
-			    removeLink.setUrl(RenderUtils.getFormattedProperties(getRemoveFormat(), file));
+                            HtmlLink removeLink = new HtmlLink();
+                            removeLink.setIndented(false);
+                            removeLink.setId("remove-" + file.getExternalId());
+                            removeLink.setBody(new HtmlText("("
+                                    + RenderUtils.getResourceString("WORKFLOW_RESOURCES", "link.removeFile") + ")"));
+                            removeLink.setUrl(RenderUtils.getFormattedProperties(getRemoveFormat(), file));
 
-			    container.addChild(removeLink);
-			    container.addChild(removeConfirmation(file));
-			}
+                            container.addChild(removeLink);
+                            container.addChild(removeConfirmation(file));
+                        }
 
-			if (iterator.hasNext()) {
-			    container.addChild(new HtmlText(", "));
-			}
-		    }
-		}
-		return blockContainer;
+                        if (iterator.hasNext()) {
+                            container.addChild(new HtmlText(", "));
+                        }
+                    }
+                }
+                return blockContainer;
 
-	    }
+            }
 
-	    private HtmlComponent accessConfirmation(ProcessFile file) {
-		HtmlScript script = new HtmlScript();
-		script.setContentType("text/javascript");
-		String displayName = file.getDisplayName();
-		if (displayName == null) {
-		    displayName = file.getFilename();
-		}
-		script.setScript("linkConfirmationHookLink('access-"
-			+ file.getExternalId()
-			+ "', '"
-			+ BundleUtil.getFormattedStringFromResourceBundle("resources/WorkflowResources",
-				"label.fileAccess.logged.confirmMessage", displayName) + "' , '" + displayName + "');");
-		return script;
-	    }
+            private HtmlComponent accessConfirmation(ProcessFile file) {
+                HtmlScript script = new HtmlScript();
+                script.setContentType("text/javascript");
+                String displayName = file.getDisplayName();
+                if (displayName == null) {
+                    displayName = file.getFilename();
+                }
+                script.setScript("linkConfirmationHookLink('access-"
+                        + file.getExternalId()
+                        + "', '"
+                        + BundleUtil.getFormattedStringFromResourceBundle("resources/WorkflowResources",
+                                "label.fileAccess.logged.confirmMessage", displayName) + "' , '" + displayName + "');");
+                return script;
+            }
 
-	    private HtmlComponent removeConfirmation(ProcessFile file) {
-		HtmlScript script = new HtmlScript();
-		script.setContentType("text/javascript");
-		String displayName = file.getDisplayName();
-		if (displayName == null) {
-		    displayName = file.getFilename();
-		}
-		script.setScript("linkConfirmationHook('remove-"
-			+ file.getExternalId()
-			+ "', '"
-			+ BundleUtil.getFormattedStringFromResourceBundle("resources/WorkflowResources",
-				"label.fileRemoval.confirmation", displayName) + "' , '" + displayName + "');");
-		return script;
-	    }
+            private HtmlComponent removeConfirmation(ProcessFile file) {
+                HtmlScript script = new HtmlScript();
+                script.setContentType("text/javascript");
+                String displayName = file.getDisplayName();
+                if (displayName == null) {
+                    displayName = file.getFilename();
+                }
+                script.setScript("linkConfirmationHook('remove-"
+                        + file.getExternalId()
+                        + "', '"
+                        + BundleUtil.getFormattedStringFromResourceBundle("resources/WorkflowResources",
+                                "label.fileRemoval.confirmation", displayName) + "' , '" + displayName + "');");
+                return script;
+            }
 
-	};
+        };
     }
 }

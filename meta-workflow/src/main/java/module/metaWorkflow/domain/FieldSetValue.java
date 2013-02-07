@@ -39,88 +39,88 @@ import jvstm.cps.ConsistencyPredicate;
 public class FieldSetValue extends FieldSetValue_Base {
 
     protected FieldSetValue() {
-	super();
+        super();
     }
 
     public FieldSetValue(MetaFieldSet metaField) {
-	this();
-	setMetaField(metaField);
+        this();
+        setMetaField(metaField);
     }
 
     public FieldSetValue(WorkflowMetaProcess metaProcess, MetaFieldSet metaField) {
-	this(metaField);
-	setProcess(metaProcess);
+        this(metaField);
+        setProcess(metaProcess);
     }
 
     public FieldSetValue(FieldSetValue parentFieldSet, MetaFieldSet metaField) {
-	this(metaField);
-	setParentFieldSet(parentFieldSet);
+        this(metaField);
+        setParentFieldSet(parentFieldSet);
     }
 
     @Override
     @ConsistencyPredicate
     public final boolean checkHasParent() {
-	return super.checkHasParent() || hasProcess();
+        return super.checkHasParent() || hasProcess();
     }
 
     public Set<FieldValue> getOrderedChildFields() {
-	Set<FieldValue> orderedFields = new TreeSet<FieldValue>(FieldValue.COMPARATOR_BY_FIELD_ORDER);
-	orderedFields.addAll(getChildFieldValues());
-	return orderedFields;
+        Set<FieldValue> orderedFields = new TreeSet<FieldValue>(FieldValue.COMPARATOR_BY_FIELD_ORDER);
+        orderedFields.addAll(getChildFieldValues());
+        return orderedFields;
     }
 
     public FieldValue findChildField(String OID) {
-	for (FieldValue childField : getChildFieldValues()) {
-	    if (childField.getExternalId().equals(OID)) {
-		return childField;
-	    }
-	    if (childField instanceof FieldSetValue) {
-		FieldValue possibleMatchField = ((FieldSetValue) childField).findChildField(OID);
-		if (possibleMatchField != null) {
-		    return possibleMatchField;
-		}
-	    }
-	}
-	return null;
+        for (FieldValue childField : getChildFieldValues()) {
+            if (childField.getExternalId().equals(OID)) {
+                return childField;
+            }
+            if (childField instanceof FieldSetValue) {
+                FieldValue possibleMatchField = ((FieldSetValue) childField).findChildField(OID);
+                if (possibleMatchField != null) {
+                    return possibleMatchField;
+                }
+            }
+        }
+        return null;
     }
 
     @Override
     public Set<FieldValue> getAllFields() {
-	Set<FieldValue> fieldValues = new HashSet<FieldValue>();
-	for (FieldValue child : getChildFieldValues()) {
-	    fieldValues.addAll(child.getAllFields());
-	}
-	fieldValues.add(this);
-	return fieldValues;
+        Set<FieldValue> fieldValues = new HashSet<FieldValue>();
+        for (FieldValue child : getChildFieldValues()) {
+            fieldValues.addAll(child.getAllFields());
+        }
+        fieldValues.add(this);
+        return fieldValues;
     }
 
     @Override
     public WorkflowMetaProcess getProcess() {
-	if (!hasParentFieldSet()) {
-	    return super.getProcess();
-	}
+        if (!hasParentFieldSet()) {
+            return super.getProcess();
+        }
 
-	return getParentFieldSet().getProcess();
+        return getParentFieldSet().getProcess();
     }
 
     @Override
     public boolean isDefined() {
-	for (FieldValue child : getChildFieldValues()) {
-	    if (!child.isDefined()) {
-		return false;
-	    }
-	}
-	return true;
+        for (FieldValue child : getChildFieldValues()) {
+            if (!child.isDefined()) {
+                return false;
+            }
+        }
+        return true;
     }
 
     @Override
     public boolean isFieldSet() {
-	return true;
+        return true;
     }
 
     @Override
     public FieldValueBean createFieldValueBean() {
-	return null;
+        return null;
     }
 
     @Override

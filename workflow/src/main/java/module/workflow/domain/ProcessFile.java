@@ -24,11 +24,10 @@
  */
 package module.workflow.domain;
 
-import jvstm.cps.ConsistencyPredicate;
 import javax.annotation.Nonnull;
 
+import jvstm.cps.ConsistencyPredicate;
 import module.fileManagement.domain.DirNode;
-import module.fileManagement.domain.Document;
 import module.fileManagement.domain.FileNode;
 import module.workflow.util.WorkflowFileUploadBean;
 
@@ -55,39 +54,39 @@ public class ProcessFile extends ProcessFile_Base {
     private static final Logger LOGGER = Logger.getLogger(ProcessFile.class);
 
     public ProcessFile() {
-	super();
+        super();
     }
 
     public ProcessFile(String displayName, String filename, byte[] content) {
-	super();
-	init(displayName, filename, content);
+        super();
+        init(displayName, filename, content);
     }
 
     public ProcessFile(final FileNode associatedFileNode) {
-	super();
-	init(associatedFileNode);
+        super();
+        init(associatedFileNode);
     }
 
     public final void init(final FileNode associatedFileNode) {
-	//let's not call this here, as there are validateUpload that are called expecting this relationship not to have been made
-	//	this.setProcess(ProcessDirNode.getProcess(associatedFileNode));
-	WorkflowProcess process = ProcessDirNode.getProcess(associatedFileNode);
-	this.setDocument(associatedFileNode.getDocument());
-	AbstractWFDocsGroup readGroup = AbstractWFDocsGroup.getOrCreateInstance(process, this.getMetaDataResolver()
-		.getReadGroupClass());
-	AbstractWFDocsGroup writeGroup = AbstractWFDocsGroup.getOrCreateInstance(process, this.getMetaDataResolver()
-		.getWriteGroupClass());
-	if (this.getDocument().hasReadGroup()) {
-	    this.getDocument().setReadGroup(UnionGroup.getOrCreateUnionGroup(getDocument().getReadGroup(), readGroup));
-	} else {
-	    this.getDocument().setReadGroup(readGroup);
-	}
+        //let's not call this here, as there are validateUpload that are called expecting this relationship not to have been made
+        //	this.setProcess(ProcessDirNode.getProcess(associatedFileNode));
+        WorkflowProcess process = ProcessDirNode.getProcess(associatedFileNode);
+        this.setDocument(associatedFileNode.getDocument());
+        AbstractWFDocsGroup readGroup =
+                AbstractWFDocsGroup.getOrCreateInstance(process, this.getMetaDataResolver().getReadGroupClass());
+        AbstractWFDocsGroup writeGroup =
+                AbstractWFDocsGroup.getOrCreateInstance(process, this.getMetaDataResolver().getWriteGroupClass());
+        if (this.getDocument().hasReadGroup()) {
+            this.getDocument().setReadGroup(UnionGroup.getOrCreateUnionGroup(getDocument().getReadGroup(), readGroup));
+        } else {
+            this.getDocument().setReadGroup(readGroup);
+        }
 
-	if (this.getDocument().hasWriteGroup()) {
-	    this.getDocument().setWriteGroup(UnionGroup.getOrCreateUnionGroup(getDocument().getWriteGroup(), writeGroup));
-	} else {
-	    this.getDocument().setWriteGroup(writeGroup);
-	}
+        if (this.getDocument().hasWriteGroup()) {
+            this.getDocument().setWriteGroup(UnionGroup.getOrCreateUnionGroup(getDocument().getWriteGroup(), writeGroup));
+        } else {
+            this.getDocument().setWriteGroup(writeGroup);
+        }
     }
 
     /**
@@ -147,23 +146,22 @@ public class ProcessFile extends ProcessFile_Base {
 
     public static class GenericPDMetaDataResolver extends ProcessDocumentMetaDataResolver<ProcessFile> {
 
-	
-
-	@Override
-	public @Nonnull
-	Class<? extends AbstractWFDocsGroup> getWriteGroupClass() {
-	    return WFDocsDefaultWriteGroup.class;
-	}
+        @Override
+        public @Nonnull
+        Class<? extends AbstractWFDocsGroup> getWriteGroupClass() {
+            return WFDocsDefaultWriteGroup.class;
+        }
 
     }
+
     @ConsistencyPredicate
     public boolean checkConnectedWithProcess() {
-	return hasProcess() || hasProcessWithDeleteFile();
+        return hasProcess() || hasProcessWithDeleteFile();
 
     }
-    
+
     public ProcessDocumentMetaDataResolver<? extends ProcessFile> getMetaDataResolver() {
-	return new GenericPDMetaDataResolver();
+        return new GenericPDMetaDataResolver();
     }
 
     //    @Override
@@ -181,18 +179,20 @@ public class ProcessFile extends ProcessFile_Base {
      *         it will search on the deleted items i.e. trash
      */
     public final FileNode getFileNode() {
-	if (getDocument() == null)
-	    return null;
-	FileNode fileNodeToReturn = null;
-	if (getProcess() == null || getProcess().getDocumentsRepository() == null)
-	    return null;
-	ProcessDirNode documentsRepository = getProcess().getDocumentsRepository();
-	fileNodeToReturn = getDocument().getFileNode(documentsRepository.getDirNode());
-	if (fileNodeToReturn == null) {
-	    DirNode trash = documentsRepository.getTrash();
-	    fileNodeToReturn = getDocument().getFileNode(trash);
-	}
-	return fileNodeToReturn;
+        if (getDocument() == null) {
+            return null;
+        }
+        FileNode fileNodeToReturn = null;
+        if (getProcess() == null || getProcess().getDocumentsRepository() == null) {
+            return null;
+        }
+        ProcessDirNode documentsRepository = getProcess().getDocumentsRepository();
+        fileNodeToReturn = getDocument().getFileNode(documentsRepository.getDirNode());
+        if (fileNodeToReturn == null) {
+            DirNode trash = documentsRepository.getTrash();
+            fileNodeToReturn = getDocument().getFileNode(trash);
+        }
+        return fileNodeToReturn;
 
     }
 
@@ -229,7 +229,7 @@ public class ProcessFile extends ProcessFile_Base {
      * @author João Antunes
      */
     public boolean shouldFileContentAccessBeLogged() {
-	return false;
+        return false;
     }
 
     // TODO: use this format
@@ -274,14 +274,14 @@ public class ProcessFile extends ProcessFile_Base {
      *         fileNodes
      */
     public boolean moveToTrash() {
-	if (isInNewStructure()) {
-	    FileNode fileNode = getFileNode();
-	    if (fileNode != null) {
-		fileNode.trash(fileNode.getParent().getContextPath());
-		return true;
-	    }
-	}
-	return false;
+        if (isInNewStructure()) {
+            FileNode fileNode = getFileNode();
+            if (fileNode != null) {
+                fileNode.trash(fileNode.getParent().getContextPath());
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -296,7 +296,7 @@ public class ProcessFile extends ProcessFile_Base {
     }
 
     public boolean isParsableType() {
-	return getFilename().toLowerCase().endsWith(".pdf");
+        return getFilename().toLowerCase().endsWith(".pdf");
     }
 
     /**
@@ -307,17 +307,17 @@ public class ProcessFile extends ProcessFile_Base {
      * By default it returns true
      */
     public boolean isPossibleToArchieve() {
-	return true;
+        return true;
     }
 
     @Override
     public void delete() {
-	//	getDocument().delete();
-	moveToTrash();
-	removeDocument();
-	removeProcess();
-	removeProcessWithDeleteFile();
-	super.delete();
+        //	getDocument().delete();
+        moveToTrash();
+        removeDocument();
+        removeProcess();
+        removeProcessWithDeleteFile();
+        super.delete();
     }
 
     /**
@@ -336,14 +336,14 @@ public class ProcessFile extends ProcessFile_Base {
      * @return true if this ProcessFile is supported on the new structure
      */
     public boolean isInNewStructure() {
-	return getDocument() != null;
+        return getDocument() != null;
     }
 
     public boolean isArchieved() {
-	return getProcess() == null && getProcessWithDeleteFile() != null;
+        return getProcess() == null && getProcessWithDeleteFile() != null;
     }
 
     public String getPresentationName() {
-	return StringUtils.isEmpty(getDisplayName()) ? getFilename() : getDisplayName();
+        return StringUtils.isEmpty(getDisplayName()) ? getFilename() : getDisplayName();
     }
 }

@@ -47,47 +47,49 @@ public class FileUploadLog extends FileUploadLog_Base {
     private static final Logger LOGGER = Logger.getLogger(FileUploadLog.class);
 
     public FileUploadLog(WorkflowProcess process, User person, String... argumentsDescription) {
-	super();
-	init(process, person, argumentsDescription);
+        super();
+        init(process, person, argumentsDescription);
     }
 
     public static final User tryToGetUserWhoUploaded(ProcessFile file) {
-	if (file.getProcess() != null && file.getProcessWithDeleteFile() != null) {
-	    throw new Error("File: " + file.getExternalId()
-		    + " has an inconsistency problem. It is connected to a process twice!");
-	}
+        if (file.getProcess() != null && file.getProcessWithDeleteFile() != null) {
+            throw new Error("File: " + file.getExternalId()
+                    + " has an inconsistency problem. It is connected to a process twice!");
+        }
 
-	WorkflowProcess process = null;
-	if (file.getProcess() != null) {
-	    process = file.getProcess();
-	} else {
-	    process = file.getProcessWithDeleteFile();
-	}
-	if (process == null)
-	    throw new Error("File: " + file.getExternalId() + " has no connection with any WorkflowProcess");
+        WorkflowProcess process = null;
+        if (file.getProcess() != null) {
+            process = file.getProcess();
+        } else {
+            process = file.getProcessWithDeleteFile();
+        }
+        if (process == null) {
+            throw new Error("File: " + file.getExternalId() + " has no connection with any WorkflowProcess");
+        }
 
-	Collection<? extends WorkflowLog> executionLogs = process.getExecutionLogs(FileUploadLog.class);
+        Collection<? extends WorkflowLog> executionLogs = process.getExecutionLogs(FileUploadLog.class);
 
-	Set<FileUploadLog> potentialLogMatches = new HashSet<FileUploadLog>();
+        Set<FileUploadLog> potentialLogMatches = new HashSet<FileUploadLog>();
 
-	for (WorkflowLog workflowLog : executionLogs) {
-	    FileUploadLog uploadLog = (FileUploadLog) workflowLog;
+        for (WorkflowLog workflowLog : executionLogs) {
+            FileUploadLog uploadLog = (FileUploadLog) workflowLog;
 
-	    if (matches(uploadLog, file))
-		potentialLogMatches.add(uploadLog);
-	}
-	if (potentialLogMatches.size() > 1) {
-	    LOGGER.debug("File: " + file.getExternalId() + " class: " + file.getClass().getSimpleName() + " Process: "
-		    + process.getExternalId() + " class: " + process.getClass().getSimpleName()
-		    + " has more than one potential match");
-	    return null;
-	} else if (potentialLogMatches.size() == 1) {
-	    FileUploadLog theLog = potentialLogMatches.iterator().next();
+            if (matches(uploadLog, file)) {
+                potentialLogMatches.add(uploadLog);
+            }
+        }
+        if (potentialLogMatches.size() > 1) {
+            LOGGER.debug("File: " + file.getExternalId() + " class: " + file.getClass().getSimpleName() + " Process: "
+                    + process.getExternalId() + " class: " + process.getClass().getSimpleName()
+                    + " has more than one potential match");
+            return null;
+        } else if (potentialLogMatches.size() == 1) {
+            FileUploadLog theLog = potentialLogMatches.iterator().next();
 
-	    return theLog.getActivityExecutor();
-	}
+            return theLog.getActivityExecutor();
+        }
 
-	return null;
+        return null;
     }
 
     /**
@@ -96,37 +98,40 @@ public class FileUploadLog extends FileUploadLog_Base {
      *         creation date, and the names and other details match
      */
     private static boolean matches(FileUploadLog fileUploadLog, ProcessFile processFile) {
-	DateTime creationDate = processFile.getCreationDate();
-	if (creationDate == null)
-	    throw new IllegalArgumentException("File: " + processFile.getExternalId() + " of class: "
-		    + processFile.getClass().getSimpleName() + " has no creation date");
+        DateTime creationDate = processFile.getCreationDate();
+        if (creationDate == null) {
+            throw new IllegalArgumentException("File: " + processFile.getExternalId() + " of class: "
+                    + processFile.getClass().getSimpleName() + " has no creation date");
+        }
 
-	DateTime whenOperationWasRan = fileUploadLog.getWhenOperationWasRan();
+        DateTime whenOperationWasRan = fileUploadLog.getWhenOperationWasRan();
 
-	Interval interval = null;
-	if (creationDate.isBefore(whenOperationWasRan)) {
-	    interval = new Interval(creationDate, whenOperationWasRan);
-	} else {
+        Interval interval = null;
+        if (creationDate.isBefore(whenOperationWasRan)) {
+            interval = new Interval(creationDate, whenOperationWasRan);
+        } else {
 
-	    interval = new Interval(whenOperationWasRan, creationDate);
-	}
-	if (interval.toDuration().isLongerThan(new Duration(60000))) {
-	    return false;
-	}
-	Strings descriptionArguments = fileUploadLog.getDescriptionArguments();
-	if (!descriptionArguments.hasStringIgnoreCase(processFile.getFilename()))
-	    return false;
-	if (!descriptionArguments.hasStringIgnoreCase(processFile.getDisplayName()))
-	    return false;
+            interval = new Interval(whenOperationWasRan, creationDate);
+        }
+        if (interval.toDuration().isLongerThan(new Duration(60000))) {
+            return false;
+        }
+        Strings descriptionArguments = fileUploadLog.getDescriptionArguments();
+        if (!descriptionArguments.hasStringIgnoreCase(processFile.getFilename())) {
+            return false;
+        }
+        if (!descriptionArguments.hasStringIgnoreCase(processFile.getDisplayName())) {
+            return false;
+        }
 
-	return true;
+        return true;
 
     }
 
     @Override
     public String getDescription() {
-	return BundleUtil.getFormattedStringFromResourceBundle("resources/WorkflowResources", "label.description.FileUploadLog",
-		getDescriptionArguments().toArray(new String[] {}));
+        return BundleUtil.getFormattedStringFromResourceBundle("resources/WorkflowResources", "label.description.FileUploadLog",
+                getDescriptionArguments().toArray(new String[] {}));
     }
 
 }

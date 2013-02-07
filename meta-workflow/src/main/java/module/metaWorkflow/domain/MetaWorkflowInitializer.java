@@ -49,54 +49,54 @@ public class MetaWorkflowInitializer extends MetaWorkflowInitializer_Base implem
     private static ThreadLocal<MetaWorkflowInitializer> init = null;
 
     private MetaWorkflowInitializer() {
-	setMyOrg(MyOrg.getInstance());
+        setMyOrg(MyOrg.getInstance());
     }
 
     public static MetaWorkflowInitializer getInstance() {
-	if (init != null) {
-	    return init.get();
-	}
+        if (init != null) {
+            return init.get();
+        }
 
-	if (!isInitialized) {
-	    initialize();
-	}
-	final MyOrg myOrg = MyOrg.getInstance();
-	return myOrg.getMetaWorkflowInitializer();
+        if (!isInitialized) {
+            initialize();
+        }
+        final MyOrg myOrg = MyOrg.getInstance();
+        return myOrg.getMetaWorkflowInitializer();
     }
 
     @Service
     public synchronized static void initialize() {
-	if (!isInitialized) {
-	    try {
-		final MyOrg myOrg = MyOrg.getInstance();
-		final MetaWorkflowInitializer initializer = myOrg.getMetaWorkflowInitializer();
-		if (initializer == null) {
-		    new MetaWorkflowInitializer();
-		}
-		init = new ThreadLocal<MetaWorkflowInitializer>();
-		init.set(myOrg.getMetaWorkflowInitializer());
+        if (!isInitialized) {
+            try {
+                final MyOrg myOrg = MyOrg.getInstance();
+                final MetaWorkflowInitializer initializer = myOrg.getMetaWorkflowInitializer();
+                if (initializer == null) {
+                    new MetaWorkflowInitializer();
+                }
+                init = new ThreadLocal<MetaWorkflowInitializer>();
+                init.set(myOrg.getMetaWorkflowInitializer());
 
-		isInitialized = true;
-	    } finally {
-		init = null;
-	    }
-	}
+                isInitialized = true;
+            } finally {
+                init = null;
+            }
+        }
     }
 
     @Override
     public void init(MyOrg root) {
 
-	ProcessManagement.registerProcessRequestHandler(WorkflowMetaProcess.class,
-		new ProcessRequestHandler<WorkflowMetaProcess>() {
+        ProcessManagement.registerProcessRequestHandler(WorkflowMetaProcess.class,
+                new ProcessRequestHandler<WorkflowMetaProcess>() {
 
-		    @Override
-		    public void handleRequest(WorkflowMetaProcess process, HttpServletRequest request) {
-			request.setAttribute("commentBean", new VariantBean());
+                    @Override
+                    public void handleRequest(WorkflowMetaProcess process, HttpServletRequest request) {
+                        request.setAttribute("commentBean", new VariantBean());
 
-		    }
-		});
+                    }
+                });
 
-	OrganizationModelAction.partyViewHookManager.register(new QueueView());
+        OrganizationModelAction.partyViewHookManager.register(new QueueView());
 
     }
 

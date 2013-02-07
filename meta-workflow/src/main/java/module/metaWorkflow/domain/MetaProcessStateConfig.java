@@ -39,61 +39,62 @@ import pt.ist.fenixWebFramework.services.Service;
  * 
  */
 public class MetaProcessStateConfig extends MetaProcessStateConfig_Base {
-    
+
     public MetaProcessStateConfig() {
         super();
     }
-    
+
     public MetaProcessStateConfig(MetaProcessState state) {
-	this();
-	setMetaProcessState(state);
+        this();
+        setMetaProcessState(state);
     }
 
     @ConsistencyPredicate
     public boolean checkHasState() {
-	return hasMetaProcessState();
+        return hasMetaProcessState();
     }
 
     public boolean isActive(WorkflowMetaProcess process) {
-	if (getDependedStates().isEmpty() && getDependedFields().isEmpty()) {
-	    return true;
-	}
+        if (getDependedStates().isEmpty() && getDependedFields().isEmpty()) {
+            return true;
+        }
 
-	for (MetaProcessState state : getDependedStates()) {
-	    if (!state.isActive(process)) {
-		return false;
-	    }
-	}
+        for (MetaProcessState state : getDependedStates()) {
+            if (!state.isActive(process)) {
+                return false;
+            }
+        }
 
-	Set<MetaField> definedMetaFields = new HashSet<MetaField>();
-	for (FieldValue value : process.getAllFields()) {
-	    if (value.isDefined()) {
-		definedMetaFields.add(value.getMetaField());
-	    }
-	}
+        Set<MetaField> definedMetaFields = new HashSet<MetaField>();
+        for (FieldValue value : process.getAllFields()) {
+            if (value.isDefined()) {
+                definedMetaFields.add(value.getMetaField());
+            }
+        }
 
-	return definedMetaFields.containsAll(getDependedFields());
+        return definedMetaFields.containsAll(getDependedFields());
     }
 
     /* TODO START: protection against published things FENIX-345: */
     @Service
     public static MetaProcessStateConfig create(MetaProcessState state) {
-	return new MetaProcessStateConfig(state);
+        return new MetaProcessStateConfig(state);
     }
 
     @Service
     public void delete() {
-	if (isPublished())
-	    throw new MetaWorkflowDomainException("cant.delete.a.published.state.config");
-	for (MetaField field : getDependedFields()) {
-	    removeDependedFields(field);
-	}
-	for (MetaProcessState dependedState : getDependedStates()) {
-	    removeDependedStates(dependedState);
-	}
-	removeMetaProcessState();
+        if (isPublished()) {
+            throw new MetaWorkflowDomainException("cant.delete.a.published.state.config");
+        }
+        for (MetaField field : getDependedFields()) {
+            removeDependedFields(field);
+        }
+        for (MetaProcessState dependedState : getDependedStates()) {
+            removeDependedStates(dependedState);
+        }
+        removeMetaProcessState();
 
-	deleteDomainObject();
+        deleteDomainObject();
     }
 
     /**
@@ -104,60 +105,61 @@ public class MetaProcessStateConfig extends MetaProcessStateConfig_Base {
      *         version, but we check for the case it doesn't. Just in case..
      */
     public boolean isPublished() {
-	for (MetaProcessState dependedProcessState : getDependedStates()) {
-	    if (dependedProcessState.isPublished())
-		return true;
-	}
-	return getMetaProcessState().isPublished();
+        for (MetaProcessState dependedProcessState : getDependedStates()) {
+            if (dependedProcessState.isPublished()) {
+                return true;
+            }
+        }
+        return getMetaProcessState().isPublished();
 
     }
 
     @Service
     @Override
     public void addDependedStates(MetaProcessState dependedStates) {
-	super.addDependedStates(dependedStates);
+        super.addDependedStates(dependedStates);
     }
 
     @Service
     public void updateDependedStates(Collection<MetaProcessState> newStates) {
-	Collection<MetaProcessState> oldStates = getDependedStates();
-	if (!oldStates.containsAll(newStates) || !newStates.containsAll(oldStates)) {
-	    //There are changes to make
-	    Collection<MetaProcessState> statesToRem = new HashSet<MetaProcessState>();
-	    statesToRem.addAll(oldStates);
-	    statesToRem.removeAll(newStates);
-	    for (MetaProcessState stateToRem : statesToRem) {
-		removeDependedStates(stateToRem);
-	    }
+        Collection<MetaProcessState> oldStates = getDependedStates();
+        if (!oldStates.containsAll(newStates) || !newStates.containsAll(oldStates)) {
+            //There are changes to make
+            Collection<MetaProcessState> statesToRem = new HashSet<MetaProcessState>();
+            statesToRem.addAll(oldStates);
+            statesToRem.removeAll(newStates);
+            for (MetaProcessState stateToRem : statesToRem) {
+                removeDependedStates(stateToRem);
+            }
 
-	    Collection<MetaProcessState> statesToAdd = new HashSet<MetaProcessState>();
-	    statesToAdd.addAll(newStates);
-	    statesToAdd.removeAll(oldStates);
-	    for (MetaProcessState stateToAdd : statesToAdd) {
-		addDependedStates(stateToAdd);
-	    }
-	}
+            Collection<MetaProcessState> statesToAdd = new HashSet<MetaProcessState>();
+            statesToAdd.addAll(newStates);
+            statesToAdd.removeAll(oldStates);
+            for (MetaProcessState stateToAdd : statesToAdd) {
+                addDependedStates(stateToAdd);
+            }
+        }
     }
 
     @Service
     public void updateDependedFields(Collection<MetaField> newFields) {
-	Collection<MetaField> oldFields = getDependedFields();
-	if (!oldFields.containsAll(newFields) || !newFields.containsAll(oldFields)) {
-	    //There are changes to make
-	    Collection<MetaField> fieldsToRem = new HashSet<MetaField>();
-	    fieldsToRem.addAll(oldFields);
-	    fieldsToRem.removeAll(newFields);
-	    for (MetaField stateToRem : fieldsToRem) {
-		removeDependedFields(stateToRem);
-	    }
+        Collection<MetaField> oldFields = getDependedFields();
+        if (!oldFields.containsAll(newFields) || !newFields.containsAll(oldFields)) {
+            //There are changes to make
+            Collection<MetaField> fieldsToRem = new HashSet<MetaField>();
+            fieldsToRem.addAll(oldFields);
+            fieldsToRem.removeAll(newFields);
+            for (MetaField stateToRem : fieldsToRem) {
+                removeDependedFields(stateToRem);
+            }
 
-	    Collection<MetaField> fieldsToAdd = new HashSet<MetaField>();
-	    fieldsToAdd.addAll(newFields);
-	    fieldsToAdd.removeAll(oldFields);
-	    for (MetaField stateToAdd : fieldsToAdd) {
-		addDependedFields(stateToAdd);
-	    }
-	}
+            Collection<MetaField> fieldsToAdd = new HashSet<MetaField>();
+            fieldsToAdd.addAll(newFields);
+            fieldsToAdd.removeAll(oldFields);
+            for (MetaField stateToAdd : fieldsToAdd) {
+                addDependedFields(stateToAdd);
+            }
+        }
 
     }
 }

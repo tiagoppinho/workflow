@@ -43,20 +43,20 @@ public class WorkflowUserGroupQueueProvider implements DataProvider {
 
     @Override
     public Converter getConverter() {
-	return null;
+        return null;
     }
 
     @Override
     public Object provide(Object source, Object currentValue) {
-	final List<WorkflowQueue> result = new ArrayList<WorkflowQueue>();
-	for (WorkflowQueue workflowQueue : WorkflowSystem.getInstance().getWorkflowQueuesSet()) {
-	    if (workflowQueue instanceof WorkflowUserGroupQueue) {
-		result.add(workflowQueue);
-	    }
-	}
+        final List<WorkflowQueue> result = new ArrayList<WorkflowQueue>();
+        for (WorkflowQueue workflowQueue : WorkflowSystem.getInstance().getWorkflowQueuesSet()) {
+            if (workflowQueue instanceof WorkflowUserGroupQueue) {
+                result.add(workflowQueue);
+            }
+        }
 
-	Collections.sort(result, WorkflowQueue.COMPARATOR_BY_NAME);
-	return result;
+        Collections.sort(result, WorkflowQueue.COMPARATOR_BY_NAME);
+        return result;
     }
 
 }

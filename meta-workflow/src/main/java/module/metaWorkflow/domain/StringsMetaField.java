@@ -38,27 +38,26 @@ import pt.utl.ist.fenix.tools.util.i18n.MultiLanguageString;
 public class StringsMetaField extends StringsMetaField_Base {
 
     /**
-     * Note should be avoided its use (only used by
-     * {@link MetaField#duplicatedMetaField()}
+     * Note should be avoided its use (only used by {@link MetaField#duplicatedMetaField()}
      */
     @Deprecated
     public StringsMetaField() {
-	super();
+        super();
     }
 
     public StringsMetaField(MultiLanguageString name, Integer order, MetaFieldSet parentFieldSet) {
-	setName(name);
-	setFieldOrder(order);
-	setParentFieldSet(parentFieldSet);
+        setName(name);
+        setFieldOrder(order);
+        setParentFieldSet(parentFieldSet);
     }
 
     public StringsMetaField(MetaFieldBean bean, MetaFieldSet parentFieldSet) {
-	this(bean.getName(), bean.getOrder(), parentFieldSet);
+        this(bean.getName(), bean.getOrder(), parentFieldSet);
     }
 
     @Override
     public FieldValue createFieldValue() {
-	return new StringsFieldValue(this);
+        return new StringsFieldValue(this);
     }
 
     @Override
@@ -68,12 +67,12 @@ public class StringsMetaField extends StringsMetaField_Base {
     @Override
     @Service
     public void deleteItselfAndAllChildren() throws MetaWorkflowDomainException {
-	delete();
+        delete();
 
     }
 
     @Override
     public boolean isPublished() {
-	return getParentFieldSet().isPublished();
+        return getParentFieldSet().isPublished();
     }
 }

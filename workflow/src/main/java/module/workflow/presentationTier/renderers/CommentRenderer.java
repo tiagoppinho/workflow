@@ -64,174 +64,175 @@ public class CommentRenderer extends OutputRenderer {
     private boolean showOnlyUnreadComments;
 
     public String getObserverBundle() {
-	return observerBundle;
+        return observerBundle;
     }
 
     public void setObserverBundle(String observerBundle) {
-	this.observerBundle = observerBundle;
+        this.observerBundle = observerBundle;
     }
 
     public String getObserverKey() {
-	return observerKey;
+        return observerKey;
     }
 
     public void setObserverKey(String observerKey) {
-	this.observerKey = observerKey;
+        this.observerKey = observerKey;
     }
 
     public String getObserverClass() {
-	return observerClass;
+        return observerClass;
     }
 
     public void setObserverClass(String observerClass) {
-	this.observerClass = observerClass;
+        this.observerClass = observerClass;
     }
 
     public boolean isReverseOrder() {
-	return reverseOrder;
+        return reverseOrder;
     }
 
     public void setReverseOrder(boolean reverseOrder) {
-	this.reverseOrder = reverseOrder;
+        this.reverseOrder = reverseOrder;
     }
 
     public String getCommentBlockClasses() {
-	return commentBlockClasses;
+        return commentBlockClasses;
     }
 
     public void setCommentBlockClasses(String commentBlockClasses) {
-	this.commentBlockClasses = commentBlockClasses;
+        this.commentBlockClasses = commentBlockClasses;
     }
 
     public String getPhotoClasses() {
-	return photoClasses;
+        return photoClasses;
     }
 
     public void setPhotoClasses(String photoClasses) {
-	this.photoClasses = photoClasses;
+        this.photoClasses = photoClasses;
     }
 
     public String getBodyClasses() {
-	return bodyClasses;
+        return bodyClasses;
     }
 
     public void setBodyClasses(String bodyClasses) {
-	this.bodyClasses = bodyClasses;
+        this.bodyClasses = bodyClasses;
     }
 
     public String getNameClasses() {
-	return nameClasses;
+        return nameClasses;
     }
 
     public void setNameClasses(String nameClasses) {
-	this.nameClasses = nameClasses;
+        this.nameClasses = nameClasses;
     }
 
     public String getPhotoUrl() {
-	return photoUrl;
+        return photoUrl;
     }
 
     public void setPhotoUrl(String photoUrl) {
-	this.photoUrl = photoUrl;
+        this.photoUrl = photoUrl;
     }
 
     @Override
     protected Layout getLayout(Object arg0, Class arg1) {
-	return new Layout() {
+        return new Layout() {
 
-	    @Override
-	    public HtmlComponent createComponent(Object arg0, Class arg1) {
-		HtmlBlockContainer outterContainer = new HtmlBlockContainer();
-		WorkflowProcess process = (WorkflowProcess) arg0;
-		Set<WorkflowProcessComment> comments = new TreeSet<WorkflowProcessComment>(
-			isReverseOrder() ? WorkflowProcessComment.REVERSE_COMPARATOR : WorkflowProcessComment.COMPARATOR);
-		if (!showOnlyUnreadComments) {
-		    comments.addAll(process.getComments());
-		} else {
-		    comments.addAll(process.getUnreadCommentsForCurrentUser());
-		}
+            @Override
+            public HtmlComponent createComponent(Object arg0, Class arg1) {
+                HtmlBlockContainer outterContainer = new HtmlBlockContainer();
+                WorkflowProcess process = (WorkflowProcess) arg0;
+                Set<WorkflowProcessComment> comments =
+                        new TreeSet<WorkflowProcessComment>(
+                                isReverseOrder() ? WorkflowProcessComment.REVERSE_COMPARATOR : WorkflowProcessComment.COMPARATOR);
+                if (!showOnlyUnreadComments) {
+                    comments.addAll(process.getComments());
+                } else {
+                    comments.addAll(process.getUnreadCommentsForCurrentUser());
+                }
 
-		User currentRenderingUser = null;
-		HtmlBlockContainer commentContainer = null;
+                User currentRenderingUser = null;
+                HtmlBlockContainer commentContainer = null;
 
-		for (WorkflowProcessComment comment : comments) {
-		    if (currentRenderingUser == comment.getCommenter()) {
-			commentContainer.addChild(generateSingleComment(comment));
-		    } else {
-			currentRenderingUser = comment.getCommenter();
-			commentContainer = generateNewCommentBlock(outterContainer, comment);
-		    }
-		}
+                for (WorkflowProcessComment comment : comments) {
+                    if (currentRenderingUser == comment.getCommenter()) {
+                        commentContainer.addChild(generateSingleComment(comment));
+                    } else {
+                        currentRenderingUser = comment.getCommenter();
+                        commentContainer = generateNewCommentBlock(outterContainer, comment);
+                    }
+                }
 
-		return outterContainer;
-	    }
+                return outterContainer;
+            }
 
-	    private HtmlBlockContainer generateNewCommentBlock(HtmlBlockContainer outterContainer, WorkflowProcessComment comment) {
-		HtmlBlockContainer commentContainer = new HtmlBlockContainer();
-		outterContainer.addChild(commentContainer);
-		commentContainer.addClass(getCommentBlockClasses());
+            private HtmlBlockContainer generateNewCommentBlock(HtmlBlockContainer outterContainer, WorkflowProcessComment comment) {
+                HtmlBlockContainer commentContainer = new HtmlBlockContainer();
+                outterContainer.addChild(commentContainer);
+                commentContainer.addClass(getCommentBlockClasses());
 
-		HtmlTable table = new HtmlTable();
-		commentContainer.addChild(table);
-		HtmlTableRow row = table.createRow();
-		HtmlTableCell photoCell = row.createCell();
+                HtmlTable table = new HtmlTable();
+                commentContainer.addChild(table);
+                HtmlTableRow row = table.createRow();
+                HtmlTableCell photoCell = row.createCell();
 
-		photoCell.setClasses(getPhotoClasses());
+                photoCell.setClasses(getPhotoClasses());
 
-		HtmlInlineContainer container = new HtmlInlineContainer();
-		HtmlImage userPhoto = new HtmlImage();
-		container.addChild(userPhoto);
-		userPhoto.setSource(RenderUtils.getFormattedProperties(getPhotoUrl(), comment.getCommenter()));
-		photoCell.setBody(userPhoto);
+                HtmlInlineContainer container = new HtmlInlineContainer();
+                HtmlImage userPhoto = new HtmlImage();
+                container.addChild(userPhoto);
+                userPhoto.setSource(RenderUtils.getFormattedProperties(getPhotoUrl(), comment.getCommenter()));
+                photoCell.setBody(userPhoto);
 
-		HtmlTableCell bodyCell = row.createCell();
-		HtmlBlockContainer bodyBlock = new HtmlBlockContainer();
-		bodyCell.setBody(bodyBlock);
+                HtmlTableCell bodyCell = row.createCell();
+                HtmlBlockContainer bodyBlock = new HtmlBlockContainer();
+                bodyCell.setBody(bodyBlock);
 
-		HtmlText name = new HtmlText(comment.getCommenter().getPresentationName());
-		name.setClasses(getNameClasses());
-		bodyBlock.addChild(name);
+                HtmlText name = new HtmlText(comment.getCommenter().getPresentationName());
+                name.setClasses(getNameClasses());
+                bodyBlock.addChild(name);
 
-		if (comment.getProcess().isUserObserver(comment.getCommenter())) {
-		    HtmlText observerMarker = new HtmlText(RenderUtils.getFormatedResourceString(getObserverBundle(),
-			    getObserverKey()));
-		    observerMarker.setClasses(getObserverClass());
-		    bodyBlock.addChild(observerMarker);
-		}
+                if (comment.getProcess().isUserObserver(comment.getCommenter())) {
+                    HtmlText observerMarker =
+                            new HtmlText(RenderUtils.getFormatedResourceString(getObserverBundle(), getObserverKey()));
+                    observerMarker.setClasses(getObserverClass());
+                    bodyBlock.addChild(observerMarker);
+                }
 
-		HtmlBlockContainer commentBlock = new HtmlBlockContainer();
-		bodyBlock.addChild(commentBlock);
+                HtmlBlockContainer commentBlock = new HtmlBlockContainer();
+                bodyBlock.addChild(commentBlock);
 
-		commentBlock.addChild(generateSingleComment(comment));
+                commentBlock.addChild(generateSingleComment(comment));
 
-		return commentBlock;
+                return commentBlock;
 
-	    }
+            }
 
-	    private HtmlComponent generateSingleComment(WorkflowProcessComment comment) {
-		HtmlParagraphContainer container = new HtmlParagraphContainer();
-		HtmlComponent renderedDate = RenderKit.getInstance().render(getOutputContext(), comment.getDate());
+            private HtmlComponent generateSingleComment(WorkflowProcessComment comment) {
+                HtmlParagraphContainer container = new HtmlParagraphContainer();
+                HtmlComponent renderedDate = RenderKit.getInstance().render(getOutputContext(), comment.getDate());
 
-		HtmlInlineContainer dateContainer = new HtmlInlineContainer();
-		dateContainer.setIndented(false);
-		dateContainer.addChild(new HtmlText("("));
-		dateContainer.addChild(renderedDate);
-		dateContainer.addChild(new HtmlText(")"));
+                HtmlInlineContainer dateContainer = new HtmlInlineContainer();
+                dateContainer.setIndented(false);
+                dateContainer.addChild(new HtmlText("("));
+                dateContainer.addChild(renderedDate);
+                dateContainer.addChild(new HtmlText(")"));
 
-		container.addChild(dateContainer);
-		container.addChild(new HtmlText(comment.getComment()));
+                container.addChild(dateContainer);
+                container.addChild(new HtmlText(comment.getComment()));
 
-		return container;
-	    }
+                return container;
+            }
 
-	};
+        };
     }
 
     public void setShowOnlyUnreadComments(boolean showOnlyUnreadComments) {
-	this.showOnlyUnreadComments = showOnlyUnreadComments;
+        this.showOnlyUnreadComments = showOnlyUnreadComments;
     }
 
     public boolean isShowOnlyUnreadComments() {
-	return showOnlyUnreadComments;
+        return showOnlyUnreadComments;
     }
 }

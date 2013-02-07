@@ -32,7 +32,7 @@ package module.metaWorkflow.domain;
 public abstract class Requestor extends Requestor_Base {
 
     public Requestor() {
-	super();
+        super();
     }
 
     public abstract String getName();

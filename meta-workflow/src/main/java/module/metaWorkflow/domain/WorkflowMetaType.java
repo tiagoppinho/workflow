@@ -55,196 +55,197 @@ import pt.utl.ist.fenix.tools.util.i18n.MultiLanguageString;
 public class WorkflowMetaType extends WorkflowMetaType_Base {
 
     protected WorkflowMetaType(String name, OrganizationalModel model, WorkflowMetaTypeVersion version) {
-	super();
-	super.setWorkflowSystem(WorkflowSystem.getInstance());
-	super.setName(name);
-	super.setProcessCounter(0);
-	super.setOrganizationalModel(model);
-	super.setSuporttedFileClasses(new Strings(Collections.EMPTY_LIST));
+        super();
+        super.setWorkflowSystem(WorkflowSystem.getInstance());
+        super.setName(name);
+        super.setProcessCounter(0);
+        super.setOrganizationalModel(model);
+        super.setSuporttedFileClasses(new Strings(Collections.EMPTY_LIST));
 
-	MultiLanguageString rootFieldSetName = new MultiLanguageString(Language.pt, BundleUtil.getStringFromResourceBundle(
-		"resources/MetaWorkflowResources", "label.rootFieldSetPT")).with(Language.en,
-		BundleUtil.getStringFromResourceBundle("resources/MetaWorkflowResources", "label.rootFieldSetEN"));
-	super.setFieldSet(new MetaFieldSet(rootFieldSetName, 1));
-	super.addVersions(version);
+        MultiLanguageString rootFieldSetName =
+                new MultiLanguageString(Language.pt, BundleUtil.getStringFromResourceBundle("resources/MetaWorkflowResources",
+                        "label.rootFieldSetPT")).with(Language.en,
+                        BundleUtil.getStringFromResourceBundle("resources/MetaWorkflowResources", "label.rootFieldSetEN"));
+        super.setFieldSet(new MetaFieldSet(rootFieldSetName, 1));
+        super.addVersions(version);
     }
 
     @Override
     public void setSuporttedFileClasses(Strings suporttedFileClasses) {
-	throw new UnsupportedOperationException("error.use.setSupportedFileClasses.with.stringList");
+        throw new UnsupportedOperationException("error.use.setSupportedFileClasses.with.stringList");
     }
 
     @Service
     public void setSuporttedFileClasses(List<String> classes) {
-	Strings classNames = new Strings(classes);
-	super.setSuporttedFileClasses(classNames);
+        Strings classNames = new Strings(classes);
+        super.setSuporttedFileClasses(classNames);
     }
 
     public WorkflowMetaTypeDescription getCurrentDescriptionOld() {
-	return Collections.max(getDescriptions());
+        return Collections.max(getDescriptions());
     }
 
     public String getCurrentDescription() {
-	WorkflowMetaTypeVersion currentPublishedWMTVersion = getCurrentPublishedWMTVersion();
-	return currentPublishedWMTVersion == null ? null : currentPublishedWMTVersion.getMetaTypeDescription();
+        WorkflowMetaTypeVersion currentPublishedWMTVersion = getCurrentPublishedWMTVersion();
+        return currentPublishedWMTVersion == null ? null : currentPublishedWMTVersion.getMetaTypeDescription();
     }
 
     public void setFileClasses(List<Class<? extends ProcessFile>> classNames) {
-	List<String> fileTypes = new ArrayList<String>();
-	for (Class clazz : classNames) {
-	    fileTypes.add(clazz.getName());
-	}
-	setSuporttedFileClasses(fileTypes);
+        List<String> fileTypes = new ArrayList<String>();
+        for (Class clazz : classNames) {
+            fileTypes.add(clazz.getName());
+        }
+        setSuporttedFileClasses(fileTypes);
     }
 
     public List<Class<? extends ProcessFile>> getFileClasses() {
-	List<Class<? extends ProcessFile>> fileClasses = new ArrayList<Class<? extends ProcessFile>>();
-	for (String className : getSuporttedFileClasses().getUnmodifiableList()) {
-	    Class<? extends ProcessFile> clazz = null;
-	    try {
-		clazz = (Class<? extends ProcessFile>) Class.forName(className);
-	    } catch (ClassNotFoundException e) {
-		e.printStackTrace();
-	    }
-	    if (clazz != null) {
-		fileClasses.add(clazz);
-	    }
+        List<Class<? extends ProcessFile>> fileClasses = new ArrayList<Class<? extends ProcessFile>>();
+        for (String className : getSuporttedFileClasses().getUnmodifiableList()) {
+            Class<? extends ProcessFile> clazz = null;
+            try {
+                clazz = (Class<? extends ProcessFile>) Class.forName(className);
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+            if (clazz != null) {
+                fileClasses.add(clazz);
+            }
 
-	}
-	return fileClasses;
+        }
+        return fileClasses;
     }
 
     public WorkflowMetaProcess getProcess(String OID) {
-	for (WorkflowMetaProcess process : getMetaProcesses()) {
-	    if (process.getExternalId().equals(OID)) {
-		return process;
-	    }
-	}
-	return null;
+        for (WorkflowMetaProcess process : getMetaProcesses()) {
+            if (process.getExternalId().equals(OID)) {
+                return process;
+            }
+        }
+        return null;
     }
 
     public static WorkflowMetaType readMetaType(String OID) {
-	for (WorkflowMetaType type : WorkflowSystem.getInstance().getMetaTypes()) {
-	    if (type.getExternalId().equals(OID)) {
-		return type;
-	    }
-	}
-	return null;
+        for (WorkflowMetaType type : WorkflowSystem.getInstance().getMetaTypes()) {
+            if (type.getExternalId().equals(OID)) {
+                return type;
+            }
+        }
+        return null;
     }
 
     @Service
     public static WorkflowMetaType createNewMetaType(String name, String description, OrganizationalModel model,
-	    List<Class<? extends ProcessFile>> classNames) {
-	WorkflowMetaTypeVersion workflowMetaTypeVersion = new WorkflowMetaTypeVersion(description);
-	WorkflowMetaType type = new WorkflowMetaType(name, model, workflowMetaTypeVersion);
-	type.setFileClasses(classNames);
+            List<Class<? extends ProcessFile>> classNames) {
+        WorkflowMetaTypeVersion workflowMetaTypeVersion = new WorkflowMetaTypeVersion(description);
+        WorkflowMetaType type = new WorkflowMetaType(name, model, workflowMetaTypeVersion);
+        type.setFileClasses(classNames);
 
-	return type;
+        return type;
     }
 
     public void addDescription(String description) {
-	getLatestWorkflowMetaTypeVersion().setMetaTypeDescription(description);
+        getLatestWorkflowMetaTypeVersion().setMetaTypeDescription(description);
     }
 
     public FieldSetValue initValuesOfFields() {
-	return getFieldSet().createFieldValue();
+        return getFieldSet().createFieldValue();
     }
 
     public int getCurrentPublishedVersionNumber() {
-	return getCurrentPublishedWMTVersion().getVersion();
+        return getCurrentPublishedWMTVersion().getVersion();
     }
 
     public List<MetaProcessState> getProcessStatesByOrder() {
-	List<MetaProcessState> states = new ArrayList<MetaProcessState>(getProcessStates());
-	Collections.sort(states, MetaProcessState.COMPARATOR_BY_POSITION);
-	return states;
+        List<MetaProcessState> states = new ArrayList<MetaProcessState>(getProcessStates());
+        Collections.sort(states, MetaProcessState.COMPARATOR_BY_POSITION);
+        return states;
     }
 
     public List<WorkflowMetaTypeDescription> getOrderedDescriptionHistoryOld() {
-	List<WorkflowMetaTypeDescription> list = new ArrayList<WorkflowMetaTypeDescription>(getDescriptions());
-	Collections.sort(list);
-	return Collections.unmodifiableList(list);
+        List<WorkflowMetaTypeDescription> list = new ArrayList<WorkflowMetaTypeDescription>(getDescriptions());
+        Collections.sort(list);
+        return Collections.unmodifiableList(list);
     }
 
     public List<WorkflowMetaTypeVersion> getOrderedDescriptionHistory() {
-	List<WorkflowMetaTypeVersion> list = new ArrayList<WorkflowMetaTypeVersion>(getVersions());
-	Collections.sort(list);
-	return Collections.unmodifiableList(list);
+        List<WorkflowMetaTypeVersion> list = new ArrayList<WorkflowMetaTypeVersion>(getVersions());
+        Collections.sort(list);
+        return Collections.unmodifiableList(list);
     }
 
     public List<Class<? extends ProcessFile>> getAvailableFileTypes() {
-	List<Class<? extends ProcessFile>> classes = new ArrayList<Class<? extends ProcessFile>>();
-	for (String fileClass : getSuporttedFileClasses().getUnmodifiableList()) {
-	    try {
-		Class<? extends ProcessFile> clazz = (Class<? extends ProcessFile>) Class.forName(fileClass);
-		classes.add(clazz);
-	    } catch (ClassNotFoundException e) {
-		e.printStackTrace();
-		// ignore error
-	    }
-	}
+        List<Class<? extends ProcessFile>> classes = new ArrayList<Class<? extends ProcessFile>>();
+        for (String fileClass : getSuporttedFileClasses().getUnmodifiableList()) {
+            try {
+                Class<? extends ProcessFile> clazz = (Class<? extends ProcessFile>) Class.forName(fileClass);
+                classes.add(clazz);
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+                // ignore error
+            }
+        }
 
-	return classes;
+        return classes;
     }
 
     public WorkflowMetaTypeDescription getDescriptionAtVersionOld(int version) {
-	List<WorkflowMetaTypeDescription> orderedDescriptionHistory = getOrderedDescriptionHistoryOld();
-	return (orderedDescriptionHistory.size() < version) ? null : orderedDescriptionHistory.get(version - 1);
+        List<WorkflowMetaTypeDescription> orderedDescriptionHistory = getOrderedDescriptionHistoryOld();
+        return (orderedDescriptionHistory.size() < version) ? null : orderedDescriptionHistory.get(version - 1);
     }
 
     public String getDescriptionAtVersion(int version) {
-	List<WorkflowMetaTypeVersion> orderedDescriptionHistory = getOrderedDescriptionHistory();
-	return (orderedDescriptionHistory.size() < version) ? null : orderedDescriptionHistory.get(version - 1)
-		.getMetaTypeDescription();
+        List<WorkflowMetaTypeVersion> orderedDescriptionHistory = getOrderedDescriptionHistory();
+        return (orderedDescriptionHistory.size() < version) ? null : orderedDescriptionHistory.get(version - 1)
+                .getMetaTypeDescription();
     }
 
     public Integer getNextIdentifier() {
-	setProcessCounter(getProcessCounter() + 1);
-	return getProcessCounter();
+        setProcessCounter(getProcessCounter() + 1);
+        return getProcessCounter();
     }
 
     @Service
     public void removeObserver(User user) {
-	super.removeMetaTypeObservers(user);
+        super.removeMetaTypeObservers(user);
     }
 
     @Service
     public void addObserver(User user) {
-	addMetaTypeObservers(user);
+        addMetaTypeObservers(user);
     }
 
     @Override
     @Service
     public void addQueues(WorkflowQueue queues) {
-	if (queues.getMetaType() != null) {
-	    throw new DomainException("error.queue.already.has.metaType");
-	}
+        if (queues.getMetaType() != null) {
+            throw new DomainException("error.queue.already.has.metaType");
+        }
 
-	super.addQueues(queues);
+        super.addQueues(queues);
     }
 
     @Override
     @Service
     public void removeQueues(WorkflowQueue queues) {
-	super.removeQueues(queues);
+        super.removeQueues(queues);
     }
 
     public Set<WorkflowQueue> getQueuesForUser(User user) {
-	Set<WorkflowQueue> queuesForUser = new HashSet<WorkflowQueue>();
-	for (WorkflowQueue queue : getQueues()) {
-	    if (queue.isUserAbleToAccessQueue(user)) {
-		queuesForUser.add(queue);
-	    }
-	}
-	return queuesForUser;
+        Set<WorkflowQueue> queuesForUser = new HashSet<WorkflowQueue>();
+        for (WorkflowQueue queue : getQueues()) {
+            if (queue.isUserAbleToAccessQueue(user)) {
+                queuesForUser.add(queue);
+            }
+        }
+        return queuesForUser;
     }
 
     public static Set<WorkflowQueue> getAllQueuesForUser(User user) {
-	Set<WorkflowQueue> queuesForUser = new HashSet<WorkflowQueue>();
-	for (WorkflowMetaType type : WorkflowSystem.getInstance().getMetaTypes()) {
-	    queuesForUser.addAll(type.getQueuesForUser(user));
-	}
-	return queuesForUser;
+        Set<WorkflowQueue> queuesForUser = new HashSet<WorkflowQueue>();
+        for (WorkflowMetaType type : WorkflowSystem.getInstance().getMetaTypes()) {
+            queuesForUser.addAll(type.getQueuesForUser(user));
+        }
+        return queuesForUser;
     }
 
     /**
@@ -253,7 +254,7 @@ public class WorkflowMetaType extends WorkflowMetaType_Base {
      *         unpublished
      */
     public WorkflowMetaTypeVersion getLatestWorkflowMetaTypeVersion() {
-	return Collections.max(getVersions());
+        return Collections.max(getVersions());
     }
 
     /**
@@ -261,13 +262,14 @@ public class WorkflowMetaType extends WorkflowMetaType_Base {
      * @return the most recent published {@link WorkflowMetaTypeVersion}
      */
     public WorkflowMetaTypeVersion getCurrentPublishedWMTVersion() {
-	WorkflowMetaTypeVersion metaTypeVersionToReturn = null;
-	for (WorkflowMetaTypeVersion metaTypeVersion : getVersions()) {
-	    if (metaTypeVersion.getPublished()
-		    && (metaTypeVersionToReturn == null || metaTypeVersion.getVersion() > metaTypeVersionToReturn.getVersion()))
-		metaTypeVersionToReturn = metaTypeVersion;
-	}
-	return metaTypeVersionToReturn;
+        WorkflowMetaTypeVersion metaTypeVersionToReturn = null;
+        for (WorkflowMetaTypeVersion metaTypeVersion : getVersions()) {
+            if (metaTypeVersion.getPublished()
+                    && (metaTypeVersionToReturn == null || metaTypeVersion.getVersion() > metaTypeVersionToReturn.getVersion())) {
+                metaTypeVersionToReturn = metaTypeVersion;
+            }
+        }
+        return metaTypeVersionToReturn;
     }
 
     //FENIX-345: Migrated getter and setter methods
@@ -276,25 +278,26 @@ public class WorkflowMetaType extends WorkflowMetaType_Base {
 
     @Override
     public List<WorkflowMetaProcess> getMetaProcesses() {
-	List<WorkflowMetaProcess> listMetaProcesses = new ArrayList<WorkflowMetaProcess>();
-	for (WorkflowMetaTypeVersion version : getVersions()) {
-	    listMetaProcesses.addAll(version.getMetaProcesses());
-	}
-	return listMetaProcesses;
+        List<WorkflowMetaProcess> listMetaProcesses = new ArrayList<WorkflowMetaProcess>();
+        for (WorkflowMetaTypeVersion version : getVersions()) {
+            listMetaProcesses.addAll(version.getMetaProcesses());
+        }
+        return listMetaProcesses;
     }
 
     //FENIX-345: TODO remove method after migration
     public List<WorkflowMetaProcess> getMetaProcessesOld() {
-	return super.getMetaProcesses();
+        return super.getMetaProcesses();
     }
-    
+
     @Override
     public void addMetaProcesses(WorkflowMetaProcess metaProcesses) {
-	WorkflowMetaTypeVersion currentPublishedWMTVersion = getCurrentPublishedWMTVersion();
-	if (currentPublishedWMTVersion == null)
-	    throw new MetaWorkflowDomainException("there.are.no.published.versions.yet");
+        WorkflowMetaTypeVersion currentPublishedWMTVersion = getCurrentPublishedWMTVersion();
+        if (currentPublishedWMTVersion == null) {
+            throw new MetaWorkflowDomainException("there.are.no.published.versions.yet");
+        }
 
-	currentPublishedWMTVersion.addMetaProcesses(metaProcesses);
+        currentPublishedWMTVersion.addMetaProcesses(metaProcesses);
     }
 
     //FENIX-345: TODO remove method after migration
@@ -304,52 +307,52 @@ public class WorkflowMetaType extends WorkflowMetaType_Base {
 
     @Override
     public void removeMetaProcesses(WorkflowMetaProcess metaProcesses) {
-	for (WorkflowMetaTypeVersion version : getVersions()) {
-	    version.removeMetaProcesses(metaProcesses);
-	}
+        for (WorkflowMetaTypeVersion version : getVersions()) {
+            version.removeMetaProcesses(metaProcesses);
+        }
     }
 
     //FENIX-345: TODO remove method after migration
     public void removeMetaProcessesOld(WorkflowMetaProcess metaProcesses) {
-	super.removeMetaProcesses(metaProcesses);
+        super.removeMetaProcesses(metaProcesses);
     }
 
     //MetaProcesses END
 
     //MetaProcessState START TODO: Sets and so on ?! (not really if not used)
-    
+
     @Override
     public List<MetaProcessState> getProcessStates() {
-	return getProcessStates(getLatestWorkflowMetaTypeVersion());
+        return getProcessStates(getLatestWorkflowMetaTypeVersion());
     }
 
     public List<MetaProcessState> getProcessStatesOfCurrentPublishedVersion() {
-	return getProcessStates(getCurrentPublishedWMTVersion());
+        return getProcessStates(getCurrentPublishedWMTVersion());
     }
 
     public List<MetaProcessState> getProcessStates(WorkflowMetaTypeVersion version) {
-	return version.getProcessStates();
+        return version.getProcessStates();
     }
 
     //FENIX-345: TODO remove method after migration
     public List<MetaProcessState> getProcessStatesOld() {
-	return super.getProcessStates();
+        return super.getProcessStates();
     }
 
     @Override
     public void addProcessStates(MetaProcessState processStates) {
-	//by default let's add to the latest, if it is already published, then we have a problem
-	//TODO maybe create a new unpublished version if the last version is published (?)
-	addProcessStates(processStates, getLatestWorkflowMetaTypeVersion());
+        //by default let's add to the latest, if it is already published, then we have a problem
+        //TODO maybe create a new unpublished version if the last version is published (?)
+        addProcessStates(processStates, getLatestWorkflowMetaTypeVersion());
     }
 
     public void addProcessStates(MetaProcessState processState, WorkflowMetaTypeVersion version) {
-	version.addProcessStates(processState);
+        version.addProcessStates(processState);
     }
 
     //FENIX-345: TODO remove method after migration
     public void addProcessStatesOld(MetaProcessState processStates) {
-	super.addProcessStates(processStates);
+        super.addProcessStates(processStates);
     }
 
     /**
@@ -358,12 +361,12 @@ public class WorkflowMetaType extends WorkflowMetaType_Base {
      */
     @Override
     public void removeProcessStates(MetaProcessState processStates) {
-	getLatestWorkflowMetaTypeVersion().removeProcessStates(processStates);
+        getLatestWorkflowMetaTypeVersion().removeProcessStates(processStates);
     }
 
     //FENIX-345: TODO remove method after migration
     public void removeProcessStatesOld(MetaProcessState processStates) {
-	super.removeProcessStates(processStates);
+        super.removeProcessStates(processStates);
     }
 
     //MetaProcessState END
@@ -371,31 +374,31 @@ public class WorkflowMetaType extends WorkflowMetaType_Base {
     //MetaFieldSet START TODO (sets and all ? not really if not really used)
     @Override
     public MetaFieldSet getFieldSet() {
-	return getLatestWorkflowMetaTypeVersion().getFieldSet();
+        return getLatestWorkflowMetaTypeVersion().getFieldSet();
     }
 
     //FENIX-345: TODO remove method after migration
     public MetaFieldSet getFieldSetOld() {
-	return super.getFieldSet();
+        return super.getFieldSet();
     }
 
     @Override
     public void setFieldSet(MetaFieldSet fieldSet) {
-	getLatestWorkflowMetaTypeVersion().setFieldSet(fieldSet);
+        getLatestWorkflowMetaTypeVersion().setFieldSet(fieldSet);
     }
 
     //FENIX-345: TODO remove method after migration
     public void setFieldSetOld(MetaFieldSet fieldSet) {
-	super.setFieldSet(fieldSet);
+        super.setFieldSet(fieldSet);
     }
+
     //MetaFieldSet END
 
     //protecting the adds and removes of versions
     @Override
     public void addVersions(WorkflowMetaTypeVersion versions) {
-	throw new MetaWorkflowDomainException(
-"illegal.usage.of.version.creation.use."
-		+ "WorkflowMetaTypeVersion.createNewUnpublishedVersion");
+        throw new MetaWorkflowDomainException("illegal.usage.of.version.creation.use."
+                + "WorkflowMetaTypeVersion.createNewUnpublishedVersion");
     }
 
     /**
@@ -403,7 +406,6 @@ public class WorkflowMetaType extends WorkflowMetaType_Base {
      * @return true if there is already a MetaTypeVersion on draft
      */
     public boolean hasDraftMetaTypeVersion() {
-	return !getLatestWorkflowMetaTypeVersion().getPublished();
+        return !getLatestWorkflowMetaTypeVersion().getPublished();
     }
 }
-

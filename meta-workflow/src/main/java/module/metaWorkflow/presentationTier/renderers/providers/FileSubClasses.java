@@ -37,12 +37,12 @@ public class FileSubClasses extends AbstractDomainClassProvider {
 
     @Override
     protected Class getSuperClass() {
-	return ProcessFile.class;
+        return ProcessFile.class;
     }
 
     @Override
     protected boolean shouldContainSuperClass() {
-	return true;
+        return true;
     }
 
 }

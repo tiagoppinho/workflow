@@ -32,13 +32,13 @@ import javax.servlet.http.HttpServletResponse;
 import module.organization.domain.Person;
 import module.workflow.domain.WorkflowProcess;
 import module.workflow.widgets.UnreadCommentsWidget;
-import pt.ist.bennu.core.applicationTier.Authenticate.UserView;
-import pt.ist.bennu.core.presentationTier.actions.ContextBaseAction;
 
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
+import pt.ist.bennu.core.applicationTier.Authenticate.UserView;
+import pt.ist.bennu.core.presentationTier.actions.ContextBaseAction;
 import pt.ist.fenixWebFramework.struts.annotations.Mapping;
 
 /**
@@ -50,8 +50,7 @@ import pt.ist.fenixWebFramework.struts.annotations.Mapping;
 public class WorkflowWidgetActions extends ContextBaseAction {
 
     /**
-     * Method used by the UnreadCommentsWidget widget
-     * {@link UnreadCommentsWidget}.
+     * Method used by the UnreadCommentsWidget widget {@link UnreadCommentsWidget}.
      * 
      * @param mapping
      * @param form
@@ -60,38 +59,39 @@ public class WorkflowWidgetActions extends ContextBaseAction {
      * @return
      */
     public ActionForward viewListUnreadComments(final ActionMapping mapping, final ActionForm form,
-	    final HttpServletRequest request, final HttpServletResponse response) {
-	//get the parameter with the class to use
-	String processClass = request.getParameter("processClass");
+            final HttpServletRequest request, final HttpServletResponse response) {
+        //get the parameter with the class to use
+        String processClass = request.getParameter("processClass");
 
-	request.setAttribute("processClass", processClass);
+        request.setAttribute("processClass", processClass);
 
-	//get all of the unread comments
-	Person loggedPerson = UserView.getCurrentUser().getPerson();
-	List<WorkflowProcess> processesWithUnreadComments = UnreadCommentsWidget.getProcessesWithUnreadComments(null,
-		loggedPerson, processClass);
-	request.setAttribute("processesWithUnreadComments", processesWithUnreadComments);
+        //get all of the unread comments
+        Person loggedPerson = UserView.getCurrentUser().getPerson();
+        List<WorkflowProcess> processesWithUnreadComments =
+                UnreadCommentsWidget.getProcessesWithUnreadComments(null, loggedPerson, processClass);
+        request.setAttribute("processesWithUnreadComments", processesWithUnreadComments);
 
-	//	if (anchor != null) {
-	//	    return forward(request, "/module/workflow/widgets/ListOfUnreadComments.jsp#" + anchor);
-	//	}
-	return forward(request, "/module/workflow/widgets/ListOfUnreadComments.jsp");
+        //	if (anchor != null) {
+        //	    return forward(request, "/module/workflow/widgets/ListOfUnreadComments.jsp#" + anchor);
+        //	}
+        return forward(request, "/module/workflow/widgets/ListOfUnreadComments.jsp");
 
     }
 
     public ActionForward markCommentsAsRead(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
-	    final HttpServletResponse response) {
-	//get the parameter anchor and processId
-	String anchor = request.getParameter("anchor");
-	WorkflowProcess process = (WorkflowProcess) getDomainObject(request.getParameter("processId"));
+            final HttpServletResponse response) {
+        //get the parameter anchor and processId
+        String anchor = request.getParameter("anchor");
+        WorkflowProcess process = (WorkflowProcess) getDomainObject(request.getParameter("processId"));
 
-	//validate the access to the process
-	if (process != null && !process.isAccessibleToCurrentUser())
-	    //TODO throw an error message if the user has no permission to set the comments as read
-	    return viewListUnreadComments(mapping, form, request, response);
+        //validate the access to the process
+        if (process != null && !process.isAccessibleToCurrentUser()) {
+            //TODO throw an error message if the user has no permission to set the comments as read
+            return viewListUnreadComments(mapping, form, request, response);
+        }
 
-	//mark the comments as read
-	process.markCommentsAsReadForUser(UserView.getCurrentUser());
-	return viewListUnreadComments(mapping, form, request, response);
+        //mark the comments as read
+        process.markCommentsAsReadForUser(UserView.getCurrentUser());
+        return viewListUnreadComments(mapping, form, request, response);
     }
 }

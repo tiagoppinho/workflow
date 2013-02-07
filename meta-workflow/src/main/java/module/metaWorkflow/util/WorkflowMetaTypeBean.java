@@ -46,45 +46,45 @@ public class WorkflowMetaTypeBean implements Serializable {
     private OrganizationalModel organizationModel;
 
     public OrganizationalModel getOrganizationModel() {
-	return organizationModel;
+        return organizationModel;
     }
 
     public void setOrganizationModel(OrganizationalModel organizationModel) {
-	this.organizationModel = organizationModel;
+        this.organizationModel = organizationModel;
     }
 
     public List<Class<? extends ProcessFile>> getFileClassNames() {
-	return classNames;
+        return classNames;
     }
 
     public void setFileClassNames(List<Class<? extends ProcessFile>> classNames) {
-	this.classNames = classNames;
+        this.classNames = classNames;
     }
 
     public WorkflowMetaTypeBean() {
-	this(null, null);
+        this(null, null);
     }
 
     public WorkflowMetaTypeBean(String name, String description) {
-	setName(name);
-	setDescription(description);
-	setFileClassNames(new ArrayList<Class<? extends ProcessFile>>());
-	setOrganizationModel(null);
+        setName(name);
+        setDescription(description);
+        setFileClassNames(new ArrayList<Class<? extends ProcessFile>>());
+        setOrganizationModel(null);
     }
 
     public String getName() {
-	return name;
+        return name;
     }
 
     public void setName(String name) {
-	this.name = name;
+        this.name = name;
     }
 
     public String getDescription() {
-	return description;
+        return description;
     }
 
     public void setDescription(String description) {
-	this.description = description;
+        this.description = description;
     }
 }

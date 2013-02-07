@@ -34,7 +34,7 @@ import pt.ist.bennu.core.domain.exceptions.DomainException;
 public class ProcessFileValidationException extends DomainException {
 
     public ProcessFileValidationException(String bundle, String key, String... args) {
-	super(key, DomainException.getResourceFor(bundle), args);
+        super(key, DomainException.getResourceFor(bundle), args);
     }
 
 }

@@ -48,38 +48,38 @@ public class WorkflowUnitQueueBean extends WorkflowQueueBean {
     private List<AccountabilityType> accountabilityTypes;
 
     public WorkflowUnitQueueBean() {
-	setAccountabilityTypes(new ArrayList<AccountabilityType>());
-	setUnit(null);
+        setAccountabilityTypes(new ArrayList<AccountabilityType>());
+        setUnit(null);
     }
 
     public Unit getUnit() {
-	return unit;
+        return unit;
     }
 
     public void setUnit(Unit unit) {
-	this.unit = unit;
+        this.unit = unit;
     }
 
     public void setAccountabilityTypes(List<AccountabilityType> accountabilityTypes) {
-	this.accountabilityTypes = new ArrayList<AccountabilityType>();
-	for (AccountabilityType type : accountabilityTypes) {
-	    this.accountabilityTypes.add(type);
-	}
+        this.accountabilityTypes = new ArrayList<AccountabilityType>();
+        for (AccountabilityType type : accountabilityTypes) {
+            this.accountabilityTypes.add(type);
+        }
     }
 
     public List<AccountabilityType> getAccountabilityTypes() {
-	return accountabilityTypes;
+        return accountabilityTypes;
     }
 
     @Override
     protected void fillQueueFields(WorkflowQueue queue) {
-	setAccountabilityTypes(((WorkflowUnitQueue) queue).getAccountabilityTypes());
+        setAccountabilityTypes(((WorkflowUnitQueue) queue).getAccountabilityTypes());
     }
 
     @Override
     @Service
     public WorkflowUnitQueue createWorkflowQueue() {
-	return new WorkflowUnitQueue(getUnit(), getName(), getAccountabilityTypes());
+        return new WorkflowUnitQueue(getUnit(), getName(), getAccountabilityTypes());
     }
 
 }

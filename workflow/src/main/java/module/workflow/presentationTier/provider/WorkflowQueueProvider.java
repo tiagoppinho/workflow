@@ -42,15 +42,15 @@ public class WorkflowQueueProvider implements DataProvider {
 
     @Override
     public Converter getConverter() {
-	return null;
+        return null;
     }
 
     @Override
     public Object provide(Object source, Object currentValue) {
-	final List<WorkflowQueue> result = new ArrayList<WorkflowQueue>();
-	result.addAll(WorkflowSystem.getInstance().getWorkflowQueuesSet());
-	Collections.sort(result, WorkflowQueue.COMPARATOR_BY_NAME);
-	return result;
+        final List<WorkflowQueue> result = new ArrayList<WorkflowQueue>();
+        result.addAll(WorkflowSystem.getInstance().getWorkflowQueuesSet());
+        Collections.sort(result, WorkflowQueue.COMPARATOR_BY_NAME);
+        return result;
     }
 
 }

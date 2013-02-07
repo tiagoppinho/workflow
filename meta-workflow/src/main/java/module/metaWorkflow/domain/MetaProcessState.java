@@ -38,65 +38,63 @@ import pt.utl.ist.fenix.tools.util.i18n.MultiLanguageString;
  * 
  */
 public class MetaProcessState extends MetaProcessState_Base {
-    
+
     public static Comparator<MetaProcessState> COMPARATOR_BY_POSITION = new Comparator<MetaProcessState>() {
-	@Override
-	public int compare(MetaProcessState state1, MetaProcessState state2) {
-	    int orderComp = state1.getPosition().compareTo(state2.getPosition());
-	    return (orderComp != 0) ? orderComp : COMPARATOR_BY_NAME.compare(state1, state2);
-	}
+        @Override
+        public int compare(MetaProcessState state1, MetaProcessState state2) {
+            int orderComp = state1.getPosition().compareTo(state2.getPosition());
+            return (orderComp != 0) ? orderComp : COMPARATOR_BY_NAME.compare(state1, state2);
+        }
     };
-    
+
     public static Comparator<MetaProcessState> COMPARATOR_BY_NAME = new Comparator<MetaProcessState>() {
-	@Override
-	public int compare(MetaProcessState state1, MetaProcessState state2) {
-	    int nameComp = state1.getName().getContent().compareTo(state2.getName().getContent());
-	    return (nameComp != 0) ? nameComp : state1.getExternalId().compareTo(state2.getExternalId());
-	}
+        @Override
+        public int compare(MetaProcessState state1, MetaProcessState state2) {
+            int nameComp = state1.getName().getContent().compareTo(state2.getName().getContent());
+            return (nameComp != 0) ? nameComp : state1.getExternalId().compareTo(state2.getExternalId());
+        }
     };
 
     public MetaProcessState() {
         super();
     }
-    
+
     public MetaProcessState(String name, Integer position) {
-	this();
-	setName(new MultiLanguageString(name));
-	setPosition(position);
+        this();
+        setName(new MultiLanguageString(name));
+        setPosition(position);
     }
 
     public MetaProcessState(WorkflowMetaTypeVersion metaTypeVersion, String name, Integer position) {
-	this(name, position);
-	setWorkflowMetaTypeVersion(metaTypeVersion);
+        this(name, position);
+        setWorkflowMetaTypeVersion(metaTypeVersion);
     }
 
     public MetaProcessState(WorkflowMetaTypeVersion metaTypeVersion, MultiLanguageString name, Integer position) {
-	this();
-	setName(name);
-	setPosition(position);
-	setWorkflowMetaTypeVersion(metaTypeVersion);
+        this();
+        setName(name);
+        setPosition(position);
+        setWorkflowMetaTypeVersion(metaTypeVersion);
     }
 
-
     public MetaProcessState(MultiLanguageString name, Integer position) {
-	this();
-	setName(name);
-	setPosition(position);
+        this();
+        setName(name);
+        setPosition(position);
     }
 
     @ConsistencyPredicate
     public boolean checkHasMetaTypeVersion() {
-	return hasWorkflowMetaTypeVersion();
+        return hasWorkflowMetaTypeVersion();
     }
 
-
     public boolean isActive(WorkflowMetaProcess process) {
-	for (MetaProcessStateConfig configuration : getConfigs()) {
-	    if (configuration.isActive(process)) {
-		return true;
-	    }
-	}
-	return false;
+        for (MetaProcessStateConfig configuration : getConfigs()) {
+            if (configuration.isActive(process)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /*
@@ -106,29 +104,29 @@ public class MetaProcessState extends MetaProcessState_Base {
      */
     @Service
     public static MetaProcessState create(WorkflowMetaTypeVersion metaTypeVersion, String name, Integer position) {
-	return new MetaProcessState(metaTypeVersion, name, position);
+        return new MetaProcessState(metaTypeVersion, name, position);
     }
 
     @Service
     public void delete() {
-	if (hasAnyDependingConfigs()) {
-	    throw new DomainException("error.state.has.depending.states");
-	}
-	for (MetaProcessStateConfig config : getConfigs()) {
-	    config.delete();
-	}
-	removeWorkflowMetaType();
-	removeWorkflowMetaTypeVersion();
-	deleteDomainObject();
+        if (hasAnyDependingConfigs()) {
+            throw new DomainException("error.state.has.depending.states");
+        }
+        for (MetaProcessStateConfig config : getConfigs()) {
+            config.delete();
+        }
+        removeWorkflowMetaType();
+        removeWorkflowMetaTypeVersion();
+        deleteDomainObject();
     }
 
     @Override
     public WorkflowMetaType getWorkflowMetaType() {
-	return getWorkflowMetaTypeVersion().getMetaType();
+        return getWorkflowMetaTypeVersion().getMetaType();
     }
 
     public WorkflowMetaType getWorkflowMetaTypeOld() {
-	return super.getWorkflowMetaType();
+        return super.getWorkflowMetaType();
     }
 
     /**
@@ -137,7 +135,7 @@ public class MetaProcessState extends MetaProcessState_Base {
      *         is published
      */
     public boolean isPublished() {
-	return getWorkflowMetaTypeVersion().getPublished();
+        return getWorkflowMetaTypeVersion().getPublished();
 
     }
 

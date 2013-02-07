@@ -43,24 +43,24 @@ import pt.ist.bennu.core.domain.contents.Node;
 public class ProcessNodeSelectionMapper {
 
     public static List<Node> getForwardFor(Class<? extends WorkflowProcess> processClass) {
-	for (ProcessSelectionMapper mapper : WorkflowSystem.getInstance().getProcessMappings()) {
-	    if (mapper.getClassname().equals(processClass.getName())) {
-		List<Node> nodes = new ArrayList<Node>();
-		List<NodeMapping> mappings = new ArrayList<NodeMapping>();
-		mappings.addAll(mapper.getNodeMappings());
-		Collections.sort(mappings, new Comparator<NodeMapping>() {
+        for (ProcessSelectionMapper mapper : WorkflowSystem.getInstance().getProcessMappings()) {
+            if (mapper.getClassname().equals(processClass.getName())) {
+                List<Node> nodes = new ArrayList<Node>();
+                List<NodeMapping> mappings = new ArrayList<NodeMapping>();
+                mappings.addAll(mapper.getNodeMappings());
+                Collections.sort(mappings, new Comparator<NodeMapping>() {
 
-		    @Override
-		    public int compare(NodeMapping o1, NodeMapping o2) {
-			return Integer.valueOf(o1.getNodeOrder()).compareTo(o2.getNodeOrder());
-		    }
-		});
-		for (NodeMapping mapping : mappings) {
-		    nodes.add(mapping.getNode());
-		}
-		return nodes;
-	    }
-	}
-	return Collections.emptyList();
+                    @Override
+                    public int compare(NodeMapping o1, NodeMapping o2) {
+                        return Integer.valueOf(o1.getNodeOrder()).compareTo(o2.getNodeOrder());
+                    }
+                });
+                for (NodeMapping mapping : mappings) {
+                    nodes.add(mapping.getNode());
+                }
+                return nodes;
+            }
+        }
+        return Collections.emptyList();
     }
 }

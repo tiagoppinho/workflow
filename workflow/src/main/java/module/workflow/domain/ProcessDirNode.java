@@ -84,8 +84,9 @@ public class ProcessDirNode extends ProcessDirNode_Base {
 
     public ProcessDirNode(WorkflowProcess process) {
         super();
-        if (process.getDocumentsRepository() != null)
+        if (process.getDocumentsRepository() != null) {
             throw new DomainException("error.this.process.already.has.a.repository");
+        }
         setDirNode(new DirNode());
         getDirNode().setReadGroup(WFDocsDefaultReadGroup.getOrCreateInstance(process));
         getDirNode().setWriteGroup(WFDocsDefaultWriteGroup.getOrCreateInstance(process));
@@ -122,8 +123,9 @@ public class ProcessDirNode extends ProcessDirNode_Base {
 
         //seen that the DocumentRepository offers a flat repository i.e. no dirs, let's throw an error
         //if we found something that is a dir or that cannot be converted to ProcessDocument
-        if (nodeFound != null)
+        if (nodeFound != null) {
             throw new DuplicateProcessFileNameException("no.files.same.name.allowed.rename.pls", displayName);
+        }
         ProcessFile existingProcessDocument = null;
 
         FileNode fileNode =
@@ -165,11 +167,13 @@ public class ProcessDirNode extends ProcessDirNode_Base {
      *         ProcessDirNode, or null if none is found
      */
     private ProcessFile getProcessFile(FileNode node) {
-        if (!this.equals(node.getParent()))
+        if (!this.equals(node.getParent())) {
             return null;
+        }
         for (ProcessFile processDocument : node.getDocument().getProcessDocuments()) {
-            if (processDocument.getProcess().equals(getWorkflowProcess()))
+            if (processDocument.getProcess().equals(getWorkflowProcess())) {
                 return processDocument;
+            }
         }
         return null;
 
@@ -202,30 +206,32 @@ public class ProcessDirNode extends ProcessDirNode_Base {
         return getDirNode().getTrash();
     }
 
-
     /**
      * 
      * @param fileNode {@link FileNode} to search on
      * @return the {@link WorkflowProcess} associated with that {@link FileNode} or null if it doesn't exist
      */
     public static WorkflowProcess getProcess(AbstractFileNode node) {
-        if (node == null)
+        if (node == null) {
             return null;
+        }
         if (node instanceof DirNode && ((DirNode) node).getProcessDirNode() != null) {
             ProcessDirNode processDirNode = ((DirNode) node).getProcessDirNode();
-            if (processDirNode != null)
+            if (processDirNode != null) {
                 return processDirNode.getWorkflowProcess();
-            else
+            } else {
                 return null;
-        } else
+            }
+        } else {
             return getProcess(node.getParent());
+        }
     }
 
     public void delete() {
         removeDirNode();
         removeWorkflowProcess();
         deleteDomainObject();
-        
+
     }
 
 }

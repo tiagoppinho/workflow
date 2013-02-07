@@ -44,44 +44,44 @@ public class WorkflowLayoutContext extends LayoutContext {
     protected String workflowHead;
 
     public WorkflowLayoutContext() {
-	super();
+        super();
     }
 
     public WorkflowLayoutContext(final String path) {
-	super(path);
+        super(path);
     }
 
     public String getWorkflowShortBody() {
-	return workflowShortBody;
+        return workflowShortBody;
     }
 
     public void setWorkflowShortBody(String workflowShortBody) {
-	this.workflowShortBody = workflowShortBody;
+        this.workflowShortBody = workflowShortBody;
     }
 
     public String getWorkflowBody() {
-	return workflowBody;
+        return workflowBody;
     }
 
     public void setWorkflowBody(String workflowBody) {
-	this.workflowBody = workflowBody;
+        this.workflowBody = workflowBody;
     }
 
     public String getWorkflowHead() {
-	return workflowHead;
+        return workflowHead;
     }
 
     public void setWorkflowHead(String workflowHead) {
-	this.workflowHead = workflowHead;
+        this.workflowHead = workflowHead;
     }
 
     public static WorkflowLayoutContext getDefaultWorkflowLayoutContext(Class<? extends WorkflowProcess> processClass) {
-	WorkflowLayoutContext context = new WorkflowLayoutContext();
-	String folder = processClass.getName().replace(".", "/");
-	context.setWorkflowBody("/" + folder + "/" + DEFAULT_BODY);
-	context.setWorkflowHead("/" + folder + "/" + DEFAULT_HEAD);
-	context.setWorkflowShortBody("/" + folder + "/" + DEFAULT_SHORT_BODY);
+        WorkflowLayoutContext context = new WorkflowLayoutContext();
+        String folder = processClass.getName().replace(".", "/");
+        context.setWorkflowBody("/" + folder + "/" + DEFAULT_BODY);
+        context.setWorkflowHead("/" + folder + "/" + DEFAULT_HEAD);
+        context.setWorkflowShortBody("/" + folder + "/" + DEFAULT_SHORT_BODY);
 
-	return context;
+        return context;
     }
 }

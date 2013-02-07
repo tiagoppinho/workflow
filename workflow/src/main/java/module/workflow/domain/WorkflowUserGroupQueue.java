@@ -46,64 +46,64 @@ import pt.ist.fenixWebFramework.services.Service;
 public class WorkflowUserGroupQueue extends WorkflowUserGroupQueue_Base {
 
     protected WorkflowUserGroupQueue() {
-	super();
+        super();
     }
 
     WorkflowUserGroupQueue(String name, List<User> baseUsers) {
-	this();
-	init(name, baseUsers);
+        this();
+        init(name, baseUsers);
     }
 
     @Override
     protected void init(String name) {
-	throw new RuntimeException("invalid init invocation");
+        throw new RuntimeException("invalid init invocation");
     }
-    
-    protected void init(String name, List<User> baseUsers) {
-	setName(name);
 
-	for (User user : baseUsers) {
-	    addUsers(user);
-	}	
+    protected void init(String name, List<User> baseUsers) {
+        setName(name);
+
+        for (User user : baseUsers) {
+            addUsers(user);
+        }
     }
 
     @Override
     public boolean isUserAbleToAccessQueue(User user) {
-	return getUsers().contains(user);
+        return getUsers().contains(user);
     }
 
     @Override
     @Service
     public void edit(WorkflowQueueBean bean) {
-	setName(bean.getName());
+        setName(bean.getName());
 
-	for (User user : ((WorkflowUserGroupQueueBean) bean).getUsers()) {
-	    addUsers(user);
-	}
+        for (User user : ((WorkflowUserGroupQueueBean) bean).getUsers()) {
+            addUsers(user);
+        }
     }
 
     @Override
     @Service
     public void removeUsers(User users) {
-	super.removeUsers(users);
+        super.removeUsers(users);
     }
 
     @Override
     public boolean isConnectedToCurrentHost() {
-	final VirtualHost virtualHost = VirtualHost.getVirtualHostForThread();
-	return virtualHost != null && getWorkflowSystem() == virtualHost.getWorkflowSystem();
+        final VirtualHost virtualHost = VirtualHost.getVirtualHostForThread();
+        return virtualHost != null && getWorkflowSystem() == virtualHost.getWorkflowSystem();
     }
 
     @Override
     public Collection<Person> getPersons() {
-	Collection<Person> persons = new ArrayList<Person>();
+        Collection<Person> persons = new ArrayList<Person>();
 
-	List<User> users = getUsers();
-	for (User user : users) {
-	    persons.add(user.getPerson());
-	}
+        List<User> users = getUsers();
+        for (User user : users) {
+            persons.add(user.getPerson());
+        }
 
-	return persons;
+        return persons;
     }
 
 }
