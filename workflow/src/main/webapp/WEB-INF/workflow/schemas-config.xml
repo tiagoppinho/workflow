@@ -51,7 +51,7 @@
 		<property name="nullOptionHidden" value="true"/>
 		<property name="saveOptions" value="true"/>
 	</slot>
-	<slot name="displayName" key="label.filename">
+	<slot name="displayName" key="label.filename" required="true"  >
 		<property name="size" value="50"/>
 	</slot>
 	<slot name="inputStream" key="label.document">

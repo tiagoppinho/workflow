@@ -51,3 +51,23 @@
 	<bean:define id="jspToInclude" name="interface" type="java.lang.String"/>
 	<jsp:include page="<%= jspToInclude %>"/>
 </logic:equal>
+
+<script type="text/javascript">
+$(document).ready(function ($) {
+	var displayNameInput = $('input[name$="displayName"]');
+	if ( displayNameInput != undefined) {
+		var fileInput = $(":file");
+		if (fileInput.val() != undefined) {
+			fileInput.change(function(e) {
+				if (displayNameInput.val() == undefined || displayNameInput.val() == "") {
+					displayNameInput.val(fileInput.val().split('\\').pop());
+				}
+			});
+		}		
+	}
+
+	
+});
+
+
+</script>
