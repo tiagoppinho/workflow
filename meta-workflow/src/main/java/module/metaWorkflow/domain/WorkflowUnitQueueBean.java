@@ -25,13 +25,14 @@
 package module.metaWorkflow.domain;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import module.organization.domain.AccountabilityType;
 import module.organization.domain.Unit;
 import module.workflow.domain.WorkflowQueue;
 import module.workflow.util.WorkflowQueueBean;
-import pt.ist.fenixWebFramework.services.Service;
+import pt.ist.fenixframework.Atomic;
 
 /**
  * 
@@ -60,7 +61,7 @@ public class WorkflowUnitQueueBean extends WorkflowQueueBean {
         this.unit = unit;
     }
 
-    public void setAccountabilityTypes(List<AccountabilityType> accountabilityTypes) {
+    public void setAccountabilityTypes(Collection<AccountabilityType> accountabilityTypes) {
         this.accountabilityTypes = new ArrayList<AccountabilityType>();
         for (AccountabilityType type : accountabilityTypes) {
             this.accountabilityTypes.add(type);
@@ -77,7 +78,7 @@ public class WorkflowUnitQueueBean extends WorkflowQueueBean {
     }
 
     @Override
-    @Service
+    @Atomic
     public WorkflowUnitQueue createWorkflowQueue() {
         return new WorkflowUnitQueue(getUnit(), getName(), getAccountabilityTypes());
     }

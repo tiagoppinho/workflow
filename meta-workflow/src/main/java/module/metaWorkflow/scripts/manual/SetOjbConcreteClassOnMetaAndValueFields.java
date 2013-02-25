@@ -24,29 +24,27 @@
  */
 package module.metaWorkflow.scripts.manual;
 
-import java.util.List;
+import java.util.Set;
 
-import jvstm.TransactionalCommand;
 import module.metaWorkflow.domain.FieldValue;
 import module.metaWorkflow.domain.MetaField;
 import module.metaWorkflow.domain.MetaFieldSet;
 import module.metaWorkflow.domain.WorkflowMetaType;
 import module.workflow.domain.WorkflowSystem;
-import pt.ist.bennu.core.domain.scheduler.CustomTask;
-import pt.ist.fenixframework.pstm.Transaction;
+import pt.ist.bennu.core.domain.scheduler.WriteCustomTask;
 
 /**
  * 
  * @author Anil Kassamali
  * 
  */
-public class SetOjbConcreteClassOnMetaAndValueFields extends CustomTask implements TransactionalCommand {
+public class SetOjbConcreteClassOnMetaAndValueFields extends WriteCustomTask {
 
     @Override
-    public void doIt() {
+    public void doService() {
         WorkflowSystem system = WorkflowSystem.getInstance();
 
-        List<WorkflowMetaType> metaTypes = system.getMetaTypes();
+        Set<WorkflowMetaType> metaTypes = system.getMetaTypes();
 
         for (WorkflowMetaType workflowMetaType : metaTypes) {
             MetaFieldSet fieldSet = workflowMetaType.getFieldSet();
@@ -57,7 +55,7 @@ public class SetOjbConcreteClassOnMetaAndValueFields extends CustomTask implemen
     void setOjbConcteteClassOnMetaField(final MetaField metaField) {
         metaField.setOjbConcreteClass(metaField.getClass().getName());
 
-        List<FieldValue> fieldValues = metaField.getFieldValues();
+        Set<FieldValue> fieldValues = metaField.getFieldValues();
         for (FieldValue fieldValue : fieldValues) {
             fieldValue.setOjbConcreteClass(fieldValue.getClass().getName());
         }
@@ -65,17 +63,11 @@ public class SetOjbConcreteClassOnMetaAndValueFields extends CustomTask implemen
         if (metaField instanceof MetaFieldSet) {
             MetaFieldSet metaFieldSet = (MetaFieldSet) metaField;
 
-            List<MetaField> childFields = metaFieldSet.getChildFields();
+            Set<MetaField> childFields = metaFieldSet.getChildFields();
             for (MetaField child : childFields) {
                 setOjbConcteteClassOnMetaField(child);
             }
         }
-    }
-
-    @Override
-    public void run() {
-        Transaction.withTransaction(false, this);
-        out.println("Done.");
     }
 
 }

@@ -46,6 +46,7 @@ import pt.ist.bennu.core.presentationTier.actions.ContextBaseAction;
 import pt.ist.bennu.core.util.BundleUtil;
 import pt.ist.fenixWebFramework.renderers.utils.RenderUtils;
 import pt.ist.fenixWebFramework.struts.annotations.Mapping;
+import pt.ist.fenixframework.FenixFramework;
 
 @Mapping(path = "/metaTypeManagement")
 /**
@@ -101,11 +102,11 @@ public class MetaTypeManagement extends ContextBaseAction {
 
     public ActionForward manageFields(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
             final HttpServletResponse response) {
-        WorkflowMetaType metaType = WorkflowMetaType.fromExternalId(request.getParameter("metaTypeId"));
+        WorkflowMetaType metaType = FenixFramework.getDomainObject(request.getParameter("metaTypeId"));
         request.setAttribute("metaType", metaType);
         String fieldSetId = request.getParameter("fieldSetId");
         if (fieldSetId != null) {
-            request.setAttribute("fieldSet", MetaFieldSet.fromExternalId(fieldSetId));
+            request.setAttribute("fieldSet", FenixFramework.getDomainObject(fieldSetId));
         } else {
             request.setAttribute("fieldSet", metaType.getFieldSet());
         }
@@ -115,9 +116,9 @@ public class MetaTypeManagement extends ContextBaseAction {
 
     public ActionForward prepareAddField(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
             final HttpServletResponse response) {
-        WorkflowMetaType metaType = WorkflowMetaType.fromExternalId(request.getParameter("metaTypeId"));
+        WorkflowMetaType metaType = FenixFramework.getDomainObject(request.getParameter("metaTypeId"));
         request.setAttribute("metaType", metaType);
-        MetaFieldSet fieldSet = MetaFieldSet.fromExternalId(request.getParameter("fieldSetId"));
+        MetaFieldSet fieldSet = FenixFramework.getDomainObject(request.getParameter("fieldSetId"));
         request.setAttribute("fieldSet", fieldSet);
 
         request.setAttribute("fieldBean", new MetaFieldBean());
@@ -128,9 +129,9 @@ public class MetaTypeManagement extends ContextBaseAction {
     public ActionForward addField(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
             final HttpServletResponse response) {
         MetaFieldBean fieldBean = getRenderedObject("fieldBean");
-        WorkflowMetaType metaType = WorkflowMetaType.fromExternalId(request.getParameter("metaTypeId"));
+        WorkflowMetaType metaType = FenixFramework.getDomainObject(request.getParameter("metaTypeId"));
         request.setAttribute("metaType", metaType);
-        MetaFieldSet fieldSet = MetaFieldSet.fromExternalId(request.getParameter("fieldSetId"));
+        MetaFieldSet fieldSet = FenixFramework.getDomainObject(request.getParameter("fieldSetId"));
         request.setAttribute("fieldSet", fieldSet);
 
         if ((fieldBean.getName() == null) || (fieldBean.getName().getContent() == null)
@@ -148,12 +149,12 @@ public class MetaTypeManagement extends ContextBaseAction {
 
     public ActionForward removeField(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
             final HttpServletResponse response) {
-        WorkflowMetaType metaType = WorkflowMetaType.fromExternalId(request.getParameter("metaTypeId"));
+        WorkflowMetaType metaType = FenixFramework.getDomainObject(request.getParameter("metaTypeId"));
         request.setAttribute("metaType", metaType);
-        MetaFieldSet fieldSet = MetaFieldSet.fromExternalId(request.getParameter("fieldSetId"));
+        MetaFieldSet fieldSet = FenixFramework.getDomainObject(request.getParameter("fieldSetId"));
         request.setAttribute("fieldSet", fieldSet);
 
-        MetaField fieldToRemove = MetaField.fromExternalId(request.getParameter("fieldId"));
+        MetaField fieldToRemove = FenixFramework.getDomainObject(request.getParameter("fieldId"));
 
         fieldToRemove.delete();
 

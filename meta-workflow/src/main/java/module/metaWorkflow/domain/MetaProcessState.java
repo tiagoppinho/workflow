@@ -28,7 +28,7 @@ import java.util.Comparator;
 
 import jvstm.cps.ConsistencyPredicate;
 import pt.ist.bennu.core.domain.exceptions.DomainException;
-import pt.ist.fenixWebFramework.services.Service;
+import pt.ist.fenixframework.Atomic;
 import pt.utl.ist.fenix.tools.util.i18n.MultiLanguageString;
 
 /**
@@ -102,12 +102,12 @@ public class MetaProcessState extends MetaProcessState_Base {
      * 
      * methods TODO: addConfigs addDependingConfigs
      */
-    @Service
+    @Atomic
     public static MetaProcessState create(WorkflowMetaTypeVersion metaTypeVersion, String name, Integer position) {
         return new MetaProcessState(metaTypeVersion, name, position);
     }
 
-    @Service
+    @Atomic
     public void delete() {
         if (hasAnyDependingConfigs()) {
             throw new DomainException("error.state.has.depending.states");

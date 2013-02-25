@@ -27,6 +27,7 @@ package module.metaWorkflow.domain;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -66,7 +67,7 @@ import pt.ist.bennu.core.domain.exceptions.DomainException;
 import pt.ist.bennu.core.util.BundleUtil;
 import pt.ist.bennu.core.util.ClassNameBundle;
 import pt.ist.emailNotifier.domain.Email;
-import pt.ist.fenixWebFramework.services.Service;
+import pt.ist.fenixframework.Atomic;
 import pt.ist.fenixframework.plugins.luceneIndexing.domain.IndexDocument;
 
 @ClassNameBundle(key = "label.module.metaWorkflow", bundle = "resources/MetaWorkflowResources")
@@ -203,18 +204,18 @@ public class WorkflowMetaProcess extends WorkflowMetaProcess_Base {
     }
 
     @Override
-    public List<User> getObservers() {
-        List<User> observers = new ArrayList<User>();
+    public Set<User> getObservers() {
+        Set<User> observers = new HashSet<User>();
         observers.addAll(super.getObservers());
         observers.addAll(getMetaType().getMetaTypeObservers());
         return observers;
     }
 
-    public List<User> getMetaTypeObservers() {
+    public Set<User> getMetaTypeObservers() {
         return getMetaType().getMetaTypeObservers();
     }
 
-    public List<User> getProcessObservers() {
+    public Set<User> getProcessObservers() {
         return super.getObservers();
     }
 
@@ -283,7 +284,7 @@ public class WorkflowMetaProcess extends WorkflowMetaProcess_Base {
         return document;
     }
 
-    @Service
+    @Atomic
     public static WorkflowMetaProcess createNewProcess(String subject, String instanceDescription, WorkflowQueue queue, User user) {
         Requestor requestor = user.hasRequestor() ? user.getRequestor() : new UserRequestor(user);
 

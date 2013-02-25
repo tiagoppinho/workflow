@@ -39,7 +39,7 @@ import module.workflow.util.WorkflowQueueBean;
 import pt.ist.bennu.core.domain.User;
 import pt.ist.bennu.core.domain.VirtualHost;
 import pt.ist.bennu.core.util.ClassNameBundle;
-import pt.ist.fenixWebFramework.services.Service;
+import pt.ist.fenixframework.Atomic;
 
 @ClassNameBundle(bundle = "resources/MetaWorkflowResources")
 /**
@@ -78,7 +78,7 @@ public class WorkflowUnitQueue extends WorkflowUnitQueue_Base {
     }
 
     @Override
-    @Service
+    @Atomic
     public void edit(WorkflowQueueBean bean) {
         WorkflowUnitQueueBean unitQueueBean = (WorkflowUnitQueueBean) bean;
         setName(bean.getName());

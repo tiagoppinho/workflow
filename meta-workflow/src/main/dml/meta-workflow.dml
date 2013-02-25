@@ -25,14 +25,6 @@ package module.metaWorkflow.domain;
  * 
  */
 
-valueType pt.utl.ist.fenix.tools.util.Strings as Strings {
-	externalizeWith {
-		String exportAsString();
-	}
-
-	internalizeWith importFromString();
-}
-
 class WorkflowMetaType {
 	String name;
 	String requestHandler;

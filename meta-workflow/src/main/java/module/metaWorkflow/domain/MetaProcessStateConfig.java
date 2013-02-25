@@ -30,7 +30,7 @@ import java.util.Set;
 
 import jvstm.cps.ConsistencyPredicate;
 import module.metaWorkflow.exceptions.MetaWorkflowDomainException;
-import pt.ist.fenixWebFramework.services.Service;
+import pt.ist.fenixframework.Atomic;
 
 /**
  * 
@@ -76,12 +76,12 @@ public class MetaProcessStateConfig extends MetaProcessStateConfig_Base {
     }
 
     /* TODO START: protection against published things FENIX-345: */
-    @Service
+    @Atomic
     public static MetaProcessStateConfig create(MetaProcessState state) {
         return new MetaProcessStateConfig(state);
     }
 
-    @Service
+    @Atomic
     public void delete() {
         if (isPublished()) {
             throw new MetaWorkflowDomainException("cant.delete.a.published.state.config");
@@ -114,13 +114,13 @@ public class MetaProcessStateConfig extends MetaProcessStateConfig_Base {
 
     }
 
-    @Service
+    @Atomic
     @Override
     public void addDependedStates(MetaProcessState dependedStates) {
         super.addDependedStates(dependedStates);
     }
 
-    @Service
+    @Atomic
     public void updateDependedStates(Collection<MetaProcessState> newStates) {
         Collection<MetaProcessState> oldStates = getDependedStates();
         if (!oldStates.containsAll(newStates) || !newStates.containsAll(oldStates)) {
@@ -141,7 +141,7 @@ public class MetaProcessStateConfig extends MetaProcessStateConfig_Base {
         }
     }
 
-    @Service
+    @Atomic
     public void updateDependedFields(Collection<MetaField> newFields) {
         Collection<MetaField> oldFields = getDependedFields();
         if (!oldFields.containsAll(newFields) || !newFields.containsAll(oldFields)) {
