@@ -54,12 +54,12 @@ import pt.ist.bennu.core.domain.User;
 import pt.ist.bennu.core.domain.VirtualHost;
 import pt.ist.bennu.core.domain.exceptions.DomainException;
 import pt.ist.bennu.core.util.BundleUtil;
-import pt.ist.fenixWebFramework.services.Service;
+import pt.ist.fenixframework.Atomic;
+import pt.ist.fenixframework.core.WriteOnReadError;
 import pt.ist.fenixframework.plugins.luceneIndexing.IndexableField;
 import pt.ist.fenixframework.plugins.luceneIndexing.domain.IndexDocument;
 import pt.ist.fenixframework.plugins.luceneIndexing.domain.interfaces.Indexable;
 import pt.ist.fenixframework.plugins.luceneIndexing.domain.interfaces.Searchable;
-import pt.ist.fenixframework.pstm.IllegalWriteException;
 
 /**
  * 
@@ -311,8 +311,8 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
     }
 
     @Override
-    public List<WorkflowLog> getExecutionLogs() {
-        List<WorkflowLog> list = new ArrayList<WorkflowLog>();
+    public Set<WorkflowLog> getExecutionLogs() {
+        Set<WorkflowLog> list = new HashSet<WorkflowLog>();
 
         for (WorkflowLog log : super.getExecutionLogs()) {
             if (log.getWhenOperationWasRan() != null) {
@@ -362,7 +362,7 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
         return false;
     }
 
-    @Service
+    @Atomic
     public void createComment(User user, CommentBean bean) {
         String comment = bean.getComment();
         new WorkflowProcessComment(this, user, comment);
@@ -429,7 +429,7 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
                 DomainException.getResourceFor("resources/WorkflowResources"));
     }
 
-    @Service
+    @Atomic
     public void postAccessFile(ProcessFile file) {
         if (isFileSupportAvailable()) {
             file.postFileContentAccess();
@@ -444,7 +444,7 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
         }
     }
 
-    @Service
+    @Atomic
     public <T extends ProcessFile> T addFile(Class<T> instanceToCreate, String displayName, String filename,
             byte[] consumeInputStream, WorkflowFileUploadBean bean) throws Exception {
         if (isFileSupportAvailable()) {
@@ -457,8 +457,8 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
             try {
                 file = fileConstructor.newInstance(new Object[] { displayName, filename, consumeInputStream });
             } catch (InvocationTargetException e) {
-                if (e.getCause() instanceof IllegalWriteException) {
-                    throw new IllegalWriteException();
+                if (e.getCause() instanceof WriteOnReadError) {
+                    throw (WriteOnReadError) e.getCause();
                 }
                 throw new Error(e);
             }
@@ -521,7 +521,7 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
         super.setCurrentOwner(null);
     }
 
-    @Service
+    @Atomic
     public void takeProcess() {
         final User currentOwner = getCurrentOwner();
         final User currentUser = UserView.getCurrentUser();
@@ -533,7 +533,7 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
         }
     }
 
-    @Service
+    @Atomic
     public void releaseProcess() {
         final User loggedPerson = UserView.getCurrentUser();
         final User person = getCurrentOwner();
@@ -543,7 +543,7 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
         super.setCurrentOwner(null);
     }
 
-    @Service
+    @Atomic
     public void stealProcess() {
         super.setCurrentOwner(UserView.getCurrentUser());
     }
@@ -598,7 +598,7 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
     }
 
     @Override
-    @Service
+    @Atomic
     public void removeFiles(ProcessFile file) {
         if (!file.isPossibleToArchieve()) {
             throw new DomainException("error.invalidOperation.tryingToRemoveFileWhenIsNotPossible",
@@ -616,7 +616,7 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
 
     }
 
-    @Service
+    @Atomic
     public void removeFileDocuments(ProcessFile file) {
         removeTiesWithFileDocument(file);
         file.getFileNode().trash(new ContextPath(getDocumentsRepository().getDirNode()));
@@ -672,7 +672,7 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
         return getClass().getSimpleName() + " " + getProcessNumber();
     }
 
-    @Service
+    @Atomic
     public void markCommentsAsReadForUser(User user) {
         for (WorkflowProcessComment comment : getComments()) {
             if (comment.isUnreadBy(user)) {
@@ -867,7 +867,7 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
         return getFileDocumentsFromList(getFiles(), list);
     }
 
-    private <T extends ProcessFile> List<T> getFilesFromList(List<ProcessFile> list,
+    private <T extends ProcessFile> List<T> getFilesFromList(Collection<ProcessFile> list,
             List<Class<? extends ProcessFile>> selectedClasses) {
         List<T> classes = new ArrayList<T>();
         for (ProcessFile file : list) {
@@ -881,7 +881,7 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
         return classes;
     }
 
-    private <T extends ProcessFile> List<T> getFileDocumentsFromList(List<ProcessFile> list,
+    private <T extends ProcessFile> List<T> getFileDocumentsFromList(Collection<ProcessFile> list,
             List<Class<? extends ProcessFile>> selectedClasses, boolean includeDeleted) {
         List<T> classes = new ArrayList<T>();
         for (ProcessFile file : list) {
@@ -899,7 +899,7 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
 
     }
 
-    private <T extends ProcessFile> List<T> getFileDocumentsFromList(List<ProcessFile> list,
+    private <T extends ProcessFile> List<T> getFileDocumentsFromList(Collection<ProcessFile> list,
             List<Class<? extends ProcessFile>> selectedClasses) {
         return getFileDocumentsFromList(list, selectedClasses, false);
     }

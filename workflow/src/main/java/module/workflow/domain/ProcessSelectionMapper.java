@@ -27,10 +27,11 @@ package module.workflow.domain;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import pt.ist.bennu.core.domain.VirtualHost;
 import pt.ist.bennu.core.domain.contents.Node;
-import pt.ist.fenixWebFramework.services.Service;
+import pt.ist.fenixframework.Atomic;
 
 /**
  * 
@@ -61,9 +62,9 @@ public class ProcessSelectionMapper extends ProcessSelectionMapper_Base {
         }
     }
 
-    @Service
+    @Atomic
     public void addMapping(Node node) {
-        List<NodeMapping> nodeMappings = getNodeMappings();
+        Set<NodeMapping> nodeMappings = getNodeMappings();
         int nextOrder = 0;
         if (!nodeMappings.isEmpty()) {
             NodeMapping maxNode = Collections.max(nodeMappings);
@@ -73,7 +74,7 @@ public class ProcessSelectionMapper extends ProcessSelectionMapper_Base {
         super.addNodeMappings(NodeMapping.createNodeMapping(node, nextOrder));
     }
 
-    @Service
+    @Atomic
     public void removeMapping(int i) {
         NodeMapping nodeMappingToDelete = null;
         for (NodeMapping mapping : getNodeMappings()) {
@@ -87,15 +88,15 @@ public class ProcessSelectionMapper extends ProcessSelectionMapper_Base {
         }
     }
 
-    @Service
+    @Atomic
     public static ProcessSelectionMapper createNewMapper(String classname) {
         return new ProcessSelectionMapper(classname);
     }
 
-    @Service
+    @Atomic
     public void delete() {
         removeWorkflowSystem();
-        for (; !getNodeMappings().isEmpty(); getNodeMappings().get(0).delete()) {
+        for (; !getNodeMappings().isEmpty(); getNodeMappings().iterator().next().delete()) {
 
         }
         super.deleteDomainObject();

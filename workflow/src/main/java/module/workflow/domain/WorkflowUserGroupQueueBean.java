@@ -31,7 +31,7 @@ import java.util.Set;
 
 import module.workflow.util.WorkflowQueueBean;
 import pt.ist.bennu.core.domain.User;
-import pt.ist.fenixWebFramework.services.Service;
+import pt.ist.fenixframework.Atomic;
 
 /**
  * 
@@ -43,7 +43,7 @@ public class WorkflowUserGroupQueueBean extends WorkflowQueueBean {
 
     private static final long serialVersionUID = 1L;
 
-    private Set<User> users;
+    private final Set<User> users;
     private User userToAdd;
 
     public WorkflowUserGroupQueueBean() {
@@ -76,7 +76,7 @@ public class WorkflowUserGroupQueueBean extends WorkflowQueueBean {
     }
 
     @Override
-    @Service
+    @Atomic
     public WorkflowUserGroupQueue createWorkflowQueue() {
         List<User> usersList = new ArrayList<User>();
         usersList.addAll(getUsers());

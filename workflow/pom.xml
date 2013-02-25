@@ -2,8 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>pt.ist</groupId>
-    <artifactId>bennu-project</artifactId>
-    <version>1.0.0</version>
+    <version>1.1-SNAPSHOT</version>
   </parent>
   <groupId>pt.ist</groupId>
   <artifactId>workflow</artifactId>
@@ -11,14 +10,14 @@
   <packaging>jar</packaging>
   <name>workflow</name>
   <properties>
-    <version.pt.ist.bennu.core>1.0.0</version.pt.ist.bennu.core>
-    <version.pt.ist.content>1.0.0</version.pt.ist.content>
-    <version.pt.ist.file.management>1.0.0</version.pt.ist.file.management>
-    <version.pt.ist.lucene>1.0.0</version.pt.ist.lucene>
-    <version.pt.ist.dashboard>1.0.0</version.pt.ist.dashboard>
-    <version.pt.ist.organization>1.0.0</version.pt.ist.organization>
-    <version.pt.ist.scheduler>1.0.0</version.pt.ist.scheduler>
-    <version.pt.ist.file.support>1.0.0</version.pt.ist.file.support>
+    <version.pt.ist.bennu.core>1.1-SNAPSHOT</version.pt.ist.bennu.core>
+    <version.pt.ist.content>1.1-SNAPSHOT</version.pt.ist.content>
+    <version.pt.ist.file.management>1.1-SNAPSHOT</version.pt.ist.file.management>
+    <version.pt.ist.lucene>1.1-SNAPSHOT</version.pt.ist.lucene>
+    <version.pt.ist.dashboard>1.1-SNAPSHOT</version.pt.ist.dashboard>
+    <version.pt.ist.organization>1.1-SNAPSHOT</version.pt.ist.organization>
+    <version.pt.ist.scheduler>1.1-SNAPSHOT</version.pt.ist.scheduler>
+    <version.pt.ist.file.support>1.1-SNAPSHOT</version.pt.ist.file.support>
   </properties>
   <build>
     <plugins>
@@ -72,6 +71,12 @@
     <dependency>
       <groupId>org.apache.tomcat</groupId>
       <artifactId>tomcat-jsp-api</artifactId>
+    </dependency>
+    <dependency>
+    	<groupId>jvstm</groupId>
+    	<artifactId>jvstm-fenix</artifactId>
+    	<version>${version.jvstm.fenix}</version>
+    	<scope>provided</scope>
     </dependency>
   </dependencies>
   <repositories>

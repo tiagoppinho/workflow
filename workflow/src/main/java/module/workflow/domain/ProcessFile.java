@@ -32,7 +32,8 @@ import module.fileManagement.domain.FileNode;
 import module.workflow.util.WorkflowFileUploadBean;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import pt.ist.bennu.core.domain.groups.UnionGroup;
 import pt.ist.bennu.core.util.ClassNameBundle;
@@ -51,7 +52,7 @@ import pt.ist.bennu.core.util.ClassNameBundle;
 @ClassNameBundle(bundle = "resources/WorkflowResources")
 public class ProcessFile extends ProcessFile_Base {
 
-    private static final Logger LOGGER = Logger.getLogger(ProcessFile.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ProcessFile.class);
 
     public ProcessFile() {
         super();

@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import jvstm.CommitException;
 import jvstm.cps.ConsistencyException;
 import module.fileManagement.domain.WriteDeniedException;
 import module.workflow.domain.FileUploadLog;
@@ -28,9 +27,9 @@ import pt.ist.bennu.core.domain.User;
 import pt.ist.bennu.core.domain.VirtualHost;
 import pt.ist.bennu.core.domain.scheduler.ReadCustomTask;
 import pt.ist.bennu.core.domain.scheduler.TransactionalThread;
-import pt.ist.fenixframework.pstm.AbstractDomainObject;
-import pt.ist.fenixframework.pstm.AbstractDomainObject.UnableToDetermineIdException;
-import pt.ist.fenixframework.pstm.IllegalWriteException;
+import pt.ist.fenixframework.FenixFramework;
+import pt.ist.fenixframework.core.CommitError;
+import pt.ist.fenixframework.core.WriteOnReadError;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.HashMultiset;
@@ -74,14 +73,12 @@ public class MigrateProcessFilesToNewStructure extends ReadCustomTask {
         public static void handleException(Throwable throwable) {
             // This is a little hackish but is somewhat forced by the
             // combination of architectures of both vaadin and the jvstm
-            if (throwable instanceof IllegalWriteException) {
-                throw (IllegalWriteException) throwable;
+            if (throwable instanceof WriteOnReadError) {
+                throw (WriteOnReadError) throwable;
             } else if (throwable instanceof ConsistencyException) {
                 throw (ConsistencyException) throwable;
-            } else if (throwable instanceof UnableToDetermineIdException) {
-                throw (UnableToDetermineIdException) throwable;
-            } else if (throwable instanceof CommitException) {
-                throw (CommitException) throwable;
+            } else if (throwable instanceof CommitError) {
+                throw (CommitError) throwable;
             } else if (throwable instanceof Buffered.SourceException) {
                 for (Throwable cause : ((Buffered.SourceException) throwable).getCauses()) {
                     handleException(cause);
@@ -96,12 +93,12 @@ public class MigrateProcessFilesToNewStructure extends ReadCustomTask {
         public void transactionalRun() {
             boolean foundException = false;
             for (String processId : this.processes) {
-                WorkflowProcess process = AbstractDomainObject.fromExternalId(processId);
+                WorkflowProcess process = FenixFramework.getDomainObject(processId);
                 if (process.getDocumentsRepository() == null) {
                     totalProcessesUnableToBeMigrated++;
                 } else {
 
-                    List<ProcessFile> files = process.getFiles();
+                    Set<ProcessFile> files = process.getFiles();
 
                     for (ProcessFile file : files) {
                         totalProcessFilesPassedThrough++;
@@ -226,7 +223,7 @@ public class MigrateProcessFilesToNewStructure extends ReadCustomTask {
         // TODO Auto-generated method stub
         for (VirtualHost virtualHost : MyOrg.getInstance().getVirtualHosts()) {
             VirtualHost.setVirtualHostForThread(virtualHost);
-            List<WorkflowProcess> processes =
+            Set<WorkflowProcess> processes =
                     WorkflowSystem.getInstance() == null ? null : WorkflowSystem.getInstance().getProcesses();
             if (processes == null) {
                 continue;

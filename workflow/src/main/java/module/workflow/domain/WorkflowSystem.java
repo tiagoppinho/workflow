@@ -32,10 +32,10 @@ import module.workflow.widgets.QuickViewWidget;
 import module.workflow.widgets.UnreadCommentsWidget;
 import pt.ist.bennu.core.domain.MyOrg;
 import pt.ist.bennu.core.domain.VirtualHost;
-import pt.ist.fenixWebFramework.services.Service;
 import pt.ist.fenixWebFramework.servlets.filters.contentRewrite.RequestChecksumFilter;
 import pt.ist.fenixWebFramework.servlets.filters.contentRewrite.RequestChecksumFilter.ChecksumPredicate;
-import dml.runtime.RelationAdapter;
+import pt.ist.fenixframework.Atomic;
+import pt.ist.fenixframework.dml.runtime.RelationAdapter;
 
 /**
  * 
@@ -83,14 +83,14 @@ public class WorkflowSystem extends WorkflowSystem_Base {
         return virtualHostForThread == null ? null : virtualHostForThread.getWorkflowSystem();
     }
 
-    @Service
+    @Atomic
     public static void createSystem(final VirtualHost virtualHost) {
         if (!virtualHost.hasWorkflowSystem() || virtualHost.getWorkflowSystem().getVirtualHostCount() > 1) {
             new WorkflowSystem(virtualHost);
         }
     }
 
-    @Service
+    @Atomic
     public void setForVirtualHost(final VirtualHost virtualHost) {
         virtualHost.setWorkflowSystem(this);
     }

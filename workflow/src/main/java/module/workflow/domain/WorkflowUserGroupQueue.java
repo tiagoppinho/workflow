@@ -33,7 +33,7 @@ import module.workflow.util.WorkflowQueueBean;
 import pt.ist.bennu.core.domain.User;
 import pt.ist.bennu.core.domain.VirtualHost;
 import pt.ist.bennu.core.util.ClassNameBundle;
-import pt.ist.fenixWebFramework.services.Service;
+import pt.ist.fenixframework.Atomic;
 
 @ClassNameBundle(bundle = "resources/WorkflowResources")
 /**
@@ -73,7 +73,7 @@ public class WorkflowUserGroupQueue extends WorkflowUserGroupQueue_Base {
     }
 
     @Override
-    @Service
+    @Atomic
     public void edit(WorkflowQueueBean bean) {
         setName(bean.getName());
 
@@ -83,7 +83,7 @@ public class WorkflowUserGroupQueue extends WorkflowUserGroupQueue_Base {
     }
 
     @Override
-    @Service
+    @Atomic
     public void removeUsers(User users) {
         super.removeUsers(users);
     }
@@ -98,7 +98,7 @@ public class WorkflowUserGroupQueue extends WorkflowUserGroupQueue_Base {
     public Collection<Person> getPersons() {
         Collection<Person> persons = new ArrayList<Person>();
 
-        List<User> users = getUsers();
+        Collection<User> users = getUsers();
         for (User user : users) {
             persons.add(user.getPerson());
         }
