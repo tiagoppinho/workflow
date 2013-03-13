@@ -57,7 +57,7 @@ public class WorkflowSystem extends WorkflowSystem_Base {
     }
 
     static {
-        VirtualHost.MyOrgVirtualHost.addListener(new VirtualHostMyOrgRelationListener());
+        MyOrg.getRelationMyOrgVirtualHost().addListener(new VirtualHostMyOrgRelationListener());
 
         WidgetRegister.registerWidget(ProcessListWidget.class);
         WidgetRegister.registerWidget(QuickViewWidget.class);

@@ -52,7 +52,7 @@ public class NodeMapping extends NodeMapping_Base implements Comparable<NodeMapp
     }
 
     static {
-        Node.MyOrgNode.addListener(new NodeListenner());
+        Node.getRelationMyOrgNode().addListener(new NodeListenner());
     }
 
     protected NodeMapping(Node node, int order) {
