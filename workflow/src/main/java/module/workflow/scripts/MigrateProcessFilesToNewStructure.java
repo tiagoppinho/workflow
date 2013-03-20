@@ -28,7 +28,7 @@ import pt.ist.bennu.core.domain.VirtualHost;
 import pt.ist.bennu.core.domain.scheduler.ReadCustomTask;
 import pt.ist.bennu.core.domain.scheduler.TransactionalThread;
 import pt.ist.fenixframework.FenixFramework;
-import pt.ist.fenixframework.core.CommitError;
+import pt.ist.fenixframework.core.TransactionError;
 import pt.ist.fenixframework.core.WriteOnReadError;
 
 import com.google.common.collect.HashMultimap;
@@ -77,8 +77,8 @@ public class MigrateProcessFilesToNewStructure extends ReadCustomTask {
                 throw (WriteOnReadError) throwable;
             } else if (throwable instanceof ConsistencyException) {
                 throw (ConsistencyException) throwable;
-            } else if (throwable instanceof CommitError) {
-                throw (CommitError) throwable;
+            } else if (throwable instanceof TransactionError) {
+                throw (TransactionError) throwable;
             } else if (throwable instanceof Buffered.SourceException) {
                 for (Throwable cause : ((Buffered.SourceException) throwable).getCauses()) {
                     handleException(cause);

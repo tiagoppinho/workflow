@@ -66,12 +66,6 @@
       <groupId>org.jmeld</groupId>
       <artifactId>jmeld</artifactId>
     </dependency>
-    <dependency>
-    	<groupId>jvstm</groupId>
-    	<artifactId>jvstm-fenix</artifactId>
-    	<version>${version.jvstm.fenix}</version>
-    	<scope>provided</scope>
-    </dependency>
   </dependencies>
   <repositories>
     <repository>

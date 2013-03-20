@@ -72,12 +72,6 @@
       <groupId>org.apache.tomcat</groupId>
       <artifactId>tomcat-jsp-api</artifactId>
     </dependency>
-    <dependency>
-    	<groupId>jvstm</groupId>
-    	<artifactId>jvstm-fenix</artifactId>
-    	<version>${version.jvstm.fenix}</version>
-    	<scope>provided</scope>
-    </dependency>
   </dependencies>
   <repositories>
     <repository>
