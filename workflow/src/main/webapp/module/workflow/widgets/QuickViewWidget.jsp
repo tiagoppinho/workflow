@@ -46,7 +46,7 @@ function decide(responseText, statusText) {
 		warningDiv.append('<p class="mtop0"><em><bean:message key="widget.widgetQuickView.noProcessFound" bundle="WORKFLOW_RESOURCES"/>.</em></p>');
 	}
 	else {
-		window.location.replace(<%= "\"" + request.getContextPath() + "\" + responseText" %>);
+		window.location = <%= "\"" + request.getContextPath() + "\" + responseText" %>;
 	}
 }
 
