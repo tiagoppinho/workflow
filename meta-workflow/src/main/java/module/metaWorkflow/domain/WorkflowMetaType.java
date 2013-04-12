@@ -125,7 +125,7 @@ public class WorkflowMetaType extends WorkflowMetaType_Base {
     }
 
     public static WorkflowMetaType readMetaType(String OID) {
-        for (WorkflowMetaType type : WorkflowSystem.getInstance().getMetaTypes()) {
+        for (WorkflowMetaType type : WorkflowSystem.getInstance().getMetaTypesSet()) {
             if (type.getExternalId().equals(OID)) {
                 return type;
             }
@@ -242,7 +242,7 @@ public class WorkflowMetaType extends WorkflowMetaType_Base {
 
     public static Set<WorkflowQueue> getAllQueuesForUser(User user) {
         Set<WorkflowQueue> queuesForUser = new HashSet<WorkflowQueue>();
-        for (WorkflowMetaType type : WorkflowSystem.getInstance().getMetaTypes()) {
+        for (WorkflowMetaType type : WorkflowSystem.getInstance().getMetaTypesSet()) {
             queuesForUser.addAll(type.getQueuesForUser(user));
         }
         return queuesForUser;
@@ -277,7 +277,7 @@ public class WorkflowMetaType extends WorkflowMetaType_Base {
     //MetaProcesses START TODO: Sets and so on ?! (not really if not used)
 
     @Override
-    public Set<WorkflowMetaProcess> getMetaProcesses() {
+    public Set<WorkflowMetaProcess> getMetaProcessesSet() {
         Set<WorkflowMetaProcess> listMetaProcesses = new HashSet<WorkflowMetaProcess>();
         for (WorkflowMetaTypeVersion version : getVersions()) {
             listMetaProcesses.addAll(version.getMetaProcesses());
@@ -287,7 +287,7 @@ public class WorkflowMetaType extends WorkflowMetaType_Base {
 
     //FENIX-345: TODO remove method after migration
     public Set<WorkflowMetaProcess> getMetaProcessesOld() {
-        return super.getMetaProcesses();
+        return super.getMetaProcessesSet();
     }
 
     @Override
@@ -322,7 +322,7 @@ public class WorkflowMetaType extends WorkflowMetaType_Base {
     //MetaProcessState START TODO: Sets and so on ?! (not really if not used)
 
     @Override
-    public Set<MetaProcessState> getProcessStates() {
+    public Set<MetaProcessState> getProcessStatesSet() {
         return getProcessStates(getLatestWorkflowMetaTypeVersion());
     }
 
@@ -336,7 +336,7 @@ public class WorkflowMetaType extends WorkflowMetaType_Base {
 
     //FENIX-345: TODO remove method after migration
     public Set<MetaProcessState> getProcessStatesOld() {
-        return super.getProcessStates();
+        return super.getProcessStatesSet();
     }
 
     @Override
@@ -408,4 +408,45 @@ public class WorkflowMetaType extends WorkflowMetaType_Base {
     public boolean hasDraftMetaTypeVersion() {
         return !getLatestWorkflowMetaTypeVersion().getPublished();
     }
+
+    @Deprecated
+    public java.util.Set<module.metaWorkflow.domain.MetaProcessState> getProcessStates() {
+        return getProcessStatesSet();
+    }
+
+    @Deprecated
+    public java.util.Set<pt.ist.bennu.core.domain.User> getMetaTypeObservers() {
+        return getMetaTypeObserversSet();
+    }
+
+    @Deprecated
+    public java.util.Set<module.metaWorkflow.domain.WorkflowMetaTypeVersion> getVersions() {
+        return getVersionsSet();
+    }
+
+    @Deprecated
+    public java.util.Set<module.organization.domain.AccountabilityType> getSupportedAccountabilityTypes() {
+        return getSupportedAccountabilityTypesSet();
+    }
+
+    @Deprecated
+    public java.util.Set<module.metaWorkflow.domain.WorkflowMetaTypeDescription> getDescriptions() {
+        return getDescriptionsSet();
+    }
+
+    @Deprecated
+    public java.util.Set<module.workflow.domain.WorkflowQueue> getQueues() {
+        return getQueuesSet();
+    }
+
+    @Deprecated
+    public java.util.Set<module.metaWorkflow.domain.WorkflowMetaProcess> getMetaProcesses() {
+        return getMetaProcessesSet();
+    }
+
+    @Deprecated
+    public java.util.Set<module.metaWorkflow.domain.WorkflowMetaTypeSpecificActivity> getSpecificActivities() {
+        return getSpecificActivitiesSet();
+    }
+
 }

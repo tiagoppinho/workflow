@@ -453,7 +453,7 @@ public class ManageMetaTypeVersionComponent extends CustomComponent implements E
             numberProcessesLabel.addStyleName(BennuTheme.LABEL_H3);
             statisticsLayout.addComponent(numberProcessesLabel);
 
-            Label numberProcessesValue = new Label("<em>" + metaTypeVersion.getMetaProcessesCount() + "</em>");
+            Label numberProcessesValue = new Label("<em>" + metaTypeVersion.getMetaProcessesSet().size() + "</em>");
             numberProcessesValue.setContentMode(Label.CONTENT_XHTML);
             statisticsLayout.addComponent(numberProcessesValue);
 
@@ -461,7 +461,7 @@ public class ManageMetaTypeVersionComponent extends CustomComponent implements E
             numberStatesLabel.addStyleName(BennuTheme.LABEL_H3);
             statisticsLayout.addComponent(numberStatesLabel);
 
-            Label numberStatesValue = new Label("<em>" + metaTypeVersion.getProcessStatesCount() + "</em>");
+            Label numberStatesValue = new Label("<em>" + metaTypeVersion.getProcessStatesSet().size() + "</em>");
             numberStatesValue.setContentMode(Label.CONTENT_XHTML);
             statisticsLayout.addComponent(numberStatesValue);
 
@@ -471,7 +471,7 @@ public class ManageMetaTypeVersionComponent extends CustomComponent implements E
 
             int nrProcessConfigurations = 0;
             for (MetaProcessState processState : metaTypeVersion.getProcessStates()) {
-                nrProcessConfigurations += processState.getConfigsCount();
+                nrProcessConfigurations += processState.getConfigsSet().size();
             }
             Label numberConfigurationsValue = new Label("<em>" + nrProcessConfigurations + "</em>");
             numberConfigurationsValue.setContentMode(Label.CONTENT_XHTML);

@@ -44,7 +44,7 @@ public class SetOjbConcreteClassOnMetaAndValueFields extends WriteCustomTask {
     public void doService() {
         WorkflowSystem system = WorkflowSystem.getInstance();
 
-        Set<WorkflowMetaType> metaTypes = system.getMetaTypes();
+        Set<WorkflowMetaType> metaTypes = system.getMetaTypesSet();
 
         for (WorkflowMetaType workflowMetaType : metaTypes) {
             MetaFieldSet fieldSet = workflowMetaType.getFieldSet();

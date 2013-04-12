@@ -85,7 +85,7 @@ public class MetaProcessState extends MetaProcessState_Base {
 
     @ConsistencyPredicate
     public boolean checkHasMetaTypeVersion() {
-        return hasWorkflowMetaTypeVersion();
+        return (getWorkflowMetaTypeVersion() != null);
     }
 
     public boolean isActive(WorkflowMetaProcess process) {
@@ -109,14 +109,14 @@ public class MetaProcessState extends MetaProcessState_Base {
 
     @Atomic
     public void delete() {
-        if (hasAnyDependingConfigs()) {
+        if (!getDependingConfigsSet().isEmpty()) {
             throw new DomainException("error.state.has.depending.states");
         }
         for (MetaProcessStateConfig config : getConfigs()) {
             config.delete();
         }
-        removeWorkflowMetaType();
-        removeWorkflowMetaTypeVersion();
+        setWorkflowMetaType(null);
+        setWorkflowMetaTypeVersion(null);
         deleteDomainObject();
     }
 
@@ -137,6 +137,16 @@ public class MetaProcessState extends MetaProcessState_Base {
     public boolean isPublished() {
         return getWorkflowMetaTypeVersion().getPublished();
 
+    }
+
+    @Deprecated
+    public java.util.Set<module.metaWorkflow.domain.MetaProcessStateConfig> getDependingConfigs() {
+        return getDependingConfigsSet();
+    }
+
+    @Deprecated
+    public java.util.Set<module.metaWorkflow.domain.MetaProcessStateConfig> getConfigs() {
+        return getConfigsSet();
     }
 
 }

@@ -62,8 +62,8 @@ public class StringMetaField extends StringMetaField_Base {
     @Override
     @Atomic
     public void delete() {
-        removeParentFieldSet();
-        if (!hasAnyFieldValues()) {
+        setParentFieldSet(null);
+        if (getFieldValuesSet().isEmpty()) {
             deleteDomainObject();
         }
     }

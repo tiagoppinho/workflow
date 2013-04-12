@@ -61,7 +61,7 @@ public class MetaTypeManagement extends ContextBaseAction {
     public ActionForward manageMetaType(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
             final HttpServletResponse response) {
 
-        request.setAttribute("metaTypes", WorkflowSystem.getInstance().getMetaTypes());
+        request.setAttribute("metaTypes", WorkflowSystem.getInstance().getMetaTypesSet());
         return forward(request, "/metaWorkflow/metaType/manageMetaTypes.jsp");
     }
 

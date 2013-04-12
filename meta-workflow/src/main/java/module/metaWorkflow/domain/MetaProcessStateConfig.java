@@ -51,7 +51,7 @@ public class MetaProcessStateConfig extends MetaProcessStateConfig_Base {
 
     @ConsistencyPredicate
     public boolean checkHasState() {
-        return hasMetaProcessState();
+        return (getMetaProcessState() != null);
     }
 
     public boolean isActive(WorkflowMetaProcess process) {
@@ -92,7 +92,7 @@ public class MetaProcessStateConfig extends MetaProcessStateConfig_Base {
         for (MetaProcessState dependedState : getDependedStates()) {
             removeDependedStates(dependedState);
         }
-        removeMetaProcessState();
+        setMetaProcessState(null);
 
         deleteDomainObject();
     }
@@ -162,4 +162,14 @@ public class MetaProcessStateConfig extends MetaProcessStateConfig_Base {
         }
 
     }
+    @Deprecated
+    public java.util.Set<module.metaWorkflow.domain.MetaProcessState> getDependedStates() {
+        return getDependedStatesSet();
+    }
+
+    @Deprecated
+    public java.util.Set<module.metaWorkflow.domain.MetaField> getDependedFields() {
+        return getDependedFieldsSet();
+    }
+
 }

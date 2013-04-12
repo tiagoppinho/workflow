@@ -40,9 +40,9 @@ public class MigrateDataToMetaTypeVersion extends WriteCustomTask {
                 if (workflowSystem == null) {
                     continue;
                 }
-                for (WorkflowMetaType workflowMetaType : WorkflowSystem.getInstance().getMetaTypes()) {
+                for (WorkflowMetaType workflowMetaType : WorkflowSystem.getInstance().getMetaTypesSet()) {
                     totalNrMetaTypes++;
-                    if (!workflowMetaType.hasAnyVersions()) {
+                    if (workflowMetaType.getVersionsSet().isEmpty()) {
                         //let's create the new version which will use the relations 
                         WorkflowMetaTypeVersion metaTypeVersion = new WorkflowMetaTypeVersion(workflowMetaType);
                         metaTypeVersion
@@ -52,8 +52,8 @@ public class MigrateDataToMetaTypeVersion extends WriteCustomTask {
                 }
 
                 //let's check the newly migrated instances
-                for (WorkflowMetaType workflowMetaType : WorkflowSystem.getInstance().getMetaTypes()) {
-                    if (!workflowMetaType.hasAnyVersions()) {
+                for (WorkflowMetaType workflowMetaType : WorkflowSystem.getInstance().getMetaTypesSet()) {
+                    if (workflowMetaType.getVersionsSet().isEmpty()) {
                         wronglyMigrated++;
                     } else if (!workflowMetaType.getMetaProcesses().containsAll(workflowMetaType.getMetaProcessesOld())) {
                         wronglyMigrated++;
@@ -73,5 +73,4 @@ public class MigrateDataToMetaTypeVersion extends WriteCustomTask {
                 + " had errors in the migration");
 
     }
-
 }

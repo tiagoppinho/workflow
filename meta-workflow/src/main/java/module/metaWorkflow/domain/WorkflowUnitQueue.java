@@ -100,7 +100,7 @@ public class WorkflowUnitQueue extends WorkflowUnitQueue_Base {
     public static Set<WorkflowUnitQueue> getQueuesFor(Collection<Unit> units) {
         Set<WorkflowUnitQueue> queues = new HashSet<WorkflowUnitQueue>();
         for (Unit unit : units) {
-            queues.addAll(unit.getQueues());
+            queues.addAll(unit.getQueuesSet());
         }
         return queues;
     }
@@ -125,4 +125,10 @@ public class WorkflowUnitQueue extends WorkflowUnitQueue_Base {
     public Collection<Person> getPersons() {
         return getUnit().getChildPersons(getAccountabilityTypes());
     }
+
+    @Deprecated
+    public java.util.Set<module.organization.domain.AccountabilityType> getAccountabilityTypes() {
+        return getAccountabilityTypesSet();
+    }
+
 }

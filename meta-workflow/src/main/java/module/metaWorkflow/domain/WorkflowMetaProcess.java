@@ -117,7 +117,7 @@ public class WorkflowMetaProcess extends WorkflowMetaProcess_Base {
 
     @ConsistencyPredicate
     public final boolean checkMetaTypeRequired() {
-        return hasMetaType();
+        return (getMetaType() != null);
     }
 
     @ConsistencyPredicate
@@ -132,7 +132,7 @@ public class WorkflowMetaProcess extends WorkflowMetaProcess_Base {
 
     @ConsistencyPredicate
     public final boolean checkRequestorRequired() {
-        return hasRequestor();
+        return (getRequestor() != null);
     }
 
     protected void init(WorkflowMetaType type, String subject, String instanceDescription, WorkflowQueue queue,
@@ -153,7 +153,7 @@ public class WorkflowMetaProcess extends WorkflowMetaProcess_Base {
     @Override
     public WorkflowLayoutContext getLayout() {
         WorkflowLayoutContext context = super.getLayout();
-        if (getMetaType().hasSpecificLayout()) {
+        if (getMetaType().getSpecificLayout() != null) {
             WorkflowMetaTypeSpecificLayout specificLayout = getMetaType().getSpecificLayout();
             context.setWorkflowBody(specificLayout.getBody());
             context.setWorkflowHead(specificLayout.getHeader());
@@ -286,7 +286,7 @@ public class WorkflowMetaProcess extends WorkflowMetaProcess_Base {
 
     @Atomic
     public static WorkflowMetaProcess createNewProcess(String subject, String instanceDescription, WorkflowQueue queue, User user) {
-        Requestor requestor = user.hasRequestor() ? user.getRequestor() : new UserRequestor(user);
+        Requestor requestor = user.getRequestor() != null ? user.getRequestor() : new UserRequestor(user);
 
         return new WorkflowMetaProcess(queue.getMetaType(), subject, instanceDescription, queue, requestor);
     }

@@ -61,8 +61,8 @@ public class LocalDateMetaField extends LocalDateMetaField_Base {
 
     @Override
     public void delete() {
-        removeParentFieldSet();
-        if (!hasAnyFieldValues()) {
+        setParentFieldSet(null);
+        if (getFieldValuesSet().isEmpty()) {
             deleteDomainObject();
         }
     }

@@ -2,7 +2,6 @@ package module.metaWorkflow.domain;
 
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import module.metaWorkflow.exceptions.MetaWorkflowDomainException;
@@ -42,7 +41,7 @@ public class WorkflowMetaTypeVersion extends WorkflowMetaTypeVersion_Base implem
          * WorkflowMetaType
          */
 
-        if (!metaType.hasAnyVersions()) {
+        if (metaType.getVersionsSet().isEmpty()) {
             for (MetaProcessState processState : metaType.getProcessStatesOld()) {
                 super.addProcessStates(processState);
             }
@@ -171,14 +170,6 @@ public class WorkflowMetaTypeVersion extends WorkflowMetaTypeVersion_Base implem
     }
 
     @Override
-    public void removeFieldSet() {
-        if (getPublished()) {
-            throw new MetaWorkflowDomainException("cant.change.fieldSet.on.published.version");
-        }
-        super.removeFieldSet();
-    }
-
-    @Override
     public void removeMetaProcesses(WorkflowMetaProcess metaProcesses) {
         if (!getPublished()) {
             throw new MetaWorkflowDomainException("shouldnt.be.removing.meta.processes.on.unpublished.metaTypeVersion");
@@ -187,21 +178,11 @@ public class WorkflowMetaTypeVersion extends WorkflowMetaTypeVersion_Base implem
     }
 
     @Override
-    public void removeMetaType() {
-        throw new MetaWorkflowDomainException("cant.use.outside.only.on.delete.");
-    }
-
-    @Override
     public void removeProcessStates(MetaProcessState processStates) {
         if (getPublished()) {
             throw new MetaWorkflowDomainException("cant.remove.meta.processes.in.published.metaTypeVersion");
         }
         super.removeProcessStates(processStates);
-    }
-
-    @Override
-    public void removeWorkflowSystem() {
-        throw new MetaWorkflowDomainException("cant.use.outside.only.on.delete.");
     }
 
     /* END Protecting setters and getters section */
@@ -336,4 +317,15 @@ public class WorkflowMetaTypeVersion extends WorkflowMetaTypeVersion_Base implem
         deleteDomainObject();
 
     }
+
+    @Deprecated
+    public java.util.Set<module.metaWorkflow.domain.WorkflowMetaProcess> getMetaProcesses() {
+        return getMetaProcessesSet();
+    }
+
+    @Deprecated
+    public java.util.Set<module.metaWorkflow.domain.MetaProcessState> getProcessStates() {
+        return getProcessStatesSet();
+    }
+
 }

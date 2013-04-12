@@ -155,4 +155,14 @@ public abstract class MetaField extends MetaField_Base {
      */
     public abstract boolean isPublished();
 
+    @Deprecated
+    public java.util.Set<module.metaWorkflow.domain.MetaProcessStateConfig> getDependingStateConfigs() {
+        return getDependingStateConfigsSet();
+    }
+
+    @Deprecated
+    public java.util.Set<module.metaWorkflow.domain.FieldValue> getFieldValues() {
+        return getFieldValuesSet();
+    }
+
 }

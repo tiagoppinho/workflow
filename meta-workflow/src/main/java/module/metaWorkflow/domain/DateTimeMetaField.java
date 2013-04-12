@@ -65,8 +65,8 @@ public class DateTimeMetaField extends DateTimeMetaField_Base {
         if (isPublished()) {
             throw new MetaWorkflowDomainException("error.cant.delete.a.published.metaField");
         }
-        removeParentFieldSet();
-        if (!hasAnyFieldValues()) {
+        setParentFieldSet(null);
+        if (getFieldValuesSet().isEmpty()) {
             deleteDomainObject();
         }
     }

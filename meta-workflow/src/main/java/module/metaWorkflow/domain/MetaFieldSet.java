@@ -73,7 +73,7 @@ public class MetaFieldSet extends MetaFieldSet_Base {
     //    @Override
     //    @ConsistencyPredicate
     //    public final boolean checkHasParent() {
-    //	return super.checkHasParent() || hasMetaType();
+    //	return super.checkHasParent() || (getMetaType() != null);
     //    }
 
     public Set<MetaField> getOrderedChildFields() {
@@ -97,23 +97,23 @@ public class MetaFieldSet extends MetaFieldSet_Base {
         if (isPublished()) {
             throw new MetaWorkflowDomainException("cant.delete.published.metaFields");
         }
-        if (hasMetaType()) {
+        if ((getMetaType() != null)) {
             throw new Error("Cannot delete the root MetaFieldSet");
         }
-        if (hasAnyChildFields()) {
+        if (!getChildFieldsSet().isEmpty()) {
             throw new RuntimeException(BundleUtil.getStringFromResourceBundle("resources/MetaWorkflowResources",
                     "label.error.cannotDelete.FieldSet.before.childFields"));
         }
 
-        removeParentFieldSet();
-        removeMetaTypeVersion();
-        if (!hasAnyFieldValues()) {
+        setParentFieldSet(null);
+        setMetaTypeVersion(null);
+        if (getFieldValuesSet().isEmpty()) {
             deleteDomainObject();
         }
     }
 
     public boolean isRoot() {
-        return hasMetaTypeVersion();
+        return (getMetaTypeVersion() != null);
     }
 
     @Override
@@ -137,6 +137,11 @@ public class MetaFieldSet extends MetaFieldSet_Base {
             metaTypeVersionPublished = getMetaTypeVersion().getPublished();
         }
         return parentFieldSetPublished || metaTypeVersionPublished;
+    }
+
+    @Deprecated
+    public java.util.Set<module.metaWorkflow.domain.MetaField> getChildFields() {
+        return getChildFieldsSet();
     }
 
 }

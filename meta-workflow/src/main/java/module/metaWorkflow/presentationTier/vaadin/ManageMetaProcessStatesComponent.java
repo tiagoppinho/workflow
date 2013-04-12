@@ -244,7 +244,7 @@ public class ManageMetaProcessStatesComponent extends CustomComponent implements
         form.setItemDataSource(stateTable.getItem(selectedState), Arrays.asList(new Object[] { "name", "position" }));
         form.setWriteThrough(false);
 
-        if (!selectedState.hasAnyConfigs()) {
+        if (selectedState.getConfigsSet().isEmpty()) {
             Label noConditions = new Label(getMessage("state.activation.conditions.none"));
             operationsLayout.addComponent(noConditions);
         } else {
