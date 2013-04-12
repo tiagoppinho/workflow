@@ -51,7 +51,7 @@ public class WorkflowSystem extends WorkflowSystem_Base {
 
         @Override
         public void beforeRemove(VirtualHost vh, MyOrg myorg) {
-            vh.removeWorkflowSystem();
+            vh.setWorkflowSystem(null);
             super.beforeRemove(vh, myorg);
         }
     }
@@ -85,7 +85,7 @@ public class WorkflowSystem extends WorkflowSystem_Base {
 
     @Atomic
     public static void createSystem(final VirtualHost virtualHost) {
-        if (!virtualHost.hasWorkflowSystem() || virtualHost.getWorkflowSystem().getVirtualHostCount() > 1) {
+        if (virtualHost.getWorkflowSystem() == null || virtualHost.getWorkflowSystem().getVirtualHost().size() > 1) {
             new WorkflowSystem(virtualHost);
         }
     }
@@ -94,4 +94,40 @@ public class WorkflowSystem extends WorkflowSystem_Base {
     public void setForVirtualHost(final VirtualHost virtualHost) {
         virtualHost.setWorkflowSystem(this);
     }
+
+    @Deprecated
+    public java.util.Set<module.workflow.domain.WorkflowProcessComment> getProcessComments() {
+        return getProcessCommentsSet();
+    }
+
+    @Deprecated
+    public java.util.Set<module.workflow.domain.WorkflowProcess> getProcesses() {
+        return getProcessesSet();
+    }
+
+    @Deprecated
+    public java.util.Set<pt.ist.bennu.core.domain.VirtualHost> getVirtualHost() {
+        return getVirtualHostSet();
+    }
+
+    @Deprecated
+    public java.util.Set<module.workflow.domain.NodeMapping> getNodeMappings() {
+        return getNodeMappingsSet();
+    }
+
+    @Deprecated
+    public java.util.Set<module.workflow.domain.ProcessSelectionMapper> getProcessMappings() {
+        return getProcessMappingsSet();
+    }
+
+    @Deprecated
+    public java.util.Set<module.workflow.domain.WorkflowLog> getProcessLogs() {
+        return getProcessLogsSet();
+    }
+
+    @Deprecated
+    public java.util.Set<module.workflow.domain.WorkflowQueue> getWorkflowQueues() {
+        return getWorkflowQueuesSet();
+    }
+
 }

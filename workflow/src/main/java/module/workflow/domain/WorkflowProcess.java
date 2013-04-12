@@ -127,7 +127,7 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
      *         otherwise
      */
     public boolean isQueuesAssociated() {
-        return hasAnyQueueHistory() || hasAnyCurrentQueues();
+        return (!getQueueHistory().isEmpty()) || (!getCurrentQueues().isEmpty());
     }
 
     public static <T extends WorkflowProcess> Set<T> getAllProcesses(Class<T> processClass) {
@@ -301,21 +301,8 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
     public List<WorkflowLog> getPendingLogs() {
         List<WorkflowLog> list = new ArrayList<WorkflowLog>();
 
-        for (WorkflowLog log : super.getExecutionLogs()) {
+        for (WorkflowLog log : super.getExecutionLogsSet()) {
             if (log.getWhenOperationWasRan() == null) {
-                list.add(log);
-            }
-        }
-
-        return list;
-    }
-
-    @Override
-    public Set<WorkflowLog> getExecutionLogs() {
-        Set<WorkflowLog> list = new HashSet<WorkflowLog>();
-
-        for (WorkflowLog log : super.getExecutionLogs()) {
-            if (log.getWhenOperationWasRan() != null) {
                 list.add(log);
             }
         }
@@ -506,15 +493,6 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
     @Deprecated
     public void setCurrentOwner(User currentOwner) {
         throw new DomainException("error.message.illegal.method.useTakeInstead");
-    }
-
-    /**
-     * use {@link #releaseProcess()} instead
-     */
-    @Override
-    @Deprecated
-    public void removeCurrentOwner() {
-        throw new DomainException("error.message.illegal.method.useReleaseInstead");
     }
 
     public void systemProcessRelease() {
@@ -1097,6 +1075,46 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
     public boolean isConnectedToCurrentHost() {
         final VirtualHost virtualHost = VirtualHost.getVirtualHostForThread();
         return virtualHost != null && getWorkflowSystem() == virtualHost.getWorkflowSystem();
+    }
+
+    @Deprecated
+    public java.util.Set<pt.ist.bennu.core.domain.User> getObservers() {
+        return getObserversSet();
+    }
+
+    @Deprecated
+    public java.util.Set<module.workflow.domain.WorkflowQueue> getQueueHistory() {
+        return getQueueHistorySet();
+    }
+
+    @Deprecated
+    public java.util.Set<module.workflow.domain.AbstractWFDocsGroup> getProcessDocumentsPersistentGroups() {
+        return getProcessDocumentsPersistentGroupsSet();
+    }
+
+    @Deprecated
+    public java.util.Set<module.workflow.domain.WorkflowProcessComment> getComments() {
+        return getCommentsSet();
+    }
+
+    @Deprecated
+    public java.util.Set<module.workflow.domain.WorkflowQueue> getCurrentQueues() {
+        return getCurrentQueuesSet();
+    }
+
+    @Deprecated
+    public java.util.Set<module.workflow.domain.WorkflowLog> getExecutionLogs() {
+        return getExecutionLogsSet();
+    }
+
+    @Deprecated
+    public java.util.Set<module.workflow.domain.ProcessFile> getDeletedFiles() {
+        return getDeletedFilesSet();
+    }
+
+    @Deprecated
+    public java.util.Set<module.workflow.domain.ProcessFile> getFiles() {
+        return getFilesSet();
     }
 
 }

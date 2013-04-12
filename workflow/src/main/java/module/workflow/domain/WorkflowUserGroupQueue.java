@@ -106,4 +106,9 @@ public class WorkflowUserGroupQueue extends WorkflowUserGroupQueue_Base {
         return persons;
     }
 
+    @Deprecated
+    public java.util.Set<pt.ist.bennu.core.domain.User> getUsers() {
+        return getUsersSet();
+    }
+
 }

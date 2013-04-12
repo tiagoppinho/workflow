@@ -77,13 +77,13 @@ public class ProcessFile extends ProcessFile_Base {
                 AbstractWFDocsGroup.getOrCreateInstance(process, this.getMetaDataResolver().getReadGroupClass());
         AbstractWFDocsGroup writeGroup =
                 AbstractWFDocsGroup.getOrCreateInstance(process, this.getMetaDataResolver().getWriteGroupClass());
-        if (this.getDocument().hasReadGroup()) {
+        if (this.getDocument().getReadGroup() != null) {
             this.getDocument().setReadGroup(UnionGroup.getOrCreateUnionGroup(getDocument().getReadGroup(), readGroup));
         } else {
             this.getDocument().setReadGroup(readGroup);
         }
 
-        if (this.getDocument().hasWriteGroup()) {
+        if (this.getDocument().getWriteGroup() != null) {
             this.getDocument().setWriteGroup(UnionGroup.getOrCreateUnionGroup(getDocument().getWriteGroup(), writeGroup));
         } else {
             this.getDocument().setWriteGroup(writeGroup);
@@ -157,7 +157,7 @@ public class ProcessFile extends ProcessFile_Base {
 
     @ConsistencyPredicate
     public boolean checkConnectedWithProcess() {
-        return hasProcess() || hasProcessWithDeleteFile();
+        return getProcess() != null || getProcessWithDeleteFile() != null;
 
     }
 
@@ -315,9 +315,9 @@ public class ProcessFile extends ProcessFile_Base {
     public void delete() {
         //	getDocument().delete();
         moveToTrash();
-        removeDocument();
-        removeProcess();
-        removeProcessWithDeleteFile();
+        setDocument(null);
+        setProcess(null);
+        setProcessWithDeleteFile(null);
         super.delete();
     }
 

@@ -135,4 +135,15 @@ public abstract class WorkflowQueue extends WorkflowQueue_Base {
     }
 
     public abstract Collection<Person> getPersons();
+
+    @Deprecated
+    public java.util.Set<module.workflow.domain.WorkflowProcess> getProcessesHistory() {
+        return getProcessesHistorySet();
+    }
+
+    @Deprecated
+    public java.util.Set<module.workflow.domain.WorkflowProcess> getProcesses() {
+        return getProcessesSet();
+    }
+
 }

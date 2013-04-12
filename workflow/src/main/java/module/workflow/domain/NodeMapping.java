@@ -43,7 +43,7 @@ public class NodeMapping extends NodeMapping_Base implements Comparable<NodeMapp
         @Override
         public void afterRemove(final Node node, final MyOrg myorg) {
             if (node != null && myorg != null) {
-                for (; !node.getNodeMapping().isEmpty(); node.getNodeMapping().iterator().next().delete()) {
+                for (; !node.getNodeMappingSet().isEmpty(); node.getNodeMappingSet().iterator().next().delete()) {
                     ;
                 }
             }
@@ -68,9 +68,9 @@ public class NodeMapping extends NodeMapping_Base implements Comparable<NodeMapp
     }
 
     public void delete() {
-        removeWorkflowSystem();
-        removeProcessMapping();
-        removeNode();
+        setWorkflowSystem(null);
+        setProcessMapping(null);
+        setNode(null);
         super.deleteDomainObject();
     }
 

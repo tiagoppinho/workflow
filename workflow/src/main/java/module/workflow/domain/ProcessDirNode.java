@@ -98,7 +98,7 @@ public class ProcessDirNode extends ProcessDirNode_Base {
     }
 
     public boolean checkParent() {
-        return getDirNode().hasParent() ? true : hasWorkflowProcess();
+        return getDirNode().getParent() != null ? true : getWorkflowProcess() != null;
     }
 
     /**
@@ -170,7 +170,7 @@ public class ProcessDirNode extends ProcessDirNode_Base {
         if (!this.equals(node.getParent())) {
             return null;
         }
-        for (ProcessFile processDocument : node.getDocument().getProcessDocuments()) {
+        for (ProcessFile processDocument : node.getDocument().getProcessDocumentsSet()) {
             if (processDocument.getProcess().equals(getWorkflowProcess())) {
                 return processDocument;
             }
@@ -228,8 +228,8 @@ public class ProcessDirNode extends ProcessDirNode_Base {
     }
 
     public void delete() {
-        removeDirNode();
-        removeWorkflowProcess();
+        setDirNode(null);
+        setWorkflowProcess(null);
         deleteDomainObject();
 
     }
