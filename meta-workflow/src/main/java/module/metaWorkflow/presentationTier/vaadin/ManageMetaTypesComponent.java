@@ -94,7 +94,7 @@ public class ManageMetaTypesComponent extends CustomComponent implements Embedde
             };
         };
         DomainContainer<WorkflowMetaType> container =
-                new DomainContainer<WorkflowMetaType>(WorkflowSystem.getInstance().getMetaTypes(), WorkflowMetaType.class);
+                new DomainContainer<WorkflowMetaType>(WorkflowSystem.getInstance().getMetaTypesSet(), WorkflowMetaType.class);
 
         container.setContainerProperties("name", "organizationalModel.name", "availableFileTypes");
         table.setContainerDataSource(container);

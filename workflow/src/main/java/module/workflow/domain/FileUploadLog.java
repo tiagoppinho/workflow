@@ -28,10 +28,11 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
 import org.joda.time.Interval;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import pt.ist.bennu.core.domain.User;
 import pt.ist.bennu.core.util.BundleUtil;
@@ -44,7 +45,7 @@ import pt.utl.ist.fenix.tools.util.Strings;
  */
 public class FileUploadLog extends FileUploadLog_Base {
 
-    private static final Logger LOGGER = Logger.getLogger(FileUploadLog.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(FileUploadLog.class);
 
     public FileUploadLog(WorkflowProcess process, User person, String... argumentsDescription) {
         super();

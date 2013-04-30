@@ -63,7 +63,7 @@ public class ChangeQueue<T extends WorkflowProcess> extends WorkflowActivity<T, 
             process.addCurrentQueues(queueToAdd);
         }
 
-        if (!process.hasAnyCurrentQueues()) {
+        if (process.getCurrentQueuesSet().isEmpty()) {
             throw new DomainException(BundleUtil.getFormattedStringFromResourceBundle("resources/MetaWorkflowResources",
                     "error.process.mustHave.atLeast.one.queue"));
         }

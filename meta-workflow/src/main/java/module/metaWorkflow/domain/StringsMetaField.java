@@ -26,7 +26,7 @@ package module.metaWorkflow.domain;
 
 import module.metaWorkflow.exceptions.MetaWorkflowDomainException;
 import module.metaWorkflow.presentationTier.dto.MetaFieldBean;
-import pt.ist.fenixWebFramework.services.Service;
+import pt.ist.fenixframework.Atomic;
 import pt.utl.ist.fenix.tools.util.i18n.MultiLanguageString;
 
 /**
@@ -65,7 +65,7 @@ public class StringsMetaField extends StringsMetaField_Base {
     }
 
     @Override
-    @Service
+    @Atomic
     public void deleteItselfAndAllChildren() throws MetaWorkflowDomainException {
         delete();
 

@@ -60,7 +60,7 @@ public class FieldSetValue extends FieldSetValue_Base {
     @Override
     @ConsistencyPredicate
     public final boolean checkHasParent() {
-        return super.checkHasParent() || hasProcess();
+        return super.checkHasParent() || (getProcess() != null);
     }
 
     public Set<FieldValue> getOrderedChildFields() {
@@ -96,7 +96,7 @@ public class FieldSetValue extends FieldSetValue_Base {
 
     @Override
     public WorkflowMetaProcess getProcess() {
-        if (!hasParentFieldSet()) {
+        if (!(getParentFieldSet() != null)) {
             return super.getProcess();
         }
 
@@ -126,4 +126,9 @@ public class FieldSetValue extends FieldSetValue_Base {
     @Override
     public void writeValueFromBean(FieldValueBean bean) {
     }
+    @Deprecated
+    public java.util.Set<module.metaWorkflow.domain.FieldValue> getChildFieldValues() {
+        return getChildFieldValuesSet();
+    }
+
 }

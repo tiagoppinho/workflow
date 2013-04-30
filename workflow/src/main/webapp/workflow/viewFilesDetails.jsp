@@ -2,7 +2,6 @@
 <%@page import="java.util.Comparator"%>
 <%@page import="java.util.Collections"%>
 <%@page import="java.util.Collection"%>
-<%@page import="pt.ist.fenixframework.pstm.AbstractDomainObject"%>
 <%@page import="java.util.ArrayList"%>
 <%@page import="module.workflow.domain.ProcessFile"%>
 <%@page import="java.util.List"%>

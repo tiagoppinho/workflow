@@ -33,7 +33,7 @@ import module.workflow.presentationTier.actions.ProcessManagement.ProcessRequest
 import pt.ist.bennu.core.domain.ModuleInitializer;
 import pt.ist.bennu.core.domain.MyOrg;
 import pt.ist.bennu.core.util.VariantBean;
-import pt.ist.fenixWebFramework.services.Service;
+import pt.ist.fenixframework.Atomic;
 
 /**
  * 
@@ -64,7 +64,7 @@ public class MetaWorkflowInitializer extends MetaWorkflowInitializer_Base implem
         return myOrg.getMetaWorkflowInitializer();
     }
 
-    @Service
+    @Atomic
     public synchronized static void initialize() {
         if (!isInitialized) {
             try {

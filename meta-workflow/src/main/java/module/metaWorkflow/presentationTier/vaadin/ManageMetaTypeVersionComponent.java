@@ -20,7 +20,7 @@ import pt.ist.bennu.core.applicationTier.Authenticate.UserView;
 import pt.ist.bennu.core.domain.RoleType;
 import pt.ist.bennu.core.domain.exceptions.DomainException;
 import pt.ist.bennu.core.util.BundleUtil;
-import pt.ist.fenixframework.pstm.AbstractDomainObject;
+import pt.ist.fenixframework.FenixFramework;
 import pt.ist.vaadinframework.EmbeddedApplication;
 import pt.ist.vaadinframework.annotation.EmbeddedComponent;
 import pt.ist.vaadinframework.data.reflect.DomainItem;
@@ -78,7 +78,7 @@ public class ManageMetaTypeVersionComponent extends CustomComponent implements E
      */
     @Override
     public void setArguments(Map<String, String> arg0) {
-        WorkflowMetaTypeVersion metaTypeVersion = AbstractDomainObject.fromExternalId(arg0.get("metaTypeVersion"));
+        WorkflowMetaTypeVersion metaTypeVersion = FenixFramework.getDomainObject(arg0.get("metaTypeVersion"));
         manageMetaTypeVersionInterface(metaTypeVersion);
 
     }
@@ -453,7 +453,7 @@ public class ManageMetaTypeVersionComponent extends CustomComponent implements E
             numberProcessesLabel.addStyleName(BennuTheme.LABEL_H3);
             statisticsLayout.addComponent(numberProcessesLabel);
 
-            Label numberProcessesValue = new Label("<em>" + metaTypeVersion.getMetaProcessesCount() + "</em>");
+            Label numberProcessesValue = new Label("<em>" + metaTypeVersion.getMetaProcessesSet().size() + "</em>");
             numberProcessesValue.setContentMode(Label.CONTENT_XHTML);
             statisticsLayout.addComponent(numberProcessesValue);
 
@@ -461,7 +461,7 @@ public class ManageMetaTypeVersionComponent extends CustomComponent implements E
             numberStatesLabel.addStyleName(BennuTheme.LABEL_H3);
             statisticsLayout.addComponent(numberStatesLabel);
 
-            Label numberStatesValue = new Label("<em>" + metaTypeVersion.getProcessStatesCount() + "</em>");
+            Label numberStatesValue = new Label("<em>" + metaTypeVersion.getProcessStatesSet().size() + "</em>");
             numberStatesValue.setContentMode(Label.CONTENT_XHTML);
             statisticsLayout.addComponent(numberStatesValue);
 
@@ -471,7 +471,7 @@ public class ManageMetaTypeVersionComponent extends CustomComponent implements E
 
             int nrProcessConfigurations = 0;
             for (MetaProcessState processState : metaTypeVersion.getProcessStates()) {
-                nrProcessConfigurations += processState.getConfigsCount();
+                nrProcessConfigurations += processState.getConfigsSet().size();
             }
             Label numberConfigurationsValue = new Label("<em>" + nrProcessConfigurations + "</em>");
             numberConfigurationsValue.setContentMode(Label.CONTENT_XHTML);

@@ -45,7 +45,7 @@ public class ChangeQueueInformation<T extends WorkflowProcess> extends ActivityI
     public ChangeQueueInformation(T process, ChangeQueue<T> activity) {
         super(process, activity);
         queuesToRemove = new ArrayList<WorkflowQueue>(process.getCurrentQueuesSet());
-        queuesToRemove.retainAll(UserView.getCurrentUser().getQueues());
+        queuesToRemove.retainAll(UserView.getCurrentUser().getQueuesSet());
     }
 
     @Override

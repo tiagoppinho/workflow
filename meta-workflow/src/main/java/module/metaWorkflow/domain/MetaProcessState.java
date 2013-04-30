@@ -28,7 +28,7 @@ import java.util.Comparator;
 
 import jvstm.cps.ConsistencyPredicate;
 import pt.ist.bennu.core.domain.exceptions.DomainException;
-import pt.ist.fenixWebFramework.services.Service;
+import pt.ist.fenixframework.Atomic;
 import pt.utl.ist.fenix.tools.util.i18n.MultiLanguageString;
 
 /**
@@ -85,7 +85,7 @@ public class MetaProcessState extends MetaProcessState_Base {
 
     @ConsistencyPredicate
     public boolean checkHasMetaTypeVersion() {
-        return hasWorkflowMetaTypeVersion();
+        return (getWorkflowMetaTypeVersion() != null);
     }
 
     public boolean isActive(WorkflowMetaProcess process) {
@@ -102,21 +102,21 @@ public class MetaProcessState extends MetaProcessState_Base {
      * 
      * methods TODO: addConfigs addDependingConfigs
      */
-    @Service
+    @Atomic
     public static MetaProcessState create(WorkflowMetaTypeVersion metaTypeVersion, String name, Integer position) {
         return new MetaProcessState(metaTypeVersion, name, position);
     }
 
-    @Service
+    @Atomic
     public void delete() {
-        if (hasAnyDependingConfigs()) {
+        if (!getDependingConfigsSet().isEmpty()) {
             throw new DomainException("error.state.has.depending.states");
         }
         for (MetaProcessStateConfig config : getConfigs()) {
             config.delete();
         }
-        removeWorkflowMetaType();
-        removeWorkflowMetaTypeVersion();
+        setWorkflowMetaType(null);
+        setWorkflowMetaTypeVersion(null);
         deleteDomainObject();
     }
 
@@ -137,6 +137,16 @@ public class MetaProcessState extends MetaProcessState_Base {
     public boolean isPublished() {
         return getWorkflowMetaTypeVersion().getPublished();
 
+    }
+
+    @Deprecated
+    public java.util.Set<module.metaWorkflow.domain.MetaProcessStateConfig> getDependingConfigs() {
+        return getDependingConfigsSet();
+    }
+
+    @Deprecated
+    public java.util.Set<module.metaWorkflow.domain.MetaProcessStateConfig> getConfigs() {
+        return getConfigsSet();
     }
 
 }

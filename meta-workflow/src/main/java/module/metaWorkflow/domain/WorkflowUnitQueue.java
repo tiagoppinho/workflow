@@ -39,7 +39,7 @@ import module.workflow.util.WorkflowQueueBean;
 import pt.ist.bennu.core.domain.User;
 import pt.ist.bennu.core.domain.VirtualHost;
 import pt.ist.bennu.core.util.ClassNameBundle;
-import pt.ist.fenixWebFramework.services.Service;
+import pt.ist.fenixframework.Atomic;
 
 @ClassNameBundle(bundle = "resources/MetaWorkflowResources")
 /**
@@ -78,7 +78,7 @@ public class WorkflowUnitQueue extends WorkflowUnitQueue_Base {
     }
 
     @Override
-    @Service
+    @Atomic
     public void edit(WorkflowQueueBean bean) {
         WorkflowUnitQueueBean unitQueueBean = (WorkflowUnitQueueBean) bean;
         setName(bean.getName());
@@ -100,7 +100,7 @@ public class WorkflowUnitQueue extends WorkflowUnitQueue_Base {
     public static Set<WorkflowUnitQueue> getQueuesFor(Collection<Unit> units) {
         Set<WorkflowUnitQueue> queues = new HashSet<WorkflowUnitQueue>();
         for (Unit unit : units) {
-            queues.addAll(unit.getQueues());
+            queues.addAll(unit.getQueuesSet());
         }
         return queues;
     }
@@ -125,4 +125,10 @@ public class WorkflowUnitQueue extends WorkflowUnitQueue_Base {
     public Collection<Person> getPersons() {
         return getUnit().getChildPersons(getAccountabilityTypes());
     }
+
+    @Deprecated
+    public java.util.Set<module.organization.domain.AccountabilityType> getAccountabilityTypes() {
+        return getAccountabilityTypesSet();
+    }
+
 }

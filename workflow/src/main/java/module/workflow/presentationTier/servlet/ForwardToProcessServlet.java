@@ -44,7 +44,7 @@ import pt.ist.fenixWebFramework.servlets.filters.contentRewrite.GenericChecksumR
 import pt.ist.fenixWebFramework.servlets.filters.contentRewrite.RequestChecksumFilter;
 import pt.ist.fenixWebFramework.servlets.filters.contentRewrite.RequestChecksumFilter.ChecksumPredicate;
 import pt.ist.fenixframework.DomainObject;
-import pt.ist.fenixframework.pstm.AbstractDomainObject;
+import pt.ist.fenixframework.FenixFramework;
 
 /**
  * 
@@ -68,7 +68,7 @@ public class ForwardToProcessServlet extends HttpServlet {
         final String uri = request.getRequestURI();
         final int lastSlash = uri.lastIndexOf('/');
         final String externalId = uri.substring(lastSlash + 1);
-        final WorkflowProcess workflowProcess = AbstractDomainObject.fromExternalId(externalId);
+        final WorkflowProcess workflowProcess = FenixFramework.getDomainObject(externalId);
 
         final User user = UserView.getCurrentUser();
         if (user == null) {

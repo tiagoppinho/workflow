@@ -79,4 +79,9 @@ public class WorkflowProcessComment extends WorkflowProcessComment_Base implemen
         return virtualHost != null && getWorkflowSystem() == virtualHost.getWorkflowSystem();
     }
 
+    @Deprecated
+    public java.util.Set<pt.ist.bennu.core.domain.User> getReaders() {
+        return getReadersSet();
+    }
+
 }

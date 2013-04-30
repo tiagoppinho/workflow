@@ -88,7 +88,7 @@ public class WorkflowCommentCounter {
             }
         };
 
-        for (WorkflowLog log : person.getUser().getUserLogs()) {
+        for (WorkflowLog log : person.getUser().getUserLogsSet()) {
             WorkflowProcess process = log.getProcess();
             if (searchPredicate.evaluate(process)) {
                 processes.add(process);

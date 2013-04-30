@@ -32,7 +32,8 @@ import module.fileManagement.domain.FileNode;
 import module.workflow.util.WorkflowFileUploadBean;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import pt.ist.bennu.core.domain.groups.UnionGroup;
 import pt.ist.bennu.core.util.ClassNameBundle;
@@ -51,7 +52,7 @@ import pt.ist.bennu.core.util.ClassNameBundle;
 @ClassNameBundle(bundle = "resources/WorkflowResources")
 public class ProcessFile extends ProcessFile_Base {
 
-    private static final Logger LOGGER = Logger.getLogger(ProcessFile.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ProcessFile.class);
 
     public ProcessFile() {
         super();
@@ -76,13 +77,13 @@ public class ProcessFile extends ProcessFile_Base {
                 AbstractWFDocsGroup.getOrCreateInstance(process, this.getMetaDataResolver().getReadGroupClass());
         AbstractWFDocsGroup writeGroup =
                 AbstractWFDocsGroup.getOrCreateInstance(process, this.getMetaDataResolver().getWriteGroupClass());
-        if (this.getDocument().hasReadGroup()) {
+        if (this.getDocument().getReadGroup() != null) {
             this.getDocument().setReadGroup(UnionGroup.getOrCreateUnionGroup(getDocument().getReadGroup(), readGroup));
         } else {
             this.getDocument().setReadGroup(readGroup);
         }
 
-        if (this.getDocument().hasWriteGroup()) {
+        if (this.getDocument().getWriteGroup() != null) {
             this.getDocument().setWriteGroup(UnionGroup.getOrCreateUnionGroup(getDocument().getWriteGroup(), writeGroup));
         } else {
             this.getDocument().setWriteGroup(writeGroup);
@@ -156,7 +157,7 @@ public class ProcessFile extends ProcessFile_Base {
 
     @ConsistencyPredicate
     public boolean checkConnectedWithProcess() {
-        return hasProcess() || hasProcessWithDeleteFile();
+        return getProcess() != null || getProcessWithDeleteFile() != null;
 
     }
 
@@ -314,9 +315,9 @@ public class ProcessFile extends ProcessFile_Base {
     public void delete() {
         //	getDocument().delete();
         moveToTrash();
-        removeDocument();
-        removeProcess();
-        removeProcessWithDeleteFile();
+        setDocument(null);
+        setProcess(null);
+        setProcessWithDeleteFile(null);
         super.delete();
     }
 

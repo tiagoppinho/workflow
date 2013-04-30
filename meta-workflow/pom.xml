@@ -3,7 +3,7 @@
   <parent>
     <groupId>pt.ist</groupId>
     <artifactId>bennu-project</artifactId>
-    <version>1.0.0</version>
+    <version>1.1.0-rc1</version>
   </parent>
   <groupId>pt.ist</groupId>
   <artifactId>meta-workflow</artifactId>
@@ -11,14 +11,13 @@
   <packaging>jar</packaging>
   <name>meta-workflow</name>
   <properties>
-    <version.pt.ist.bennu.core>1.0.0</version.pt.ist.bennu.core>
-    <version.pt.ist.workflow>1.1-SNAPSHOT</version.pt.ist.workflow>
-    <version.pt.ist.dashboard>1.0.0</version.pt.ist.dashboard>
-    <version.pt.ist.organization>1.0.0</version.pt.ist.organization>
-    <version.pt.ist.scheduler>1.0.0</version.pt.ist.scheduler>
-    <version.pt.ist.lucene>1.0.0</version.pt.ist.lucene>
-    <version.pt.ist.email.dispatch>1.0.0</version.pt.ist.email.dispatch>
-    <version.pt.ist.bennu.vaadin>1.0.0</version.pt.ist.bennu.vaadin>
+    <version.pt.ist.bennu.core>1.1.0-rc1</version.pt.ist.bennu.core>
+    <version.pt.ist.dashboard>1.1.0-rc1</version.pt.ist.dashboard>
+    <version.pt.ist.organization>1.1.0-rc1</version.pt.ist.organization>
+    <version.pt.ist.scheduler>1.1.0-rc1</version.pt.ist.scheduler>
+    <version.pt.ist.lucene>1.1.0-rc1</version.pt.ist.lucene>
+    <version.pt.ist.email.dispatch>1.1.0-rc1</version.pt.ist.email.dispatch>
+    <version.pt.ist.bennu.vaadin>1.1.0-rc1</version.pt.ist.bennu.vaadin>
   </properties>
   <dependencies>
     <dependency>
@@ -29,7 +28,7 @@
     <dependency>
       <groupId>pt.ist</groupId>
       <artifactId>workflow</artifactId>
-      <version>${version.pt.ist.workflow}</version>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>pt.ist</groupId>

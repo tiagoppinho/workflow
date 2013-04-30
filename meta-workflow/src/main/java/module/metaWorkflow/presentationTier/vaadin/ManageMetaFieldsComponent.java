@@ -19,7 +19,7 @@ import org.vaadin.dialogs.ConfirmDialog;
 import pt.ist.bennu.core.applicationTier.Authenticate.UserView;
 import pt.ist.bennu.core.domain.RoleType;
 import pt.ist.bennu.core.util.BundleUtil;
-import pt.ist.fenixframework.pstm.AbstractDomainObject;
+import pt.ist.fenixframework.FenixFramework;
 import pt.ist.vaadinframework.annotation.EmbeddedComponent;
 import pt.ist.vaadinframework.data.reflect.DomainContainer;
 import pt.ist.vaadinframework.ui.DefaultFieldFactory;
@@ -78,7 +78,7 @@ public class ManageMetaFieldsComponent extends CustomComponent implements Embedd
      */
     @Override
     public void setArguments(Map<String, String> arg0) {
-        WorkflowMetaTypeVersion metaTypeVersion = AbstractDomainObject.fromExternalId(arg0.get("metaTypeVersion"));
+        WorkflowMetaTypeVersion metaTypeVersion = FenixFramework.getDomainObject(arg0.get("metaTypeVersion"));
         manageMetaFieldsInterface(metaTypeVersion);
     }
 
@@ -266,7 +266,8 @@ public class ManageMetaFieldsComponent extends CustomComponent implements Embedd
                 @Override
                 public void buttonClick(ClickEvent event) {
                     MetaFieldSet parentFieldSet = selectedMetaField.getParentFieldSet();
-                    if (selectedMetaField instanceof MetaFieldSet && ((MetaFieldSet) selectedMetaField).hasAnyChildFields()) {
+                    if (selectedMetaField instanceof MetaFieldSet
+                            && !((MetaFieldSet) selectedMetaField).getChildFieldsSet().isEmpty()) {
                         ConfirmDialog.show(getWindow(), getMessage("label.confirm.deletion.fieldSet.with.children.title"),
                                 getMessage("label.confirm.deletion.fieldSet.with.children"), getMessage("label.yes"),
                                 getMessage("label.no"), new ConfirmDialog.Listener() {
@@ -284,7 +285,7 @@ public class ManageMetaFieldsComponent extends CustomComponent implements Embedd
                         metaFieldTree.removeItem(selectedMetaField);
                     }
                     if (parentFieldSet != null) {
-                        metaFieldsWrapper.setChildrenAllowed(parentFieldSet, parentFieldSet.hasAnyChildFields());
+                        metaFieldsWrapper.setChildrenAllowed(parentFieldSet, !parentFieldSet.getChildFieldsSet().isEmpty());
                     }
                 }
             });
@@ -306,7 +307,7 @@ public class ManageMetaFieldsComponent extends CustomComponent implements Embedd
             if (fieldSet.getParentFieldSet() != null) {
                 metaFieldsWrapper.setParent(field, fieldSet.getParentFieldSet());
             }
-            metaFieldsWrapper.setChildrenAllowed(field, fieldSet.hasAnyChildFields());
+            metaFieldsWrapper.setChildrenAllowed(field, !fieldSet.getChildFieldsSet().isEmpty());
             for (MetaField childField : fieldSet.getChildFields()) {
                 wrapChildFields(metaFieldsWrapper, childField);
             }
@@ -314,7 +315,7 @@ public class ManageMetaFieldsComponent extends CustomComponent implements Embedd
             metaFieldsWrapper.addItem(field);
             if (field.getParentFieldSet() != null) {
                 MetaFieldSet parentFieldSet = field.getParentFieldSet();
-                metaFieldsWrapper.setChildrenAllowed(parentFieldSet, parentFieldSet.hasAnyChildFields());
+                metaFieldsWrapper.setChildrenAllowed(parentFieldSet, !parentFieldSet.getChildFieldsSet().isEmpty());
             }
             metaFieldsWrapper.setParent(field, field.getParentFieldSet());
             metaFieldsWrapper.setChildrenAllowed(field, false);

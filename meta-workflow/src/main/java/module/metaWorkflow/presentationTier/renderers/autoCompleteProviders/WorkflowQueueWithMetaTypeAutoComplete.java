@@ -32,7 +32,7 @@ import java.util.Set;
 import module.metaWorkflow.domain.WorkflowMetaType;
 import module.workflow.domain.WorkflowQueue;
 import pt.ist.bennu.core.presentationTier.renderers.autoCompleteProvider.AutoCompleteProvider;
-import pt.ist.fenixframework.pstm.AbstractDomainObject;
+import pt.ist.fenixframework.FenixFramework;
 import pt.utl.ist.fenix.tools.util.StringNormalizer;
 
 /**
@@ -60,7 +60,7 @@ public class WorkflowQueueWithMetaTypeAutoComplete implements AutoCompleteProvid
     }
 
     private WorkflowMetaType getWorkflowMetaType(String oid) {
-        return AbstractDomainObject.fromExternalId(oid);
+        return FenixFramework.getDomainObject(oid);
     }
 
     private boolean hasMatch(String[] input, String queueNameParts) {

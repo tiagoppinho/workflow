@@ -36,7 +36,7 @@ import module.metaWorkflow.presentationTier.dto.MetaFieldBean;
 import org.apache.commons.lang.StringUtils;
 
 import pt.ist.bennu.core.util.BundleUtil;
-import pt.ist.fenixWebFramework.services.Service;
+import pt.ist.fenixframework.Atomic;
 import pt.utl.ist.fenix.tools.util.i18n.Language;
 import pt.utl.ist.fenix.tools.util.i18n.MultiLanguageString;
 
@@ -69,7 +69,7 @@ public abstract class MetaField extends MetaField_Base {
         this.setParentFieldSet(parentFieldSet);
     }
 
-    @Service
+    @Atomic
     public static MetaField createMetaField(MetaFieldBean bean, MetaFieldSet parentFieldSet) {
         try {
             return bean.getFieldClass().getConstructor(MetaFieldBean.class, MetaFieldSet.class).newInstance(bean, parentFieldSet);
@@ -154,5 +154,15 @@ public abstract class MetaField extends MetaField_Base {
      *         published. False otherwise
      */
     public abstract boolean isPublished();
+
+    @Deprecated
+    public java.util.Set<module.metaWorkflow.domain.MetaProcessStateConfig> getDependingStateConfigs() {
+        return getDependingStateConfigsSet();
+    }
+
+    @Deprecated
+    public java.util.Set<module.metaWorkflow.domain.FieldValue> getFieldValues() {
+        return getFieldValuesSet();
+    }
 
 }

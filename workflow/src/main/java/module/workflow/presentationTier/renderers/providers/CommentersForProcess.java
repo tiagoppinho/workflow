@@ -58,7 +58,7 @@ public class CommentersForProcess implements DataProvider {
 
         availablePeopleToNotify.add(new UserNotificationBean(process.getProcessCreator(), process));
         //let's also add the 'takers'/owners of the process
-        if (process.hasCurrentOwner()) {
+        if (process.getCurrentOwner() != null) {
             availablePeopleToNotify.add(new UserNotificationBean(process.getCurrentOwner(), process));
         }
 

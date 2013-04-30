@@ -3,7 +3,7 @@
 <%@page import="java.util.TreeSet"%>
 <%@page import="module.workflow.domain.WorkflowProcessComment"%>
 <%@page import="java.util.Set"%>
-<%@page import="pt.ist.fenixframework.pstm.AbstractDomainObject"%>
+<%@page import="pt.ist.fenixframework.FenixFramework"%>
 <%@page import="module.workflow.domain.WorkflowProcess"%>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib uri="http://jakarta.apache.org/struts/tags-html" prefix="html" %>
@@ -29,7 +29,7 @@ if ( fetch != null && fetch.equalsIgnoreCase("true"))
     request.setAttribute("displayedInline", fetch);
     //get the process 
 	String oid = request.getParameter("processId");
-	final WorkflowProcess process = AbstractDomainObject.fromExternalId(oid);
+	final WorkflowProcess process = FenixFramework.getDomainObject(oid);
 	request.setAttribute("process", process);
 
 	Set<WorkflowProcessComment> comments = new TreeSet<WorkflowProcessComment>(WorkflowProcessComment.COMPARATOR);
