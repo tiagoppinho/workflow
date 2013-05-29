@@ -32,10 +32,10 @@ import module.workflow.widgets.QuickViewWidget;
 import module.workflow.widgets.UnreadCommentsWidget;
 import pt.ist.bennu.core.domain.MyOrg;
 import pt.ist.bennu.core.domain.VirtualHost;
-import pt.ist.fenixWebFramework.services.Service;
 import pt.ist.fenixWebFramework.servlets.filters.contentRewrite.RequestChecksumFilter;
 import pt.ist.fenixWebFramework.servlets.filters.contentRewrite.RequestChecksumFilter.ChecksumPredicate;
-import dml.runtime.RelationAdapter;
+import pt.ist.fenixframework.Atomic;
+import pt.ist.fenixframework.dml.runtime.RelationAdapter;
 
 /**
  * 
@@ -51,13 +51,13 @@ public class WorkflowSystem extends WorkflowSystem_Base {
 
         @Override
         public void beforeRemove(VirtualHost vh, MyOrg myorg) {
-            vh.removeWorkflowSystem();
+            vh.setWorkflowSystem(null);
             super.beforeRemove(vh, myorg);
         }
     }
 
     static {
-        VirtualHost.MyOrgVirtualHost.addListener(new VirtualHostMyOrgRelationListener());
+        MyOrg.getRelationMyOrgVirtualHost().addListener(new VirtualHostMyOrgRelationListener());
 
         WidgetRegister.registerWidget(ProcessListWidget.class);
         WidgetRegister.registerWidget(QuickViewWidget.class);
@@ -83,15 +83,51 @@ public class WorkflowSystem extends WorkflowSystem_Base {
         return virtualHostForThread == null ? null : virtualHostForThread.getWorkflowSystem();
     }
 
-    @Service
+    @Atomic
     public static void createSystem(final VirtualHost virtualHost) {
-        if (!virtualHost.hasWorkflowSystem() || virtualHost.getWorkflowSystem().getVirtualHostCount() > 1) {
+        if (virtualHost.getWorkflowSystem() == null || virtualHost.getWorkflowSystem().getVirtualHost().size() > 1) {
             new WorkflowSystem(virtualHost);
         }
     }
 
-    @Service
+    @Atomic
     public void setForVirtualHost(final VirtualHost virtualHost) {
         virtualHost.setWorkflowSystem(this);
     }
+
+    @Deprecated
+    public java.util.Set<module.workflow.domain.WorkflowProcessComment> getProcessComments() {
+        return getProcessCommentsSet();
+    }
+
+    @Deprecated
+    public java.util.Set<module.workflow.domain.WorkflowProcess> getProcesses() {
+        return getProcessesSet();
+    }
+
+    @Deprecated
+    public java.util.Set<pt.ist.bennu.core.domain.VirtualHost> getVirtualHost() {
+        return getVirtualHostSet();
+    }
+
+    @Deprecated
+    public java.util.Set<module.workflow.domain.NodeMapping> getNodeMappings() {
+        return getNodeMappingsSet();
+    }
+
+    @Deprecated
+    public java.util.Set<module.workflow.domain.ProcessSelectionMapper> getProcessMappings() {
+        return getProcessMappingsSet();
+    }
+
+    @Deprecated
+    public java.util.Set<module.workflow.domain.WorkflowLog> getProcessLogs() {
+        return getProcessLogsSet();
+    }
+
+    @Deprecated
+    public java.util.Set<module.workflow.domain.WorkflowQueue> getWorkflowQueues() {
+        return getWorkflowQueuesSet();
+    }
+
 }

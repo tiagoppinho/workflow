@@ -42,7 +42,7 @@ import pt.ist.bennu.core.applicationTier.Authenticate.UserView;
 import pt.ist.bennu.core.domain.RoleType;
 import pt.ist.bennu.core.domain.exceptions.DomainException;
 import pt.ist.bennu.core.util.BundleUtil;
-import pt.ist.fenixframework.pstm.AbstractDomainObject;
+import pt.ist.fenixframework.FenixFramework;
 import pt.ist.vaadinframework.annotation.EmbeddedComponent;
 import pt.ist.vaadinframework.data.reflect.DomainContainer;
 import pt.ist.vaadinframework.data.reflect.DomainItem;
@@ -244,7 +244,7 @@ public class ManageMetaProcessStatesComponent extends CustomComponent implements
         form.setItemDataSource(stateTable.getItem(selectedState), Arrays.asList(new Object[] { "name", "position" }));
         form.setWriteThrough(false);
 
-        if (!selectedState.hasAnyConfigs()) {
+        if (selectedState.getConfigsSet().isEmpty()) {
             Label noConditions = new Label(getMessage("state.activation.conditions.none"));
             operationsLayout.addComponent(noConditions);
         } else {
@@ -485,7 +485,7 @@ public class ManageMetaProcessStatesComponent extends CustomComponent implements
 
     @Override
     public void setArguments(Map<String, String> arg0) {
-        WorkflowMetaTypeVersion metaTypeVersion = AbstractDomainObject.fromExternalId(arg0.get("metaTypeVersion"));
+        WorkflowMetaTypeVersion metaTypeVersion = FenixFramework.getDomainObject(arg0.get("metaTypeVersion"));
         manageStatesInterface(metaTypeVersion);
     }
 }

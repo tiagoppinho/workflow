@@ -1,7 +1,7 @@
 package module.metaWorkflow.domain;
 
+import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import module.metaWorkflow.exceptions.MetaWorkflowDomainException;
@@ -12,7 +12,7 @@ import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 
 import pt.ist.bennu.core.applicationTier.Authenticate.UserView;
-import pt.ist.fenixWebFramework.services.Service;
+import pt.ist.fenixframework.Atomic;
 
 public class WorkflowMetaTypeVersion extends WorkflowMetaTypeVersion_Base implements Comparable<WorkflowMetaTypeVersion> {
     private static final Integer FIRST_VERSION = 1;
@@ -41,7 +41,7 @@ public class WorkflowMetaTypeVersion extends WorkflowMetaTypeVersion_Base implem
          * WorkflowMetaType
          */
 
-        if (!metaType.hasAnyVersions()) {
+        if (metaType.getVersionsSet().isEmpty()) {
             for (MetaProcessState processState : metaType.getProcessStatesOld()) {
                 super.addProcessStates(processState);
             }
@@ -142,7 +142,7 @@ public class WorkflowMetaTypeVersion extends WorkflowMetaTypeVersion_Base implem
     }
 
     @Override
-    @Service
+    @Atomic
     public void setPublished(boolean published) {
         if (!published) {
             throw new IllegalArgumentException("can't unpublish a version");
@@ -170,14 +170,6 @@ public class WorkflowMetaTypeVersion extends WorkflowMetaTypeVersion_Base implem
     }
 
     @Override
-    public void removeFieldSet() {
-        if (getPublished()) {
-            throw new MetaWorkflowDomainException("cant.change.fieldSet.on.published.version");
-        }
-        super.removeFieldSet();
-    }
-
-    @Override
     public void removeMetaProcesses(WorkflowMetaProcess metaProcesses) {
         if (!getPublished()) {
             throw new MetaWorkflowDomainException("shouldnt.be.removing.meta.processes.on.unpublished.metaTypeVersion");
@@ -186,21 +178,11 @@ public class WorkflowMetaTypeVersion extends WorkflowMetaTypeVersion_Base implem
     }
 
     @Override
-    public void removeMetaType() {
-        throw new MetaWorkflowDomainException("cant.use.outside.only.on.delete.");
-    }
-
-    @Override
     public void removeProcessStates(MetaProcessState processStates) {
         if (getPublished()) {
             throw new MetaWorkflowDomainException("cant.remove.meta.processes.in.published.metaTypeVersion");
         }
         super.removeProcessStates(processStates);
-    }
-
-    @Override
-    public void removeWorkflowSystem() {
-        throw new MetaWorkflowDomainException("cant.use.outside.only.on.delete.");
     }
 
     /* END Protecting setters and getters section */
@@ -224,7 +206,7 @@ public class WorkflowMetaTypeVersion extends WorkflowMetaTypeVersion_Base implem
 
     }
 
-    @Service
+    @Atomic
     public WorkflowMetaTypeVersion createNewUnpublishedVersion() {
         WorkflowMetaTypeVersion workflowMetaTypeVersion = new WorkflowMetaTypeVersion(this);
 
@@ -278,7 +260,7 @@ public class WorkflowMetaTypeVersion extends WorkflowMetaTypeVersion_Base implem
         return workflowMetaTypeVersion;
     }
 
-    private void cloneMetaProcessStates(List<MetaProcessState> processStates,
+    private void cloneMetaProcessStates(Collection<MetaProcessState> processStates,
             HashMap<MetaProcessState, MetaProcessState> oldToNewMProcessStateMap) {
         for (MetaProcessState oldProcessState : processStates) {
             MetaProcessState newProcessState = oldToNewMProcessStateMap.get(oldProcessState);
@@ -311,7 +293,7 @@ public class WorkflowMetaTypeVersion extends WorkflowMetaTypeVersion_Base implem
      * Deletes the metaTypeVersion and all of the associated {@link MetaProcessState}, {@link MetaProcessStateConfig}, and
      * {@link MetaField} as long as it is a draft version
      */
-    @Service
+    @Atomic
     public void delete() {
         if (getPublished()) {
             throw new MetaWorkflowDomainException("delete.published.WorkflowMetaTypeVersion.error");
@@ -335,4 +317,15 @@ public class WorkflowMetaTypeVersion extends WorkflowMetaTypeVersion_Base implem
         deleteDomainObject();
 
     }
+
+    @Deprecated
+    public java.util.Set<module.metaWorkflow.domain.WorkflowMetaProcess> getMetaProcesses() {
+        return getMetaProcessesSet();
+    }
+
+    @Deprecated
+    public java.util.Set<module.metaWorkflow.domain.MetaProcessState> getProcessStates() {
+        return getProcessStatesSet();
+    }
+
 }

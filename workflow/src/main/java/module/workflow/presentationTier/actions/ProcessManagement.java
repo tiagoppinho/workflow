@@ -65,7 +65,8 @@ import pt.ist.fenixWebFramework.renderers.utils.RenderUtils;
 import pt.ist.fenixWebFramework.servlets.filters.contentRewrite.GenericChecksumRewriter;
 import pt.ist.fenixWebFramework.servlets.json.JsonObject;
 import pt.ist.fenixWebFramework.struts.annotations.Mapping;
-import pt.ist.fenixframework.pstm.AbstractDomainObject;
+import pt.ist.fenixframework.DomainObject;
+import pt.ist.fenixframework.FenixFramework;
 
 /**
  * 
@@ -203,8 +204,8 @@ public class ProcessManagement extends ContextBaseAction {
     }
 
     private Object convert(Class<?> type, String parameterValue) throws Exception {
-        if (AbstractDomainObject.class.isAssignableFrom(type)) {
-            return AbstractDomainObject.fromExternalId(parameterValue);
+        if (DomainObject.class.isAssignableFrom(type)) {
+            return FenixFramework.getDomainObject(parameterValue);
         }
         if (type == Integer.class) {
             return Integer.parseInt(parameterValue);

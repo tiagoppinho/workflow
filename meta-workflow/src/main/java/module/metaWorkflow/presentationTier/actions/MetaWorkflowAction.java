@@ -124,7 +124,7 @@ public class MetaWorkflowAction extends ContextBaseAction {
             final HttpServletResponse response) {
 
         final User currentUser = UserView.getCurrentUser();
-        request.setAttribute("myProcess", currentUser.getMetaProcesses());
+        request.setAttribute("myProcess", currentUser.getMetaProcessesSet());
 
         return viewMetaProcessList(request);
 

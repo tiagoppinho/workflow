@@ -30,7 +30,7 @@ import java.util.TreeSet;
 import module.metaWorkflow.exceptions.MetaWorkflowDomainException;
 import module.metaWorkflow.presentationTier.dto.MetaFieldBean;
 import pt.ist.bennu.core.util.BundleUtil;
-import pt.ist.fenixWebFramework.services.Service;
+import pt.ist.fenixframework.Atomic;
 import pt.utl.ist.fenix.tools.util.i18n.MultiLanguageString;
 
 /**
@@ -73,7 +73,7 @@ public class MetaFieldSet extends MetaFieldSet_Base {
     //    @Override
     //    @ConsistencyPredicate
     //    public final boolean checkHasParent() {
-    //	return super.checkHasParent() || hasMetaType();
+    //	return super.checkHasParent() || (getMetaType() != null);
     //    }
 
     public Set<MetaField> getOrderedChildFields() {
@@ -92,32 +92,32 @@ public class MetaFieldSet extends MetaFieldSet_Base {
     }
 
     @Override
-    @Service
+    @Atomic
     public void delete() {
         if (isPublished()) {
             throw new MetaWorkflowDomainException("cant.delete.published.metaFields");
         }
-        if (hasMetaType()) {
+        if ((getMetaType() != null)) {
             throw new Error("Cannot delete the root MetaFieldSet");
         }
-        if (hasAnyChildFields()) {
+        if (!getChildFieldsSet().isEmpty()) {
             throw new RuntimeException(BundleUtil.getStringFromResourceBundle("resources/MetaWorkflowResources",
                     "label.error.cannotDelete.FieldSet.before.childFields"));
         }
 
-        removeParentFieldSet();
-        removeMetaTypeVersion();
-        if (!hasAnyFieldValues()) {
+        setParentFieldSet(null);
+        setMetaTypeVersion(null);
+        if (getFieldValuesSet().isEmpty()) {
             deleteDomainObject();
         }
     }
 
     public boolean isRoot() {
-        return hasMetaTypeVersion();
+        return (getMetaTypeVersion() != null);
     }
 
     @Override
-    @Service
+    @Atomic
     public void deleteItselfAndAllChildren() throws MetaWorkflowDomainException {
         for (MetaField metaField : getChildFields()) {
             metaField.deleteItselfAndAllChildren();
@@ -137,6 +137,11 @@ public class MetaFieldSet extends MetaFieldSet_Base {
             metaTypeVersionPublished = getMetaTypeVersion().getPublished();
         }
         return parentFieldSetPublished || metaTypeVersionPublished;
+    }
+
+    @Deprecated
+    public java.util.Set<module.metaWorkflow.domain.MetaField> getChildFields() {
+        return getChildFieldsSet();
     }
 
 }

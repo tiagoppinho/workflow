@@ -27,10 +27,11 @@ package module.workflow.domain;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import pt.ist.bennu.core.domain.VirtualHost;
 import pt.ist.bennu.core.domain.contents.Node;
-import pt.ist.fenixWebFramework.services.Service;
+import pt.ist.fenixframework.Atomic;
 
 /**
  * 
@@ -47,7 +48,7 @@ public class ProcessSelectionMapper extends ProcessSelectionMapper_Base {
     }
 
     public List<NodeMapping> getOrderedNodeMappings() {
-        List<NodeMapping> mappings = new ArrayList<NodeMapping>(super.getNodeMappings());
+        List<NodeMapping> mappings = new ArrayList<NodeMapping>(super.getNodeMappingsSet());
         Collections.sort(mappings);
         return mappings;
     }
@@ -61,9 +62,9 @@ public class ProcessSelectionMapper extends ProcessSelectionMapper_Base {
         }
     }
 
-    @Service
+    @Atomic
     public void addMapping(Node node) {
-        List<NodeMapping> nodeMappings = getNodeMappings();
+        Set<NodeMapping> nodeMappings = getNodeMappings();
         int nextOrder = 0;
         if (!nodeMappings.isEmpty()) {
             NodeMapping maxNode = Collections.max(nodeMappings);
@@ -73,7 +74,7 @@ public class ProcessSelectionMapper extends ProcessSelectionMapper_Base {
         super.addNodeMappings(NodeMapping.createNodeMapping(node, nextOrder));
     }
 
-    @Service
+    @Atomic
     public void removeMapping(int i) {
         NodeMapping nodeMappingToDelete = null;
         for (NodeMapping mapping : getNodeMappings()) {
@@ -87,15 +88,15 @@ public class ProcessSelectionMapper extends ProcessSelectionMapper_Base {
         }
     }
 
-    @Service
+    @Atomic
     public static ProcessSelectionMapper createNewMapper(String classname) {
         return new ProcessSelectionMapper(classname);
     }
 
-    @Service
+    @Atomic
     public void delete() {
-        removeWorkflowSystem();
-        for (; !getNodeMappings().isEmpty(); getNodeMappings().get(0).delete()) {
+        setWorkflowSystem(null);
+        for (; !getNodeMappings().isEmpty(); getNodeMappings().iterator().next().delete()) {
 
         }
         super.deleteDomainObject();
@@ -105,6 +106,11 @@ public class ProcessSelectionMapper extends ProcessSelectionMapper_Base {
     public boolean isConnectedToCurrentHost() {
         final VirtualHost virtualHost = VirtualHost.getVirtualHostForThread();
         return virtualHost != null && getWorkflowSystem() == virtualHost.getWorkflowSystem();
+    }
+
+    @Deprecated
+    public java.util.Set<module.workflow.domain.NodeMapping> getNodeMappings() {
+        return getNodeMappingsSet();
     }
 
 }

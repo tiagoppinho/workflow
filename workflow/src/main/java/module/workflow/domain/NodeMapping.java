@@ -27,8 +27,8 @@ package module.workflow.domain;
 import pt.ist.bennu.core.domain.MyOrg;
 import pt.ist.bennu.core.domain.VirtualHost;
 import pt.ist.bennu.core.domain.contents.Node;
-import pt.ist.fenixWebFramework.services.Service;
-import dml.runtime.RelationAdapter;
+import pt.ist.fenixframework.Atomic;
+import pt.ist.fenixframework.dml.runtime.RelationAdapter;
 
 /**
  * 
@@ -43,7 +43,7 @@ public class NodeMapping extends NodeMapping_Base implements Comparable<NodeMapp
         @Override
         public void afterRemove(final Node node, final MyOrg myorg) {
             if (node != null && myorg != null) {
-                for (; !node.getNodeMapping().isEmpty(); node.getNodeMapping().get(0).delete()) {
+                for (; !node.getNodeMappingSet().isEmpty(); node.getNodeMappingSet().iterator().next().delete()) {
                     ;
                 }
             }
@@ -52,7 +52,7 @@ public class NodeMapping extends NodeMapping_Base implements Comparable<NodeMapp
     }
 
     static {
-        Node.MyOrgNode.addListener(new NodeListenner());
+        Node.getRelationMyOrgNode().addListener(new NodeListenner());
     }
 
     protected NodeMapping(Node node, int order) {
@@ -62,15 +62,15 @@ public class NodeMapping extends NodeMapping_Base implements Comparable<NodeMapp
         setWorkflowSystem(WorkflowSystem.getInstance());
     }
 
-    @Service
+    @Atomic
     public static NodeMapping createNodeMapping(Node node, int order) {
         return new NodeMapping(node, order);
     }
 
     public void delete() {
-        removeWorkflowSystem();
-        removeProcessMapping();
-        removeNode();
+        setWorkflowSystem(null);
+        setProcessMapping(null);
+        setNode(null);
         super.deleteDomainObject();
     }
 

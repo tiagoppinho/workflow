@@ -21,7 +21,7 @@ import pt.ist.bennu.core.domain.VirtualHost;
 import pt.ist.bennu.core.domain.groups.PersistentGroup;
 import pt.ist.bennu.core.domain.scheduler.ReadCustomTask;
 import pt.ist.bennu.core.domain.scheduler.TransactionalThread;
-import pt.ist.fenixframework.pstm.AbstractDomainObject;
+import pt.ist.fenixframework.FenixFramework;
 
 /**
  * @author João Antunes (joao.antunes@tagus.ist.utl.pt) - 15 de Mai de 2012
@@ -54,7 +54,7 @@ public class AssignDirNodeRepositoryToProcessAndMigrate extends ReadCustomTask {
         @Override
         public void transactionalRun() {
             for (String processId : this.processes) {
-                WorkflowProcess process = AbstractDomainObject.fromExternalId(processId);
+                WorkflowProcess process = FenixFramework.getDomainObject(processId);
                 if (process.getDocumentsRepository() == null) {
                     if (!DRY_RUN) {
                         new ProcessDirNode(process);
@@ -130,7 +130,7 @@ public class AssignDirNodeRepositoryToProcessAndMigrate extends ReadCustomTask {
 
         for (VirtualHost virtualHost : MyOrg.getInstance().getVirtualHosts()) {
             VirtualHost.setVirtualHostForThread(virtualHost);
-            List<WorkflowProcess> processes =
+            Set<WorkflowProcess> processes =
                     WorkflowSystem.getInstance() == null ? null : WorkflowSystem.getInstance().getProcesses();
             if (processes == null) {
                 continue;

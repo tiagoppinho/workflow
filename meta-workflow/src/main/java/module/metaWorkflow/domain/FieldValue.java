@@ -68,7 +68,7 @@ public abstract class FieldValue extends FieldValue_Base {
 
     @ConsistencyPredicate
     public boolean checkHasParent() {
-        return hasParentFieldSet();
+        return (getParentFieldSet() != null);
     }
 
     public boolean isFieldSet() {

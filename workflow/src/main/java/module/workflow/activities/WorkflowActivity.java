@@ -32,7 +32,7 @@ import module.workflow.domain.WorkflowProcess;
 import pt.ist.bennu.core.applicationTier.Authenticate.UserView;
 import pt.ist.bennu.core.domain.User;
 import pt.ist.bennu.core.util.BundleUtil;
-import pt.ist.fenixWebFramework.services.Service;
+import pt.ist.fenixframework.Atomic;
 import pt.utl.ist.fenix.tools.util.i18n.Language;
 
 /**
@@ -132,7 +132,7 @@ public abstract class WorkflowActivity<P extends WorkflowProcess, AI extends Act
      * 
      * @param activityInformation
      */
-    @Service
+    @Atomic
     public final void execute(AI activityInformation) {
         P process = activityInformation.getProcess();
         checkConditionsFor(process);

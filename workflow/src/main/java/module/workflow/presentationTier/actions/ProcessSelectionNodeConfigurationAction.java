@@ -24,6 +24,7 @@
  */
 package module.workflow.presentationTier.actions;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -44,9 +45,9 @@ import pt.ist.bennu.core.domain.contents.Node;
 import pt.ist.bennu.core.domain.groups.Role;
 import pt.ist.bennu.core.presentationTier.actions.ContextBaseAction;
 import pt.ist.bennu.core.util.VariantBean;
-import pt.ist.fenixWebFramework.services.Service;
 import pt.ist.fenixWebFramework.servlets.functionalities.CreateNodeAction;
 import pt.ist.fenixWebFramework.struts.annotations.Mapping;
+import pt.ist.fenixframework.Atomic;
 
 @Mapping(path = "/processSelectionNodeConfiguration")
 /**
@@ -69,7 +70,7 @@ public class ProcessSelectionNodeConfigurationAction extends ContextBaseAction {
         return forwardToMuneConfiguration(request, virtualHost, node);
     }
 
-    @Service
+    @Atomic
     private void createActionNode(final VirtualHost virtualHost, final Node node) {
         ActionNode.createActionNode(virtualHost, node, "/processSelectionNodeConfiguration", "manageNodeSelection",
                 "resources.WorkflowResources", "link.topBar.nodeSelectionConfiguration", Role.getRole(RoleType.MANAGER));
@@ -122,7 +123,7 @@ public class ProcessSelectionNodeConfigurationAction extends ContextBaseAction {
         mapper.removeMapping(Integer.valueOf(request.getParameter("index")));
 
         request.setAttribute("mapper", mapper);
-        List<NodeMapping> nodeMappings = mapper.getNodeMappings();
+        List<NodeMapping> nodeMappings = new ArrayList<>(mapper.getNodeMappings());
         int size = nodeMappings.size();
         request.setAttribute("nodes", size == 0 ? VirtualHost.getVirtualHostForThread().getOrderedTopLevelNodes() : nodeMappings
                 .get(size - 1).getNode().getChildNodes());

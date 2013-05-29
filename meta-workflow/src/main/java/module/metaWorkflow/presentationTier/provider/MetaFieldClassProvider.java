@@ -32,7 +32,7 @@ import module.metaWorkflow.domain.MetaField;
 import pt.ist.fenixWebFramework.renderers.DataProvider;
 import pt.ist.fenixWebFramework.renderers.components.converters.Converter;
 import pt.ist.fenixframework.FenixFramework;
-import dml.DomainClass;
+import pt.ist.fenixframework.dml.DomainClass;
 
 /**
  * 

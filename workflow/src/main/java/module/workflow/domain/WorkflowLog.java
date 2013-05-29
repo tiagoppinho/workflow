@@ -121,9 +121,9 @@ public abstract class WorkflowLog extends WorkflowLog_Base {
     }
 
     public void delete() {
-        removeActivityExecutor();
-        removeProcess();
-        removeWorkflowSystem();
+        setActivityExecutor(null);
+        setProcess(null);
+        setWorkflowSystem(null);
         deleteDomainObject();
 
     }
