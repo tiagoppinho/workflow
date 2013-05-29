@@ -8,6 +8,8 @@
 *.war
 *.ear
 
+.project
+.classpath
 .settings/
 
 # Maven #
