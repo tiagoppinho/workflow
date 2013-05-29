@@ -54,7 +54,7 @@
 	<slot name="displayName" key="label.filename" required="true"  >
 		<property name="size" value="50"/>
 	</slot>
-	<slot name="inputStream" key="label.document">
+	<slot name="inputStream" key="label.document" required="true" >
 		<property name="fileNameSlot" value="filename" />
 		<property name="size" value="50"/>
 	</slot>	
