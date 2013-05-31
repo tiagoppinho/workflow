@@ -40,12 +40,6 @@ import pt.ist.fenixframework.Atomic;
 import pt.utl.ist.fenix.tools.util.i18n.Language;
 import pt.utl.ist.fenix.tools.util.i18n.MultiLanguageString;
 
-/**
- * 
- * @author João Neves
- * @author Anil Kassamali
- * 
- */
 public abstract class MetaField extends MetaField_Base {
 
     public static Comparator<MetaField> COMPARATOR_BY_FIELD_ORDER = new Comparator<MetaField>() {
