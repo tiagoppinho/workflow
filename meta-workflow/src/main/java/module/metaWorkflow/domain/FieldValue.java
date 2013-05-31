@@ -31,12 +31,6 @@ import java.util.Set;
 
 import jvstm.cps.ConsistencyPredicate;
 
-/**
- * 
- * @author João Neves
- * @author Anil Kassamali
- * 
- */
 public abstract class FieldValue extends FieldValue_Base {
 
     public abstract class FieldValueBean implements Serializable {

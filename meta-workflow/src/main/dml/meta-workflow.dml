@@ -43,7 +43,6 @@ class WorkflowMetaTypeVersion {
 class MetaField {
 	MultiLanguageString name;
 	Integer fieldOrder (REQUIRED);
-	String ojbConcreteClass (REQUIRED);
 }
 
 	class MetaFieldSet extends MetaField {
@@ -61,8 +60,14 @@ class MetaField {
 	class LocalDateMetaField extends MetaField {
 	}
 
+class WorkflowMetaProcess extends .module.workflow.domain.WorkflowProcess {
+	String instanceDescription;
+	String subject;
+	DateTime creationDate;
+	Boolean open;
+}
+
 class FieldValue {
-	String ojbConcreteClass (REQUIRED);
 }
 
 	class FieldSetValue extends FieldValue {
@@ -102,7 +107,6 @@ class WorkflowMetaTypeSpecificActivity {
 	String activityClass;
 }
 
-//FENIX-345: TODO remove this class (use the embedded WorkflowMetaTypeVersion)
 class WorkflowMetaTypeDescription {
 	String description;
 	int version;
@@ -124,14 +128,7 @@ class WorkflowUnitQueue extends .module.workflow.domain.WorkflowQueue {
 	
 }
 
-class WorkflowMetaProcess extends .module.workflow.domain.WorkflowProcess {
-	String instanceDescription;
-	String subject;
-	DateTime creationDate;
-	Boolean open;
-}
-
-class UserRequestor extends .module.metaWorkflow.domain.Requestor {
+class UserRequestor extends Requestor {
 }
 
 relation WorkflowUnitQueueUnit {
@@ -185,7 +182,6 @@ relation WorkflowMetaTypeOrganizationModel {
 	.module.organization.domain.OrganizationalModel playsRole organizationalModel;
 }
 
-//FENIX-345: TODO refactor, remove this relation
 relation WorkflowMetaProcessWorkflowMetaType {
 	WorkflowMetaProcess playsRole metaProcesses {
 		multiplicity *;
@@ -218,6 +214,13 @@ relation WorkflowMetaProcessFieldSetValue {
 	}
 }
 
+relation FieldValueFieldSetValue {
+	FieldValue playsRole childFieldValues {
+		multiplicity *;
+	}
+	FieldSetValue playsRole parentFieldSet;
+}
+
 relation WorkflowSystemWorkflowMetaType {
 	.module.workflow.domain.WorkflowSystem playsRole workflowSystem {
 		multiplicity 1..1;
@@ -230,6 +233,34 @@ relation WorkflowSystemWorkflowMetaType {
 relation WorkflowSystemWorkflowMetaTypeVersion {
 	.module.workflow.domain.WorkflowSystem playsRole workflowSystem;
 	WorkflowMetaTypeVersion playsRole metaTypeVersions {
+		multiplicity *;
+	}
+}
+
+relation WorkflowMetaTypeFieldSet {
+	WorkflowMetaType playsRole metaType;
+	MetaFieldSet playsRole fieldSet {
+		multiplicity 0..1;
+	}
+}
+
+relation WorkflowMetaTypeVersionFieldSet {
+	WorkflowMetaTypeVersion playsRole metaTypeVersion;
+	MetaFieldSet playsRole fieldSet {
+		multiplicity 1..1;
+	}
+}
+
+relation MetaFieldMetaFieldSet {
+	MetaField playsRole childFields {
+		multiplicity *;
+	}
+	MetaFieldSet playsRole parentFieldSet;
+}
+
+relation FieldValueMetaField {
+	MetaField playsRole metaField;
+	FieldValue playsRole fieldValues {
 		multiplicity *;
 	}
 }
@@ -288,44 +319,13 @@ relation WorkflowInitializerMyOrg {
 	.pt.ist.bennu.core.domain.MyOrg playsRole myOrg;
 }
 
-//FENIX-345: TODO refactor, remove this relation
-relation WorkflowMetaTypeFieldSet {
-	WorkflowMetaType playsRole metaType;
-	MetaFieldSet playsRole fieldSet {
-		multiplicity 0..1;
-	}
-}
-
-relation WorkflowMetaTypeVersionFieldSet {
-	WorkflowMetaTypeVersion playsRole metaTypeVersion;
-	MetaFieldSet playsRole fieldSet {
-		multiplicity 1..1;
-	}
-}
-	
-relation MetaFieldMetaFieldSet {
-	MetaField playsRole childFields {
+relation WorkflowMetaTypeVersionUser {
+	WorkflowMetaTypeVersion playsRole publishedWorkflowMetaTypeVersions {
 		multiplicity *;
 	}
-	MetaFieldSet playsRole parentFieldSet;
+	.pt.ist.bennu.core.domain.User playsRole publisherOfVersion;
 }
 
-relation FieldValueFieldSetValue {
-	FieldValue playsRole childFieldValues {
-		multiplicity *;
-	}
-	FieldSetValue playsRole parentFieldSet;
-}
-
-relation FieldValueMetaField {
-	MetaField playsRole metaField;
-	FieldValue playsRole fieldValues {
-		multiplicity *;
-	}
-}
-
-
-//FENIX-345: TODO refactor, remove this relation
 relation WorkflowMetaTypeMetaProcessState {
 	WorkflowMetaType playsRole workflowMetaType;
 	MetaProcessState playsRole processStates {
@@ -338,13 +338,6 @@ relation WorkflowMetaTypeVersionMetaProcessState {
 	MetaProcessState playsRole processStates {
 		multiplicity *;
 	}
-}
-
-relation WorkflowMetaTypeVersionUser {
-	WorkflowMetaTypeVersion playsRole publishedWorkflowMetaTypeVersions {
-		multiplicity *;
-	}
-	.pt.ist.bennu.core.domain.User playsRole publisherOfVersion;
 }
 
 relation MetaProcessStateMetaProcessStateConfig {
