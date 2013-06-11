@@ -6,7 +6,15 @@
 
 
 <%@page import="module.workflow.presentationTier.WorkflowLayoutContext"%>
-<%@page import="pt.ist.bennu.core.presentationTier.actions.ContextBaseAction"%><h2><bean:message key="title.viewLogs" bundle="WORKFLOW_RESOURCES"/></h2>
+<%@page import="pt.ist.bennu.core.presentationTier.actions.ContextBaseAction"%>
+<%
+	final WorkflowLayoutContext layoutContext = (WorkflowLayoutContext) ContextBaseAction.getContext(request);
+%>
+<jsp:include page='<%=  layoutContext.getWorkflowHead() %>'/>
+
+<h3><bean:message key="title.viewLogs" bundle="WORKFLOW_RESOURCES"/></h3>
+
+
 
 <p class="mtop05 mbottom15">
 	<html:link action="/workflowProcessManagement.do?method=viewProcess" paramId="processId" paramName="process" paramProperty="externalId">
@@ -14,10 +22,6 @@
 	</html:link>
 </p>
 
-
-<%
-	final WorkflowLayoutContext layoutContext = (WorkflowLayoutContext) ContextBaseAction.getContext(request);
-%>
 
 <jsp:include page='<%= layoutContext.getWorkflowShortBody() %>'/>
 

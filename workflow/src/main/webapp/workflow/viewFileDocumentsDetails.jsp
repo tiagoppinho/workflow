@@ -65,17 +65,17 @@ width: 45px !important;
 }
 </style>
 
-<h2><bean:message bundle="WORKFLOW_RESOURCES" key="label.fileDetails" /></h2>
+<%
+	final WorkflowLayoutContext layoutContext = (WorkflowLayoutContext) ContextBaseAction.getContext(request);
+%>
+<jsp:include page='<%=  layoutContext.getWorkflowHead() %>'/>
+<h3><bean:message bundle="WORKFLOW_RESOURCES" key="label.fileDetails" /></h3>
 <p class="mtop05 mbottom15">
 	<html:link page="/workflowProcessManagement.do?method=viewProcess" paramId="processId" paramName="process" paramProperty="externalId">
 		« <bean:message key="link.backToProcess" bundle="WORKFLOW_RESOURCES"/>
 	</html:link>
 </p>
 
-
-<%
-	final WorkflowLayoutContext layoutContext = (WorkflowLayoutContext) ContextBaseAction.getContext(request);
-%>
 
 <jsp:include page='<%= layoutContext.getWorkflowShortBody() %>'/>
 

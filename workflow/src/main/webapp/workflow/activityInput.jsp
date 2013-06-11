@@ -9,13 +9,12 @@
 <bean:define id="processId" name="process" property="externalId"  type="java.lang.String"/>
 <bean:define id="name" name="information" property="activityName"/>
 <bean:define id="activityInformationSchema" name="information" property="usedSchema" type="java.lang.String"/>
-
-
-<h2><fr:view name="information" property="localizedName" layout="html"/></h2>
-
 <%
 	final WorkflowLayoutContext layoutContext = (WorkflowLayoutContext) ContextBaseAction.getContext(request);
 %>
+<jsp:include page='<%=  layoutContext.getWorkflowHead() %>'/>
+<h3><fr:view name="information" property="localizedName" layout="html"/></h3>
+
 
 <jsp:include page='<%= layoutContext.getWorkflowShortBody() %>'/>
 

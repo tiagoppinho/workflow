@@ -11,12 +11,11 @@
 <bean:define id="name" name="information" property="activityName"/>
 <bean:define id="activityInformationClass" name="information" property="activityClass.simpleName"/>
 
-
-<h2><fr:view name="information" property="localizedName" layout="html"/></h2>
-
 <%
 	final WorkflowLayoutContext layoutContext = (WorkflowLayoutContext) ContextBaseAction.getContext(request);
 %>
+<jsp:include page='<%=  layoutContext.getWorkflowHead() %>'/>
+<h3><fr:view name="information" property="localizedName" layout="html"/></h3>
 
 <jsp:include page='<%= layoutContext.getWorkflowShortBody() %>'/>
 
