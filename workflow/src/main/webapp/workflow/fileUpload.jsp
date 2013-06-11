@@ -7,7 +7,13 @@
 <%@page import="module.workflow.presentationTier.WorkflowLayoutContext"%>
 <%@page import="pt.ist.bennu.core.presentationTier.actions.ContextBaseAction"%>
 
-<h2><bean:message key="title.uploadFile" bundle="WORKFLOW_RESOURCES"/></h2>
+
+<%
+	final WorkflowLayoutContext layoutContext = (WorkflowLayoutContext) ContextBaseAction.getContext(request);
+%>
+<jsp:include page='<%=  layoutContext.getWorkflowHead() %>'/>
+
+<h3><bean:message key="title.uploadFile" bundle="WORKFLOW_RESOURCES"/></h3>
 
 <bean:define id="process" name="process" toScope="request"/>
 <bean:define id="processOID" name="process" property="externalId" toScope="request" type="java.lang.String"/>
@@ -15,11 +21,6 @@
 <bean:define id="selectedInstance" name="bean" property="selectedInstance.simpleName"/>
 
 <bean:define id="schema" value="<%= "addFile-" + selectedInstance%>" toScope="request"/>
-
-
-<%
-	final WorkflowLayoutContext layoutContext = (WorkflowLayoutContext) ContextBaseAction.getContext(request);
-%>
 
 <jsp:include page='<%= layoutContext.getWorkflowShortBody() %>'/>
 

@@ -17,7 +17,6 @@
 
 <bean:define id="currentUser" name="USER_SESSION_ATTRIBUTE" property="user"/>
 
-<h2><bean:message key="title.comments" bundle="WORKFLOW_RESOURCES"/></h2>
 
 <%
 	final WorkflowLayoutContext layoutContext = (WorkflowLayoutContext) ContextBaseAction.getContext(request);
@@ -47,6 +46,9 @@ else {
 }
 
 %>
+<jsp:include page='<%=  layoutContext.getWorkflowHead() %>'/>
+<h3><bean:message key="title.comments" bundle="WORKFLOW_RESOURCES"/></h3>
+
 
 <logic:notEqual  name="displayedInline" value="true">
 	<p>

@@ -13,15 +13,11 @@
 <bean:define id="activityInformationClass" name="information" property="class.simpleName"/>
 <bean:define id="inputInterface" name="inputInterface" type="java.lang.String"/>
 
-
-
-<h2><fr:view name="information" property="localizedName" layout="html"/></h2>
-
-
 <%
 	final WorkflowLayoutContext layoutContext = (WorkflowLayoutContext) ContextBaseAction.getContext(request);
 %>
-
+<jsp:include page='<%=  layoutContext.getWorkflowHead() %>'/>
+<h3><fr:view name="information" property="localizedName" layout="html"/></h3>
 <jsp:include page='<%= layoutContext.getWorkflowShortBody() %>'/>
 
 <logic:messagesPresent property="message" message="true">
