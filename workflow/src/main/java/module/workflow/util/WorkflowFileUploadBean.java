@@ -65,7 +65,7 @@ public class WorkflowFileUploadBean extends FileUploadBean {
     public WorkflowFileUploadBean(WorkflowProcess process) {
         setProcess(process);
         this.instanceLock = false;
-        this.extraArguments = new String("");
+        extraArguments = "";
     }
 
     public <T extends WorkflowProcess> T getProcess() {
