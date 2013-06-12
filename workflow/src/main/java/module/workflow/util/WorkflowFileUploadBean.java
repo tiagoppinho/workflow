@@ -38,6 +38,7 @@ public class WorkflowFileUploadBean extends FileUploadBean {
     private WorkflowProcess process;
     private Class<? extends ProcessFile> selectedInstance;
     private boolean instanceLock;
+    private String extraArguments;
 
     public Class<? extends ProcessFile> getSelectedInstance() {
         return selectedInstance;
@@ -64,6 +65,7 @@ public class WorkflowFileUploadBean extends FileUploadBean {
     public WorkflowFileUploadBean(WorkflowProcess process) {
         setProcess(process);
         this.instanceLock = false;
+        this.extraArguments = new String("");
     }
 
     public <T extends WorkflowProcess> T getProcess() {
@@ -85,6 +87,14 @@ public class WorkflowFileUploadBean extends FileUploadBean {
      */
     public boolean isDefaultUploadInterfaceUsed() {
         return true;
+    }
+
+    public void setExtraArguments(String extraArguments) {
+        this.extraArguments = extraArguments;
+    }
+
+    public String getExtraArguments() {
+        return extraArguments;
     }
 
 }
