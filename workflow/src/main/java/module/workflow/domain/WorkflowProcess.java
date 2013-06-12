@@ -458,7 +458,7 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
             addFiles(file, true);
             file.postProcess(bean);
             new FileUploadLog(this, UserView.getCurrentUser(), file.getFilename(), file.getDisplayName(),
-                    BundleUtil.getLocalizedNamedFroClass(file.getClass()));
+                    BundleUtil.getLocalizedNamedFroClass(file.getClass()), bean.getExtraArguments());
 
             return file;
         }
