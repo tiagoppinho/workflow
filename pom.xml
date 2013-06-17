@@ -10,14 +10,14 @@
 
     <artifactId>workflow-project</artifactId>
     <name>Bennu Workflow</name>
-    <version>1.1.1</version>
+    <version>1.1.2</version>
     <packaging>pom</packaging>
 
     <scm>
         <connection>scm:git:git@github.com:ist-dsi/workflow.git</connection>
         <developerConnection>scm:git:git@github.com:ist-dsi/workflow.git</developerConnection>
         <url>http://ist-dsi.github.io/workflow</url>
-        <tag>v1.1.1</tag>
+        <tag>v1.1.2</tag>
     </scm>
 
     <modules>
