@@ -90,7 +90,11 @@ public class WorkflowFileUploadBean extends FileUploadBean {
     }
 
     public void setExtraArguments(String extraArguments) {
-        this.extraArguments = extraArguments;
+        if (extraArguments.length() > 0) {
+            this.extraArguments = "(" + extraArguments + ")";
+        } else {
+            this.extraArguments = extraArguments;
+        }
     }
 
     public String getExtraArguments() {

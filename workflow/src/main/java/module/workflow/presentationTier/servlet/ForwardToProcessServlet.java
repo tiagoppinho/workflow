@@ -25,6 +25,7 @@
 package module.workflow.presentationTier.servlet;
 
 import java.io.IOException;
+import java.util.Set;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -32,6 +33,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import module.workflow.domain.WorkflowProcess;
+import module.workflow.presentationTier.actions.BasicSearchProcessBean;
 import module.workflow.presentationTier.actions.ProcessManagement;
 
 import org.apache.struts.action.ActionForward;
@@ -66,10 +68,17 @@ public class ForwardToProcessServlet extends HttpServlet {
     protected void doGet(final HttpServletRequest request, final HttpServletResponse response) throws ServletException,
             IOException {
         final String uri = request.getRequestURI();
-        final int lastSlash = uri.lastIndexOf('/');
-        final String externalId = uri.substring(lastSlash + 1);
-        final WorkflowProcess workflowProcess = FenixFramework.getDomainObject(externalId);
-
+        String[] split = uri.split("ForwardToProcess/");
+        final String externalId = split[1];
+        BasicSearchProcessBean searchBean = new BasicSearchProcessBean();
+        searchBean.setProcessId(externalId);
+        Set<WorkflowProcess> search = searchBean.search();
+        WorkflowProcess workflowProcess = null;
+        if (search.size() != 1) {
+            workflowProcess = FenixFramework.getDomainObject(externalId);
+        } else {
+            workflowProcess = search.iterator().next();
+        }
         final User user = UserView.getCurrentUser();
         if (user == null) {
             final String serverName = request.getServerName();
