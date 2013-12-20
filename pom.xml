@@ -10,7 +10,7 @@
 
     <artifactId>workflow-project</artifactId>
     <name>Bennu Workflow</name>
-    <version>1.3.0-SNAPSHOT</version>
+    <version>1.2.1</version>
     <packaging>pom</packaging>
 
     <scm>
