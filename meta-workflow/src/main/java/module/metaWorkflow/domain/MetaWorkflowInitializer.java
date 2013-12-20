@@ -28,10 +28,12 @@ import javax.servlet.http.HttpServletRequest;
 
 import module.metaWorkflow.presentationTier.actions.OrganizationModelPluginAction.QueueView;
 import module.organization.presentationTier.actions.OrganizationModelAction;
+import module.workflow.domain.WorkflowSystem;
 import module.workflow.presentationTier.actions.ProcessManagement;
 import module.workflow.presentationTier.actions.ProcessManagement.ProcessRequestHandler;
 import pt.ist.bennu.core.domain.ModuleInitializer;
 import pt.ist.bennu.core.domain.MyOrg;
+import pt.ist.bennu.core.domain.VirtualHost;
 import pt.ist.bennu.core.util.VariantBean;
 import pt.ist.fenixframework.Atomic;
 
@@ -76,6 +78,11 @@ public class MetaWorkflowInitializer extends MetaWorkflowInitializer_Base implem
                 init = new ThreadLocal<MetaWorkflowInitializer>();
                 init.set(myOrg.getMetaWorkflowInitializer());
 
+                for (final VirtualHost virtualHost : myOrg.getVirtualHostsSet()) {
+                    if (virtualHost.getWorkflowSystem() == null) {
+                	WorkflowSystem.createSystem(virtualHost);
+                    }
+                }
                 isInitialized = true;
             } finally {
                 init = null;
