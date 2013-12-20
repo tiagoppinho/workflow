@@ -10,7 +10,7 @@
 
     <groupId>pt.ist</groupId>
     <artifactId>meta-workflow</artifactId>
-    <version>1.2.0</version>
+    <version>1.2.1</version>
     <packaging>jar</packaging>
     <name>meta-workflow</name>
 
@@ -25,6 +25,11 @@
     </properties>
 
     <dependencies>
+	<dependency>
+        	<groupId>org.eclipse.equinox</groupId>
+	        <artifactId>app</artifactId>
+	        <version>1.0.0-v20070606</version>
+	</dependency>
         <dependency>
             <groupId>pt.ist</groupId>
             <artifactId>bennu-core</artifactId>
