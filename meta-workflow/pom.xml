@@ -21,7 +21,7 @@
         <version.pt.ist.scheduler>1.1.0</version.pt.ist.scheduler>
         <version.pt.ist.lucene>1.1.0</version.pt.ist.lucene>
         <version.pt.ist.email.dispatch>1.1.0</version.pt.ist.email.dispatch>
-        <version.pt.ist.bennu.vaadin>1.1.0</version.pt.ist.bennu.vaadin>
+        <version.pt.ist.bennu.vaadin>1.1.1</version.pt.ist.bennu.vaadin>
     </properties>
 
     <dependencies>
