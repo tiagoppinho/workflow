@@ -29,10 +29,11 @@ import java.util.List;
 
 import module.workflow.domain.ProcessFile;
 import module.workflow.domain.WorkflowProcess;
+import module.workflow.util.WorkflowClassUtil;
 
 import org.apache.commons.lang.StringUtils;
+import org.fenixedu.bennu.core.i18n.BundleUtil;
 
-import pt.ist.bennu.core.util.BundleUtil;
 import pt.ist.fenixWebFramework.renderers.OutputRenderer;
 import pt.ist.fenixWebFramework.renderers.components.HtmlBlockContainer;
 import pt.ist.fenixWebFramework.renderers.components.HtmlComponent;
@@ -98,7 +99,7 @@ public class WorkflowProcessFiles extends OutputRenderer {
                 blockContainer.addChild(container);
 
                 if (shouldShowLabel) {
-                    container.addChild(new HtmlText(BundleUtil.getLocalizedNamedFroClass(fileType) + ": "));
+                    container.addChild(new HtmlText(WorkflowClassUtil.getNameForType(fileType) + ": "));
                 }
 
                 if (shouldShowLabel && files.isEmpty()) {
@@ -157,8 +158,8 @@ public class WorkflowProcessFiles extends OutputRenderer {
                 script.setScript("linkConfirmationHookLink('access-"
                         + file.getExternalId()
                         + "', '"
-                        + BundleUtil.getFormattedStringFromResourceBundle("resources/WorkflowResources",
-                                "label.fileAccess.logged.confirmMessage", displayName) + "' , '" + displayName + "');");
+                        + BundleUtil.getString("resources/WorkflowResources", "label.fileAccess.logged.confirmMessage",
+                                displayName) + "' , '" + displayName + "');");
                 return script;
             }
 
@@ -169,11 +170,9 @@ public class WorkflowProcessFiles extends OutputRenderer {
                 if (displayName == null) {
                     displayName = file.getFilename();
                 }
-                script.setScript("linkConfirmationHook('remove-"
-                        + file.getExternalId()
-                        + "', '"
-                        + BundleUtil.getFormattedStringFromResourceBundle("resources/WorkflowResources",
-                                "label.fileRemoval.confirmation", displayName) + "' , '" + displayName + "');");
+                script.setScript("linkConfirmationHook('remove-" + file.getExternalId() + "', '"
+                        + BundleUtil.getString("resources/WorkflowResources", "label.fileRemoval.confirmation", displayName)
+                        + "' , '" + displayName + "');");
                 return script;
             }
 

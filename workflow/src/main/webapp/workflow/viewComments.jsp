@@ -1,4 +1,3 @@
-<%@page import="pt.ist.bennu.core.domain.User"%>
 <%@page import="module.workflow.presentationTier.actions.CommentBean"%>
 <%@page import="java.util.TreeSet"%>
 <%@page import="module.workflow.domain.WorkflowProcessComment"%>
@@ -11,15 +10,7 @@
 <%@ taglib uri="http://jakarta.apache.org/struts/tags-logic" prefix="logic" %>
 <%@ taglib uri="http://fenix-ashes.ist.utl.pt/fenix-renderers" prefix="fr" %>
 
-
-<%@page import="module.workflow.presentationTier.WorkflowLayoutContext"%>
-<%@page import="pt.ist.bennu.core.presentationTier.actions.ContextBaseAction"%>
-
-<bean:define id="currentUser" name="USER_SESSION_ATTRIBUTE" property="user"/>
-
-
 <%
-	final WorkflowLayoutContext layoutContext = (WorkflowLayoutContext) ContextBaseAction.getContext(request);
 
 //asert if we are to get the comments here or not, usually depending if we are showing the comments in-line or not
 String fetch = request.getParameter("displayedInline");
@@ -34,7 +25,7 @@ if ( fetch != null && fetch.equalsIgnoreCase("true"))
 	Set<WorkflowProcessComment> comments = new TreeSet<WorkflowProcessComment>(WorkflowProcessComment.COMPARATOR);
 	comments.addAll(process.getComments());
 	
-	process.markCommentsAsReadForUser((User) currentUser);
+	process.markCommentsAsReadForUser(org.fenixedu.bennu.core.security.Authenticate.getUser());
 	request.setAttribute("comments", comments);
 	request.setAttribute("bean", new CommentBean(process));
     
@@ -46,7 +37,7 @@ else {
 }
 
 %>
-<jsp:include page='<%=  layoutContext.getWorkflowHead() %>'/>
+<jsp:include page='${context.workflowHead}'/>
 <h3><bean:message key="title.comments" bundle="WORKFLOW_RESOURCES"/></h3>
 
 
@@ -58,7 +49,7 @@ else {
 	</p>
 
 
-<jsp:include page='<%= layoutContext.getWorkflowShortBody() %>'/>
+<jsp:include page='${context.workflowShortBody}'/>
 
 </logic:notEqual>
 
@@ -107,7 +98,7 @@ else {
 						<fr:property name="eachLayout" value="viewCommenters"/>
 						<fr:property name="saveOptions" value="true"/>
 						<fr:property name="selectAllShown" value="true"/>
-						<fr:property name="classes" value="nobullet"/>
+						<fr:property name="classes" value="list-unstyled"/>
 					</fr:layout>
 				</fr:edit>
 			</td>
@@ -129,7 +120,7 @@ else {
 				</tr>
 			</logic:equal>
 	</table>
-	<html:submit styleClass="inputbutton"><bean:message key="button.send" bundle="EXPENDITURE_RESOURCES"/> </html:submit>
+	<html:submit styleClass="inputbutton"><bean:message key="label.submit" /> </html:submit>
 </fr:form>
 
 

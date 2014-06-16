@@ -26,9 +26,10 @@ package module.workflow.domain;
 
 import module.workflow.activities.ActivityInformation;
 import module.workflow.activities.WorkflowActivity;
-import pt.ist.bennu.core.domain.User;
-import pt.ist.bennu.core.domain.VirtualHost;
-import pt.ist.bennu.core.util.BundleUtil;
+
+import org.fenixedu.bennu.core.domain.User;
+import org.fenixedu.bennu.core.i18n.BundleUtil;
+
 import pt.utl.ist.fenix.tools.util.Strings;
 
 /**
@@ -58,17 +59,11 @@ public class ActivityLog extends ActivityLog_Base {
 
         Strings arguments = getDescriptionArguments();
         if (arguments != null && !arguments.isEmpty()) {
-            return BundleUtil.getFormattedStringFromResourceBundle(activity.getUsedBundle(), "label.description."
-                    + activity.getClass().getName(), getDescriptionArguments().toArray(new String[] {}));
+            return BundleUtil.getString(activity.getUsedBundle(), "label.description." + activity.getClass().getName(),
+                    getDescriptionArguments().toArray(new String[] {}));
         } else {
             return activity.getLocalizedName();
         }
-    }
-
-    @Override
-    public boolean isConnectedToCurrentHost() {
-        final VirtualHost virtualHost = VirtualHost.getVirtualHostForThread();
-        return virtualHost != null && getWorkflowSystem() == virtualHost.getWorkflowSystem();
     }
 
 }

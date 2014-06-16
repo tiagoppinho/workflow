@@ -37,28 +37,41 @@ import module.workflow.util.WorkflowQueueBean;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.fenixedu.bennu.core.domain.User;
+import org.fenixedu.bennu.core.presentationTier.actions.BaseAction;
+import org.fenixedu.bennu.portal.EntryPoint;
+import org.fenixedu.bennu.portal.StrutsApplication;
 
-import pt.ist.bennu.core.domain.User;
-import pt.ist.bennu.core.presentationTier.Context;
-import pt.ist.bennu.core.presentationTier.actions.ContextBaseAction;
 import pt.ist.fenixWebFramework.renderers.utils.RenderUtils;
 import pt.ist.fenixWebFramework.struts.annotations.Mapping;
 
 @Mapping(path = "/workflowQueueManagement")
+@StrutsApplication(bundle = "WorkflowResources", path = "manage-workflow-queues", titleKey = "link.topBar.QueueManagement",
+        hint = "Workflow")
 /**
  * 
  * @author Anil Kassamali
  * @author Paulo Abrantes
  * 
  */
-public class QueueManagementAction extends ContextBaseAction {
+public class QueueManagementAction extends BaseAction {
 
+    private final ActionForward doForward(HttpServletRequest request, String body) {
+        WorkflowQueue queue = getDomainObject(request, "queueId");
+        if (queue != null) {
+            WorkflowQueueLayoutContext queueContext = queue.getDefaultContext();
+            request.setAttribute("context", queueContext);
+        }
+        return forward(body);
+    }
+
+    @EntryPoint
     public ActionForward manageQueues(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
             final HttpServletResponse response) {
 
-        request.setAttribute("queues", WorkflowSystem.getInstance().getWorkflowQueues());
+        request.setAttribute("queues", WorkflowSystem.getInstance().getWorkflowQueuesSet());
 
-        return forward(request, "/workflow/queues/manageQueues.jsp");
+        return doForward(request, "/workflow/queues/manageQueues.jsp");
     }
 
     public ActionForward viewQueue(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
@@ -67,7 +80,7 @@ public class QueueManagementAction extends ContextBaseAction {
         WorkflowQueue queue = getDomainObject(request, "queueId");
         request.setAttribute("queue", queue);
 
-        return forward(request, "/workflow/queues/viewQueue.jsp");
+        return doForward(request, "/workflow/queues/viewQueue.jsp");
     }
 
     public ActionForward prepareEditQueue(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
@@ -79,7 +92,7 @@ public class QueueManagementAction extends ContextBaseAction {
 
         request.setAttribute("bean", beanForType);
 
-        return forward(request, "/workflow/queues/editQueue.jsp");
+        return doForward(request, "/workflow/queues/editQueue.jsp");
     }
 
     public ActionForward editQueue(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
@@ -95,7 +108,7 @@ public class QueueManagementAction extends ContextBaseAction {
             final HttpServletResponse response) {
         request.setAttribute("bean", new WorkflowQueueBean());
 
-        return forward(request, "/workflow/queues/createQueue.jsp");
+        return doForward(request, "/workflow/queues/createQueue.jsp");
     }
 
     public ActionForward doPostback(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
@@ -108,7 +121,7 @@ public class QueueManagementAction extends ContextBaseAction {
         request.setAttribute("creationPage", WorkflowQueueLayoutContext.getBootstrapFor(queueType));
         request.setAttribute("bean", bean);
 
-        return forward(request, "/workflow/queues/createQueue.jsp");
+        return doForward(request, "/workflow/queues/createQueue.jsp");
     }
 
     @SuppressWarnings("unchecked")
@@ -127,7 +140,7 @@ public class QueueManagementAction extends ContextBaseAction {
         request.setAttribute("bean", bean);
         request.setAttribute("creationPage", WorkflowQueueLayoutContext.getBootstrapFor(selectedType));
 
-        return forward(request, "/workflow/queues/createQueue.jsp");
+        return doForward(request, "/workflow/queues/createQueue.jsp");
     }
 
     private WorkflowQueueBean getBeanForType(Class<? extends WorkflowQueue> selectedType) throws ClassNotFoundException,
@@ -158,7 +171,7 @@ public class QueueManagementAction extends ContextBaseAction {
         request.setAttribute("creationPage", WorkflowQueueLayoutContext.getBootstrapFor(bean.getQueueType()));
         request.setAttribute("bean", bean);
 
-        return forward(request, "/workflow/queues/createQueue.jsp");
+        return doForward(request, "/workflow/queues/createQueue.jsp");
     }
 
     public ActionForward oneMoreUserInQueueInEdition(final ActionMapping mapping, final ActionForm form,
@@ -167,7 +180,7 @@ public class QueueManagementAction extends ContextBaseAction {
         WorkflowUserGroupQueueBean bean = getRenderedObject("queue");
         addUserInBean(request, bean);
 
-        return forward(request, "/workflow/queues/editQueue.jsp");
+        return doForward(request, "/workflow/queues/editQueue.jsp");
     }
 
     private void addUserInBean(final HttpServletRequest request, WorkflowUserGroupQueueBean bean) {
@@ -178,7 +191,7 @@ public class QueueManagementAction extends ContextBaseAction {
 
         bean.setUserToAdd(null);
         request.setAttribute("bean", bean);
-        request.setAttribute("queues", WorkflowSystem.getInstance().getWorkflowQueues());
+        request.setAttribute("queues", WorkflowSystem.getInstance().getWorkflowQueuesSet());
 
         RenderUtils.invalidateViewState("users");
     }
@@ -193,15 +206,4 @@ public class QueueManagementAction extends ContextBaseAction {
         return manageQueues(mapping, form, request, response);
     }
 
-    @Override
-    public Context createContext(String contextPathString, HttpServletRequest request) {
-
-        WorkflowQueue queue = getDomainObject(request, "queueId");
-        if (queue != null) {
-            WorkflowQueueLayoutContext queueContext = queue.getDefaultContext();
-            queueContext.setElements(contextPathString);
-            return queueContext;
-        }
-        return super.createContext(contextPathString, request);
-    }
 }

@@ -1,4 +1,3 @@
-<%@page import="pt.ist.bennu.core.util.BundleUtil"%>
 <%@page import="java.net.URLEncoder"%>
 <%@page import="java.util.Map"%>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
@@ -10,36 +9,8 @@
 <bean:define id="dashBoardId" name="widget" property="dashBoardPanel.externalId"/>
 <bean:define id="widgetId" name="widget" property="externalId"/>
 
-<bean:define id="optionsEdit" value="<%= "edit-widgetOptions-" + widgetId %>" type="java.lang.String" toScope="page"/>
-<bean:define id="optionsView" value="<%= "widgetOptions-" + widgetId %>" type="java.lang.String" toScope="page"/>
-
-<logic:present name="<%= optionsEdit %>" scope="request">
-<%-- 
-	<fr:form action="<%= "/dashBoardManagement.do?method=widgetSubmition&dashBoardId=" + dashBoardId + "&dashBoardWidgetId=" + widgetId%>">
-		<fr:edit id="<%= optionsView %>" name="<%= optionsEdit %>" scope="request">
-			<fr:layout name="tabular">
-				<fr:property name="classes" value="width100pc"/>
-				<fr:property name="hideValidators" value="true"/>
-			</fr:layout>
-			<fr:schema bundle="EXPENDITURE_RESOURCES" type="pt.ist.expenditureTrackingSystem.domain.ExpenditureWidgetOptions">
-				<fr:slot name="maxListSize" key="widget.numberOfProcesses">
-					<fr:validator name="pt.ist.fenixWebFramework.renderers.validators.RequiredValidator"/>
-		 			<fr:validator name="pt.ist.fenixWebFramework.rendererExtensions.validators.NumberRangeValidator">
-            			<fr:property name="upperBound" value="999"/>
-            			<fr:property name="lowerBound" value="1"/>
-        			</fr:validator>
-       				<fr:property name="size" value="3"/>
-					<fr:property name="maxLength" value="3"/>
-				</fr:slot>
-			</fr:schema>
-		</fr:edit>
-		<p>
-			<html:submit styleClass="inputbutton">Ok</html:submit>
-			<html:cancel styleClass="inputbutton">Cancel</html:cancel>
-		</p>
-	</fr:form>
---%>
-</logic:present>
+<bean:define id="optionsEdit" value="edit-widgetOptions-${widgetId}" type="java.lang.String" toScope="page"/>
+<bean:define id="optionsView" value="widgetOptions-${widgetId}" type="java.lang.String" toScope="page"/>
 
 <%boolean unreadCommentsExist = false; %>
 
@@ -47,7 +18,7 @@
 	<logic:notEmpty name="numberUnreadCommentsPerProcess">
 		<table class="width100pc">
 			<logic:iterate id="process" name="numberUnreadCommentsPerProcess" indexId="numberOfProcessType">
-						<%String nameForProcessClass = BundleUtil.getLocalizedNamedFroClass(((Map.Entry<Class,Integer>) process).getKey());%>
+						<%String nameForProcessClass = module.workflow.util.WorkflowClassUtil.getNameForType(((Map.Entry<Class,Integer>) process).getKey());%>
 				<tr>
 					<td>
 						<%=nameForProcessClass.toString()%>
@@ -56,7 +27,7 @@
 					<%-- if the value is 0, we shouldn't make it a link --%>
 					<%if (!((Map.Entry<Class,Integer>) process).getValue().equals(Integer.valueOf(0))) { 
 					unreadCommentsExist = true;%>
-						<html:link page="<%="/workflowWidgetActions.do?method=viewListUnreadComments&processClass="+java.net.URLEncoder.encode(((Map.Entry<Class,Integer>) process).getKey().toString())+"#"+ java.net.URLEncoder.encode(((Map.Entry<Class,Integer>) process).getKey().toString())%>">
+						<html:link page="<%=\"/workflowWidgetActions.do?method=viewListUnreadComments&processClass=\"+java.net.URLEncoder.encode(((Map.Entry<Class,Integer>) process).getKey().toString())+\"#\"+ java.net.URLEncoder.encode(((Map.Entry<Class,Integer>) process).getKey().toString())%>">
 					<%=((Map.Entry<Class,Integer>) process).getValue().toString() %>
 						</html:link>
 						<%} else { %>

@@ -27,10 +27,14 @@ package module.workflow.presentationTier.renderers;
 import java.util.Set;
 import java.util.TreeSet;
 
+import module.workflow.WorkflowConfiguration;
 import module.workflow.domain.WorkflowProcess;
 import module.workflow.domain.WorkflowProcessComment;
-import pt.ist.bennu.core.domain.User;
+
+import org.fenixedu.bennu.core.domain.User;
+
 import pt.ist.fenixWebFramework.renderers.OutputRenderer;
+import pt.ist.fenixWebFramework.renderers.components.Face;
 import pt.ist.fenixWebFramework.renderers.components.HtmlBlockContainer;
 import pt.ist.fenixWebFramework.renderers.components.HtmlComponent;
 import pt.ist.fenixWebFramework.renderers.components.HtmlImage;
@@ -56,7 +60,6 @@ public class CommentRenderer extends OutputRenderer {
     private String nameClasses;
     private String photoClasses;
     private String bodyClasses;
-    private String photoUrl;
     private String observerClass;
     private String observerBundle;
     private String observerKey;
@@ -127,14 +130,6 @@ public class CommentRenderer extends OutputRenderer {
         this.nameClasses = nameClasses;
     }
 
-    public String getPhotoUrl() {
-        return photoUrl;
-    }
-
-    public void setPhotoUrl(String photoUrl) {
-        this.photoUrl = photoUrl;
-    }
-
     @Override
     protected Layout getLayout(Object arg0, Class arg1) {
         return new Layout() {
@@ -182,7 +177,8 @@ public class CommentRenderer extends OutputRenderer {
                 HtmlInlineContainer container = new HtmlInlineContainer();
                 HtmlImage userPhoto = new HtmlImage();
                 container.addChild(userPhoto);
-                userPhoto.setSource(RenderUtils.getFormattedProperties(getPhotoUrl(), comment.getCommenter()));
+                userPhoto.setSource(WorkflowConfiguration.getConfiguration().getPhotoPrefix()
+                        + comment.getCommenter().getUsername());
                 photoCell.setBody(userPhoto);
 
                 HtmlTableCell bodyCell = row.createCell();
@@ -190,6 +186,7 @@ public class CommentRenderer extends OutputRenderer {
                 bodyCell.setBody(bodyBlock);
 
                 HtmlText name = new HtmlText(comment.getCommenter().getPresentationName());
+                name.setFace(Face.STRONG);
                 name.setClasses(getNameClasses());
                 bodyBlock.addChild(name);
 

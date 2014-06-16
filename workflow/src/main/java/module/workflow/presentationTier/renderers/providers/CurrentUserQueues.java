@@ -27,8 +27,10 @@ package module.workflow.presentationTier.renderers.providers;
 import java.util.Collections;
 
 import module.workflow.domain.WorkflowQueue;
-import pt.ist.bennu.core.applicationTier.Authenticate.UserView;
-import pt.ist.bennu.core.domain.User;
+
+import org.fenixedu.bennu.core.domain.User;
+import org.fenixedu.bennu.core.security.Authenticate;
+
 import pt.ist.fenixWebFramework.renderers.DataProvider;
 import pt.ist.fenixWebFramework.renderers.components.converters.Converter;
 
@@ -46,7 +48,7 @@ public class CurrentUserQueues implements DataProvider {
 
     @Override
     public Object provide(Object source, Object value) {
-        User user = UserView.getCurrentUser();
+        User user = Authenticate.getUser();
         if (user == null) {
             return Collections.EMPTY_LIST;
         }

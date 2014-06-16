@@ -3,11 +3,6 @@
 <%@ taglib uri="http://jakarta.apache.org/struts/tags-bean" prefix="bean"%>
 <%@ taglib uri="http://fenix-ashes.ist.utl.pt/fenix-renderers" prefix="fr"%>
 <%@ taglib uri="http://jakarta.apache.org/struts/tags-logic" prefix="logic"%>
-
-<%@page import="pt.ist.bennu.core.presentationTier.actions.ContextBaseAction"%>
-<%@page import="pt.ist.bennu.core.domain.contents.Node"%>
-<%@page import="module.workflow.presentationTier.ProcessNodeSelectionMapper"%>
-<%@page import="pt.ist.bennu.core.presentationTier.servlets.filters.contentRewrite.ContentContextInjectionRewriter"%>
 <%@page import="java.util.List"%>
 
 <% boolean hasSomeProcess = false; %>
@@ -22,8 +17,7 @@
 					<td>
 					<bean:define id="typeOfProcess" name="counter" property="processClassForForwarding" type="java.lang.Class"/> 
 
-					<% List<Node> nodes = ProcessNodeSelectionMapper.getForwardFor(typeOfProcess); Node node = nodes != null && nodes.size() > 0 ? nodes.get(nodes.size()-1) : null; %>
-					<html:link page='<%= node != null ? node.getUrl() : "#" %>'>
+					<html:link page="#">
 						<bean:write name="count"/>
 					</html:link>
 					</td>

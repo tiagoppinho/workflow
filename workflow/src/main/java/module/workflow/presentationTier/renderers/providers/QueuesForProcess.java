@@ -34,7 +34,7 @@ import module.workflow.domain.WorkflowQueue;
 import module.workflow.presentationTier.actions.CommentBean;
 import module.workflow.presentationTier.actions.QueueNotificationBean;
 import module.workflow.presentationTier.actions.UserNotificationBean;
-import pt.ist.bennu.core.domain.User;
+import org.fenixedu.bennu.core.domain.User;
 import pt.ist.fenixWebFramework.renderers.DataProvider;
 import pt.ist.fenixWebFramework.renderers.components.converters.Converter;
 

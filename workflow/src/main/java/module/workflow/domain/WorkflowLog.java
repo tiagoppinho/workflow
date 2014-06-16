@@ -26,11 +26,10 @@ package module.workflow.domain;
 
 import java.util.Comparator;
 
+import org.fenixedu.bennu.core.domain.User;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
 
-import pt.ist.bennu.core.domain.User;
-import pt.ist.bennu.core.domain.VirtualHost;
 import pt.utl.ist.fenix.tools.util.Strings;
 
 /**
@@ -42,26 +41,15 @@ import pt.utl.ist.fenix.tools.util.Strings;
  * 
  */
 public abstract class WorkflowLog extends WorkflowLog_Base {
-    public static final Comparator<WorkflowLog> COMPARATOR_BY_WHEN = new Comparator<WorkflowLog>() {
-
-        @Override
-        public int compare(final WorkflowLog log1, final WorkflowLog log2) {
-            final DateTime when1 = log1.getWhenOperationWasRan();
-            final DateTime when2 = log2.getWhenOperationWasRan();
-            final int result = when1.compareTo(when2);
-            return result == 0 ? log1.getExternalId().compareTo(log2.getExternalId()) : result;
-        }
-
+    public static final Comparator<WorkflowLog> COMPARATOR_BY_WHEN = (log1, log2) -> {
+        final DateTime when1 = log1.getWhenOperationWasRan();
+        final DateTime when2 = log2.getWhenOperationWasRan();
+        final int result = when1.compareTo(when2);
+        return result == 0 ? log1.getExternalId().compareTo(log2.getExternalId()) : result;
     };
 
-    public static final Comparator<WorkflowLog> COMPARATOR_BY_WHEN_REVERSED = new Comparator<WorkflowLog>() {
-
-        @Override
-        public int compare(final WorkflowLog log1, final WorkflowLog log2) {
-            return COMPARATOR_BY_WHEN.compare(log2, log1);
-        }
-
-    };
+    public static final Comparator<WorkflowLog> COMPARATOR_BY_WHEN_REVERSED = (log1, log2) -> COMPARATOR_BY_WHEN.compare(log2,
+            log1);
 
     public WorkflowLog() {
         super.setWorkflowSystem(WorkflowSystem.getInstance());
@@ -112,12 +100,6 @@ public abstract class WorkflowLog extends WorkflowLog_Base {
 
     private static Duration calculateDuration(final WorkflowLog previous, final WorkflowLog next) {
         return new Duration(previous.getWhenOperationWasRan(), next.getWhenOperationWasRan());
-    }
-
-    @Override
-    public boolean isConnectedToCurrentHost() {
-        final VirtualHost virtualHost = VirtualHost.getVirtualHostForThread();
-        return virtualHost != null && getWorkflowSystem() == virtualHost.getWorkflowSystem();
     }
 
     public void delete() {

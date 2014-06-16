@@ -25,6 +25,7 @@
 package module.workflow.presentationTier.actions;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.HashMap;
@@ -44,8 +45,8 @@ import module.workflow.domain.ProcessFile;
 import module.workflow.domain.ProcessFileValidationException;
 import module.workflow.domain.WorkflowProcess;
 import module.workflow.domain.WorkflowProcessComment;
-import module.workflow.presentationTier.ProcessNodeSelectionMapper;
 import module.workflow.presentationTier.WorkflowLayoutContext;
+import module.workflow.servlet.WorkflowContainerInitializer;
 import module.workflow.util.FileUploadBeanResolver;
 import module.workflow.util.PresentableProcessState;
 import module.workflow.util.WorkflowFileUploadBean;
@@ -54,19 +55,21 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.fenixedu.bennu.core.domain.User;
+import org.fenixedu.bennu.core.domain.exceptions.DomainException;
+import org.fenixedu.bennu.core.presentationTier.actions.BaseAction;
+import org.fenixedu.bennu.core.security.Authenticate;
+import org.fenixedu.bennu.portal.domain.MenuFunctionality;
+import org.fenixedu.bennu.portal.model.Functionality;
+import org.fenixedu.bennu.portal.servlet.BennuPortalDispatcher;
 
-import pt.ist.bennu.core.applicationTier.Authenticate.UserView;
-import pt.ist.bennu.core.domain.User;
-import pt.ist.bennu.core.domain.contents.Node;
-import pt.ist.bennu.core.domain.exceptions.DomainException;
-import pt.ist.bennu.core.presentationTier.Context;
-import pt.ist.bennu.core.presentationTier.actions.ContextBaseAction;
 import pt.ist.fenixWebFramework.renderers.utils.RenderUtils;
 import pt.ist.fenixWebFramework.servlets.filters.contentRewrite.GenericChecksumRewriter;
-import pt.ist.fenixWebFramework.servlets.json.JsonObject;
 import pt.ist.fenixWebFramework.struts.annotations.Mapping;
 import pt.ist.fenixframework.DomainObject;
 import pt.ist.fenixframework.FenixFramework;
+
+import com.google.gson.JsonObject;
 
 /**
  * 
@@ -80,7 +83,7 @@ import pt.ist.fenixframework.FenixFramework;
  * 
  */
 @Mapping(path = "/workflowProcessManagement")
-public class ProcessManagement extends ContextBaseAction {
+public class ProcessManagement extends BaseAction {
 
     public static final String workflowManagementURL = "/workflowProcessManagement.do?method=viewProcess&processId=";
 
@@ -88,7 +91,20 @@ public class ProcessManagement extends ContextBaseAction {
             new HashMap<Class<? extends WorkflowProcess>, ProcessRequestHandler<? extends WorkflowProcess>>();
 
     protected User getLoggedPerson() {
-        return UserView.getCurrentUser();
+        return Authenticate.getUser();
+    }
+
+    private final ActionForward doForward(HttpServletRequest request, String body) {
+        WorkflowProcess process = getProcess(request);
+        WorkflowLayoutContext layout = process.getLayout();
+        request.setAttribute("context", layout);
+        if (BennuPortalDispatcher.getSelectedFunctionality(request) == null) {
+            Functionality functionality = WorkflowContainerInitializer.getFunctionalityForProcess(process.getClass());
+            MenuFunctionality menuFunctionality =
+                    MenuFunctionality.findFunctionality(functionality.getProvider(), functionality.getKey());
+            BennuPortalDispatcher.selectFunctionality(request, menuFunctionality);
+        }
+        return forward(body);
     }
 
     public ActionForward viewProcess(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
@@ -108,23 +124,16 @@ public class ProcessManagement extends ContextBaseAction {
             handler.handleRequest(process, request);
         }
 
-        Context context = (Context) request.getAttribute(CONTEXT);
-        if (context.getElements().isEmpty()) {
-            List<Node> forwardFor = ProcessNodeSelectionMapper.getForwardFor(process.getClass());
-            context.getElements().addAll(forwardFor);
-        }
-        return forward(request, "/workflow/viewProcess.jsp");
+        return doForward(request, "/workflow/viewProcess.jsp");
     }
 
     public ActionForward forwardToProcessPage(WorkflowProcess process, HttpServletRequest request) {
 
         ActionForward forward = new ActionForward();
         forward.setRedirect(true);
-        String realPath =
-                ProcessManagement.workflowManagementURL + process.getExternalId() + "&" + CONTEXT_PATH + "="
-                        + getContext(request).getPath();
+        String realPath = ProcessManagement.workflowManagementURL + process.getExternalId();
         forward.setPath(realPath + "&" + GenericChecksumRewriter.CHECKSUM_ATTRIBUTE_NAME + "="
-                + GenericChecksumRewriter.calculateChecksum(request.getContextPath() + realPath));
+                + GenericChecksumRewriter.calculateChecksum(request.getContextPath() + realPath, request.getSession()));
         return forward;
     }
 
@@ -264,14 +273,14 @@ public class ProcessManagement extends ContextBaseAction {
         return forwardProcessForInput(activity, request, information);
     }
 
-    private static <T extends WorkflowProcess> ActionForward forwardProcessForInput(WorkflowActivity activity,
+    private final <T extends WorkflowProcess> ActionForward forwardProcessForInput(WorkflowActivity activity,
             HttpServletRequest request, ActivityInformation<T> information) {
         request.setAttribute("information", information);
         if (activity.isDefaultInputInterfaceUsed()) {
-            return forward(request, "/workflow/activityInput.jsp");
+            return doForward(request, "/workflow/activityInput.jsp");
         } else {
             request.setAttribute("inputInterface", activity.getClass().getName().replace('.', '/') + ".jsp");
-            return forward(request, "/workflow/nonDefaultActivityInput.jsp");
+            return doForward(request, "/workflow/nonDefaultActivityInput.jsp");
         }
     }
 
@@ -282,13 +291,13 @@ public class ProcessManagement extends ContextBaseAction {
         request.setAttribute("process", process);
 
         Set<WorkflowProcessComment> comments = new TreeSet<WorkflowProcessComment>(WorkflowProcessComment.COMPARATOR);
-        comments.addAll(process.getComments());
+        comments.addAll(process.getCommentsSet());
 
-        process.markCommentsAsReadForUser(UserView.getCurrentUser());
+        process.markCommentsAsReadForUser(Authenticate.getUser());
         request.setAttribute("comments", comments);
         request.setAttribute("bean", new CommentBean(process));
 
-        return forward(request, "/workflow/viewComments.jsp");
+        return doForward(request, "/workflow/viewComments.jsp");
     }
 
     public ActionForward addComment(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
@@ -301,7 +310,7 @@ public class ProcessManagement extends ContextBaseAction {
 
         CommentBean bean = getRenderedObject("comment");
 
-        process.createComment(UserView.getCurrentUser(), bean);
+        process.createComment(Authenticate.getUser(), bean);
 
         RenderUtils.invalidateViewState();
         if (!displayedInline) {
@@ -316,7 +325,7 @@ public class ProcessManagement extends ContextBaseAction {
         if (!bean.isDefaultUploadInterfaceUsed()) {
             request.setAttribute("interface", "/" + bean.getSelectedInstance().getName().replace('.', '/') + "-upload.jsp");
         }
-        return forward(request, "/workflow/fileUpload.jsp");
+        return doForward(request, "/workflow/fileUpload.jsp");
     }
 
     private ActionForward forwardToDocumentUpload(HttpServletRequest request, WorkflowFileUploadBean bean) {
@@ -324,7 +333,7 @@ public class ProcessManagement extends ContextBaseAction {
         if (!bean.isDefaultUploadInterfaceUsed()) {
             request.setAttribute("interface", "/" + bean.getSelectedInstance().getName().replace('.', '/') + "-upload.jsp");
         }
-        return forward(request, "/workflow/documentUpload.jsp");
+        return doForward(request, "/workflow/documentUpload.jsp");
     }
 
     public ActionForward documentFileUpload(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
@@ -440,7 +449,7 @@ public class ProcessManagement extends ContextBaseAction {
         request.setAttribute("operationLogs", process.getExecutionLogsSet());
 
         request.setAttribute("process", process);
-        return forward(request, "/workflow/viewLogs.jsp");
+        return doForward(request, "/workflow/viewLogs.jsp");
     }
 
     public ActionForward downloadFile(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
@@ -476,7 +485,7 @@ public class ProcessManagement extends ContextBaseAction {
         List<ProcessFile> listFiles = process.getFilesIncludingDeleted(process.getAvailableFileTypes(), true);
         request.setAttribute("process", process);
         request.setAttribute("listFiles", listFiles);
-        return forward(request, "/workflow/viewFilesDetails.jsp");
+        return doForward(request, "/workflow/viewFilesDetails.jsp");
 
     }
 
@@ -531,7 +540,7 @@ public class ProcessManagement extends ContextBaseAction {
      *            the httpservlet request
      * @return ActionForward for the activity input interface.
      */
-    public static ActionForward performActivityPostback(ActivityInformation<? extends WorkflowProcess> information,
+    public ActionForward performActivityPostback(ActivityInformation<? extends WorkflowProcess> information,
             HttpServletRequest request) {
         return forwardProcessForInput(information.getActivity(), request, information);
     }
@@ -561,14 +570,6 @@ public class ProcessManagement extends ContextBaseAction {
         public void handleRequest(T process, HttpServletRequest request);
     }
 
-    @Override
-    public Context createContext(String contextPathString, HttpServletRequest request) {
-        WorkflowProcess process = getProcess(request);
-        WorkflowLayoutContext layout = process.getLayout();
-        layout.setElements(contextPathString);
-        return layout;
-    }
-
     public ActionForward viewTypeDescription(final ActionMapping mapping, final ActionForm form,
             final HttpServletRequest request, final HttpServletResponse response) throws IOException {
         String classname = request.getParameter("classname");
@@ -588,10 +589,16 @@ public class ProcessManagement extends ContextBaseAction {
 
         JsonObject reply = new JsonObject();
 
-        reply.addAttribute("name", type.getLocalizedName());
-        reply.addAttribute("description", type.getDescription());
+        reply.addProperty("name", type.getLocalizedName());
+        reply.addProperty("description", type.getDescription());
 
-        writeJsonReply(response, reply);
+        try (OutputStream outputStream = response.getOutputStream()) {
+            byte[] jsonReply = reply.toString().getBytes();
+            response.setContentType("text");
+            response.setContentLength(jsonReply.length);
+            outputStream.write(jsonReply);
+            outputStream.flush();
+        }
 
         return null;
     }

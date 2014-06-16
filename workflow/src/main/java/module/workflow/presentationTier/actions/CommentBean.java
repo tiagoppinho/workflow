@@ -31,7 +31,7 @@ import java.util.List;
 import java.util.Set;
 
 import module.workflow.domain.WorkflowProcess;
-import pt.ist.bennu.core.domain.User;
+import org.fenixedu.bennu.core.domain.User;
 
 /**
  * 

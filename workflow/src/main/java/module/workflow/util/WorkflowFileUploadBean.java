@@ -26,7 +26,7 @@ package module.workflow.util;
 
 import module.workflow.domain.ProcessFile;
 import module.workflow.domain.WorkflowProcess;
-import pt.ist.bennu.core.util.FileUploadBean;
+import org.fenixedu.bennu.core.util.FileUploadBean;
 
 /**
  * 

@@ -27,12 +27,12 @@ package module.workflow.domain.utils;
 import java.util.HashSet;
 import java.util.Set;
 
-import module.organization.domain.Person;
 import module.workflow.domain.WorkflowLog;
 import module.workflow.domain.WorkflowProcess;
 import module.workflow.widgets.UnreadCommentsWidget;
 
 import org.apache.commons.collections.Predicate;
+import org.fenixedu.bennu.core.domain.User;
 
 /**
  * 
@@ -70,7 +70,7 @@ public class WorkflowCommentCounter {
      *         efficient and there is a direct relation between a comment and a
      *         log)
      */
-    public Set<WorkflowProcess> getProcessesWithUnreadComments(final Person person, final String className) {
+    public Set<WorkflowProcess> getProcessesWithUnreadComments(final User user, final String className) {
 
         Set<WorkflowProcess> processes = new HashSet<WorkflowProcess>();
         Predicate searchPredicate = new Predicate() {
@@ -79,16 +79,15 @@ public class WorkflowCommentCounter {
             public boolean evaluate(Object arg0) {
                 if (className != null && classToFilter.toString().contentEquals(className)) {
                     return classToFilter.isAssignableFrom(arg0.getClass())
-                            && ((WorkflowProcess) arg0).hasUnreadCommentsForUser(person.getUser());
+                            && ((WorkflowProcess) arg0).hasUnreadCommentsForUser(user);
                 } else if (className != null) {
                     return false;
                 }
-                return classToFilter.isAssignableFrom(arg0.getClass())
-                        && ((WorkflowProcess) arg0).hasUnreadCommentsForUser(person.getUser());
+                return classToFilter.isAssignableFrom(arg0.getClass()) && ((WorkflowProcess) arg0).hasUnreadCommentsForUser(user);
             }
         };
 
-        for (WorkflowLog log : person.getUser().getUserLogsSet()) {
+        for (WorkflowLog log : user.getUserLogsSet()) {
             WorkflowProcess process = log.getProcess();
             if (searchPredicate.evaluate(process)) {
                 processes.add(process);

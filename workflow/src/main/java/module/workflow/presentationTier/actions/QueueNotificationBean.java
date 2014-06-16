@@ -25,14 +25,13 @@
 package module.workflow.presentationTier.actions;
 
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.Collection;
 
-import module.organization.domain.Person;
 import module.workflow.domain.WorkflowProcess;
 import module.workflow.domain.WorkflowQueue;
 import module.workflow.presentationTier.renderers.providers.QueuesForProcess;
-import pt.ist.bennu.core.domain.User;
+
+import org.fenixedu.bennu.core.domain.User;
 
 /**
  * Bean used to wrap the queues for the comment system
@@ -62,12 +61,8 @@ public class QueueNotificationBean implements Serializable {
         this.ableToNotify = ableToNotify;
     }
 
-    public Set<User> getUsers() {
-        HashSet<User> usersSetToReturn = new HashSet<User>();
-        for (Person person : getQueue().getPersons()) {
-            usersSetToReturn.add(person.getUser());
-        }
-        return usersSetToReturn;
+    public Collection<User> getUsers() {
+        return getQueue().getUsers();
     }
 
     //    public void setUser(User user) {

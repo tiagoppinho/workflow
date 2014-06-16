@@ -24,19 +24,12 @@
  */
 package module.workflow.domain;
 
-import javax.annotation.Nonnull;
-
 import jvstm.cps.ConsistencyPredicate;
-import module.fileManagement.domain.DirNode;
-import module.fileManagement.domain.FileNode;
+import module.workflow.util.ClassNameBundle;
 import module.workflow.util.WorkflowFileUploadBean;
 
 import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import pt.ist.bennu.core.domain.groups.UnionGroup;
-import pt.ist.bennu.core.util.ClassNameBundle;
+import org.fenixedu.bennu.core.domain.User;
 
 /**
  * 
@@ -49,10 +42,8 @@ import pt.ist.bennu.core.util.ClassNameBundle;
  *         TODO: make abstract
  * 
  */
-@ClassNameBundle(bundle = "resources/WorkflowResources")
+@ClassNameBundle(bundle = "WorkflowResources")
 public class ProcessFile extends ProcessFile_Base {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(ProcessFile.class);
 
     public ProcessFile() {
         super();
@@ -61,33 +52,6 @@ public class ProcessFile extends ProcessFile_Base {
     public ProcessFile(String displayName, String filename, byte[] content) {
         super();
         init(displayName, filename, content);
-    }
-
-    public ProcessFile(final FileNode associatedFileNode) {
-        super();
-        init(associatedFileNode);
-    }
-
-    public final void init(final FileNode associatedFileNode) {
-        //let's not call this here, as there are validateUpload that are called expecting this relationship not to have been made
-        //	this.setProcess(ProcessDirNode.getProcess(associatedFileNode));
-        WorkflowProcess process = ProcessDirNode.getProcess(associatedFileNode);
-        this.setDocument(associatedFileNode.getDocument());
-        AbstractWFDocsGroup readGroup =
-                AbstractWFDocsGroup.getOrCreateInstance(process, this.getMetaDataResolver().getReadGroupClass());
-        AbstractWFDocsGroup writeGroup =
-                AbstractWFDocsGroup.getOrCreateInstance(process, this.getMetaDataResolver().getWriteGroupClass());
-        if (this.getDocument().getReadGroup() != null) {
-            this.getDocument().setReadGroup(UnionGroup.getOrCreateUnionGroup(getDocument().getReadGroup(), readGroup));
-        } else {
-            this.getDocument().setReadGroup(readGroup);
-        }
-
-        if (this.getDocument().getWriteGroup() != null) {
-            this.getDocument().setWriteGroup(UnionGroup.getOrCreateUnionGroup(getDocument().getWriteGroup(), writeGroup));
-        } else {
-            this.getDocument().setWriteGroup(writeGroup);
-        }
     }
 
     /**
@@ -145,24 +109,10 @@ public class ProcessFile extends ProcessFile_Base {
     //	getDocument().
     //    }
 
-    public static class GenericPDMetaDataResolver extends ProcessDocumentMetaDataResolver<ProcessFile> {
-
-        @Override
-        public @Nonnull
-        Class<? extends AbstractWFDocsGroup> getWriteGroupClass() {
-            return WFDocsDefaultWriteGroup.class;
-        }
-
-    }
-
     @ConsistencyPredicate
     public boolean checkConnectedWithProcess() {
         return getProcess() != null || getProcessWithDeleteFile() != null;
 
-    }
-
-    public ProcessDocumentMetaDataResolver<? extends ProcessFile> getMetaDataResolver() {
-        return new GenericPDMetaDataResolver();
     }
 
     //    @Override
@@ -172,30 +122,6 @@ public class ProcessFile extends ProcessFile_Base {
     //	} else
     //	    return getDocument().getLastVersionedFile().getContentType();
     //    }
-
-    /**
-     * 
-     * @return a fileNode associated with this {@link ProcessDocument}. if none
-     *         is found on the {@link WorkflowProcess#getDocumentsRepository()},
-     *         it will search on the deleted items i.e. trash
-     */
-    public final FileNode getFileNode() {
-        if (getDocument() == null) {
-            return null;
-        }
-        FileNode fileNodeToReturn = null;
-        if (getProcess() == null || getProcess().getDocumentsRepository() == null) {
-            return null;
-        }
-        ProcessDirNode documentsRepository = getProcess().getDocumentsRepository();
-        fileNodeToReturn = getDocument().getFileNode(documentsRepository.getDirNode());
-        if (fileNodeToReturn == null) {
-            DirNode trash = documentsRepository.getTrash();
-            fileNodeToReturn = getDocument().getFileNode(trash);
-        }
-        return fileNodeToReturn;
-
-    }
 
     public void fillInNonDefaultFields(WorkflowFileUploadBean bean) {
 
@@ -268,24 +194,6 @@ public class ProcessFile extends ProcessFile_Base {
     }
 
     /**
-     * 
-     * @return true if the fileNode associated with the document was moved to
-     *         trash, false otherwise - meaning that does not have a document
-     *         associated, or if it does, that there are no, or more than one
-     *         fileNodes
-     */
-    public boolean moveToTrash() {
-        if (isInNewStructure()) {
-            FileNode fileNode = getFileNode();
-            if (fileNode != null) {
-                fileNode.trash(fileNode.getParent().getContextPath());
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
      * After validation and adding the file this method is called. The default
      * behavior is doing nothing.
      * 
@@ -313,9 +221,6 @@ public class ProcessFile extends ProcessFile_Base {
 
     @Override
     public void delete() {
-        //	getDocument().delete();
-        moveToTrash();
-        setDocument(null);
         setProcess(null);
         setProcessWithDeleteFile(null);
         super.delete();
@@ -331,20 +236,21 @@ public class ProcessFile extends ProcessFile_Base {
 
     }
 
-    /**
-     * Temporary method TODO remove it when migration is done
-     * 
-     * @return true if this ProcessFile is supported on the new structure
-     */
-    public boolean isInNewStructure() {
-        return getDocument() != null;
-    }
-
     public boolean isArchieved() {
         return getProcess() == null && getProcessWithDeleteFile() != null;
     }
 
     public String getPresentationName() {
         return StringUtils.isEmpty(getDisplayName()) ? getFilename() : getDisplayName();
+    }
+
+    @Override
+    public boolean isAccessible(User user) {
+        return getProcess().isAccessible(user);
+    }
+
+    @Override
+    public WorkflowProcess getProcess() {
+        return super.getProcess();
     }
 }

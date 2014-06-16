@@ -29,18 +29,19 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import module.dashBoard.presentationTier.WidgetRequest;
+import module.dashBoard.widgets.DashboardWidget;
 import module.dashBoard.widgets.WidgetController;
 import module.workflow.domain.ProcessCounter;
-import pt.ist.bennu.core.util.BundleUtil;
-import pt.ist.bennu.core.util.ClassNameBundle;
 
-@ClassNameBundle(bundle = "resources/WorkflowResources", key = "widget.title.processListWidget")
+import org.fenixedu.bennu.core.i18n.BundleUtil;
+
 /**
  * 
  * @author Luis Cruz
  * @author Paulo Abrantes
  * 
  */
+@DashboardWidget(nameBundle = "resources.WorkflowResources", nameKey = "widget.title.processListWidget")
 public class ProcessListWidget extends WidgetController {
 
     private static final Set<ProcessCounter> processCounters = new HashSet<ProcessCounter>();
@@ -48,13 +49,13 @@ public class ProcessListWidget extends WidgetController {
     @Override
     public void doView(WidgetRequest request) {
         final Set<ProcessCounter> processCounters = new TreeSet<ProcessCounter>(ProcessCounter.COMPARATOR);
-        processCounters.addAll(this.processCounters);
+        processCounters.addAll(ProcessListWidget.processCounters);
         request.setAttribute("pendingProcessList", processCounters);
     }
 
     @Override
     public String getWidgetDescription() {
-        return BundleUtil.getStringFromResourceBundle("resources/WorkflowResources", "widget.description.processListWidget");
+        return BundleUtil.getString("resources/WorkflowResources", "widget.description.processListWidget");
     }
 
     @Override
@@ -64,7 +65,7 @@ public class ProcessListWidget extends WidgetController {
 
     @Override
     public String getHelp() {
-        return BundleUtil.getStringFromResourceBundle("resources/WorkflowResources", "widget.help.processListWidget");
+        return BundleUtil.getString("resources/WorkflowResources", "widget.help.processListWidget");
     }
 
     public static void register(final ProcessCounter processCounter) {

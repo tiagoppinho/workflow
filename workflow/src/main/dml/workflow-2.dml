@@ -24,67 +24,18 @@
  * 
  */
  
-class module.workflow.domain.ProcessDirNode { }
-
-class module.workflow.domain.ProcessFile extends .pt.ist.fenixframework.plugins.fileSupport.domain.GenericFile { }
+class module.workflow.domain.ProcessFile extends .org.fenixedu.bennu.io.domain.GenericFile { }
 
 
-class module.workflow.domain.AbstractWFDocsGroup extends .pt.ist.bennu.core.domain.groups.PersistentGroup { }
-class module.workflow.domain.WFDocsDefaultReadGroup extends module.workflow.domain.AbstractWFDocsGroup { }
-class module.workflow.domain.WFDocsDefaultWriteGroup extends module.workflow.domain.WFDocsDefaultReadGroup { }
- 
  //R1 - remove relation
 relation WorkflowProcessFile { 
-	module.workflow.domain.WorkflowProcess playsRole process {
+	protected module.workflow.domain.WorkflowProcess playsRole process {
 		multiplicity 0..1;
 	}
 	module.workflow.domain.ProcessFile playsRole files { 
 		multiplicity *;
 	} 
-} 
-
-
-/* START: Workflow Document relations */
-
-relation ProcessDirNodeDirNode {
-	.module.fileManagement.domain.DirNode playsRole dirNode {
-		multiplicity 1..1;
-	}
-	module.workflow.domain.ProcessDirNode playsRole processDirNode;
 }
-
-relation DocumentProcessFile {
-		//multiplicity 1..1;
-		//For now, let's stick with 0..1 untill all is migrated
-	.module.fileManagement.domain.Document playsRole document;
-	
-	module.workflow.domain.ProcessFile playsRole processDocuments {
-		multiplicity *;
-	}
-}
-
-
-relation ProcessDirNodeWorkflowProcess {
-	module.workflow.domain.ProcessDirNode playsRole documentsRepository {
-		multiplicity 1..1;
-	}
-	module.workflow.domain.WorkflowProcess playsRole workflowProcess {
-		multiplicity 1..1;
-	}
-}
-
-
-relation AbstractWFDocsGroup {
-	module.workflow.domain.AbstractWFDocsGroup playsRole processDocumentsPersistentGroups {
-		multiplicity *;
-	}
-	module.workflow.domain.WorkflowProcess playsRole process {
-		multiplicity 1..1;
-	}
-}
-
-
-/* END: Workflow Document relations */
 
 //R1 - remove relation
 relation ProcessFileDeletion {
@@ -95,14 +46,14 @@ relation ProcessFileDeletion {
 }
  
 relation UserComment {
-	.pt.ist.bennu.core.domain.User playsRole commenter;
+	.org.fenixedu.bennu.core.domain.User playsRole commenter;
 	module.workflow.domain.WorkflowProcessComment playsRole comments {
 		multiplicity *;
 	}
 }
 
 relation UserReadComment {
-	.pt.ist.bennu.core.domain.User playsRole readers {
+	.org.fenixedu.bennu.core.domain.User playsRole readers {
 		multiplicity *;
 	}
 	module.workflow.domain.WorkflowProcessComment playsRole readComments {
@@ -112,7 +63,7 @@ relation UserReadComment {
 }
 
 relation TakeSupport {
-	.pt.ist.bennu.core.domain.User playsRole currentOwner;
+	.org.fenixedu.bennu.core.domain.User playsRole currentOwner;
 	module.workflow.domain.WorkflowProcess playsRole userProcesses {
 		multiplicity *;
 	} 
@@ -122,13 +73,13 @@ relation Observers {
 	module.workflow.domain.WorkflowProcess playsRole observedProcesses {
 		multiplicity *;
 	}
-	.pt.ist.bennu.core.domain.User playsRole observers {
+	.org.fenixedu.bennu.core.domain.User playsRole observers {
 		multiplicity *;
 	}
 }
 
 relation UserLog {
-	.pt.ist.bennu.core.domain.User playsRole activityExecutor {
+	.org.fenixedu.bennu.core.domain.User playsRole activityExecutor {
 		multiplicity 1..1;
 	}
 	module.workflow.domain.WorkflowLog playsRole userLogs {
@@ -140,7 +91,7 @@ relation WorkflowUserGroupQueueUser {
 	module.workflow.domain.WorkflowUserGroupQueue playsRole queues {
 		multiplicity *;
 	}
-	.pt.ist.bennu.core.domain.User playsRole users {
+	.org.fenixedu.bennu.core.domain.User playsRole users {
 		multiplicity *;
 	}
 }

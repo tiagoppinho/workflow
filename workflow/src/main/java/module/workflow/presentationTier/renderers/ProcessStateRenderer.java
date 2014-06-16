@@ -28,9 +28,6 @@ import java.util.List;
 
 import module.workflow.util.HasPresentableProcessState;
 import module.workflow.util.PresentableProcessState;
-
-import org.apache.commons.collections.Predicate;
-
 import pt.ist.fenixWebFramework.renderers.OutputRenderer;
 import pt.ist.fenixWebFramework.renderers.components.Face;
 import pt.ist.fenixWebFramework.renderers.components.HtmlBlockContainer;
@@ -190,13 +187,7 @@ public class ProcessStateRenderer extends OutputRenderer {
 
             @Override
             public void applyStyle(HtmlComponent component) {
-                HtmlComponent actualComponent = component.getChild(new Predicate() {
-
-                    @Override
-                    public boolean evaluate(Object arg0) {
-                        return arg0 instanceof HtmlTable;
-                    }
-                });
+                HtmlComponent actualComponent = component.getChild(child -> child instanceof HtmlTable);
                 super.applyStyle(actualComponent);
                 if (!process.isActive()) {
                     actualComponent.setClasses(getCancelledClasses());

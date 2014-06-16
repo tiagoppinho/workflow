@@ -4,13 +4,7 @@
 <%@ taglib uri="http://jakarta.apache.org/struts/tags-logic" prefix="logic" %>
 <%@ taglib uri="http://fenix-ashes.ist.utl.pt/fenix-renderers" prefix="fr" %>
 
-
-<%@page import="module.workflow.presentationTier.WorkflowLayoutContext"%>
-<%@page import="pt.ist.bennu.core.presentationTier.actions.ContextBaseAction"%>
-<%
-	final WorkflowLayoutContext layoutContext = (WorkflowLayoutContext) ContextBaseAction.getContext(request);
-%>
-<jsp:include page='<%=  layoutContext.getWorkflowHead() %>'/>
+<jsp:include page='${context.workflowHead}'/>
 
 <h3><bean:message key="title.viewLogs" bundle="WORKFLOW_RESOURCES"/></h3>
 
@@ -23,7 +17,7 @@
 </p>
 
 
-<jsp:include page='<%= layoutContext.getWorkflowShortBody() %>'/>
+<jsp:include page='${context.workflowShortBody}'/>
 
 
 <logic:empty name="operationLogs">

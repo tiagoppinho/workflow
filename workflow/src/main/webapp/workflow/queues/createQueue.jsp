@@ -4,8 +4,7 @@
 <%@ taglib uri="http://jakarta.apache.org/struts/tags-logic" prefix="logic" %>
 <%@ taglib uri="http://fenix-ashes.ist.utl.pt/fenix-renderers" prefix="fr"%>
 
-
-<%@page import="module.workflow.presentationTier.WorkflowQueueLayoutContext"%><h2><bean:message key="title.createQueue" bundle="WORKFLOW_RESOURCES"/></h2>
+<h2><bean:message key="title.createQueue" bundle="WORKFLOW_RESOURCES"/></h2>
 
 <ul>
 	<li>

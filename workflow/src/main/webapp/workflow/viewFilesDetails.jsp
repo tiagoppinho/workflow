@@ -1,4 +1,3 @@
-<%@page import="pt.ist.bennu.core.util.BundleUtil"%>
 <%@page import="java.util.Comparator"%>
 <%@page import="java.util.Collections"%>
 <%@page import="java.util.Collection"%>
@@ -10,8 +9,6 @@
 <%@ taglib uri="http://jakarta.apache.org/struts/tags-html" prefix="html"%>
 <%@ taglib uri="http://jakarta.apache.org/struts/tags-logic" prefix="logic"%>
 <%@ taglib uri="http://fenix-ashes.ist.utl.pt/fenix-renderers" prefix="fr"%>
-<%@page import="module.workflow.presentationTier.WorkflowLayoutContext"%>
-<%@page import="pt.ist.bennu.core.presentationTier.actions.ContextBaseAction"%>
 
 <style>
 table.files-list {
@@ -65,10 +62,8 @@ width: 45px !important;
 }
 </style>
 
-<%
-	final WorkflowLayoutContext layoutContext = (WorkflowLayoutContext) ContextBaseAction.getContext(request);
-%>
-<jsp:include page='<%=  layoutContext.getWorkflowHead() %>'/>
+
+<jsp:include page='${context.workflowHead}'/>
 <h3><bean:message bundle="WORKFLOW_RESOURCES" key="label.fileDetails" /></h3>
 <p class="mtop05 mbottom15">
 	<html:link page="/workflowProcessManagement.do?method=viewProcess" paramId="processId" paramName="process" paramProperty="externalId">
@@ -77,24 +72,24 @@ width: 45px !important;
 </p>
 
 
-<jsp:include page='<%= layoutContext.getWorkflowShortBody() %>'/>
+<jsp:include page='${context.workflowShortBody}'/>
 
 <logic:empty name="listFiles">
 	<p class="mtop15"><em><bean:message key="label.noFiles" bundle="WORKFLOW_RESOURCES"/>.</em></p>
 </logic:empty>
 
 <logic:notEmpty name="listFiles">
-	<table class="tview1 files-list">
-			<tr>
+	<table class="table files-list">
+			<thead class="text-center">
 				<th class="file-date"><bean:message bundle="WORKFLOW_RESOURCES" key="label.fileDate"/></th>
 				<th class="file-name"><bean:message bundle="WORKFLOW_RESOURCES" key="label.filename"/></th>
 				<th class="file-desc"><bean:message bundle="WORKFLOW_RESOURCES" key="label.presentationName"/></th>
 				<th class="file-type"><bean:message bundle="WORKFLOW_RESOURCES" key="label.fileType"/></th>
-				<th class="file-ash"><bean:message bundle="WORKFLOW_RESOURCES" key="label.digestSha1"/></th>
+				<th class="file-ash"><bean:message bundle="WORKFLOW_RESOURCES" key="label.digest"/></th>
 				<th><bean:message bundle="WORKFLOW_RESOURCES" key="label.fileSize"/></th>
 				<th class="file-state"><bean:message bundle="WORKFLOW_RESOURCES" key="label.fileStatus"/></th>
 				<th class="file-download"></th>
-			</tr>
+			</thead>
 		<logic:iterate id="file" name="listFiles" type="module.workflow.domain.ProcessFile">
 			<bean:define id="fileId" name="file" property="externalId" type="java.lang.String"/>
 			<logic:empty name="file" property="processWithDeleteFile">
@@ -112,8 +107,8 @@ width: 45px !important;
 					</td>
 					<td class="file-name"><div><bean:write name="file" property="filename"/></div></td>
 					<td class="file-desc"><div><bean:write name="file" property="presentationName"/></div></td>
-					<td class="file-type"><%=BundleUtil.getLocalizedNamedFroClass(file.getClass())%></td>
-					<td class="file-ash"><div><bean:write name="file" property="hexSHA1MessageDigest"/></div></td>
+					<td class="file-type"><%=module.workflow.util.WorkflowClassUtil.getNameForType(file.getClass())%></td>
+					<td class="file-ash"><div><bean:write name="file" property="checksum"/> (${file.checksumAlgorithm})</div></td>
 					<td><fr:view name="file" property="size" layout="fileSize"/></td>
 					<logic:empty name="file" property="processWithDeleteFile">
 						<td class="file-state"><bean:message bundle="WORKFLOW_RESOURCES" key="label.fileStatus.active"/></td>

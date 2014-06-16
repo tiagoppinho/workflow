@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE schemas SYSTEM "../fenix-renderers-schemas.dtd" []>
 <schemas>
 <schema name="activityInformation.GiveProcess" type="module.workflow.activities.UserInformation">
 	<slot name="user" layout="autoComplete" key="label.giveProcess.user"
@@ -7,8 +6,7 @@
 		<property name="labelField" value="username" />
 		<property name="format" value="${presentationName}" />
 		<property name="minChars" value="3" />
-		<property name="args"
-			value="provider=pt.ist.bennu.core.presentationTier.renderers.autoCompleteProvider.UserAutoComplete" />
+		<property name="provider" value="org.fenixedu.bennu.core.presentationTier.renderers.autoCompleteProvider.UserAutoComplete" />
 		<property name="size" value="50" />
 	</slot>
 </schema>
@@ -19,8 +17,7 @@
 		<property name="labelField" value="username" />
 		<property name="format" value="${presentationName}" />
 		<property name="minChars" value="3" />
-		<property name="args"
-			value="provider=pt.ist.bennu.core.presentationTier.renderers.autoCompleteProvider.UserAutoComplete" />
+		<property name="provider" value="org.fenixedu.bennu.core.presentationTier.renderers.autoCompleteProvider.UserAutoComplete" />
 		<property name="size" value="40" />
 	</slot>
 </schema>
@@ -85,8 +82,8 @@
 <schema name="search.quick"
 	type="module.workflow.presentationTier.actions.BasicSearchProcessBean"
 	bundle="ACQUISITION_RESOURCES">
-	<slot name="processId" key="label.acquisitionProcessId.short"
-		bundle="EXPENDITURE_RESOURCES">
+	<slot name="processId" key="label.processNumber"
+		bundle="WORKFLOW_RESOURCES">
 		<property name="size" value="10" />
 	</slot>
 </schema></schemas>

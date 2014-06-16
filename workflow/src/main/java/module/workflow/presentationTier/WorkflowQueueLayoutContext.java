@@ -28,14 +28,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 import module.workflow.domain.WorkflowQueue;
-import pt.ist.bennu.core.presentationTier.LayoutContext;
 
 /**
  * 
  * @author Paulo Abrantes
  * 
  */
-public class WorkflowQueueLayoutContext extends LayoutContext {
+public class WorkflowQueueLayoutContext {
 
     private static Map<Class<? extends WorkflowQueue>, String> creationPageRegister =
             new HashMap<Class<? extends WorkflowQueue>, String>();

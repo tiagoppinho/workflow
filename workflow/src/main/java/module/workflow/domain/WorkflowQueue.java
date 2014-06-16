@@ -27,18 +27,16 @@ package module.workflow.domain;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
-import module.organization.domain.Person;
 import module.workflow.presentationTier.WorkflowQueueLayoutContext;
 import module.workflow.util.WorkflowQueueBean;
 
-import org.apache.commons.collections.Predicate;
-
-import pt.ist.bennu.core.applicationTier.Authenticate.UserView;
-import pt.ist.bennu.core.domain.User;
+import org.fenixedu.bennu.core.domain.User;
+import org.fenixedu.bennu.core.security.Authenticate;
 
 /**
  * 
@@ -50,14 +48,9 @@ import pt.ist.bennu.core.domain.User;
  */
 public abstract class WorkflowQueue extends WorkflowQueue_Base {
 
-    public static final Comparator<WorkflowQueue> COMPARATOR_BY_NAME = new Comparator<WorkflowQueue>() {
-
-        @Override
-        public int compare(final WorkflowQueue o1, final WorkflowQueue o2) {
-            int n = o1.getName().compareTo(o2.getName());
-            return n == 0 ? o1.getExternalId().compareTo(o2.getExternalId()) : n;
-        }
-
+    public static final Comparator<WorkflowQueue> COMPARATOR_BY_NAME = (o1, o2) -> {
+        int n = o1.getName().compareTo(o2.getName());
+        return n == 0 ? o1.getExternalId().compareTo(o2.getExternalId()) : n;
     };
 
     protected WorkflowQueue() {
@@ -70,14 +63,14 @@ public abstract class WorkflowQueue extends WorkflowQueue_Base {
     }
 
     public boolean isCurrentUserAbleToAccessQueue() {
-        return isUserAbleToAccessQueue(UserView.getCurrentUser());
+        return isUserAbleToAccessQueue(Authenticate.getUser());
     }
 
     public abstract boolean isUserAbleToAccessQueue(User user);
 
     private List<WorkflowProcess> filterProcesses(boolean active) {
         List<WorkflowProcess> filteredProcesses = new ArrayList<WorkflowProcess>();
-        for (WorkflowProcess process : getProcesses()) {
+        for (WorkflowProcess process : getProcessesSet()) {
             if (process.isActive() == active) {
                 filteredProcesses.add(process);
             }
@@ -110,40 +103,18 @@ public abstract class WorkflowQueue extends WorkflowQueue_Base {
     }
 
     public static Set<WorkflowQueue> getQueuesForUser(User user) {
-        Set<WorkflowQueue> queues = new HashSet<WorkflowQueue>();
-        for (WorkflowQueue queue : WorkflowSystem.getInstance().getWorkflowQueues()) {
-            if (queue.isUserAbleToAccessQueue(user)) {
-                queues.add(queue);
-            }
-        }
-        return queues;
-
+        return WorkflowSystem.getInstance().getWorkflowQueuesSet().stream().filter(q -> q.isUserAbleToAccessQueue(user))
+                .collect(Collectors.toSet());
     }
 
     public WorkflowQueueLayoutContext getDefaultContext() {
         return WorkflowQueueLayoutContext.getDefaultLayout(this);
     }
 
-    public static Set<WorkflowQueue> getQueues(Predicate predicate) {
-        Set<WorkflowQueue> filteredQueues = new HashSet<WorkflowQueue>();
-        for (WorkflowQueue queue : WorkflowSystem.getInstance().getWorkflowQueues()) {
-            if (predicate.evaluate(queue)) {
-                filteredQueues.add(queue);
-            }
-        }
-        return filteredQueues;
+    public static Set<WorkflowQueue> getQueues(Predicate<WorkflowQueue> predicate) {
+        return WorkflowSystem.getInstance().getWorkflowQueuesSet().stream().filter(predicate).collect(Collectors.toSet());
     }
 
-    public abstract Collection<Person> getPersons();
-
-    @Deprecated
-    public java.util.Set<module.workflow.domain.WorkflowProcess> getProcessesHistory() {
-        return getProcessesHistorySet();
-    }
-
-    @Deprecated
-    public java.util.Set<module.workflow.domain.WorkflowProcess> getProcesses() {
-        return getProcessesSet();
-    }
+    public abstract Collection<User> getUsers();
 
 }

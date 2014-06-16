@@ -8,7 +8,7 @@
 <bean:define id="widget" name="widget" toScope="request" type="module.dashBoard.domain.DashBoardWidget"/>
 <bean:define id="widgetId" name="widget" property="externalId" type="java.lang.String" />
 	
-<fr:form id="quickAccessForm" action="<%="/dashBoardManagement.do?method=widgetSubmition&dashBoardWidgetId=" + widgetId %>">
+<fr:form id="quickAccessForm" action="/dashBoardManagement.do?method=widgetSubmition&dashBoardWidgetId=${widgetId}">
 	<table class="quicksearch">
 		<tr>
 			<td>
@@ -29,14 +29,12 @@
 	</div>
 </fr:form>
 
-<bean:define id="theme" name="virtualHost" property="theme.name"/>
-
 <script type="text/javascript">
 
 function spinner(formData, jqForm, options) {
 	var warningDiv =$("#quickAccessForm > div");
 	warningDiv.empty();
-	warningDiv.append('<bean:message key="label.searching" bundle="WORKFLOW_RESOURCES"/>...<img src="<%= request.getContextPath() + "/CSS/" + theme + "/images/autocomplete.gif"%>"/>');
+	warningDiv.append('<bean:message key="label.searching" bundle="WORKFLOW_RESOURCES"/>...<img src="${pageContext.request.contextPath}/CSS/default/images/autocomplete.gif"%>"/>');
 }
 
 function decide(responseText, statusText) {

@@ -25,17 +25,25 @@
 package module.workflow.presentationTier.renderers.providers;
 
 import module.workflow.domain.WorkflowQueue;
-import pt.ist.bennu.core.presentationTier.renderers.providers.AbstractDomainClassProvider;
+import pt.ist.fenixWebFramework.renderers.DataProvider;
+import pt.ist.fenixWebFramework.renderers.components.converters.Converter;
+import pt.ist.fenixframework.DomainModelUtil;
 
 /**
  * 
  * @author Paulo Abrantes
  * 
  */
-public class AvailableQueueTypes extends AbstractDomainClassProvider {
+public class AvailableQueueTypes implements DataProvider {
 
     @Override
-    protected Class getSuperClass() {
-        return WorkflowQueue.class;
+    public Converter getConverter() {
+        return null;
     }
+
+    @Override
+    public Object provide(Object arg0, Object arg1) {
+        return DomainModelUtil.getDomainClassHierarchy(WorkflowQueue.class, false, true);
+    }
+
 }

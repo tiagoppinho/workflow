@@ -35,34 +35,33 @@ import java.util.Set;
 
 import module.dashBoard.domain.DashBoardWidget;
 import module.dashBoard.presentationTier.WidgetRequest;
+import module.dashBoard.widgets.DashboardWidget;
 import module.dashBoard.widgets.WidgetController;
-import module.organization.domain.Person;
 import module.workflow.domain.WorkflowProcess;
 import module.workflow.domain.utils.WorkflowCommentCounter;
-import pt.ist.bennu.core.applicationTier.Authenticate.UserView;
-import pt.ist.bennu.core.util.BundleUtil;
-import pt.ist.bennu.core.util.ClassNameBundle;
+import module.workflow.util.WorkflowClassUtil;
+
+import org.fenixedu.bennu.core.domain.User;
+import org.fenixedu.bennu.core.i18n.BundleUtil;
+import org.fenixedu.bennu.core.security.Authenticate;
 
 /**
  * 
  * @author João Antunes
  * 
  */
-@ClassNameBundle(bundle = "resources/WorkflowResources", key = "widget.title.processesWithUnreadComments")
+@DashboardWidget(nameBundle = "resources.WorkflowResources", nameKey = "widget.title.processesWithUnreadComments",
+        defaultColumn = 0)
 public class UnreadCommentsWidget extends WidgetController {
-    public static final Comparator<WorkflowProcess> CLASS_NAME_COMPARATOR = new Comparator<WorkflowProcess>() {
 
-        @Override
-        public int compare(WorkflowProcess o1, WorkflowProcess o2) {
-            final Class<? extends WorkflowProcess> c1 = o1.getClass();
-            final Class<? extends WorkflowProcess> c2 = o2.getClass();
+    public static final Comparator<WorkflowProcess> CLASS_NAME_COMPARATOR = (o1, o2) -> {
+        final Class<? extends WorkflowProcess> c1 = o1.getClass();
+        final Class<? extends WorkflowProcess> c2 = o2.getClass();
 
-            final String s1 = BundleUtil.getLocalizedNamedFroClass(c1);
-            final String s2 = BundleUtil.getLocalizedNamedFroClass(c2);
+        final String s1 = WorkflowClassUtil.getNameForType(c1);
+        final String s2 = WorkflowClassUtil.getNameForType(c2);
 
-            return s1.compareTo(s2);
-        }
-
+        return s1.compareTo(s2);
     };
 
     private static final Set<WorkflowCommentCounter> processClassesToCount = new HashSet<WorkflowCommentCounter>();
@@ -71,31 +70,14 @@ public class UnreadCommentsWidget extends WidgetController {
         processClassesToCount.add(commentCounter);
     }
 
-    //    @Override
-    //    public boolean isOptionsModeSupported() {
-    //	return true;
-    //    }
-
-    //    @Override
-    //    @Service
-    //    protected ExpenditureWidgetOptions getOrCreateOptions(DashBoardWidget widget) {
-    //	ExpenditureWidgetOptions options = (ExpenditureWidgetOptions) widget.getOptions();
-    //	if (options == null) {
-    //	    options = new ExpenditureWidgetOptions(10);
-    //	    widget.setOptions(options);
-    //	}
-    //	return options;
-    //    }
-
     @Override
     public void doView(WidgetRequest request) {
         DashBoardWidget widget = request.getWidget();
         //	ExpenditureWidgetOptions options = getOrCreateOptions(widget);
-        Person loggedPerson = UserView.getCurrentUser().getPerson();
         Map<Class, Integer> numberUnreadCommentsPerProcess = new HashMap<Class, Integer>();
 
         List<WorkflowProcess> processesWithUnreadComments =
-                getProcessesWithUnreadComments(numberUnreadCommentsPerProcess, loggedPerson, null);
+                getProcessesWithUnreadComments(numberUnreadCommentsPerProcess, Authenticate.getUser(), null);
 
         int processCount = processesWithUnreadComments.size();
         processesWithUnreadComments = processesWithUnreadComments.subList(0, Math.min(20, processCount));
@@ -114,11 +96,11 @@ public class UnreadCommentsWidget extends WidgetController {
      *         unread comments
      */
     public static List<WorkflowProcess> getProcessesWithUnreadComments(Map<Class, Integer> numberUnreadCommentsPerProcess,
-            Person forGivenPerson, String className) {
+            User forGivenUser, String className) {
 
         List<WorkflowProcess> processesWithUnreadComments = new ArrayList<WorkflowProcess>();
         for (WorkflowCommentCounter commentCounter : processClassesToCount) {
-            Set<WorkflowProcess> processesToAdd = commentCounter.getProcessesWithUnreadComments(forGivenPerson, className);
+            Set<WorkflowProcess> processesToAdd = commentCounter.getProcessesWithUnreadComments(forGivenUser, className);
             processesWithUnreadComments.addAll(processesToAdd);
             if (numberUnreadCommentsPerProcess != null) {
                 numberUnreadCommentsPerProcess.put(commentCounter.getClassToFilter(), processesToAdd.size());
@@ -140,6 +122,7 @@ public class UnreadCommentsWidget extends WidgetController {
 
     @Override
     public String getWidgetDescription() {
-        return BundleUtil.getStringFromResourceBundle("resources/WorkflowResources", "widget.description.UnreadCommentsWidget");
+        return BundleUtil.getString("resources/WorkflowResources", "widget.description.UnreadCommentsWidget");
     }
+
 }

@@ -24,7 +24,7 @@
  */
 package module.workflow.domain;
 
-import pt.ist.bennu.core.domain.exceptions.DomainException;
+import org.fenixedu.bennu.core.domain.exceptions.DomainException;
 
 /**
  * 
@@ -33,8 +33,10 @@ import pt.ist.bennu.core.domain.exceptions.DomainException;
  */
 public class ProcessFileValidationException extends DomainException {
 
+    private static final long serialVersionUID = -6149729862638084751L;
+
     public ProcessFileValidationException(String bundle, String key, String... args) {
-        super(key, DomainException.getResourceFor(bundle), args);
+        super(bundle, key, args);
     }
 
 }

@@ -24,18 +24,9 @@
  */
 package module.workflow.domain;
 
-import javax.servlet.http.HttpServletRequest;
+import org.fenixedu.bennu.core.domain.Bennu;
 
-import module.dashBoard.WidgetRegister;
-import module.workflow.widgets.ProcessListWidget;
-import module.workflow.widgets.QuickViewWidget;
-import module.workflow.widgets.UnreadCommentsWidget;
-import pt.ist.bennu.core.domain.MyOrg;
-import pt.ist.bennu.core.domain.VirtualHost;
-import pt.ist.fenixWebFramework.servlets.filters.contentRewrite.RequestChecksumFilter;
-import pt.ist.fenixWebFramework.servlets.filters.contentRewrite.RequestChecksumFilter.ChecksumPredicate;
 import pt.ist.fenixframework.Atomic;
-import pt.ist.fenixframework.dml.runtime.RelationAdapter;
 
 /**
  * 
@@ -47,87 +38,25 @@ import pt.ist.fenixframework.dml.runtime.RelationAdapter;
  */
 public class WorkflowSystem extends WorkflowSystem_Base {
 
-    public static class VirtualHostMyOrgRelationListener extends RelationAdapter<VirtualHost, MyOrg> {
-
-        @Override
-        public void beforeRemove(VirtualHost vh, MyOrg myorg) {
-            vh.setWorkflowSystem(null);
-            super.beforeRemove(vh, myorg);
-        }
-    }
-
-    static {
-        MyOrg.getRelationMyOrgVirtualHost().addListener(new VirtualHostMyOrgRelationListener());
-
-        WidgetRegister.registerWidget(ProcessListWidget.class);
-        WidgetRegister.registerWidget(QuickViewWidget.class);
-        WidgetRegister.registerWidget(UnreadCommentsWidget.class);
-
-        RequestChecksumFilter.registerFilterRule(new ChecksumPredicate() {
-            @Override
-            public boolean shouldFilter(HttpServletRequest httpServletRequest) {
-                return !(httpServletRequest.getRequestURI().endsWith("/workflowProcessManagement.do")
-                        && httpServletRequest.getQueryString() != null && httpServletRequest.getQueryString().contains(
-                        "method=viewTypeDescription"));
-            }
-        });
-    }
-
-    private WorkflowSystem(final VirtualHost virtualHost) {
+    private WorkflowSystem() {
         super();
-        virtualHost.setWorkflowSystem(this);
+        setBennu(Bennu.getInstance());
     }
 
     public static WorkflowSystem getInstance() {
-        final VirtualHost virtualHostForThread = VirtualHost.getVirtualHostForThread();
-        return virtualHostForThread == null ? null : virtualHostForThread.getWorkflowSystem();
-    }
-
-    @Atomic
-    public static void createSystem(final VirtualHost virtualHost) {
-        if (virtualHost.getWorkflowSystem() == null || virtualHost.getWorkflowSystem().getVirtualHost().size() > 1) {
-            new WorkflowSystem(virtualHost);
+        WorkflowSystem system = Bennu.getInstance().getWorkflowSystem();
+        if (system == null) {
+            return initialize();
         }
+        return system;
     }
 
     @Atomic
-    public void setForVirtualHost(final VirtualHost virtualHost) {
-        virtualHost.setWorkflowSystem(this);
-    }
-
-    @Deprecated
-    public java.util.Set<module.workflow.domain.WorkflowProcessComment> getProcessComments() {
-        return getProcessCommentsSet();
-    }
-
-    @Deprecated
-    public java.util.Set<module.workflow.domain.WorkflowProcess> getProcesses() {
-        return getProcessesSet();
-    }
-
-    @Deprecated
-    public java.util.Set<pt.ist.bennu.core.domain.VirtualHost> getVirtualHost() {
-        return getVirtualHostSet();
-    }
-
-    @Deprecated
-    public java.util.Set<module.workflow.domain.NodeMapping> getNodeMappings() {
-        return getNodeMappingsSet();
-    }
-
-    @Deprecated
-    public java.util.Set<module.workflow.domain.ProcessSelectionMapper> getProcessMappings() {
-        return getProcessMappingsSet();
-    }
-
-    @Deprecated
-    public java.util.Set<module.workflow.domain.WorkflowLog> getProcessLogs() {
-        return getProcessLogsSet();
-    }
-
-    @Deprecated
-    public java.util.Set<module.workflow.domain.WorkflowQueue> getWorkflowQueues() {
-        return getWorkflowQueuesSet();
+    private static WorkflowSystem initialize() {
+        if (Bennu.getInstance().getWorkflowSystem() == null) {
+            return new WorkflowSystem();
+        }
+        return Bennu.getInstance().getWorkflowSystem();
     }
 
 }

@@ -24,9 +24,10 @@
  */
 package module.workflow.presentationTier.renderers.providers;
 
-import module.workflow.domain.WorkflowProcess;
-import pt.ist.bennu.core.presentationTier.renderers.providers.AbstractDomainClassProvider;
+import module.workflow.domain.WorkflowQueue;
 import pt.ist.fenixWebFramework.renderers.DataProvider;
+import pt.ist.fenixWebFramework.renderers.components.converters.Converter;
+import pt.ist.fenixframework.DomainModelUtil;
 
 /**
  * 
@@ -34,21 +35,15 @@ import pt.ist.fenixWebFramework.renderers.DataProvider;
  * @author Paulo Abrantes
  * 
  */
-public class ProcessesClassesProvider extends AbstractDomainClassProvider implements DataProvider {
+public class ProcessesClassesProvider implements DataProvider {
 
     @Override
-    protected Class getSuperClass() {
-        return WorkflowProcess.class;
+    public Converter getConverter() {
+        return null;
     }
 
     @Override
-    protected boolean shouldContainerAbstractClasses() {
-        return true;
+    public Object provide(Object arg0, Object arg1) {
+        return DomainModelUtil.getDomainClassHierarchy(WorkflowQueue.class, false, true);
     }
-
-    @Override
-    protected boolean shouldContainSuperClass() {
-        return false;
-    }
-
 }

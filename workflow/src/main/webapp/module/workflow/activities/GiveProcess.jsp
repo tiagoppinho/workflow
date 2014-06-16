@@ -3,13 +3,12 @@
 <%@ taglib uri="http://jakarta.apache.org/struts/tags-bean" prefix="bean"%>
 <%@ taglib uri="http://jakarta.apache.org/struts/tags-logic" prefix="logic"%>
 <%@ taglib uri="http://fenix-ashes.ist.utl.pt/fenix-renderers" prefix="fr"%>
-<%@page import="pt.ist.fenixWebFramework.renderers.utils.RenderUtils"%>
 
 <bean:define id="process" name="information" property="process"/>
 <bean:define id="processId" name="process" property="externalId" type="java.lang.String"/>
 <bean:define id="name" name="information" property="activityName"/>
 
-<div class="highlightBox">
+<div class="alert alert-warning">
 	<bean:message key="label.GiveProcess.warning" bundle="WORKFLOW_RESOURCES"/>:
 </div>
 

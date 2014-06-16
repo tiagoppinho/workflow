@@ -24,8 +24,9 @@
  */
 package module.workflow.domain;
 
-import pt.ist.bennu.core.domain.User;
-import pt.ist.bennu.core.util.BundleUtil;
+import org.fenixedu.bennu.core.domain.User;
+import org.fenixedu.bennu.core.i18n.BundleUtil;
+
 import pt.utl.ist.fenix.tools.util.Strings;
 
 /**
@@ -50,7 +51,7 @@ public class LabelLog extends LabelLog_Base {
     @Override
     public String getDescription() {
         Strings arguments = getDescriptionArguments();
-        return arguments != null ? BundleUtil.getFormattedStringFromResourceBundle(getBundle(), getLabel(),
-                arguments.toArray(new String[] {})) : BundleUtil.getFormattedStringFromResourceBundle(getBundle(), getLabel());
+        return arguments != null ? BundleUtil.getString(getBundle(), getLabel(), arguments.toArray(new String[] {})) : BundleUtil
+                .getString(getBundle(), getLabel());
     }
 }

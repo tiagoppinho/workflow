@@ -25,14 +25,21 @@ package module.workflow.domain;
  * 
  */
 
+valueType pt.utl.ist.fenix.tools.util.Strings as Strings {
+    externalizeWith {
+        String exportAsString();
+    }
+    internalizeWith pt.utl.ist.fenix.tools.util.Strings.importFromString();
+}
+
 class WorkflowSystem {
 }
 
-class WorkflowProcess implements .pt.ist.bennu.core.domain.VirtualHostAware {
+class WorkflowProcess {
 	String processNumber;
 }
 
-class WorkflowLog implements .pt.ist.bennu.core.domain.VirtualHostAware {
+class WorkflowLog {
 	DateTime whenOperationWasRan;
 	Strings descriptionArguments;
 }
@@ -55,53 +62,17 @@ class WorkflowLog implements .pt.ist.bennu.core.domain.VirtualHostAware {
 	class FileAccessLog extends WorkflowLog {
 	}
 
-class WorkflowProcessComment implements .pt.ist.bennu.core.domain.VirtualHostAware {
+class WorkflowProcessComment {
 	String comment;
 	DateTime date;
 } 
 
-class WorkflowQueue implements .pt.ist.bennu.core.domain.VirtualHostAware {
+class WorkflowQueue {
 	String name;
 } 
 
 	class WorkflowUserGroupQueue extends WorkflowQueue {
 	}
-
-class ProcessSelectionMapper implements .pt.ist.bennu.core.domain.VirtualHostAware {
-	String classname;
-}
-
-class NodeMapping implements .pt.ist.bennu.core.domain.VirtualHostAware {
-	int nodeOrder;
-}
-
-relation WorkflowflowSystemNodeMapping {
-	WorkflowSystem playsRole workflowSystem;
-	NodeMapping playsRole nodeMappings {
-		multiplicity *;
-	}
-}
-
-relation WorkflowflowSystemProcessSelectionMapper {
-	WorkflowSystem playsRole workflowSystem;
-	ProcessSelectionMapper playsRole processMappings {
-		multiplicity *;
-	}
-}
-
-relation MappedNodeProcessSelectionMapper {
-	NodeMapping playsRole nodeMappings {
-		multiplicity *;
-	}
-	ProcessSelectionMapper playsRole processMapping;
-}
-
-relation NodeMappingNode {
-	NodeMapping playsRole NodeMapping {
-		multiplicity *;
-	}
-	.pt.ist.bennu.core.domain.contents.Node playsRole node;
-}
 
 relation WorkflowflowSystemWorkflowProcess {
 	WorkflowSystem playsRole workflowSystem {
@@ -172,8 +143,8 @@ relation WorkflowSystemWorkflowQueue {
 }
 
 relation VirtualHostWorkflowSystem {
-	.pt.ist.bennu.core.domain.VirtualHost playsRole virtualHost {
-		multiplicity *;
+	protected .org.fenixedu.bennu.core.domain.Bennu playsRole bennu {
+		multiplicity 1..1;
 	}
 	WorkflowSystem playsRole workflowSystem;
 }

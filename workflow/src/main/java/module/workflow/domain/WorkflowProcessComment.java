@@ -24,16 +24,10 @@
  */
 package module.workflow.domain;
 
-import java.util.Collections;
 import java.util.Comparator;
-import java.util.Set;
 
+import org.fenixedu.bennu.core.domain.User;
 import org.joda.time.DateTime;
-
-import pt.ist.bennu.core.domain.User;
-import pt.ist.bennu.core.domain.VirtualHost;
-import pt.ist.fenixframework.plugins.luceneIndexing.domain.interfaces.Indexable;
-import pt.ist.fenixframework.plugins.luceneIndexing.domain.interfaces.Searchable;
 
 /**
  * 
@@ -42,18 +36,11 @@ import pt.ist.fenixframework.plugins.luceneIndexing.domain.interfaces.Searchable
  * @author Paulo Abrantes
  * 
  */
-public class WorkflowProcessComment extends WorkflowProcessComment_Base implements Searchable {
+public class WorkflowProcessComment extends WorkflowProcessComment_Base {
 
-    public final static Comparator<WorkflowProcessComment> COMPARATOR = new Comparator<WorkflowProcessComment>() {
+    public final static Comparator<WorkflowProcessComment> COMPARATOR = (o1, o2) -> o1.getDate().compareTo(o2.getDate());
 
-        @Override
-        public int compare(WorkflowProcessComment o1, WorkflowProcessComment o2) {
-            return o1.getDate().compareTo(o2.getDate());
-        }
-
-    };
-
-    public final static Comparator<WorkflowProcessComment> REVERSE_COMPARATOR = Collections.reverseOrder(COMPARATOR);
+    public final static Comparator<WorkflowProcessComment> REVERSE_COMPARATOR = COMPARATOR.reversed();
 
     public WorkflowProcessComment(WorkflowProcess process, User commenter, String comment) {
         super();
@@ -65,23 +52,7 @@ public class WorkflowProcessComment extends WorkflowProcessComment_Base implemen
     }
 
     public boolean isUnreadBy(User user) {
-        return !getReaders().contains(user);
-    }
-
-    @Override
-    public Set<Indexable> getObjectsToIndex() {
-        return Collections.singleton((Indexable) getProcess());
-    }
-
-    @Override
-    public boolean isConnectedToCurrentHost() {
-        final VirtualHost virtualHost = VirtualHost.getVirtualHostForThread();
-        return virtualHost != null && getWorkflowSystem() == virtualHost.getWorkflowSystem();
-    }
-
-    @Deprecated
-    public java.util.Set<pt.ist.bennu.core.domain.User> getReaders() {
-        return getReadersSet();
+        return !getReadersSet().contains(user);
     }
 
 }

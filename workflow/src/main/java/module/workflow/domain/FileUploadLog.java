@@ -28,14 +28,14 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.fenixedu.bennu.core.domain.User;
+import org.fenixedu.bennu.core.i18n.BundleUtil;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
 import org.joda.time.Interval;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import pt.ist.bennu.core.domain.User;
-import pt.ist.bennu.core.util.BundleUtil;
 import pt.utl.ist.fenix.tools.util.Strings;
 
 /**
@@ -131,8 +131,8 @@ public class FileUploadLog extends FileUploadLog_Base {
 
     @Override
     public String getDescription() {
-        return BundleUtil.getFormattedStringFromResourceBundle("resources/WorkflowResources", "label.description.FileUploadLog",
-                getDescriptionArguments().toArray(new String[] {}));
+        return BundleUtil.getString("resources/WorkflowResources", "label.description.FileUploadLog", getDescriptionArguments()
+                .toArray(new String[] {}));
     }
 
 }

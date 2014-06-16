@@ -25,39 +25,34 @@
 package module.workflow.widgets;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Set;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 
 import module.dashBoard.presentationTier.WidgetRequest;
+import module.dashBoard.widgets.DashboardWidget;
 import module.dashBoard.widgets.WidgetController;
 import module.workflow.domain.WorkflowProcess;
-import module.workflow.presentationTier.ProcessNodeSelectionMapper;
 import module.workflow.presentationTier.actions.BasicSearchProcessBean;
 import module.workflow.presentationTier.actions.ProcessManagement;
 
 import org.apache.struts.action.ActionForward;
+import org.fenixedu.bennu.core.i18n.BundleUtil;
 
-import pt.ist.bennu.core.domain.contents.Node;
-import pt.ist.bennu.core.presentationTier.actions.ContextBaseAction;
-import pt.ist.bennu.core.util.BundleUtil;
-import pt.ist.bennu.core.util.ClassNameBundle;
 import pt.ist.fenixWebFramework.renderers.components.state.IViewState;
 import pt.ist.fenixWebFramework.renderers.model.MetaObject;
 import pt.ist.fenixWebFramework.renderers.utils.RenderUtils;
-import pt.ist.fenixWebFramework.servlets.filters.contentRewrite.GenericChecksumRewriter;
 
-@ClassNameBundle(bundle = "resources/WorkflowResources", key = "title.quickAccess")
 /**
  * 
  * @author Paulo Abrantes
  * 
  */
+@DashboardWidget(nameBundle = "resources.WorkflowResources", nameKey = "title.quickAccess", defaultColumn = 2)
 public class QuickViewWidget extends WidgetController {
 
-    public static String NOT_FOUND = "NF";
+    public static final String NOT_FOUND = "NF";
 
     @Override
     public void doView(WidgetRequest request) {
@@ -84,14 +79,9 @@ public class QuickViewWidget extends WidgetController {
                 write = QuickViewWidget.NOT_FOUND;
             } else {
                 WorkflowProcess process = search.iterator().next();
-                List<Node> nodes = ProcessNodeSelectionMapper.getForwardFor(process.getClass());
                 write =
-                        (!process.isAccessibleToCurrentUser()) ? QuickViewWidget.NOT_FOUND : GenericChecksumRewriter
-                                .injectChecksumInUrl(
-                                        request.getContextPath(),
-                                        ProcessManagement.workflowManagementURL + process.getExternalId() + "&"
-                                                + ContextBaseAction.CONTEXT_PATH + "="
-                                                + ((nodes.size() > 0) ? nodes.get(nodes.size() - 1).getContextPath() : ""));
+                        (!process.isAccessibleToCurrentUser()) ? QuickViewWidget.NOT_FOUND : request
+                                .injectChecksumIn(ProcessManagement.workflowManagementURL + process.getExternalId());
             }
 
             stream = response.getOutputStream();
@@ -123,6 +113,7 @@ public class QuickViewWidget extends WidgetController {
 
     @Override
     public String getWidgetDescription() {
-        return BundleUtil.getStringFromResourceBundle("resources/WorkflowResources", "widget.description.QuickViewWidget");
+        return BundleUtil.getString("resources/WorkflowResources", "widget.description.QuickViewWidget");
     }
+
 }

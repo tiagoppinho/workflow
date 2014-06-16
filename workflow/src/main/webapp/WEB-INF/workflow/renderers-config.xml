@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE renderers-config SYSTEM "../fenix-renderers-config.dtd" []>
 <renderers-config>
 
 <renderer type="module.workflow.domain.WorkflowProcess" layout="processFiles"
@@ -19,7 +18,6 @@
 	  <property name="nameClasses" value="bold"/>
 	  <property name="photoClasses" value="photoHolder"/>
 	  <property name="bodyClasses" value="aleft"/>
-	  <property name="photoUrl" value="https://fenix.ist.utl.pt/publico/retrievePersonalPhoto.do?method=retrieveByUUID&amp;contentContextPath_PATH=/homepage&amp;uuid=${username}"/>
 	  <property name="reverseOrder" value="false"/>
 	  <property name="observerBundle" value="WORKFLOW_RESOURCES"/>
 	  <property name="observerKey" value="label.marker.observer"/>
@@ -34,7 +32,6 @@
 	  <property name="nameClasses" value="bold"/>
 	  <property name="photoClasses" value="photoHolder"/>
 	  <property name="bodyClasses" value="aleft"/>
-	  <property name="photoUrl" value="https://fenix.ist.utl.pt/publico/retrievePersonalPhoto.do?method=retrieveByUUID&amp;contentContextPath_PATH=/homepage&amp;uuid=${username}"/>
 	  <property name="reverseOrder" value="false"/>
 	  <property name="observerBundle" value="WORKFLOW_RESOURCES"/>
 	  <property name="observerKey" value="label.marker.observer"/>
@@ -63,4 +60,11 @@
 	<property name="selectedClasses" value="selected"/>
 	<property name="descriptionClasses" value="state-desc" />
 </renderer>
+
+<renderer
+    type="java.lang.Class"
+    layout="name-resolver"
+    class="module.workflow.presentationTier.renderers.NameResolverRenderer">
+</renderer>
+
 </renderers-config>

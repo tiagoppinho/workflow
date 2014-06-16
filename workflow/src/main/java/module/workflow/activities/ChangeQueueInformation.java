@@ -29,7 +29,8 @@ import java.util.List;
 
 import module.workflow.domain.WorkflowProcess;
 import module.workflow.domain.WorkflowQueue;
-import pt.ist.bennu.core.applicationTier.Authenticate.UserView;
+
+import org.fenixedu.bennu.core.security.Authenticate;
 
 /**
  * 
@@ -45,7 +46,7 @@ public class ChangeQueueInformation<T extends WorkflowProcess> extends ActivityI
     public ChangeQueueInformation(T process, ChangeQueue<T> activity) {
         super(process, activity);
         queuesToRemove = new ArrayList<WorkflowQueue>(process.getCurrentQueuesSet());
-        queuesToRemove.retainAll(UserView.getCurrentUser().getQueuesSet());
+        queuesToRemove.retainAll(Authenticate.getUser().getQueuesSet());
     }
 
     @Override

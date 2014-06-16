@@ -29,16 +29,15 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import module.organization.domain.Person;
 import module.workflow.domain.WorkflowProcess;
 import module.workflow.widgets.UnreadCommentsWidget;
 
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
+import org.fenixedu.bennu.core.presentationTier.actions.BaseAction;
+import org.fenixedu.bennu.core.security.Authenticate;
 
-import pt.ist.bennu.core.applicationTier.Authenticate.UserView;
-import pt.ist.bennu.core.presentationTier.actions.ContextBaseAction;
 import pt.ist.fenixWebFramework.struts.annotations.Mapping;
 
 /**
@@ -47,7 +46,7 @@ import pt.ist.fenixWebFramework.struts.annotations.Mapping;
  * 
  */
 @Mapping(path = "/workflowWidgetActions")
-public class WorkflowWidgetActions extends ContextBaseAction {
+public class WorkflowWidgetActions extends BaseAction {
 
     /**
      * Method used by the UnreadCommentsWidget widget {@link UnreadCommentsWidget}.
@@ -66,15 +65,14 @@ public class WorkflowWidgetActions extends ContextBaseAction {
         request.setAttribute("processClass", processClass);
 
         //get all of the unread comments
-        Person loggedPerson = UserView.getCurrentUser().getPerson();
         List<WorkflowProcess> processesWithUnreadComments =
-                UnreadCommentsWidget.getProcessesWithUnreadComments(null, loggedPerson, processClass);
+                UnreadCommentsWidget.getProcessesWithUnreadComments(null, Authenticate.getUser(), processClass);
         request.setAttribute("processesWithUnreadComments", processesWithUnreadComments);
 
         //	if (anchor != null) {
         //	    return forward(request, "/module/workflow/widgets/ListOfUnreadComments.jsp#" + anchor);
         //	}
-        return forward(request, "/module/workflow/widgets/ListOfUnreadComments.jsp");
+        return forward("/module/workflow/widgets/ListOfUnreadComments.jsp");
 
     }
 
@@ -82,7 +80,7 @@ public class WorkflowWidgetActions extends ContextBaseAction {
             final HttpServletResponse response) {
         //get the parameter anchor and processId
         String anchor = request.getParameter("anchor");
-        WorkflowProcess process = (WorkflowProcess) getDomainObject(request.getParameter("processId"));
+        WorkflowProcess process = getDomainObject(request, "processId");
 
         //validate the access to the process
         if (process != null && !process.isAccessibleToCurrentUser()) {
@@ -91,7 +89,7 @@ public class WorkflowWidgetActions extends ContextBaseAction {
         }
 
         //mark the comments as read
-        process.markCommentsAsReadForUser(UserView.getCurrentUser());
+        process.markCommentsAsReadForUser(Authenticate.getUser());
         return viewListUnreadComments(mapping, form, request, response);
     }
 }

@@ -29,37 +29,29 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.function.Predicate;
 
-import module.fileManagement.domain.ContextPath;
 import module.workflow.activities.ActivityInformation;
 import module.workflow.activities.WorkflowActivity;
+import module.workflow.domain.exceptions.DuplicateProcessFileNameException;
 import module.workflow.domain.exceptions.WorkflowDomainException;
 import module.workflow.presentationTier.WorkflowLayoutContext;
 import module.workflow.presentationTier.actions.CommentBean;
 import module.workflow.util.ProcessEvaluator;
+import module.workflow.util.WorkflowClassUtil;
 import module.workflow.util.WorkflowFileUploadBean;
 
-import org.apache.commons.collections.Predicate;
-import org.apache.commons.lang.StringUtils;
+import org.fenixedu.bennu.core.domain.User;
+import org.fenixedu.bennu.core.security.Authenticate;
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
 
-import pt.ist.bennu.core.applicationTier.Authenticate.UserView;
-import pt.ist.bennu.core.domain.User;
-import pt.ist.bennu.core.domain.VirtualHost;
-import pt.ist.bennu.core.domain.exceptions.DomainException;
-import pt.ist.bennu.core.util.BundleUtil;
 import pt.ist.fenixframework.Atomic;
 import pt.ist.fenixframework.core.WriteOnReadError;
-import pt.ist.fenixframework.plugins.luceneIndexing.IndexableField;
-import pt.ist.fenixframework.plugins.luceneIndexing.domain.IndexDocument;
-import pt.ist.fenixframework.plugins.luceneIndexing.domain.interfaces.Indexable;
-import pt.ist.fenixframework.plugins.luceneIndexing.domain.interfaces.Searchable;
 
 /**
  * 
@@ -74,29 +66,11 @@ import pt.ist.fenixframework.plugins.luceneIndexing.domain.interfaces.Searchable
  * @author Paulo Abrantes
  * 
  */
-public abstract class WorkflowProcess extends WorkflowProcess_Base implements Searchable, Indexable {
-
-    public static enum WorkflowProcessIndex implements IndexableField {
-
-        COMMENTS("comments"), COMMENTORS("commentors"), NUMBER("number"), FILE("file");
-
-        private String fieldName;
-
-        private WorkflowProcessIndex(String fieldName) {
-            this.fieldName = fieldName;
-        }
-
-        @Override
-        public String getFieldName() {
-            return fieldName;
-        }
-
-    }
+public abstract class WorkflowProcess extends WorkflowProcess_Base {
 
     public WorkflowProcess() {
         super();
         setWorkflowSystem(WorkflowSystem.getInstance());
-        new ProcessDirNode(this); // makes the setWorkflowProcess inside of it
     }
 
     public static void evaluate(final Class processClass, final ProcessEvaluator<WorkflowProcess> processEvaluator,
@@ -109,11 +83,11 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
     }
 
     @SuppressWarnings("unchecked")
-    protected static <T extends WorkflowProcess> Set<T> filter(Class<T> processClass, Predicate predicate,
+    protected static <T extends WorkflowProcess> Set<T> filter(Class<T> processClass, Predicate<WorkflowProcess> predicate,
             Collection<? extends WorkflowProcess> processes) {
         Set<T> classes = new HashSet<T>();
         for (WorkflowProcess process : processes) {
-            if (processClass.isAssignableFrom(process.getClass()) && (predicate == null || predicate.evaluate(process))) {
+            if (processClass.isAssignableFrom(process.getClass()) && (predicate == null || predicate.test(process))) {
                 classes.add((T) process);
             }
         }
@@ -134,7 +108,7 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
         return filter(processClass, null, WorkflowSystem.getInstance().getProcessesSet());
     }
 
-    public static <T extends WorkflowProcess> Set<T> getAllProcesses(Class<T> processClass, Predicate predicate) {
+    public static <T extends WorkflowProcess> Set<T> getAllProcesses(Class<T> processClass, Predicate<WorkflowProcess> predicate) {
         return filter(processClass, predicate, WorkflowSystem.getInstance().getProcessesSet());
     }
 
@@ -186,7 +160,7 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
     }
 
     public boolean isAccessibleToCurrentUser() {
-        return isAccessible(UserView.getCurrentUser());
+        return isAccessible(Authenticate.getUser());
     }
 
     /**
@@ -269,20 +243,13 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
     public DateTime getDateFromLastActivity() {
         List<WorkflowLog> logs = new ArrayList<WorkflowLog>();
         logs.addAll(getExecutionLogs());
-        Collections.sort(logs, new Comparator<WorkflowLog>() {
-
-            @Override
-            public int compare(WorkflowLog log1, WorkflowLog log2) {
-                return -1 * log1.getWhenOperationWasRan().compareTo(log2.getWhenOperationWasRan());
-            }
-
-        });
+        Collections.sort(logs, (log1, log2) -> -1 * log1.getWhenOperationWasRan().compareTo(log2.getWhenOperationWasRan()));
 
         return logs.isEmpty() ? null : logs.get(0).getWhenOperationWasRan();
     }
 
     public static boolean isCreateNewProcessAvailable() {
-        final User user = UserView.getCurrentUser();
+        final User user = Authenticate.getUser();
         return user != null;
     }
 
@@ -412,8 +379,7 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
             file.preFileContentAccess();
             return;
         }
-        throw new DomainException("label.error.workflowProcess.noSupportForFiles",
-                DomainException.getResourceFor("resources/WorkflowResources"));
+        throw new WorkflowDomainException("label.error.workflowProcess.noSupportForFiles");
     }
 
     @Atomic
@@ -422,12 +388,11 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
             file.postFileContentAccess();
             if (file.shouldFileContentAccessBeLogged()) {
                 String nameToLog = file.getDisplayName() != null ? file.getDisplayName() : file.getFilename();
-                new FileAccessLog(this, UserView.getCurrentUser(), file.getFilename(), nameToLog,
-                        BundleUtil.getLocalizedNamedFroClass(file.getClass()));
+                new FileAccessLog(this, Authenticate.getUser(), file.getFilename(), nameToLog,
+                        WorkflowClassUtil.getNameForType(file.getClass()));
             }
         } else {
-            throw new DomainException("label.error.workflowProcess.noSupportForFiles",
-                    DomainException.getResourceFor("resources/WorkflowResources"));
+            throw new WorkflowDomainException("label.error.workflowProcess.noSupportForFiles");
         }
     }
 
@@ -436,8 +401,10 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
             byte[] consumeInputStream, WorkflowFileUploadBean bean) throws Exception {
         if (isFileSupportAvailable()) {
             if (!isFileEditionAllowed()) {
-                throw new DomainException("label.error.workflowProcess.noFileEditionAvailable",
-                        DomainException.getResourceFor("resources/WorkflowResources"));
+                throw new WorkflowDomainException("label.error.workflowProcess.noFileEditionAvailable");
+            }
+            if (getFilesSet().stream().filter((file) -> file.getDisplayName().equals(displayName)).findAny().isPresent()) {
+                throw new DuplicateProcessFileNameException("no.files.same.name.allowed.rename.pls", displayName);
             }
             Constructor<T> fileConstructor = instanceToCreate.getConstructor(String.class, String.class, byte[].class);
             T file = null;
@@ -452,47 +419,31 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
 
             file.fillInNonDefaultFields(bean);
 
-            getDocumentsRepository().uploadDocument(file);
-
             file.preProcess(bean);
-            addFiles(file, true);
+            addFiles(file);
             file.postProcess(bean);
-            new FileUploadLog(this, UserView.getCurrentUser(), file.getFilename(), file.getDisplayName(),
-                    BundleUtil.getLocalizedNamedFroClass(file.getClass()), bean.getExtraArguments());
+            new FileUploadLog(this, Authenticate.getUser(), file.getFilename(), file.getDisplayName(),
+                    WorkflowClassUtil.getNameForType(file.getClass()), bean.getExtraArguments());
 
             return file;
         }
-        throw new DomainException("label.error.workflowProcess.noSupportForFiles",
-                DomainException.getResourceFor("resources/WorkflowResources"));
+        throw new WorkflowDomainException("label.error.workflowProcess.noSupportForFiles");
 
     }
 
     @Override
     public void addFiles(ProcessFile file) {
-        addFiles(file, false);
-    }
-
-    public void addFiles(ProcessFile file, boolean alreadyAdded) {
         file.validateUpload(this);
         super.addFiles(file);
-        if (!alreadyAdded) {
-            //let's take care of adding the ProcessFile to the other structure
-            getDocumentsRepository().uploadDocument(file);
-        }
-        if (!file.getDocument().canWrite()) {
+        if (!(isFileSupportAvailable() && isAccessibleToCurrentUser() && isFileEditionAllowed())) {
             throw new WorkflowDomainException("error.current.user.cannot.write.on.document");
         }
-        file.getMetaDataResolver().fillMetaDataBasedOnDocument(file);
-    }
-
-    public void migrateFileToNewStructure(ProcessFile file) {
-        getDocumentsRepository().uploadDocument(file);
     }
 
     @Override
     @Deprecated
     public void setCurrentOwner(User currentOwner) {
-        throw new DomainException("error.message.illegal.method.useTakeInstead");
+        throw new WorkflowDomainException("error.message.illegal.method.useTakeInstead");
     }
 
     public void systemProcessRelease() {
@@ -502,10 +453,10 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
     @Atomic
     public void takeProcess() {
         final User currentOwner = getCurrentOwner();
-        final User currentUser = UserView.getCurrentUser();
+        final User currentUser = Authenticate.getUser();
         if (currentOwner != currentUser) {
             if (currentOwner != null) {
-                throw new DomainException("error.message.illegal.method.useStealInstead");
+                throw new WorkflowDomainException("error.message.illegal.method.useStealInstead");
             }
             super.setCurrentOwner(currentUser);
         }
@@ -513,30 +464,30 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
 
     @Atomic
     public void releaseProcess() {
-        final User loggedPerson = UserView.getCurrentUser();
+        final User loggedPerson = Authenticate.getUser();
         final User person = getCurrentOwner();
         if (loggedPerson != null && person != null && loggedPerson != person) {
-            throw new DomainException("error.message.illegal.state.unableToReleaseATicketNotOwnerByUser");
+            throw new WorkflowDomainException("error.message.illegal.state.unableToReleaseATicketNotOwnerByUser");
         }
         super.setCurrentOwner(null);
     }
 
     @Atomic
     public void stealProcess() {
-        super.setCurrentOwner(UserView.getCurrentUser());
+        super.setCurrentOwner(Authenticate.getUser());
     }
 
     public void giveProcess(User user) {
         final User currentOwner = getCurrentOwner();
-        final User currentUser = UserView.getCurrentUser();
+        final User currentUser = Authenticate.getUser();
         if (currentOwner != null && currentOwner != currentUser) {
-            throw new DomainException("error.message.illegal.state.unableToGiveAnAlreadyTakenProcess");
+            throw new WorkflowDomainException("error.message.illegal.state.unableToGiveAnAlreadyTakenProcess");
         }
         super.setCurrentOwner(user);
     }
 
     public boolean isUserCurrentOwner() {
-        final User loggedPerson = UserView.getCurrentUser();
+        final User loggedPerson = Authenticate.getUser();
         return loggedPerson != null && loggedPerson == getCurrentOwner();
     }
 
@@ -545,7 +496,7 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
     }
 
     public boolean isTakenByCurrentUser() {
-        final User loggedPerson = UserView.getCurrentUser();
+        final User loggedPerson = Authenticate.getUser();
         return loggedPerson != null && isTakenByPerson(loggedPerson);
     }
 
@@ -554,7 +505,7 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
     }
 
     public boolean isCurrentUserCanViewLogs() {
-        return isUserCanViewLogs(UserView.getCurrentUser());
+        return isUserCanViewLogs(Authenticate.getUser());
     }
 
     public boolean isCurrentUserAbleToAccessAnyQueues() {
@@ -575,53 +526,23 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
         return (T) new ActivityLog(this, person, operationName, args);
     }
 
-    @Override
     @Atomic
+    @Override
     public void removeFiles(ProcessFile file) {
         if (!file.isPossibleToArchieve()) {
-            throw new DomainException("error.invalidOperation.tryingToRemoveFileWhenIsNotPossible",
-                    DomainException.getResourceFor("resources/AcquisitionResources"));
-        }
-        if (file.isInNewStructure()) {
-            file.getFileNode().trash(new ContextPath(getDocumentsRepository().getDirNode()));
+            throw new WorkflowDomainException("error.invalidOperation.tryingToRemoveFileWhenIsNotPossible");
         }
         super.removeFiles(file);
         addDeletedFiles(file);
         file.processRemoval();
         String nameToLog = file.getDisplayName() != null ? file.getDisplayName() : file.getFilename();
-        new FileRemoveLog(this, UserView.getCurrentUser(), file.getFilename(), nameToLog,
-                BundleUtil.getLocalizedNamedFroClass(file.getClass()));
+        new FileRemoveLog(this, Authenticate.getUser(), file.getFilename(), nameToLog, WorkflowClassUtil.getNameForType(file
+                .getClass()));
 
-    }
-
-    @Atomic
-    public void removeFileDocuments(ProcessFile file) {
-        removeTiesWithFileDocument(file);
-        file.getFileNode().trash(new ContextPath(getDocumentsRepository().getDirNode()));
-    }
-
-    /**
-     * Removes the Process's ties with the {@link ProcessFile} and adds a log of
-     * that operation it does not send it to trash
-     * 
-     * @param document
-     *            the document to remove it iwth
-     */
-    @SuppressWarnings("unused")
-    private void removeTiesWithFileDocument(ProcessFile document) {
-        if (!document.isPossibleToArchieve()) {
-            throw new DomainException("error.invalidOperation.tryingToRemoveFileWhenIsNotPossible",
-                    DomainException.getResourceFor("resources/AcquisitionResources"));
-        }
-
-        document.processRemoval();
-        String nameToLog = document.getDisplayName() != null ? document.getDisplayName() : document.getFilename();
-        new FileRemoveLog(this, UserView.getCurrentUser(), document.getFilename(), nameToLog,
-                BundleUtil.getLocalizedNamedFroClass(document.getClass()));
     }
 
     public List<WorkflowProcessComment> getUnreadCommentsForCurrentUser() {
-        return getUnreadCommentsForUser(UserView.getCurrentUser());
+        return getUnreadCommentsForUser(Authenticate.getUser());
     }
 
     public List<WorkflowProcessComment> getUnreadCommentsForUser(User user) {
@@ -635,7 +556,7 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
     }
 
     public boolean hasUnreadCommentsForCurrentUser() {
-        User user = UserView.getCurrentUser();
+        User user = Authenticate.getUser();
         return hasUnreadCommentsForUser(user);
     }
 
@@ -700,7 +621,7 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
     }
 
     public boolean isFileEditionAllowed() {
-        return isFileEditionAllowed(UserView.getCurrentUser());
+        return isFileEditionAllowed(Authenticate.getUser());
     }
 
     /**
@@ -839,12 +760,6 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
         return getFilesFromList(getFiles(), list);
     }
 
-    public <T extends ProcessFile> List<T> getFileDocuments(Class<? extends ProcessFile> selectedClass) {
-        List<Class<? extends ProcessFile>> list = new ArrayList<Class<? extends ProcessFile>>();
-        list.add(selectedClass);
-        return getFileDocumentsFromList(getFiles(), list);
-    }
-
     private <T extends ProcessFile> List<T> getFilesFromList(Collection<ProcessFile> list,
             List<Class<? extends ProcessFile>> selectedClasses) {
         List<T> classes = new ArrayList<T>();
@@ -859,29 +774,6 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
         return classes;
     }
 
-    private <T extends ProcessFile> List<T> getFileDocumentsFromList(Collection<ProcessFile> list,
-            List<Class<? extends ProcessFile>> selectedClasses, boolean includeDeleted) {
-        List<T> classes = new ArrayList<T>();
-        for (ProcessFile file : list) {
-            if (!file.isInNewStructure()) {
-                continue;
-            }
-            for (Class selectedClass : selectedClasses) {
-                if (file.getClass() == selectedClass && (includeDeleted || !file.getFileNode().isInTrash())) {
-                    classes.add((T) file);
-                }
-
-            }
-        }
-        return classes;
-
-    }
-
-    private <T extends ProcessFile> List<T> getFileDocumentsFromList(Collection<ProcessFile> list,
-            List<Class<? extends ProcessFile>> selectedClasses) {
-        return getFileDocumentsFromList(list, selectedClasses, false);
-    }
-
     public <T extends ProcessFile> List<T> getFilesIncludingDeleted(List<Class<? extends ProcessFile>> selectedClasses,
             boolean sortedByFileName) {
         ArrayList<ProcessFile> classes = new ArrayList<ProcessFile>();
@@ -891,63 +783,21 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
             return getFilesFromList(classes, selectedClasses);
         }
         ArrayList<T> processFiles = (ArrayList<T>) getFilesFromList(classes, selectedClasses);
-        Collections.sort(processFiles, new Comparator<ProcessFile>() {
-
-            @Override
-            public int compare(ProcessFile o1, ProcessFile o2) {
-                return o1.getFilename().compareTo(o2.getFilename());
-            }
-        });
+        Collections.sort(processFiles, (o1, o2) -> o1.getFilename().compareTo(o2.getFilename()));
         return processFiles;
 
-    }
-
-    public <T extends ProcessFile> List<T> getFileDocumentsIncludingDeleted(List<Class<? extends ProcessFile>> selectedClasses,
-            boolean sortedByFileName) {
-        ArrayList<ProcessFile> classes = new ArrayList<ProcessFile>();
-        classes.addAll(getFiles());
-        if (!sortedByFileName) {
-            return getFileDocumentsFromList(classes, selectedClasses, true);
-        }
-        ArrayList<T> processFiles = (ArrayList<T>) getFileDocumentsFromList(classes, selectedClasses, true);
-        Collections.sort(processFiles, new Comparator<ProcessFile>() {
-
-            @Override
-            public int compare(ProcessFile o1, ProcessFile o2) {
-                return o1.getFilename().compareTo(o2.getFilename());
-            }
-        });
-        return processFiles;
-
-    }
-
-    //TODO FENIX-343
-    private Collection<? extends ProcessFile> getDeletedFileDocuments() {
-        //	Collection<ProcessFile> deletedProcessFiles = new ArrayList<ProcessFile>();
-        //	for (AbstractFileNode abstractFileNode : getDocumentsRepository().getTrash().getChild()) {
-        //	    if (abstractFileNode.isFile() && ((FileNode) abstractFileNode).getDocument().getProcessFile() != null) {
-        //		deletedProcessFiles.add(((FileNode) abstractFileNode).getDocument().getProcessFile());
-        //	    }
-        //	}
-        //	return deletedProcessFiles;
-        return null;
     }
 
     @Override
     public void addObservers(User observer) {
         if (getObservers().contains(observer)) {
-            throw new DomainException("error.workflowProcess.addingExistingObserver");
+            throw new WorkflowDomainException("error.workflowProcess.addingExistingObserver");
         }
         super.addObservers(observer);
     }
 
     public boolean isUserObserver(User user) {
         return getObservers().contains(user);
-    }
-
-    @Override
-    public Set<Indexable> getObjectsToIndex() {
-        return Collections.singleton((Indexable) this);
     }
 
     /**
@@ -972,30 +822,6 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
      */
     protected boolean isCommentingIndexingEnabled() {
         return false;
-    }
-
-    @Override
-    public IndexDocument getDocumentToIndex() {
-        IndexDocument document = new IndexDocument(this);
-
-        if (!StringUtils.isEmpty(this.getProcessNumber())) {
-            document.indexField(WorkflowProcessIndex.NUMBER, this.getProcessNumber());
-        }
-
-        if (isCommentingIndexingEnabled()) {
-            CommentIndexer.indexCommentsInProcess(document, this);
-        }
-
-        if (isFileIndexingEnabled()) {
-            FileIndexer.indexFilesInProcess(document, this);
-        }
-
-        return document;
-    }
-
-    @Override
-    public IndexMode getIndexMode() {
-        return IndexMode.MANUAL;
     }
 
     public Collection<? extends WorkflowLog> getExecutionLogs(final Class<? extends WorkflowLog>... classes) {
@@ -1071,25 +897,14 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base implements Se
         return false;
     }
 
-    @Override
-    public boolean isConnectedToCurrentHost() {
-        final VirtualHost virtualHost = VirtualHost.getVirtualHostForThread();
-        return virtualHost != null && getWorkflowSystem() == virtualHost.getWorkflowSystem();
-    }
-
     @Deprecated
-    public java.util.Set<pt.ist.bennu.core.domain.User> getObservers() {
+    public java.util.Set<org.fenixedu.bennu.core.domain.User> getObservers() {
         return getObserversSet();
     }
 
     @Deprecated
     public java.util.Set<module.workflow.domain.WorkflowQueue> getQueueHistory() {
         return getQueueHistorySet();
-    }
-
-    @Deprecated
-    public java.util.Set<module.workflow.domain.AbstractWFDocsGroup> getProcessDocumentsPersistentGroups() {
-        return getProcessDocumentsPersistentGroupsSet();
     }
 
     @Deprecated

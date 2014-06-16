@@ -27,7 +27,7 @@ package module.workflow.presentationTier.actions;
 import java.io.Serializable;
 
 import module.workflow.domain.WorkflowProcess;
-import pt.ist.bennu.core.domain.User;
+import org.fenixedu.bennu.core.domain.User;
 
 /**
  * 

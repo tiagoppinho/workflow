@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.util.Set;
 
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -37,14 +38,12 @@ import module.workflow.presentationTier.actions.BasicSearchProcessBean;
 import module.workflow.presentationTier.actions.ProcessManagement;
 
 import org.apache.struts.action.ActionForward;
+import org.fenixedu.bennu.core.domain.User;
+import org.fenixedu.bennu.core.security.Authenticate;
+import org.fenixedu.bennu.core.util.CoreConfiguration;
+import org.fenixedu.bennu.core.util.CoreConfiguration.CasConfig;
 
-import pt.ist.bennu.core.applicationTier.Authenticate.UserView;
-import pt.ist.bennu.core.domain.User;
-import pt.ist.fenixWebFramework.Config.CasConfig;
-import pt.ist.fenixWebFramework.FenixWebFramework;
 import pt.ist.fenixWebFramework.servlets.filters.contentRewrite.GenericChecksumRewriter;
-import pt.ist.fenixWebFramework.servlets.filters.contentRewrite.RequestChecksumFilter;
-import pt.ist.fenixWebFramework.servlets.filters.contentRewrite.RequestChecksumFilter.ChecksumPredicate;
 import pt.ist.fenixframework.DomainObject;
 import pt.ist.fenixframework.FenixFramework;
 
@@ -53,16 +52,10 @@ import pt.ist.fenixframework.FenixFramework;
  * @author Luis Cruz
  * 
  */
+@WebServlet(urlPatterns = "/ForwardToProcess/*", loadOnStartup = 4)
 public class ForwardToProcessServlet extends HttpServlet {
 
-    static {
-        RequestChecksumFilter.registerFilterRule(new ChecksumPredicate() {
-            @Override
-            public boolean shouldFilter(HttpServletRequest httpServletRequest) {
-                return !httpServletRequest.getRequestURI().contains("/ForwardToProcess/");
-            }
-        });
-    }
+    private static final long serialVersionUID = 8189116661407520520L;
 
     @Override
     protected void doGet(final HttpServletRequest request, final HttpServletResponse response) throws ServletException,
@@ -79,10 +72,9 @@ public class ForwardToProcessServlet extends HttpServlet {
         } else {
             workflowProcess = search.iterator().next();
         }
-        final User user = UserView.getCurrentUser();
+        final User user = Authenticate.getUser();
         if (user == null) {
-            final String serverName = request.getServerName();
-            final CasConfig casConfig = FenixWebFramework.getConfig().getCasConfig(serverName);
+            final CasConfig casConfig = CoreConfiguration.casConfig();
             if (casConfig != null && casConfig.isCasEnabled()) {
                 final String casLoginUrl = casConfig.getCasLoginUrl();
                 final StringBuilder url = new StringBuilder();
@@ -96,7 +88,8 @@ public class ForwardToProcessServlet extends HttpServlet {
             final ActionForward actionForward = ProcessManagement.forwardToProcess(workflowProcess);
             final String path = request.getContextPath() + actionForward.getPath();
             final String args =
-                    "&" + GenericChecksumRewriter.CHECKSUM_ATTRIBUTE_NAME + "=" + GenericChecksumRewriter.calculateChecksum(path);
+                    "&" + GenericChecksumRewriter.CHECKSUM_ATTRIBUTE_NAME + "="
+                            + GenericChecksumRewriter.calculateChecksum(path, request.getSession());
             response.sendRedirect(path + args);
             response.getOutputStream().close();
             return;

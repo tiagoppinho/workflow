@@ -24,18 +24,16 @@
  */
 package module.workflow.domain;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import module.organization.domain.Person;
+import module.workflow.util.ClassNameBundle;
 import module.workflow.util.WorkflowQueueBean;
-import pt.ist.bennu.core.domain.User;
-import pt.ist.bennu.core.domain.VirtualHost;
-import pt.ist.bennu.core.util.ClassNameBundle;
+
+import org.fenixedu.bennu.core.domain.User;
+
 import pt.ist.fenixframework.Atomic;
 
-@ClassNameBundle(bundle = "resources/WorkflowResources")
 /**
  * 
  * @author Anil Kassamali
@@ -43,6 +41,7 @@ import pt.ist.fenixframework.Atomic;
  * @author Paulo Abrantes
  * 
  */
+@ClassNameBundle(bundle = "WorkflowResources")
 public class WorkflowUserGroupQueue extends WorkflowUserGroupQueue_Base {
 
     protected WorkflowUserGroupQueue() {
@@ -89,25 +88,7 @@ public class WorkflowUserGroupQueue extends WorkflowUserGroupQueue_Base {
     }
 
     @Override
-    public boolean isConnectedToCurrentHost() {
-        final VirtualHost virtualHost = VirtualHost.getVirtualHostForThread();
-        return virtualHost != null && getWorkflowSystem() == virtualHost.getWorkflowSystem();
-    }
-
-    @Override
-    public Collection<Person> getPersons() {
-        Collection<Person> persons = new ArrayList<Person>();
-
-        Collection<User> users = getUsers();
-        for (User user : users) {
-            persons.add(user.getPerson());
-        }
-
-        return persons;
-    }
-
-    @Deprecated
-    public java.util.Set<pt.ist.bennu.core.domain.User> getUsers() {
+    public Collection<User> getUsers() {
         return getUsersSet();
     }
 

@@ -4,14 +4,6 @@
 <%@ taglib uri="http://jakarta.apache.org/struts/tags-logic" prefix="logic" %>
 <%@ taglib uri="http://fenix-ashes.ist.utl.pt/fenix-renderers" prefix="fr"%>
 
-<%@page import="module.workflow.presentationTier.WorkflowQueueLayoutContext"%>
-<%@page import="pt.ist.bennu.core.presentationTier.actions.ContextBaseAction"%>
-
-
-<% 
- WorkflowQueueLayoutContext context = (WorkflowQueueLayoutContext) ContextBaseAction.getContext(request);
-%>
-
 <h2>
 	<bean:message key="label.queueDetails" bundle="WORKFLOW_RESOURCES"/>
 </h2>
@@ -36,4 +28,4 @@
 	</tr>
 </table>
 
-	<jsp:include page="<%= context.getViewQueue() %>"/>
+<jsp:include page="${context.viewQueue}"/>
