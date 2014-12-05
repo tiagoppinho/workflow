@@ -12,8 +12,8 @@ import javax.servlet.annotation.HandlesTypes;
 import module.workflow.domain.WorkflowProcess;
 import module.workflow.util.WorkflowProcessViewer;
 
-import org.fenixedu.bennu.portal.RenderersAnnotationProcessor;
 import org.fenixedu.bennu.portal.model.Functionality;
+import org.fenixedu.bennu.struts.portal.RenderersAnnotationProcessor;
 
 @HandlesTypes(WorkflowProcessViewer.class)
 public class WorkflowContainerInitializer implements ServletContainerInitializer {

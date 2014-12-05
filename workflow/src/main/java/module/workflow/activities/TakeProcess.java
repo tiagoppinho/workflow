@@ -25,6 +25,7 @@
 package module.workflow.activities;
 
 import module.workflow.domain.WorkflowProcess;
+
 import org.fenixedu.bennu.core.domain.User;
 
 /**
