@@ -27,7 +27,6 @@ package module.workflow.presentationTier.renderers;
 import java.util.Set;
 import java.util.TreeSet;
 
-import module.workflow.WorkflowConfiguration;
 import module.workflow.domain.WorkflowProcess;
 import module.workflow.domain.WorkflowProcessComment;
 
@@ -175,11 +174,12 @@ public class CommentRenderer extends OutputRenderer {
                 photoCell.setClasses(getPhotoClasses());
 
                 HtmlInlineContainer container = new HtmlInlineContainer();
-                HtmlImage userPhoto = new HtmlImage();
-                container.addChild(userPhoto);
-                userPhoto.setSource(WorkflowConfiguration.getConfiguration().getPhotoPrefix()
-                        + comment.getCommenter().getUsername());
-                photoCell.setBody(userPhoto);
+                if (comment.getCommenter().getProfile() != null) {
+                    HtmlImage userPhoto = new HtmlImage();
+                    container.addChild(userPhoto);
+                    userPhoto.setSource(comment.getCommenter().getProfile().getAvatarUrl());
+                    photoCell.setBody(userPhoto);
+                }
 
                 HtmlTableCell bodyCell = row.createCell();
                 HtmlBlockContainer bodyBlock = new HtmlBlockContainer();

@@ -29,6 +29,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import module.dashBoard.presentationTier.DashBoardManagementAction;
 import module.workflow.domain.WorkflowProcess;
 import module.workflow.widgets.UnreadCommentsWidget;
 
@@ -44,7 +45,7 @@ import org.fenixedu.bennu.struts.base.BaseAction;
  * @author João Antunes
  * 
  */
-@Mapping(path = "/workflowWidgetActions")
+@Mapping(path = "/workflowWidgetActions", functionality = DashBoardManagementAction.class)
 public class WorkflowWidgetActions extends BaseAction {
 
     /**

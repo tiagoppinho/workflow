@@ -1,5 +1,6 @@
+<%@page import="module.workflow.util.WorkflowClassUtil"%>
+<%@page import="org.fenixedu.bennu.core.i18n.BundleUtil"%>
 <%@page import="module.workflow.domain.WorkflowProcess"%>
-<%@page import="pt.ist.bennu.core.util.BundleUtil"%>
 <%@page import="java.net.URLEncoder"%>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://jakarta.apache.org/struts/tags-html" prefix="html"%>
@@ -8,7 +9,6 @@
 <%@ taglib uri="http://jakarta.apache.org/struts/tags-logic" prefix="logic"%>
 
 <%@page import="module.workflow.presentationTier.WorkflowLayoutContext"%>
-<%@page import="pt.ist.bennu.core.presentationTier.actions.ContextBaseAction"%>
 
 <logic:empty name="processesWithUnreadComments">
 	<h2>Não existem comentários novos</h2>
@@ -52,17 +52,15 @@
 	{
 	     oldProcessClass = process.getClass();
 	     %>
-	     	<h3 class="mtop1 mbottom1"><%=BundleUtil.getLocalizedNamedFroClass(process.getClass())%></h3>
+	     	<h3 class="mtop1 mbottom1"><%= WorkflowClassUtil.getNameForType(process.getClass()) %></h3>
 	     
 	<% }
 	   %>
 	   
 	<div id="<%="processId-"+processId%>" class="process-id">
 			<% 
-			WorkflowLayoutContext layoutContext = WorkflowLayoutContext.getDefaultWorkflowLayoutContext((WorkflowProcess) process);
 			request.setAttribute("process", process);
 			%>
-		<jsp:include page='<%= layoutContext.getWorkflowHead() %>'/>
 		<bean:define id="oid" name="process" property="externalId" type="java.lang.String"/>
 		| <html:link page="<%= "/workflowProcessManagement.do?method=viewProcess&processId=" + oid %>"><bean:message bundle="WORKFLOW_RESOURCES" key="unreadCommentsWidget.label.showProcess"/></html:link>
 	</div>
