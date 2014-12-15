@@ -123,7 +123,7 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base {
         return null;
     }
 
-    /**
+    /*
      * Abstract method that returns ALL activities for the process either
      * they're active or not.
      * 
@@ -152,7 +152,7 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base {
      * In order to implement access control to the process, this method should
      * be overriden.
      * 
-     * @param user
+     * @param user user
      * @return true if the user given has input can access the process
      */
     public boolean isAccessible(User user) {
@@ -263,7 +263,7 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base {
      * This method returns logs that were not 'finished' and should not be
      * showed to the user
      * 
-     * @return
+     * @return List
      */
     public List<WorkflowLog> getPendingLogs() {
         List<WorkflowLog> list = new ArrayList<WorkflowLog>();
@@ -330,8 +330,8 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base {
      * through some communication channel, usually email or sms, this method
      * should implement that communication system.
      * 
-     * @param user
-     * @param comment
+     * @param user user
+     * @param comment comment
      */
     public abstract void notifyUserDueToComment(User user, String comment);
 
@@ -344,7 +344,7 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base {
      * This method is use to determine that and render warnings in the interface
      * for the users that cannot be notified.
      * 
-     * @param user
+     * @param user user
      * @return true if the system is able to notify the user
      */
     public boolean isSystemAbleToNotifyUser(User user) {
@@ -584,7 +584,7 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base {
      * By default a workflow process supports documents attached to it, although
      * if there's a process where there should be no support for files, override
      * this method to return false. No upload box will be rendered in the
-     * interface and calling the {@link WorkflowProcess#addDocument(Class, String, String, byte[], WorkflowFileUploadBean)} will
+     * interface and calling the WorkflowProcess#addDocument(Class, String, String, byte[], WorkflowFileUploadBean) will
      * result in an exception.
      * 
      * 
@@ -614,6 +614,7 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base {
      * be applied here.
      * 
      * @author João Antunes
+     * @param userEditingFiles userEditingFiles
      * @return true if file removeal/upload should be allowed, false otherwise
      */
     public boolean isFileEditionAllowed(User userEditingFiles) {
@@ -692,8 +693,6 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base {
 
 /**
      * This list represents all the kind of classes that
-     * {@link WorkflowProcess#addFileDocuments(ProcessFile) supports. If
-     * {@link WorkflowProcess#addFileDocuments(ProcessFile) is invoked with some class
      * that is not in this list an exception is thrown.
      * 
      * @return list of classes that extends {@link ProcessFile} that are allowed to add
@@ -743,13 +742,13 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base {
         return getAvailableFileTypes();
     }
 
-    /**
-     * This list has to be a subset or the actual list returned by {@link WorkflowProcess#getDisplayableFileDocumentTypes()} Only
+    /*
+     * This list has to be a subset or the actual list returned by WorkflowProcess#getDisplayableFileDocumentTypes() Only
      * the files
      * in this list will be rendered in the process page's file listing.
      * 
      * @return list of classes that extends ProcessFile that are displayed in
-     *         the process page public List<Class<? extends ProcessFile>>
+     *         the process page public List Class ? extends ProcessFile
      *         getDisplayableFileDocumentTypes() { return
      *         getAvailableDocumentTypes(); }
      */

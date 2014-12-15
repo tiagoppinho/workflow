@@ -54,74 +54,11 @@ public class ProcessFile extends ProcessFile_Base {
         init(displayName, filename, content);
     }
 
-    /**
-     * TODO: remove
-     * 
-     * @param displayName
-     * @param filename
-     * @param process
-     * @return An existing {@link ProcessDocument}, if one of the same
-     *         displayName and filename exists associated with this process, or
-     *         null if it doesn't public static ProcessDocument
-     *         getExistingDocument(String displayName, String filename,
-     *         WorkflowProcess process, Class<? extends ProcessDocument> clazz)
-     *         { ProcessDirNode documentsRepository =
-     *         process.getDocumentsRepository(); AbstractFileNode nodeFound =
-     *         documentsRepository.searchNode(displayName); if (nodeFound ==
-     *         null) { return null; } //seen that the DocumentRepository offers
-     *         a flat repository i.e. no dirs, let's throw an error //if we
-     *         found something that is a dir or that cannot be converted to
-     *         ProcessDocument if (!(nodeFound instanceof FileNode) ||
-     *         ((FileNode) nodeFound).getDocument().getProcessDocument() ==
-     *         null) throw new Error("no.dirs.or.other.files.allowed.here");
-     *         return (ProcessDocument) (((FileNode)
-     *         nodeFound).getDocument().getProcessDocument());
-     * 
-     *         }
-     */
-
-    //    @Override
-    //    public String getFilename() {
-    //	if (getDocument() == null) {
-    //	    return super.getFilename();
-    //	} else
-    //	    return getDocument().getFileName();
-    //    }
-    //
-    //    @Override
-    //    public String getDisplayName() {
-    //	if (getDocument() == null)
-    //	    return super.getDisplayName();
-    //	else {
-    //	    return getDocument().getDisplayName();
-    //	}
-    //    }
-    //
-    //    @Override
-    //    public InputStream getStream() {
-    //	if (getDocument() == null) {
-    //	    return super.getStream();
-    //	} else
-    //	return getDocument().getLastVersionedFile().getStream();
-    //    }
-
-    //    public boolean isInTrash() {
-    //	getDocument().
-    //    }
-
     @ConsistencyPredicate
     public boolean checkConnectedWithProcess() {
         return getProcess() != null || getProcessWithDeleteFile() != null;
 
     }
-
-    //    @Override
-    //    public String getContentType() {
-    //	if (getDocument() == null) {
-    //	    return super.getContentType();
-    //	} else
-    //	    return getDocument().getLastVersionedFile().getContentType();
-    //    }
 
     public void fillInNonDefaultFields(WorkflowFileUploadBean bean) {
 
@@ -158,16 +95,6 @@ public class ProcessFile extends ProcessFile_Base {
     public boolean shouldFileContentAccessBeLogged() {
         return false;
     }
-
-    // TODO: use this format
-    //    /**
-    //     * @return if the access to this instance is logged or not. To change this
-    //     *         value, per instance, see and override
-    //     *         {@link ProcessDocumentMetaDataResolver#shouldFileContentAccessBeLogged()}
-    //     */
-    //    public final boolean shouldFileContentAccessBeLogged() {
-    //	return getDocument().mustSaveAccessLog();
-    //    }
 
     /**
      * Validates if this file is valid to be associated with the workflowProcess
@@ -214,6 +141,7 @@ public class ProcessFile extends ProcessFile_Base {
      * returns true).
      * 
      * By default it returns true
+     * @return true
      */
     public boolean isPossibleToArchieve() {
         return true;

@@ -48,14 +48,9 @@ import org.fenixedu.bennu.struts.base.BaseAction;
 @Mapping(path = "/workflowWidgetActions", functionality = DashBoardManagementAction.class)
 public class WorkflowWidgetActions extends BaseAction {
 
-    /**
+    /*
      * Method used by the UnreadCommentsWidget widget {@link UnreadCommentsWidget}.
      * 
-     * @param mapping
-     * @param form
-     * @param request
-     * @param response
-     * @return
      */
     public ActionForward viewListUnreadComments(final ActionMapping mapping, final ActionForm form,
             final HttpServletRequest request, final HttpServletResponse response) {

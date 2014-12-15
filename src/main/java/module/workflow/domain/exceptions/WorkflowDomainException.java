@@ -15,17 +15,17 @@ public class WorkflowDomainException extends DomainException {
     private static final long serialVersionUID = 1L;
 
     /**
-     * @param key
-     * @param args
+     * @param key key
+     * @param args args
      */
     public WorkflowDomainException(String key, String... args) {
         super("resources.WorkflowResources", key, args);
     }
 
     /**
-     * @param key
-     * @param cause
-     * @param args
+     * @param key key
+     * @param cause cause
+     * @param args args
      */
     public WorkflowDomainException(String key, Throwable cause, String... args) {
         super(cause, "resources.WorkflowResources", key, args);

@@ -545,7 +545,7 @@ public class ProcessManagement extends BaseAction {
         return forwardProcessForInput(information.getActivity(), request, information);
     }
 
-    /**
+    /*
      * Use this method to register objects of the type {@link ProcessRequestHandler}
      * 
      * @param workflowProcessClass

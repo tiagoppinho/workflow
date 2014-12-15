@@ -11,8 +11,8 @@ package module.workflow.domain.exceptions;
 public class DuplicateProcessFileNameException extends WorkflowDomainException {
 
     /**
-     * @param key
-     * @param args
+     * @param key key
+     * @param args args
      */
     public DuplicateProcessFileNameException(String key, String... args) {
         super(key, args);
@@ -20,9 +20,9 @@ public class DuplicateProcessFileNameException extends WorkflowDomainException {
     }
 
     /**
-     * @param key
-     * @param cause
-     * @param args
+     * @param key key
+     * @param cause cause
+     * @param args args
      */
     public DuplicateProcessFileNameException(String key, Throwable cause, String... args) {
         super(key, cause, args);

@@ -87,14 +87,6 @@ public class UnreadCommentsWidget extends WidgetController {
         //	request.setAttribute("processesWithUnreadComments", processesWithUnreadComments);
     }
 
-    /**
-     * 
-     * @param numberUnreadCommentsPerProcess
-     *            a Map<String,Integer> to be filled with a list of the number
-     *            of unread comments per kind of workflowprocess
-     * @return a List of WorkflowProcess {@link WorkflowProcess} which have
-     *         unread comments
-     */
     public static List<WorkflowProcess> getProcessesWithUnreadComments(Map<Class, Integer> numberUnreadCommentsPerProcess,
             User forGivenUser, String className) {
 

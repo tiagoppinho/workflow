@@ -64,6 +64,8 @@ public class WorkflowCommentCounter {
     }
 
     /**
+     * @param user user
+     * @param className classname
      * @return the processes of unread comments for the given person for the
      *         given classToFilter type of process NOTE: It relies on the logs
      *         of the user to retrieve the comments (as it should be more

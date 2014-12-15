@@ -29,16 +29,11 @@ import java.util.Collection;
 
 import module.workflow.domain.WorkflowProcess;
 import module.workflow.domain.WorkflowQueue;
-import module.workflow.presentationTier.renderers.providers.QueuesForProcess;
 
 import org.fenixedu.bennu.core.domain.User;
 
 /**
  * Bean used to wrap the queues for the comment system
- * 
- * @see QueuesForProcess
- * @see ProcessManagement
- * @see viewComments.jsp
  * 
  * @author João Antunes
  * 

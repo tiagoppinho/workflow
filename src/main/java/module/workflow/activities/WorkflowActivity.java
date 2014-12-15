@@ -64,7 +64,7 @@ public abstract class WorkflowActivity<P extends WorkflowProcess, AI extends Act
 
     /**
      * 
-     * @param process
+     * @param process process
      * @return true if the user that is executing the activity is the current
      *         owner of the process or the process has no owner at all.
      */
@@ -74,8 +74,8 @@ public abstract class WorkflowActivity<P extends WorkflowProcess, AI extends Act
 
     /**
      * 
-     * @param process
-     * @param user
+     * @param process process
+     * @param user user
      * @return true if the user is the current owner of the process or the
      *         activity has no owner at all.
      */
@@ -85,7 +85,7 @@ public abstract class WorkflowActivity<P extends WorkflowProcess, AI extends Act
 
     /**
      * 
-     * @param process
+     * @param process process
      * @return true if the process is taken by someone
      */
     protected boolean isProcessTaken(P process) {
@@ -94,7 +94,7 @@ public abstract class WorkflowActivity<P extends WorkflowProcess, AI extends Act
 
     /**
      * 
-     * @param process
+     * @param process process
      * @return true if the process is taken by the user who is running the
      *         activity
      */
@@ -104,8 +104,8 @@ public abstract class WorkflowActivity<P extends WorkflowProcess, AI extends Act
 
     /**
      * 
-     * @param process
-     * @param user
+     * @param process process
+     * @param user user
      * @return true if the process is taken by the user
      * 
      */
@@ -114,12 +114,9 @@ public abstract class WorkflowActivity<P extends WorkflowProcess, AI extends Act
         return taker != null && taker == user;
     }
 
-    /**
+    /*
      * Responsible for creating a log of the activity run.
      * 
-     * @param process
-     * @param operationName
-     * @param user
      */
     protected ActivityLog logExecution(P process, String operationName, User user, AI activityInfo,
             String... argumentsDescription) {
@@ -132,7 +129,7 @@ public abstract class WorkflowActivity<P extends WorkflowProcess, AI extends Act
      * notification. To specify activity behavior this should not be the method
      * to be overridden. But process instead.
      * 
-     * @param activityInformation
+     * @param activityInformation activityInformation
      */
     @Atomic
     public final void execute(AI activityInformation) {
@@ -163,7 +160,7 @@ public abstract class WorkflowActivity<P extends WorkflowProcess, AI extends Act
      * getUsedBundle will be looked for a string
      * label.description.FULL_CLASS_NAME.
      * 
-     * @param activityInformation
+     * @param activityInformation activityInformation
      * @return String array with the arguments description to be passed to the
      *         locazation string
      */
@@ -202,7 +199,7 @@ public abstract class WorkflowActivity<P extends WorkflowProcess, AI extends Act
      * so, please remind that it runs within the same write transaction of the
      * process execution.
      * 
-     * @param process
+     * @param process process
      */
     protected void notifyUsers(P process) {
         // do nothing
@@ -211,7 +208,7 @@ public abstract class WorkflowActivity<P extends WorkflowProcess, AI extends Act
     /**
      * An activity is said active when the conditions to be ran are met.
      * 
-     * @param process
+     * @param process process
      * @return true if the process is active for the current user
      */
     public boolean isActive(P process) {
@@ -221,7 +218,7 @@ public abstract class WorkflowActivity<P extends WorkflowProcess, AI extends Act
     /**
      * An activity is said active when the conditions to be ran are met.
      * 
-     * @param process
+     * @param process process
      * @param user
      *            that will run activity
      * @return true if the process is active for the given user
@@ -232,7 +229,7 @@ public abstract class WorkflowActivity<P extends WorkflowProcess, AI extends Act
      * An activity is said to need user awareness if it's important that the
      * users knows such activity is active.
      * 
-     * @param process
+     * @param process process
      * @return true if the current user should be aware of such activity is
      *         active.
      */
@@ -245,8 +242,8 @@ public abstract class WorkflowActivity<P extends WorkflowProcess, AI extends Act
      * An activity is said to need user awareness if it's important that the
      * users nows such activity is active.
      * 
-     * @param process
-     * @param user
+     * @param process process
+     * @param user user
      * @return true if the user should be aware of such activity is active.
      */
 
@@ -254,7 +251,7 @@ public abstract class WorkflowActivity<P extends WorkflowProcess, AI extends Act
         return true;
     }
 
-    /**
+    /*
      * This is the method that needs contains the activity specific behavior.
      * 
      * The logs will fetch the logs in the given {@link #getUsedBundle()} the
@@ -284,7 +281,7 @@ public abstract class WorkflowActivity<P extends WorkflowProcess, AI extends Act
      * This returns the activity bean that might have further fields that are
      * needed for the activity to be ran.
      * 
-     * @param process
+     * @param process process
      * @return an ActivityInformation or subclass
      */
     public ActivityInformation<P> getActivityInformation(P process) {
@@ -310,7 +307,7 @@ public abstract class WorkflowActivity<P extends WorkflowProcess, AI extends Act
      * true the interface will first display a confirmation message with a
      * confirm/cancel buttons for the user to acknowledge the operation.
      * 
-     * @param process
+     * @param process process
      * @return by default false
      */
     public boolean isConfirmationNeeded(P process) {
@@ -319,9 +316,9 @@ public abstract class WorkflowActivity<P extends WorkflowProcess, AI extends Act
 
     /**
      * This is used when a activity needs confirmation. By default delegates to
-     * {@link WorkflowActivity#getLocalizedConfirmationMessage()}
+     * WorkflowActivity#getLocalizedConfirmationMessage()
      * 
-     * @param P
+     * @param process process
      *            the process
      * @return Localized confirmation message
      */
