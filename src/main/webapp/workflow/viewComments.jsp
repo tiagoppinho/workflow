@@ -120,7 +120,7 @@ else {
 				</tr>
 			</logic:equal>
 	</table>
-	<html:submit styleClass="inputbutton"><bean:message key="label.submit" /> </html:submit>
+	<html:submit styleClass="inputbutton"><bean:message key="label.send" bundle="WORKFLOW_RESOURCES"/> </html:submit>
 </fr:form>
 
 
