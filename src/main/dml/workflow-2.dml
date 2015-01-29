@@ -1,0 +1,97 @@
+
+/*
+ * @(#)domain_model_workflow_2.dml
+ *
+ * Copyright 2009 Instituto Superior Tecnico
+ * Founding Authors: João Figueiredo, Luis Cruz, Paulo Abrantes, Susana Fernandes
+ * 
+ *      https://fenix-ashes.ist.utl.pt/
+ * 
+ *   This file is part of the MyOrg web application infrastructure.
+ *
+ *   MyOrg is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU Lesser General Public License as published
+ *   by the Free Software Foundation, either version 3 of the License, or
+ *   (at your option) any later version.*
+ *
+ *   MyOrg is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *   GNU Lesser General Public License for more details.
+ *
+ *   You should have received a copy of the GNU Lesser General Public License
+ *   along with MyOrg. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ */
+ 
+class module.workflow.domain.ProcessFile extends .org.fenixedu.bennu.io.domain.GenericFile { }
+
+
+ //R1 - remove relation
+relation WorkflowProcessFile { 
+	protected module.workflow.domain.WorkflowProcess playsRole process {
+		multiplicity 0..1;
+	}
+	module.workflow.domain.ProcessFile playsRole files { 
+		multiplicity *;
+	} 
+}
+
+//R1 - remove relation
+relation ProcessFileDeletion {
+	module.workflow.domain.WorkflowProcess playsRole processWithDeleteFile;
+	module.workflow.domain.ProcessFile playsRole deletedFiles {
+		multiplicity *;
+	}
+}
+ 
+relation UserComment {
+	.org.fenixedu.bennu.core.domain.User playsRole commenter;
+	module.workflow.domain.WorkflowProcessComment playsRole comments {
+		multiplicity *;
+	}
+}
+
+relation UserReadComment {
+	.org.fenixedu.bennu.core.domain.User playsRole readers {
+		multiplicity *;
+	}
+	module.workflow.domain.WorkflowProcessComment playsRole readComments {
+		multiplicity *;
+	}
+
+}
+
+relation TakeSupport {
+	.org.fenixedu.bennu.core.domain.User playsRole currentOwner;
+	module.workflow.domain.WorkflowProcess playsRole userProcesses {
+		multiplicity *;
+	} 
+}
+
+relation Observers {
+	module.workflow.domain.WorkflowProcess playsRole observedProcesses {
+		multiplicity *;
+	}
+	.org.fenixedu.bennu.core.domain.User playsRole observers {
+		multiplicity *;
+	}
+}
+
+relation UserLog {
+	.org.fenixedu.bennu.core.domain.User playsRole activityExecutor {
+		multiplicity 1..1;
+	}
+	module.workflow.domain.WorkflowLog playsRole userLogs {
+		multiplicity *;
+	} 
+}
+
+relation WorkflowUserGroupQueueUser {
+	module.workflow.domain.WorkflowUserGroupQueue playsRole queues {
+		multiplicity *;
+	}
+	.org.fenixedu.bennu.core.domain.User playsRole users {
+		multiplicity *;
+	}
+}

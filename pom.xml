@@ -1,35 +1,63 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>pt.ist</groupId>
-        <artifactId>ist-dsi-project</artifactId>
-        <version>1.0.0</version>
+        <groupId>org.fenixedu</groupId>
+        <artifactId>fenix-framework-project</artifactId>
+        <version>2.2.0</version>
+        <relativePath />
     </parent>
 
-    <artifactId>workflow-project</artifactId>
-    <name>Bennu Workflow</name>
-    <version>1.2.1</version>
-    <packaging>pom</packaging>
+    <artifactId>workflow</artifactId>
+    <version>2.0.0</version>
+    <packaging>jar</packaging>
+    <name>Workflow</name>
 
-    <scm>
-        <connection>scm:git:git@github.com:ist-dsi/workflow.git</connection>
-        <developerConnection>scm:git:git@github.com:ist-dsi/workflow.git</developerConnection>
-        <url>http://ist-dsi.github.io/workflow</url>
-        <tag>HEAD</tag>
-    </scm>
+    <properties>
+        <version.org.fenixedu.bennu.core>3.4.1</version.org.fenixedu.bennu.core>
+        <version.org.fenixedu.dashboard>2.0.0</version.org.fenixedu.dashboard>
+        <version.javax.servlet.jsp>2.1</version.javax.servlet.jsp>
+    </properties>
 
-    <modules>
-        <module>workflow</module>
-        <module>meta-workflow</module>
-    </modules>
+    <dependencies>
+        <dependency>
+            <groupId>org.fenixedu</groupId>
+            <artifactId>bennu-core</artifactId>
+            <version>${version.org.fenixedu.bennu.core}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.fenixedu</groupId>
+            <artifactId>dashboard</artifactId>
+            <version>${version.org.fenixedu.dashboard}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.fenixedu</groupId>
+            <artifactId>bennu-io</artifactId>
+            <version>${version.org.fenixedu.bennu.core}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.fenixedu</groupId>
+            <artifactId>bennu-scheduler</artifactId>
+            <version>${version.org.fenixedu.bennu.core}</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet.jsp</groupId>
+            <artifactId>jsp-api</artifactId>
+            <version>${version.javax.servlet.jsp}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>pt.ist</groupId>
+            <artifactId>fenix-legacy-tools</artifactId>
+            <version>2.0.0</version>
+        </dependency>
+    </dependencies>
 
     <repositories>
         <repository>
-            <id>fenix-ashes-maven-repository</id>
-            <url>https://fenix-ashes.ist.utl.pt/nexus/content/groups/fenix-ashes-maven-repository</url>
+            <id>fenixedu-maven-repository</id>
+            <url>https://repo.fenixedu.org/fenixedu-maven-repository</url>
         </repository>
     </repositories>
-
 </project>

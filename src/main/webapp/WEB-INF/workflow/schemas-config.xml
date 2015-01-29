@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemas>
+<schema name="activityInformation.GiveProcess" type="module.workflow.activities.UserInformation">
+	<slot name="user" layout="autoComplete" key="label.giveProcess.user"
+		bundle="WORKFLOW_RESOURCES">
+		<property name="labelField" value="username" />
+		<property name="format" value="${presentationName}" />
+		<property name="minChars" value="3" />
+		<property name="provider" value="org.fenixedu.bennu.core.presentationTier.renderers.autoCompleteProvider.UserAutoComplete" />
+		<property name="size" value="50" />
+	</slot>
+</schema>
+
+<schema name="activityInformation.AddObserver" type="module.workflow.activities.UserInformation">
+	<slot name="user" layout="autoComplete" key="label.giveProcess.user"
+		bundle="WORKFLOW_RESOURCES">
+		<property name="labelField" value="username" />
+		<property name="format" value="${presentationName}" />
+		<property name="minChars" value="3" />
+		<property name="provider" value="org.fenixedu.bennu.core.presentationTier.renderers.autoCompleteProvider.UserAutoComplete" />
+		<property name="size" value="40" />
+	</slot>
+</schema>
+
+<schema name="activityInformation.ChangeQueue" type="module.workflow.activities.ChangeQueueInformation" bundle="META_WORKFLOW_RESOURCES">
+	<slot name="queue" layout="autoComplete" key="label.changeQueue">
+		<property name="labelField" value="name" />
+		<property name="format" value="${name}" />
+		<property name="minChars" value="3" />
+		<property name="args"
+			value="provider=module.workflow.presentationTier.renderers.autoCompleteProviders.WorkflowQueueAutoComplete" />
+		<property name="size" value="40" />
+	</slot>
+</schema>
+
+<schema name="viewLogs" type="module.workflow.domain.WorkflowLog" bundle="WORKFLOW_RESOURCES">
+	<slot name="whenOperationWasRan" key="label.whenOperationWasRan"/>
+	<slot name="description" layout="html" key="label.description"/>
+	<slot name="activityExecutor.presentationName" key="label.activityExecutor"/>
+</schema>
+
+<schema name="addFile-ProcessFile"
+		type="module.workflow.util.WorkflowFileUploadBean"
+		bundle="WORKFLOW_RESOURCES">
+	<slot name="selectedInstance" layout="menu-select-postback" key="label.selectedInstance">
+		<property name="providerClass" value="module.workflow.presentationTier.renderers.providers.AvailableFileClassesProvider"/>
+		<property name="eachLayout" value="name-resolver"/>
+		<property name="nullOptionHidden" value="true"/>
+		<property name="saveOptions" value="true"/>
+	</slot>
+	<slot name="displayName" key="label.filename" required="true"  >
+		<property name="size" value="50"/>
+	</slot>
+	<slot name="inputStream" key="label.document" required="true" >
+		<property name="fileNameSlot" value="filename" />
+		<property name="size" value="50"/>
+	</slot>	
+</schema>
+
+
+<schema name="create.queue" type="module.workflow.util.WorkflowQueueBean" bundle="WORKFLOW_RESOURCES">
+	<slot name="name" key="label.queue.name" required="true">
+		<property name="size" value="40"/>
+	</slot>
+</schema>
+
+<schema name="view.queue.name" type="module.workflow.domain.WorkflowQueue" bundle="WORKFLOW_RESOURCES">
+	<slot name="name"/>
+</schema>
+
+<schema name="view.queues.details" type="module.workflow.domain.WorkflowQueue" bundle="WORKFLOW_RESOURCES">
+	<slot name="name" key="label.queue.name"/>
+	<slot name="class" layout="name-resolver" key="label.queue.type"/>
+</schema>
+
+<schema name="showUsers"
+		type="module.workflow.presentationTier.actions.UserNotificationBean"
+		bundle="WORKFLOW_RESOURCES">
+	<slot name="user.presentationName"/>
+</schema>
+
+<schema name="search.quick"
+	type="module.workflow.presentationTier.actions.BasicSearchProcessBean"
+	bundle="ACQUISITION_RESOURCES">
+	<slot name="processId" key="label.processNumber"
+		bundle="WORKFLOW_RESOURCES">
+		<property name="size" value="8" />
+	</slot>
+</schema></schemas>
