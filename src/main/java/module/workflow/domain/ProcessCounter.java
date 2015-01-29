@@ -26,10 +26,14 @@ package module.workflow.domain;
 
 import java.util.Comparator;
 
+import module.workflow.servlet.WorkflowContainerInitializer;
 import module.workflow.util.WorkflowClassUtil;
 
 import org.fenixedu.bennu.core.domain.User;
 import org.fenixedu.bennu.core.security.Authenticate;
+import org.fenixedu.bennu.portal.domain.MenuFunctionality;
+import org.fenixedu.bennu.portal.model.Functionality;
+import org.fenixedu.bennu.portal.servlet.BennuPortalDispatcher;
 
 /**
  * 
@@ -81,6 +85,16 @@ public class ProcessCounter {
     protected boolean shouldCountProcess(final WorkflowProcess process, final User requestingUser) {
         return clazz.isAssignableFrom(process.getClass()) && process.isAccessible(requestingUser)
                 && process.hasAnyAvailableActivity(requestingUser, true);
+    }
+
+    public String pathToProcessFrontPage(final Class clazz) {
+        Functionality functionality = WorkflowContainerInitializer.getFunctionalityForProcess(clazz);
+        if (functionality != null) {
+            MenuFunctionality menuFunctionality =
+                    MenuFunctionality.findFunctionality(functionality.getProvider(), functionality.getKey());
+            return menuFunctionality.getFullPath();
+        }
+        return "#";
     }
 
 }

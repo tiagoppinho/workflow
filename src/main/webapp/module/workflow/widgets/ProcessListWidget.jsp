@@ -8,7 +8,7 @@
 <% boolean hasSomeProcess = false; %>
 <logic:notEmpty name="pendingProcessList">
 	<table class="width100pc">
-		<logic:iterate id="counter" name="pendingProcessList">
+		<logic:iterate id="counter" name="pendingProcessList" type="module.workflow.domain.ProcessCounter">
 			<bean:define id="count" name="counter" property="count"/>
 			<logic:greaterThan name="count" value="0">
 				<% hasSomeProcess = true; %>
@@ -17,7 +17,7 @@
 					<td>
 					<bean:define id="typeOfProcess" name="counter" property="processClassForForwarding" type="java.lang.Class"/> 
 
-					<html:link page="#">
+					<html:link page="<%= counter.pathToProcessFrontPage(typeOfProcess) %>">
 						<bean:write name="count"/>
 					</html:link>
 					</td>
