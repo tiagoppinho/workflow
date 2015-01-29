@@ -47,7 +47,7 @@ import pt.ist.fenixWebFramework.renderers.utils.RenderUtils;
 
 @Mapping(path = "/workflowQueueManagement")
 @StrutsApplication(bundle = "WorkflowResources", path = "manage-workflow-queues", titleKey = "link.topBar.QueueManagement",
-        hint = "Workflow", accessGroup = "managers")
+        hint = "Workflow", accessGroup = "#managers")
 /**
  * 
  * @author Anil Kassamali
