@@ -15,8 +15,9 @@
     <name>Workflow</name>
 
     <properties>
-        <version.org.fenixedu.bennu.core>3.4.0</version.org.fenixedu.bennu.core>
-        <version.org.fenixedu.dashboard>2.0.0-rc2</version.org.fenixedu.dashboard>
+        <version.org.fenixedu.bennu.core>3.4.1</version.org.fenixedu.bennu.core>
+        <version.org.fenixedu.dashboard>2.0.0</version.org.fenixedu.dashboard>
+        <version.javax.servlet.jsp>2.1</version.javax.servlet.jsp>
     </properties>
 
     <dependencies>
@@ -43,7 +44,7 @@
         <dependency>
             <groupId>javax.servlet.jsp</groupId>
             <artifactId>jsp-api</artifactId>
-            <version>2.1</version>
+            <version>${version.javax.servlet.jsp}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
