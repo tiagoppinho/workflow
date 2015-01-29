@@ -84,6 +84,6 @@
 	bundle="ACQUISITION_RESOURCES">
 	<slot name="processId" key="label.processNumber"
 		bundle="WORKFLOW_RESOURCES">
-		<property name="size" value="10" />
+		<property name="size" value="8" />
 	</slot>
 </schema></schemas>
