@@ -49,4 +49,10 @@ function decide(responseText, statusText) {
 }
 
 $("#quickAccessForm").ajaxForm({beforeSubmit: spinner, success: decide});
+
+$("[id$=processId]").focus();
+
+$(document).ready(function() {
+	$("[id$=processId]").focus();
+});
 </script> 

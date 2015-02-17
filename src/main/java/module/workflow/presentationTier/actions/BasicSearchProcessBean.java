@@ -37,7 +37,7 @@ import module.workflow.domain.WorkflowProcess;
  */
 public class BasicSearchProcessBean implements Serializable {
 
-    String processId;
+    String processId = "";
 
     public String getProcessId() {
         return processId;
