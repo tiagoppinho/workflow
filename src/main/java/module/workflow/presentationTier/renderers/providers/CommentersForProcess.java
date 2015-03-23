@@ -29,8 +29,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import module.workflow.domain.PermanentProcessCommentUser;
 import module.workflow.domain.WorkflowProcess;
 import module.workflow.domain.WorkflowProcessComment;
+import module.workflow.domain.WorkflowSystem;
 import module.workflow.presentationTier.actions.CommentBean;
 import module.workflow.presentationTier.actions.UserNotificationBean;
 
@@ -70,7 +72,20 @@ public class CommentersForProcess implements DataProvider {
 
         availablePeopleToNotify.addAll(getWorkers(process));
 
+        WorkflowSystem.getInstance().getPermanentProcessCommentUserSet().forEach(ppcu -> getPeople(availablePeopleToNotify, ppcu, process));
+
         return new ArrayList<UserNotificationBean>(availablePeopleToNotify);
+    }
+
+    private void getPeople(final Set<UserNotificationBean> set, final PermanentProcessCommentUser ppcu, final WorkflowProcess process) {
+        try {
+            Class c = Class.forName(ppcu.getClassName());
+            if (c.isAssignableFrom(process.getClass())) {
+                ppcu.getUserSet().forEach(u -> set.add(new UserNotificationBean(u, process)));
+            }
+        } catch (final ClassNotFoundException e) {
+            throw new Error(e);
+        }
     }
 
     private List<UserNotificationBean> getWorkers(WorkflowProcess process) {

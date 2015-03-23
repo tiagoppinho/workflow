@@ -67,6 +67,10 @@ class WorkflowProcessComment {
 	DateTime date;
 } 
 
+class PermanentProcessCommentUser {
+	String className;
+}
+
 class WorkflowQueue {
 	String name;
 } 
@@ -147,4 +151,20 @@ relation VirtualHostWorkflowSystem {
 		multiplicity 1..1;
 	}
 	WorkflowSystem playsRole workflowSystem;
+}
+
+relation PermanentProcessCommentUserWorkflowSystem {
+	PermanentProcessCommentUser playsRole permanentProcessCommentUser {
+		multiplicity *;
+	}
+	WorkflowSystem playsRole workflowSystem;
+}
+
+relation PermanentProcessCommentUserUser {
+	PermanentProcessCommentUser playsRole permanentProcessCommentUser {
+		multiplicity *;
+	}
+	.org.fenixedu.bennu.core.domain.User playsRole user {
+		multiplicity *;
+	}
 }
