@@ -25,15 +25,15 @@
 package module.workflow.domain;
 
 import java.util.Comparator;
-
-import module.workflow.servlet.WorkflowContainerInitializer;
-import module.workflow.util.WorkflowClassUtil;
+import java.util.stream.Stream;
 
 import org.fenixedu.bennu.core.domain.User;
 import org.fenixedu.bennu.core.security.Authenticate;
 import org.fenixedu.bennu.portal.domain.MenuFunctionality;
 import org.fenixedu.bennu.portal.model.Functionality;
-import org.fenixedu.bennu.portal.servlet.BennuPortalDispatcher;
+
+import module.workflow.servlet.WorkflowContainerInitializer;
+import module.workflow.util.WorkflowClassUtil;
 
 /**
  * 
@@ -67,24 +67,20 @@ public class ProcessCounter {
     }
 
     public int getCount() {
-        int result = 0;
         final User requestingUser = Authenticate.getUser();
-        for (final WorkflowProcess process : WorkflowSystem.getInstance().getProcessesSet()) {
-            try {
-                if (shouldCountProcess(process, requestingUser)) {
-                    result++;
-                }
-            } catch (final Throwable t) {
-                t.printStackTrace();
-                //throw new Error(t);
-            }
-        }
-        return result;
+        final Stream<WorkflowProcess> stream = WorkflowSystem.getInstance().getProcessesSet().stream();
+        return (int) stream.filter(p -> shouldCountProcess(p, requestingUser)).count();
     }
 
     protected boolean shouldCountProcess(final WorkflowProcess process, final User requestingUser) {
-        return clazz.isAssignableFrom(process.getClass()) && process.isAccessible(requestingUser)
-                && process.hasAnyAvailableActivity(requestingUser, true);
+        try {
+            return clazz.isAssignableFrom(process.getClass()) && process.isAccessible(requestingUser)
+                    && process.hasAnyAvailableActivity(requestingUser, true);
+        } catch (final Throwable t) {
+            t.printStackTrace();
+            //throw new Error(t);
+            return false;
+        }
     }
 
     public String pathToProcessFrontPage(final Class clazz) {

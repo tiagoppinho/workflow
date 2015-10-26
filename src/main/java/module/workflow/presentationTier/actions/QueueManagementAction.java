@@ -56,10 +56,10 @@ import pt.ist.fenixWebFramework.renderers.utils.RenderUtils;
  */
 public class QueueManagementAction extends BaseAction {
 
-    private final ActionForward doForward(HttpServletRequest request, String body) {
+    private final ActionForward doForward(final HttpServletRequest request, final String body) {
         WorkflowQueue queue = getDomainObject(request, "queueId");
         if (queue != null) {
-            WorkflowQueueLayoutContext queueContext = queue.getDefaultContext();
+            final WorkflowQueueLayoutContext queueContext = queue.getDefaultContext();
             request.setAttribute("context", queueContext);
         }
         return forward(body);
@@ -77,7 +77,7 @@ public class QueueManagementAction extends BaseAction {
     public ActionForward viewQueue(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
             final HttpServletResponse response) {
 
-        WorkflowQueue queue = getDomainObject(request, "queueId");
+        final WorkflowQueue queue = getDomainObject(request, "queueId");
         request.setAttribute("queue", queue);
 
         return doForward(request, "/workflow/queues/viewQueue.jsp");
@@ -86,8 +86,8 @@ public class QueueManagementAction extends BaseAction {
     public ActionForward prepareEditQueue(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
             final HttpServletResponse response) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
 
-        WorkflowQueue queue = getDomainObject(request, "queueId");
-        WorkflowQueueBean beanForType = getBeanForType(queue.getClass());
+        final WorkflowQueue queue = getDomainObject(request, "queueId");
+        final WorkflowQueueBean beanForType = getBeanForType(queue.getClass());
         beanForType.setQueue(queue);
 
         request.setAttribute("bean", beanForType);
@@ -98,7 +98,7 @@ public class QueueManagementAction extends BaseAction {
     public ActionForward editQueue(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
             final HttpServletResponse response) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
 
-        WorkflowQueueBean bean = getRenderedObject("queue");
+        final WorkflowQueueBean bean = getRenderedObject("queue");
         bean.getQueue().edit(bean);
 
         return manageQueues(mapping, form, request, response);
@@ -114,10 +114,10 @@ public class QueueManagementAction extends BaseAction {
     public ActionForward doPostback(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
             final HttpServletResponse response) {
 
-        WorkflowQueueBean bean = getRenderedObject("newQueue");
+        final WorkflowQueueBean bean = getRenderedObject("newQueue");
         RenderUtils.invalidateViewState();
 
-        Class<? extends WorkflowQueue> queueType = bean.getQueueType();
+        final Class<? extends WorkflowQueue> queueType = bean.getQueueType();
         request.setAttribute("creationPage", WorkflowQueueLayoutContext.getBootstrapFor(queueType));
         request.setAttribute("bean", bean);
 
@@ -128,8 +128,8 @@ public class QueueManagementAction extends BaseAction {
     public ActionForward selectQueueType(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
             final HttpServletResponse response) {
 
-        Class<? extends WorkflowQueue> selectedType = getRenderedObject("queueType");
-        WorkflowQueueBean bean;
+        final Class<? extends WorkflowQueue> selectedType = getRenderedObject("queueType");
+        final WorkflowQueueBean bean;
         try {
             bean = getBeanForType(selectedType);
         } catch (Exception e) {
@@ -143,11 +143,11 @@ public class QueueManagementAction extends BaseAction {
         return doForward(request, "/workflow/queues/createQueue.jsp");
     }
 
-    private WorkflowQueueBean getBeanForType(Class<? extends WorkflowQueue> selectedType) throws ClassNotFoundException,
+    private WorkflowQueueBean getBeanForType(final Class<? extends WorkflowQueue> selectedType) throws ClassNotFoundException,
             InstantiationException, IllegalAccessException {
-        Class<? extends WorkflowQueueBean> beanClass =
+        final Class<? extends WorkflowQueueBean> beanClass =
                 (Class<? extends WorkflowQueueBean>) Class.forName(selectedType.getName() + "Bean");
-        WorkflowQueueBean bean = beanClass.newInstance();
+        final WorkflowQueueBean bean = beanClass.newInstance();
         bean.setQueueType(selectedType);
         return bean;
     }
@@ -155,8 +155,8 @@ public class QueueManagementAction extends BaseAction {
     public ActionForward removeUser(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
             final HttpServletResponse response) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
 
-        WorkflowUserGroupQueue queue = getDomainObject(request, "queueId");
-        User user = getDomainObject(request, "userId");
+        final WorkflowUserGroupQueue queue = getDomainObject(request, "queueId");
+        final User user = getDomainObject(request, "userId");
         queue.removeUsers(user);
 
         return prepareEditQueue(mapping, form, request, response);
@@ -165,7 +165,7 @@ public class QueueManagementAction extends BaseAction {
     public ActionForward oneMoreUserInQueueInCreation(final ActionMapping mapping, final ActionForm form,
             final HttpServletRequest request, final HttpServletResponse response) {
 
-        WorkflowUserGroupQueueBean bean = getRenderedObject("newQueue");
+        final WorkflowUserGroupQueueBean bean = getRenderedObject("newQueue");
         addUserInBean(request, bean);
 
         request.setAttribute("creationPage", WorkflowQueueLayoutContext.getBootstrapFor(bean.getQueueType()));
@@ -177,14 +177,14 @@ public class QueueManagementAction extends BaseAction {
     public ActionForward oneMoreUserInQueueInEdition(final ActionMapping mapping, final ActionForm form,
             final HttpServletRequest request, final HttpServletResponse response) {
 
-        WorkflowUserGroupQueueBean bean = getRenderedObject("queue");
+        final WorkflowUserGroupQueueBean bean = getRenderedObject("queue");
         addUserInBean(request, bean);
 
         return doForward(request, "/workflow/queues/editQueue.jsp");
     }
 
     private void addUserInBean(final HttpServletRequest request, WorkflowUserGroupQueueBean bean) {
-        User userToAdd = bean.getUserToAdd();
+        final User userToAdd = bean.getUserToAdd();
         if (userToAdd != null) {
             bean.addUser(userToAdd);
         }
@@ -199,7 +199,7 @@ public class QueueManagementAction extends BaseAction {
     public ActionForward createNewQueue(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
             final HttpServletResponse response) {
 
-        WorkflowQueueBean bean = getRenderedObject("newQueue");
+        final WorkflowQueueBean bean = getRenderedObject("newQueue");
         bean.createWorkflowQueue();
 
         RenderUtils.invalidateViewState("newQueue");

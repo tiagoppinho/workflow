@@ -47,7 +47,7 @@ public class CommentBean implements Serializable {
     private List<UserNotificationBean> peopleToNotify;
     private List<QueueNotificationBean> queuesToNotify;
 
-    public CommentBean(WorkflowProcess process) {
+    public CommentBean(final WorkflowProcess process) {
         this.process = process;
         this.peopleToNotify = Collections.emptyList();
         this.queuesToNotify = Collections.emptyList();
@@ -57,7 +57,7 @@ public class CommentBean implements Serializable {
         return process;
     }
 
-    public void setProcess(WorkflowProcess process) {
+    public void setProcess(final WorkflowProcess process) {
         this.process = process;
     }
 
@@ -65,18 +65,18 @@ public class CommentBean implements Serializable {
         return comment;
     }
 
-    public void setComment(String comment) {
+    public void setComment(final String comment) {
         this.comment = comment;
     }
 
     public Set<User> getUsersToNotify() {
-        Set<User> users = new HashSet<User>();
-        for (UserNotificationBean bean : this.peopleToNotify) {
+        final Set<User> users = new HashSet<User>();
+        for (final UserNotificationBean bean : this.peopleToNotify) {
             if (bean.isAbleToNotify()) {
                 users.add(bean.getUser());
             }
         }
-        for (QueueNotificationBean bean : this.getQueuesToNotify()) {
+        for (final QueueNotificationBean bean : this.getQueuesToNotify()) {
             if (bean.isAbleToNotify()) {
                 users.addAll(bean.getUsers());
             }
@@ -88,7 +88,7 @@ public class CommentBean implements Serializable {
         return this.peopleToNotify;
     }
 
-    public void setPeopleToNotify(List<UserNotificationBean> peopleToNotify) {
+    public void setPeopleToNotify(final List<UserNotificationBean> peopleToNotify) {
         this.peopleToNotify = peopleToNotify;
     }
 
@@ -96,7 +96,7 @@ public class CommentBean implements Serializable {
         return queuesToNotify;
     }
 
-    public void setQueuesToNotify(List<QueueNotificationBean> queuesToNotify) {
+    public void setQueuesToNotify(final List<QueueNotificationBean> queuesToNotify) {
         this.queuesToNotify = queuesToNotify;
     }
 }

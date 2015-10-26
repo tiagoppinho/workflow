@@ -94,13 +94,13 @@ public class ProcessManagement extends BaseAction {
         return Authenticate.getUser();
     }
 
-    private final ActionForward doForward(HttpServletRequest request, String body) {
-        WorkflowProcess process = getProcess(request);
-        WorkflowLayoutContext layout = process.getLayout();
+    private final ActionForward doForward(final HttpServletRequest request, final String body) {
+        final WorkflowProcess process = getProcess(request);
+        final WorkflowLayoutContext layout = process.getLayout();
         request.setAttribute("context", layout);
         if (BennuPortalDispatcher.getSelectedFunctionality(request) == null) {
-            Functionality functionality = WorkflowContainerInitializer.getFunctionalityForProcess(process.getClass());
-            MenuFunctionality menuFunctionality =
+            final Functionality functionality = WorkflowContainerInitializer.getFunctionalityForProcess(process.getClass());
+            final MenuFunctionality menuFunctionality =
                     MenuFunctionality.findFunctionality(functionality.getProvider(), functionality.getKey());
             BennuPortalDispatcher.selectFunctionality(request, menuFunctionality);
         }
@@ -110,15 +110,15 @@ public class ProcessManagement extends BaseAction {
     public ActionForward viewProcess(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
             final HttpServletResponse response) throws ClassNotFoundException {
 
-        WorkflowProcess process = getProcess(request);
+        final WorkflowProcess process = getProcess(request);
         return viewProcess(process, request);
     }
 
     @SuppressWarnings("unchecked")
-    public ActionForward viewProcess(WorkflowProcess process, final HttpServletRequest request) {
+    public ActionForward viewProcess(final WorkflowProcess process, final HttpServletRequest request) {
 
         request.setAttribute("process", process);
-        ProcessRequestHandler<WorkflowProcess> handler =
+        final ProcessRequestHandler<WorkflowProcess> handler =
                 (ProcessRequestHandler<WorkflowProcess>) handlers.get(process.getClass());
         if (handler != null) {
             handler.handleRequest(process, request);
@@ -127,11 +127,11 @@ public class ProcessManagement extends BaseAction {
         return doForward(request, "/workflow/viewProcess.jsp");
     }
 
-    public ActionForward forwardToProcessPage(WorkflowProcess process, HttpServletRequest request) {
+    public ActionForward forwardToProcessPage(final WorkflowProcess process, final HttpServletRequest request) {
 
-        ActionForward forward = new ActionForward();
+        final ActionForward forward = new ActionForward();
         forward.setRedirect(true);
-        String realPath = ProcessManagement.workflowManagementURL + process.getExternalId();
+        final String realPath = ProcessManagement.workflowManagementURL + process.getExternalId();
         forward.setPath(realPath + "&" + GenericChecksumRewriter.CHECKSUM_ATTRIBUTE_NAME + "="
                 + GenericChecksumRewriter.calculateChecksum(request.getContextPath() + realPath, request.getSession()));
         return forward;
@@ -140,18 +140,18 @@ public class ProcessManagement extends BaseAction {
     public ActionForward process(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
             final HttpServletResponse response) {
 
-        WorkflowProcess process = getProcess(request);
-        WorkflowActivity<WorkflowProcess, ActivityInformation<WorkflowProcess>> activity = getActivity(process, request);
-        ActivityInformation<WorkflowProcess> information = getRenderedObject("activityBean");
+        final WorkflowProcess process = getProcess(request);
+        final WorkflowActivity<WorkflowProcess, ActivityInformation<WorkflowProcess>> activity = getActivity(process, request);
+        final ActivityInformation<WorkflowProcess> information = getRenderedObject("activityBean");
         return doLifeCycle(information, process, activity, request);
     }
 
     public ActionForward activityDefaultPostback(final ActionMapping mapping, final ActionForm form,
             final HttpServletRequest request, final HttpServletResponse response) {
 
-        WorkflowProcess process = getProcess(request);
-        WorkflowActivity<WorkflowProcess, ActivityInformation<WorkflowProcess>> activity = getActivity(process, request);
-        ActivityInformation<WorkflowProcess> information = getRenderedObject("activityBean");
+        final WorkflowProcess process = getProcess(request);
+        final WorkflowActivity<WorkflowProcess, ActivityInformation<WorkflowProcess>> activity = getActivity(process, request);
+        final ActivityInformation<WorkflowProcess> information = getRenderedObject("activityBean");
         RenderUtils.invalidateViewState();
         return executeActivity(process, request, activity, information);
     }
@@ -159,25 +159,25 @@ public class ProcessManagement extends BaseAction {
     public ActionForward actionLink(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
             final HttpServletResponse response) throws Exception {
 
-        WorkflowProcess process = getProcess(request);
-        WorkflowActivity<WorkflowProcess, ActivityInformation<WorkflowProcess>> activity = getActivity(process, request);
-        ActivityInformation<WorkflowProcess> information = populateInformation(process, activity, request);
+        final WorkflowProcess process = getProcess(request);
+        final WorkflowActivity<WorkflowProcess, ActivityInformation<WorkflowProcess>> activity = getActivity(process, request);
+        final ActivityInformation<WorkflowProcess> information = populateInformation(process, activity, request);
         return executeActivity(process, request, activity, information);
     }
 
-    private ActivityInformation<WorkflowProcess> populateInformation(WorkflowProcess process,
-            WorkflowActivity<WorkflowProcess, ActivityInformation<WorkflowProcess>> activity, HttpServletRequest request)
+    private ActivityInformation<WorkflowProcess> populateInformation(final WorkflowProcess process,
+            final WorkflowActivity<WorkflowProcess, ActivityInformation<WorkflowProcess>> activity, final HttpServletRequest request)
             throws Exception {
-        ActivityInformation<WorkflowProcess> activityInformation = activity.getActivityInformation(process);
-        String parameters = request.getParameter("parameters");
-        Class<? extends ActivityInformation> activityClass = activityInformation.getClass();
+        final ActivityInformation<WorkflowProcess> activityInformation = activity.getActivityInformation(process);
+        final String parameters = request.getParameter("parameters");
+        final Class<? extends ActivityInformation> activityClass = activityInformation.getClass();
         if (!StringUtils.isEmpty(parameters)) {
-            for (String parameter : parameters.split(",")) {
+            for (final String parameter : parameters.split(",")) {
 
-                Field field = getField(activityClass, parameter);
-                Class<?> type = field.getType();
-                Object convertedValue = convert(type, request.getParameter(parameter));
-                Method declaredMethod =
+                final Field field = getField(activityClass, parameter);
+                final Class<?> type = field.getType();
+                final Object convertedValue = convert(type, request.getParameter(parameter));
+                final Method declaredMethod =
                         getMethod("set" + parameter.substring(0, 1).toUpperCase() + parameter.substring(1), activityClass,
                                 convertedValue.getClass());
                 declaredMethod.invoke(activityInformation, convertedValue);
@@ -186,7 +186,7 @@ public class ProcessManagement extends BaseAction {
         return activityInformation;
     }
 
-    private Field getField(Class activityClass, String parameter) throws SecurityException, NoSuchFieldException {
+    private Field getField(final Class activityClass, final String parameter) throws SecurityException, NoSuchFieldException {
         if (activityClass == null) {
             throw new NoSuchFieldException();
         }
@@ -199,9 +199,8 @@ public class ProcessManagement extends BaseAction {
         return field == null ? getField(activityClass.getSuperclass(), parameter) : field;
     }
 
-    private Method getMethod(String methodName, Class<? extends ActivityInformation> activityClass,
+    private Method getMethod(final String methodName, final Class<? extends ActivityInformation> activityClass,
             Class<? extends Object> argumentClass) {
-        Method method = null;
         while (!argumentClass.equals(Object.class)) {
             try {
                 return activityClass.getMethod(methodName, argumentClass);
@@ -209,10 +208,10 @@ public class ProcessManagement extends BaseAction {
                 argumentClass = argumentClass.getSuperclass();
             }
         }
-        return method;
+        return null;
     }
 
-    private Object convert(Class<?> type, String parameterValue) throws Exception {
+    private Object convert(final Class<?> type, final String parameterValue) throws Exception {
         if (DomainObject.class.isAssignableFrom(type)) {
             return FenixFramework.getDomainObject(parameterValue);
         }
@@ -231,8 +230,8 @@ public class ProcessManagement extends BaseAction {
         throw new IllegalArgumentException("Invalid type" + type.getName());
     }
 
-    private ActionForward doLifeCycle(ActivityInformation<WorkflowProcess> information, WorkflowProcess process,
-            WorkflowActivity<WorkflowProcess, ActivityInformation<WorkflowProcess>> activity, HttpServletRequest request) {
+    private ActionForward doLifeCycle(ActivityInformation<WorkflowProcess> information, final WorkflowProcess process,
+            final WorkflowActivity<WorkflowProcess, ActivityInformation<WorkflowProcess>> activity, final HttpServletRequest request) {
         if (information == null) {
             information = activity.getActivityInformation(process);
         } else {
@@ -242,24 +241,24 @@ public class ProcessManagement extends BaseAction {
         return executeActivity(process, request, activity, information);
     }
 
-    public ActionForward executeActivity(WorkflowProcess process, HttpServletRequest request,
-            WorkflowActivity<WorkflowProcess, ActivityInformation<WorkflowProcess>> activity,
-            ActivityInformation<WorkflowProcess> information) {
+    public ActionForward executeActivity(final WorkflowProcess process, final HttpServletRequest request,
+            final WorkflowActivity<WorkflowProcess, ActivityInformation<WorkflowProcess>> activity,
+            final ActivityInformation<WorkflowProcess> information) {
         if (information.hasAllneededInfo()) {
 
             try {
                 activity.execute(information);
-            } catch (ActivityException e) {
+            } catch (final ActivityException e) {
                 addLocalizedMessage(request, e.getMessage());
                 RenderUtils.invalidateViewState();
                 return information.isForwardedFromInput() ? forwardProcessForInput(activity, request, information) : viewProcess(
                         process, request);
-            } catch (DomainException domainEx) {
+            } catch (final DomainException domainEx) {
                 addLocalizedMessage(request, domainEx.getLocalizedMessage());
                 RenderUtils.invalidateViewState();
                 return information.isForwardedFromInput() ? forwardProcessForInput(activity, request, information) : viewProcess(
                         process, request);
-            } catch (ConsistencyException exc) {
+            } catch (final ConsistencyException exc) {
                 displayConsistencyException(exc, request);
 
                 RenderUtils.invalidateViewState();
@@ -273,8 +272,8 @@ public class ProcessManagement extends BaseAction {
         return forwardProcessForInput(activity, request, information);
     }
 
-    private final <T extends WorkflowProcess> ActionForward forwardProcessForInput(WorkflowActivity activity,
-            HttpServletRequest request, ActivityInformation<T> information) {
+    private final <T extends WorkflowProcess> ActionForward forwardProcessForInput(final WorkflowActivity activity,
+            final HttpServletRequest request, final ActivityInformation<T> information) {
         request.setAttribute("information", information);
         if (activity.isDefaultInputInterfaceUsed()) {
             return doForward(request, "/workflow/activityInput.jsp");
@@ -290,7 +289,7 @@ public class ProcessManagement extends BaseAction {
         final WorkflowProcess process = getProcess(request);
         request.setAttribute("process", process);
 
-        Set<WorkflowProcessComment> comments = new TreeSet<WorkflowProcessComment>(WorkflowProcessComment.COMPARATOR);
+        final Set<WorkflowProcessComment> comments = new TreeSet<WorkflowProcessComment>(WorkflowProcessComment.COMPARATOR);
         comments.addAll(process.getCommentsSet());
 
         process.markCommentsAsReadForUser(Authenticate.getUser());
@@ -305,10 +304,10 @@ public class ProcessManagement extends BaseAction {
 
         final WorkflowProcess process = getProcess(request);
 
-        String displayedInlineString = request.getParameter("displayedInLine");
-        Boolean displayedInline = Boolean.valueOf(displayedInlineString);
+        final String displayedInlineString = request.getParameter("displayedInLine");
+        final Boolean displayedInline = Boolean.valueOf(displayedInlineString);
 
-        CommentBean bean = getRenderedObject("comment");
+        final CommentBean bean = getRenderedObject("comment");
 
         process.createComment(Authenticate.getUser(), bean);
 
@@ -320,7 +319,7 @@ public class ProcessManagement extends BaseAction {
         }
     }
 
-    private ActionForward forwardToUpload(HttpServletRequest request, WorkflowFileUploadBean bean) {
+    private ActionForward forwardToUpload(final HttpServletRequest request, final WorkflowFileUploadBean bean) {
 
         if (!bean.isDefaultUploadInterfaceUsed()) {
             request.setAttribute("interface", "/" + bean.getSelectedInstance().getName().replace('.', '/') + "-upload.jsp");
@@ -328,7 +327,7 @@ public class ProcessManagement extends BaseAction {
         return doForward(request, "/workflow/fileUpload.jsp");
     }
 
-    private ActionForward forwardToDocumentUpload(HttpServletRequest request, WorkflowFileUploadBean bean) {
+    private ActionForward forwardToDocumentUpload(final HttpServletRequest request, final WorkflowFileUploadBean bean) {
 
         if (!bean.isDefaultUploadInterfaceUsed()) {
             request.setAttribute("interface", "/" + bean.getSelectedInstance().getName().replace('.', '/') + "-upload.jsp");
@@ -340,8 +339,8 @@ public class ProcessManagement extends BaseAction {
             final HttpServletResponse response) {
 
         final WorkflowProcess process = getProcess(request);
-        Class<? extends ProcessFile> selectedInstance = process.getUploadableFileTypes().get(0);
-        WorkflowFileUploadBean bean = FileUploadBeanResolver.getBeanForProcessFile(process, selectedInstance);
+        final Class<? extends ProcessFile> selectedInstance = process.getUploadableFileTypes().get(0);
+        final WorkflowFileUploadBean bean = FileUploadBeanResolver.getBeanForProcessFile(process, selectedInstance);
         bean.setSelectedInstance(selectedInstance);
 
         request.setAttribute("bean", bean);
@@ -354,8 +353,8 @@ public class ProcessManagement extends BaseAction {
             final HttpServletResponse response) {
 
         final WorkflowProcess process = getProcess(request);
-        Class<? extends ProcessFile> selectedInstance = process.getUploadableFileTypes().get(0);
-        WorkflowFileUploadBean bean = FileUploadBeanResolver.getBeanForProcessFile(process, selectedInstance);
+        final Class<? extends ProcessFile> selectedInstance = process.getUploadableFileTypes().get(0);
+        final WorkflowFileUploadBean bean = FileUploadBeanResolver.getBeanForProcessFile(process, selectedInstance);
         bean.setSelectedInstance(selectedInstance);
 
         request.setAttribute("bean", bean);
@@ -366,18 +365,18 @@ public class ProcessManagement extends BaseAction {
 
     public ActionForward upload(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
             final HttpServletResponse response) throws Exception {
-        WorkflowFileUploadBean bean = getRenderedObject("uploadFile");
+        final WorkflowFileUploadBean bean = getRenderedObject("uploadFile");
         final WorkflowProcess process = getProcess(request);
 
         try {
             process.addFile(bean.getSelectedInstance(), bean.getDisplayName(), bean.getFilename(),
                     consumeInputStream(bean.getInputStream()), bean);
-        } catch (ProcessFileValidationException e) {
+        } catch (final ProcessFileValidationException e) {
             request.setAttribute("bean", bean);
             request.setAttribute("process", process);
             addLocalizedMessage(request, e.getLocalizedMessage());
             return forwardToUpload(request, bean);
-        } catch (DomainException e) {
+        } catch (final DomainException e) {
             request.setAttribute("bean", bean);
             request.setAttribute("process", process);
             addLocalizedMessage(request, e.getLocalizedMessage());
@@ -389,11 +388,11 @@ public class ProcessManagement extends BaseAction {
 
     }
 
-    private WorkflowFileUploadBean fileUploadRoundTrip(Class<? extends ProcessFile> selectedInstance,
+    private WorkflowFileUploadBean fileUploadRoundTrip(final Class<? extends ProcessFile> selectedInstance,
             final HttpServletRequest request) {
 
         final WorkflowProcess process = getProcess(request);
-        WorkflowFileUploadBean bean = FileUploadBeanResolver.getBeanForProcessFile(process, selectedInstance);
+        final WorkflowFileUploadBean bean = FileUploadBeanResolver.getBeanForProcessFile(process, selectedInstance);
         bean.setSelectedInstance(selectedInstance);
 
         request.setAttribute("bean", bean);
@@ -402,7 +401,7 @@ public class ProcessManagement extends BaseAction {
         return bean;
     }
 
-    private WorkflowFileUploadBean documentUploadRoundTrip(Class<? extends ProcessFile> selectedInstance,
+    private WorkflowFileUploadBean documentUploadRoundTrip(final Class<? extends ProcessFile> selectedInstance,
             final HttpServletRequest request) {
 
         final WorkflowProcess process = getProcess(request);
@@ -456,7 +455,7 @@ public class ProcessManagement extends BaseAction {
             final HttpServletResponse response) throws IOException {
 
         final ProcessFile file = getDomainObject(request, "fileId");
-        WorkflowProcess process = file.getProcess();
+        final WorkflowProcess process = file.getProcess();
         if (process != null) {
             process.preAccessFile(file);
         }
@@ -482,20 +481,20 @@ public class ProcessManagement extends BaseAction {
             final HttpServletResponse response) {
 
         final WorkflowProcess process = getProcess(request);
-        List<ProcessFile> listFiles = process.getFilesIncludingDeleted(process.getAvailableFileTypes(), true);
+        final List<ProcessFile> listFiles = process.getFilesIncludingDeleted(process.getAvailableFileTypes(), true);
         request.setAttribute("process", process);
         request.setAttribute("listFiles", listFiles);
         return doForward(request, "/workflow/viewFilesDetails.jsp");
 
     }
 
-    private <T extends WorkflowProcess> WorkflowActivity<T, ActivityInformation<T>> getActivity(WorkflowProcess process,
-            HttpServletRequest request) {
-        String activityName = request.getParameter("activity");
+    private <T extends WorkflowProcess> WorkflowActivity<T, ActivityInformation<T>> getActivity(final WorkflowProcess process,
+            final HttpServletRequest request) {
+        final String activityName = request.getParameter("activity");
         return process.getActivity(activityName);
     }
 
-    protected <T extends WorkflowProcess> T getProcess(HttpServletRequest request) {
+    protected <T extends WorkflowProcess> T getProcess(final HttpServletRequest request) {
         return (T) getDomainObject(request, "processId");
     }
 
@@ -540,8 +539,8 @@ public class ProcessManagement extends BaseAction {
      *            the httpservlet request
      * @return ActionForward for the activity input interface.
      */
-    public ActionForward performActivityPostback(ActivityInformation<? extends WorkflowProcess> information,
-            HttpServletRequest request) {
+    public ActionForward performActivityPostback(final ActivityInformation<? extends WorkflowProcess> information,
+            final HttpServletRequest request) {
         return forwardProcessForInput(information.getActivity(), request, information);
     }
 
@@ -553,8 +552,8 @@ public class ProcessManagement extends BaseAction {
      * @param handler
      *            the handler that performs the specific code
      */
-    public static <T extends WorkflowProcess> void registerProcessRequestHandler(Class<T> workflowProcessClass,
-            ProcessRequestHandler<T> handler) {
+    public static <T extends WorkflowProcess> void registerProcessRequestHandler(final Class<T> workflowProcessClass,
+            final ProcessRequestHandler<T> handler) {
         handlers.put(workflowProcessClass, handler);
     }
 
@@ -573,13 +572,13 @@ public class ProcessManagement extends BaseAction {
     public ActionForward viewTypeDescription(final ActionMapping mapping, final ActionForm form,
             final HttpServletRequest request, final HttpServletResponse response) throws IOException {
         String classname = request.getParameter("classname");
-        int indexOfInnerClassInEnum = classname.indexOf("$");
+        final int indexOfInnerClassInEnum = classname.indexOf("$");
         if (indexOfInnerClassInEnum > 0) {
             classname = classname.substring(0, indexOfInnerClassInEnum);
         }
-        PresentableProcessState type;
+        final PresentableProcessState type;
         try {
-            Class<Enum> stateEnum = (Class<Enum>) Class.forName(classname);
+            final Class<Enum> stateEnum = (Class<Enum>) Class.forName(classname);
             type = (PresentableProcessState) Enum.valueOf(stateEnum, request.getParameter("type"));
         } catch (Exception e) {
             e.printStackTrace();
@@ -587,13 +586,13 @@ public class ProcessManagement extends BaseAction {
         }
         request.setAttribute("name", type.getLocalizedName());
 
-        JsonObject reply = new JsonObject();
+        final JsonObject reply = new JsonObject();
 
         reply.addProperty("name", type.getLocalizedName());
         reply.addProperty("description", type.getDescription());
 
-        try (OutputStream outputStream = response.getOutputStream()) {
-            byte[] jsonReply = reply.toString().getBytes();
+        try (final OutputStream outputStream = response.getOutputStream()) {
+            final byte[] jsonReply = reply.toString().getBytes();
             response.setContentType("text");
             response.setContentLength(jsonReply.length);
             outputStream.write(jsonReply);

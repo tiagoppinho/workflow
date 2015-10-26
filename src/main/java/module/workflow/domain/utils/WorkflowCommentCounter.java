@@ -26,13 +26,14 @@ package module.workflow.domain.utils;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Stream;
+
+import org.apache.commons.collections.Predicate;
+import org.fenixedu.bennu.core.domain.User;
 
 import module.workflow.domain.WorkflowLog;
 import module.workflow.domain.WorkflowProcess;
 import module.workflow.widgets.UnreadCommentsWidget;
-
-import org.apache.commons.collections.Predicate;
-import org.fenixedu.bennu.core.domain.User;
 
 /**
  * 
@@ -64,6 +65,7 @@ public class WorkflowCommentCounter {
     }
 
     /**
+     * @deprecated use getProcessStreamWithUnreadComments instead
      * @param user user
      * @param className classname
      * @return the processes of unread comments for the given person for the
@@ -72,6 +74,7 @@ public class WorkflowCommentCounter {
      *         efficient and there is a direct relation between a comment and a
      *         log)
      */
+    @Deprecated
     public Set<WorkflowProcess> getProcessesWithUnreadComments(final User user, final String className) {
 
         Set<WorkflowProcess> processes = new HashSet<WorkflowProcess>();
@@ -97,6 +100,21 @@ public class WorkflowCommentCounter {
         }
         return processes;
 
+    }
+
+    public Stream<WorkflowProcess> getProcessStreamWithUnreadComments(final User user, final String className) {
+        final Stream<WorkflowLog> stream = user.getUserLogsSet().stream();
+        return stream.map(l -> l.getProcess()).filter(l -> evaluate(user, className, l)).distinct();
+    }
+
+    public boolean evaluate(final User user, final String className, final Object arg0) {
+        if (className != null && classToFilter.toString().contentEquals(className)) {
+            return classToFilter.isAssignableFrom(arg0.getClass())
+                    && ((WorkflowProcess) arg0).hasUnreadCommentsForUser(user);
+        } else if (className != null) {
+            return false;
+        }
+        return classToFilter.isAssignableFrom(arg0.getClass()) && ((WorkflowProcess) arg0).hasUnreadCommentsForUser(user);
     }
 
 }

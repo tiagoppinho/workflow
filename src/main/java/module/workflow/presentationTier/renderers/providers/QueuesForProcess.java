@@ -24,19 +24,13 @@
  */
 package module.workflow.presentationTier.renderers.providers;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import module.workflow.domain.WorkflowProcess;
 import module.workflow.domain.WorkflowQueue;
 import module.workflow.presentationTier.actions.CommentBean;
 import module.workflow.presentationTier.actions.QueueNotificationBean;
-import module.workflow.presentationTier.actions.UserNotificationBean;
-
-import org.fenixedu.bennu.core.domain.User;
-
 import pt.ist.fenixWebFramework.renderers.DataProvider;
 import pt.ist.fenixWebFramework.renderers.components.converters.Converter;
 
@@ -61,22 +55,14 @@ public class QueuesForProcess implements DataProvider {
         Set<QueueNotificationBean> availableQueuesToNotify = new HashSet<QueueNotificationBean>();
         WorkflowProcess process = bean.getProcess();
 
-        for (WorkflowQueue queue : process.getQueueHistory()) {
+        for (WorkflowQueue queue : process.getQueueHistorySet()) {
             availableQueuesToNotify.add(new QueueNotificationBean(queue, process));
         }
-        for (WorkflowQueue currentQueue : process.getCurrentQueues()) {
+        for (WorkflowQueue currentQueue : process.getCurrentQueuesSet()) {
             availableQueuesToNotify.add(new QueueNotificationBean(currentQueue, process));
         }
 
-        //	return new ArrayList<UserNotificationBean>(availablePeopleToNotify);
         return availableQueuesToNotify;
     }
 
-    private List<UserNotificationBean> getWorkers(WorkflowProcess process) {
-        List<UserNotificationBean> moreBeans = new ArrayList<UserNotificationBean>();
-        for (User user : process.getProcessWorkers()) {
-            moreBeans.add(new UserNotificationBean(user, process));
-        }
-        return moreBeans;
-    }
 }

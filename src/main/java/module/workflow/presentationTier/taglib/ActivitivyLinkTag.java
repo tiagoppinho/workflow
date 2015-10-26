@@ -288,7 +288,7 @@ public class ActivitivyLinkTag extends WorkflowBodyTag {
     }
 
     private String getParameters() {
-        StringBuffer buffer = new StringBuffer("");
+        StringBuilder buffer = new StringBuilder();
         Iterator<String> iterator = parameterMap.keySet().iterator();
         while (iterator.hasNext()) {
             buffer.append(iterator.next());
@@ -300,7 +300,7 @@ public class ActivitivyLinkTag extends WorkflowBodyTag {
     }
 
     private String getParameterString() {
-        StringBuffer buffer = new StringBuffer("");
+        StringBuilder buffer = new StringBuilder("");
         Iterator<String> iterator = parameterMap.keySet().iterator();
         while (iterator.hasNext()) {
             String key = iterator.next();

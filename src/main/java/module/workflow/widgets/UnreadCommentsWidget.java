@@ -32,6 +32,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import module.dashBoard.domain.DashBoardWidget;
 import module.dashBoard.presentationTier.WidgetRequest;
@@ -92,7 +93,7 @@ public class UnreadCommentsWidget extends WidgetController {
 
         List<WorkflowProcess> processesWithUnreadComments = new ArrayList<WorkflowProcess>();
         for (WorkflowCommentCounter commentCounter : processClassesToCount) {
-            Set<WorkflowProcess> processesToAdd = commentCounter.getProcessesWithUnreadComments(forGivenUser, className);
+            Set<WorkflowProcess> processesToAdd = commentCounter.getProcessStreamWithUnreadComments(forGivenUser, className).collect(Collectors.toSet());
             processesWithUnreadComments.addAll(processesToAdd);
             if (numberUnreadCommentsPerProcess != null) {
                 numberUnreadCommentsPerProcess.put(commentCounter.getClassToFilter(), processesToAdd.size());

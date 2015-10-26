@@ -32,8 +32,14 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.TreeSet;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import org.fenixedu.bennu.core.domain.User;
+import org.fenixedu.bennu.core.security.Authenticate;
+import org.joda.time.DateTime;
+import org.joda.time.Interval;
 
 import module.workflow.activities.ActivityInformation;
 import module.workflow.activities.WorkflowActivity;
@@ -44,12 +50,6 @@ import module.workflow.presentationTier.actions.CommentBean;
 import module.workflow.util.ProcessEvaluator;
 import module.workflow.util.WorkflowClassUtil;
 import module.workflow.util.WorkflowFileUploadBean;
-
-import org.fenixedu.bennu.core.domain.User;
-import org.fenixedu.bennu.core.security.Authenticate;
-import org.joda.time.DateTime;
-import org.joda.time.Interval;
-
 import pt.ist.fenixframework.Atomic;
 import pt.ist.fenixframework.core.WriteOnReadError;
 
@@ -73,6 +73,10 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base {
         setWorkflowSystem(WorkflowSystem.getInstance());
     }
 
+    /**
+     * @deprecated This method is useless... if you call this think about it and rewrite your code
+     */
+    @Deprecated
     public static void evaluate(final Class processClass, final ProcessEvaluator<WorkflowProcess> processEvaluator,
             final Collection<? extends WorkflowProcess> processes) {
         for (final WorkflowProcess process : processes) {
@@ -82,7 +86,11 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base {
         }
     }
 
+    /**
+     * @deprecated use filter with stream arg instead
+     */
     @SuppressWarnings("unchecked")
+    @Deprecated
     protected static <T extends WorkflowProcess> Set<T> filter(Class<T> processClass, Predicate<WorkflowProcess> predicate,
             Collection<? extends WorkflowProcess> processes) {
         Set<T> classes = new HashSet<T>();
@@ -95,6 +103,12 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base {
         return classes;
     }
 
+    protected static <T extends WorkflowProcess> Stream<T> filter(Class<T> processClass, Predicate<WorkflowProcess> predicate,
+            Stream<? extends WorkflowProcess> processes) {
+        return processes.filter(p -> processClass.isAssignableFrom(p.getClass()) && (predicate == null || predicate.test(p)))
+                .map(p -> (T) p);
+    }
+
     /**
      * 
      * @return true if this process has any relation with queues. False
@@ -104,23 +118,42 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base {
         return (!getQueueHistory().isEmpty()) || (!getCurrentQueues().isEmpty());
     }
 
+    /**
+     * @deprecated use getAllProcessStream instead
+     */
+    @Deprecated
     public static <T extends WorkflowProcess> Set<T> getAllProcesses(Class<T> processClass) {
         return filter(processClass, null, WorkflowSystem.getInstance().getProcessesSet());
     }
 
-    public static <T extends WorkflowProcess> Set<T> getAllProcesses(Class<T> processClass, Predicate<WorkflowProcess> predicate) {
+    public static <T extends WorkflowProcess> Stream<T> getAllProcessStream(Class<T> processClass) {
+        final Stream<WorkflowProcess> stream = WorkflowSystem.getInstance().getProcessesSet().stream();
+        return filter(processClass, null, stream);
+    }
+
+    /**
+     * @deprecated use getAllProcessStream instead
+     */
+    @Deprecated
+    public static <T extends WorkflowProcess> Set<T> getAllProcesses(Class<T> processClass,
+            Predicate<WorkflowProcess> predicate) {
         return filter(processClass, predicate, WorkflowSystem.getInstance().getProcessesSet());
     }
 
-    public <T extends WorkflowProcess, AI extends ActivityInformation<T>> WorkflowActivity<T, AI> getActivity(String activityName) {
-        List<WorkflowActivity<T, AI>> activeActivities = getActivities();
-        for (WorkflowActivity<T, AI> activity : activeActivities) {
-            if (activity.getName().equals(activityName)) {
-                return activity;
-            }
-        }
+    public static <T extends WorkflowProcess> Stream<T> getAllProcessStream(Class<T> processClass,
+            Predicate<WorkflowProcess> predicate) {
+        final Stream<WorkflowProcess> stream = WorkflowSystem.getInstance().getProcessesSet().stream();
+        return filter(processClass, predicate, stream);
+    }
 
-        return null;
+    public <T extends WorkflowProcess, AI extends ActivityInformation<T>> WorkflowActivity<T, AI> getActivity(
+            String activityName) {
+        final Stream<WorkflowActivity<T, AI>> stream = getActivityStream();
+        return stream.filter(a -> test(a, activityName)).findAny().orElse(null);
+    }
+
+    private boolean test(WorkflowActivity a, String activityName) {
+        return a.getName().equals(activityName);
     }
 
     /*
@@ -129,7 +162,22 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base {
      * 
      * @return List of objects that extends {@link WorkflowActivity}
      */
+    /**
+     * use getActivityStream instead
+     */
+    @Deprecated
     public abstract <T extends WorkflowActivity<? extends WorkflowProcess, ? extends ActivityInformation>> List<T> getActivities();
+
+    /*
+     * Abstract method that returns ALL activities for the process either
+     * they're active or not.
+     * 
+     * @return Stream of objects that extends {@link WorkflowActivity}
+     */
+    public <T extends WorkflowActivity<? extends WorkflowProcess, ? extends ActivityInformation>> Stream<T> getActivityStream() {
+        final List<T> activities = getActivities();
+        return activities.stream();
+    }
 
     /**
      * This method is usually used by generic filtering mechanisms. Usually
@@ -182,7 +230,11 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base {
         return WorkflowLayoutContext.getDefaultWorkflowLayoutContext(this.getClass());
     }
 
+    /**
+     * @deprecated use getActiveActivityStream instead
+     */
     @SuppressWarnings("unchecked")
+    @Deprecated
     public <T extends WorkflowProcess, AI extends ActivityInformation<T>> List<WorkflowActivity<T, AI>> getActiveActivities() {
         try {
             List<WorkflowActivity<T, AI>> activities = new ArrayList<WorkflowActivity<T, AI>>();
@@ -199,6 +251,11 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base {
             t.printStackTrace();
             throw new Error(t);
         }
+    }
+
+    public <T extends WorkflowProcess, AI extends ActivityInformation<T>> Stream<WorkflowActivity<T, AI>> getActiveActivityStream() {
+        final Stream<WorkflowActivity<T, AI>> stream = getActivityStream();
+        return stream.filter(a -> a.isActive((T) this));
     }
 
     @SuppressWarnings("unchecked")
@@ -241,22 +298,17 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base {
     }
 
     public DateTime getDateFromLastActivity() {
-        List<WorkflowLog> logs = new ArrayList<WorkflowLog>();
-        logs.addAll(getExecutionLogs());
-        Collections.sort(logs, (log1, log2) -> -1 * log1.getWhenOperationWasRan().compareTo(log2.getWhenOperationWasRan()));
-
-        return logs.isEmpty() ? null : logs.get(0).getWhenOperationWasRan();
+        final WorkflowLog last = getExecutionLogStream().max(WorkflowLog.COMPARATOR_BY_WHEN).orElse(null);
+        return last == null ? null : last.getWhenOperationWasRan();
     }
 
     public static boolean isCreateNewProcessAvailable() {
-        final User user = Authenticate.getUser();
-        return user != null;
+        return Authenticate.getUser() != null;
     }
 
     public WorkflowProcessComment getMostRecentComment() {
-        TreeSet<WorkflowProcessComment> comments = new TreeSet<WorkflowProcessComment>(WorkflowProcessComment.REVERSE_COMPARATOR);
-        comments.addAll(getComments());
-        return comments.size() > 0 ? comments.first() : null;
+        final Stream<WorkflowProcessComment> stream = getCommentsSet().stream();
+        return stream.max(WorkflowProcessComment.COMPARATOR).orElse(null);
     }
 
     /**
@@ -264,7 +316,9 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base {
      * showed to the user
      * 
      * @return List
+     * @deprecated use getPendingLogStream instead
      */
+    @Deprecated
     public List<WorkflowLog> getPendingLogs() {
         List<WorkflowLog> list = new ArrayList<WorkflowLog>();
 
@@ -277,6 +331,15 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base {
         return list;
     }
 
+    public Stream<WorkflowLog> getPendingLogStream() {
+        final Stream<WorkflowLog> stream = super.getExecutionLogsSet().stream();
+        return stream.filter(l -> l.getWhenOperationWasRan() == null);
+    }
+
+    /**
+     * @deprecated use getExecutionLogStream instead
+     */
+    @Deprecated
     @Override
     public Set<WorkflowLog> getExecutionLogsSet() {
         Set<WorkflowLog> list = new HashSet<WorkflowLog>();
@@ -290,21 +353,36 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base {
         return list;
     }
 
+    public Stream<WorkflowLog> getExecutionLogStream() {
+        final Stream<WorkflowLog> stream = super.getExecutionLogsSet().stream();
+        return stream.filter(l -> l.getWhenOperationWasRan() != null);
+    }
+
     public List<ActivityLog> getExecutionLogs(DateTime begin, DateTime end) {
         return getExecutionLogs(begin, end);
     }
 
+    /**
+     * @deprecated use getExecutionLogStream instead
+     */
+    @Deprecated
     public List<WorkflowLog> getExecutionLogs(DateTime begin, DateTime end, Class<?>... activitiesClass) {
         List<WorkflowLog> logs = new ArrayList<WorkflowLog>();
         Interval interval = new Interval(begin, end);
         for (WorkflowLog log : getExecutionLogs()) {
-            if (interval.contains(log.getWhenOperationWasRan())
-                    && (activitiesClass.length == 0 || (log instanceof ActivityLog && match(activitiesClass,
-                            ((ActivityLog) log).getOperation())))) {
+            if (interval.contains(log.getWhenOperationWasRan()) && (activitiesClass.length == 0
+                    || (log instanceof ActivityLog && match(activitiesClass, ((ActivityLog) log).getOperation())))) {
                 logs.add(log);
             }
         }
         return logs;
+    }
+
+    public Stream<WorkflowLog> getExecutionLogStream(DateTime begin, DateTime end, Class<?>... activitiesClass) {
+        final Interval i = new Interval(begin, end);
+        final Stream<WorkflowLog> logs = getExecutionLogStream();
+        return logs.filter(l -> i.contains(l.getWhenOperationWasRan()) && (activitiesClass.length == 0
+                || (l instanceof ActivityLog && match(activitiesClass, ((ActivityLog) l).getOperation()))));
     }
 
     private boolean match(Class<?>[] classes, String name) {
@@ -320,9 +398,7 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base {
     public void createComment(User user, CommentBean bean) {
         String comment = bean.getComment();
         new WorkflowProcessComment(this, user, comment);
-        for (User notifyUser : bean.getUsersToNotify()) {
-            notifyUserDueToComment(notifyUser, comment);
-        }
+        bean.getUsersToNotify().forEach(u -> notifyUserDueToComment(u, comment));
     }
 
     /**
@@ -366,12 +442,20 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base {
         return true;
     }
 
+    /**
+     * @deprecated use getProcessWorkerStream instead
+     */
+    @Deprecated
     public Set<User> getProcessWorkers() {
         Set<User> users = new HashSet<User>();
         for (WorkflowLog log : getExecutionLogs()) {
             users.add(log.getActivityExecutor());
         }
         return users;
+    }
+
+    public Stream<User> getProcessWorkerStream() {
+        return getExecutionLogStream().map(l -> l.getActivityExecutor()).distinct();
     }
 
     public void preAccessFile(ProcessFile file) {
@@ -509,12 +593,8 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base {
     }
 
     public boolean isCurrentUserAbleToAccessAnyQueues() {
-        for (WorkflowQueue queue : getCurrentQueues()) {
-            if (queue.isCurrentUserAbleToAccessQueue()) {
-                return true;
-            }
-        }
-        return false;
+        final Stream<WorkflowQueue> stream = getCurrentQueuesSet().stream();
+        return stream.anyMatch(q -> q.isCurrentUserAbleToAccessQueue());
     }
 
     public boolean isCreatedByAvailable() {
@@ -536,23 +616,40 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base {
         addDeletedFiles(file);
         file.processRemoval();
         String nameToLog = file.getDisplayName() != null ? file.getDisplayName() : file.getFilename();
-        new FileRemoveLog(this, Authenticate.getUser(), file.getFilename(), nameToLog, WorkflowClassUtil.getNameForType(file
-                .getClass()));
+        new FileRemoveLog(this, Authenticate.getUser(), file.getFilename(), nameToLog,
+                WorkflowClassUtil.getNameForType(file.getClass()));
 
     }
 
+    /**
+     * @deprecated use getUnreadCommentStreamForCurrentUser instead
+     */
+    @Deprecated
     public List<WorkflowProcessComment> getUnreadCommentsForCurrentUser() {
         return getUnreadCommentsForUser(Authenticate.getUser());
     }
 
+    public Stream<WorkflowProcessComment> getUnreadCommentStreamForCurrentUser() {
+        return getUnreadCommentStreamForUser(Authenticate.getUser());
+    }
+
+    /**
+     * @deprecated use getUnreadCommentStreamForUser instead
+     */
+    @Deprecated
     public List<WorkflowProcessComment> getUnreadCommentsForUser(User user) {
         List<WorkflowProcessComment> comments = new ArrayList<WorkflowProcessComment>();
-        for (WorkflowProcessComment comment : getComments()) {
+        for (WorkflowProcessComment comment : getCommentsSet()) {
             if (comment.isUnreadBy(user)) {
                 comments.add(comment);
             }
         }
         return comments;
+    }
+
+    public Stream<WorkflowProcessComment> getUnreadCommentStreamForUser(User user) {
+        final Stream<WorkflowProcessComment> stream = getCommentsSet().stream();
+        return stream.filter(c -> c.isUnreadBy(user));
     }
 
     public boolean hasUnreadCommentsForCurrentUser() {
@@ -572,12 +669,8 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base {
     }
 
     @Atomic
-    public void markCommentsAsReadForUser(User user) {
-        for (WorkflowProcessComment comment : getComments()) {
-            if (comment.isUnreadBy(user)) {
-                comment.addReaders(user);
-            }
-        }
+    public void markCommentsAsReadForUser(final User user) {
+        getUnreadCommentStreamForUser(user).forEach(c -> c.addReaders(user));
     }
 
     /**
@@ -691,7 +784,7 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base {
         return availableClasses;
     }
 
-/**
+    /**
      * This list represents all the kind of classes that
      * that is not in this list an exception is thrown.
      * 
@@ -742,7 +835,10 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base {
         return getAvailableFileTypes();
     }
 
-    /*
+    /**
+     * 
+     * @deprecated use getFileStream instead
+     * 
      * This list has to be a subset or the actual list returned by WorkflowProcess#getDisplayableFileDocumentTypes() Only
      * the files
      * in this list will be rendered in the process page's file listing.
@@ -752,51 +848,47 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base {
      *         getDisplayableFileDocumentTypes() { return
      *         getAvailableDocumentTypes(); }
      */
-
+    @Deprecated
     public <T extends ProcessFile> List<T> getFiles(Class<? extends ProcessFile> selectedClass) {
-        List<Class<? extends ProcessFile>> list = new ArrayList<Class<? extends ProcessFile>>();
-        list.add(selectedClass);
-        return getFilesFromList(getFiles(), list);
+        final Stream<ProcessFile> stream = getFileStream(selectedClass);
+        return (List) stream.collect(Collectors.toList());
     }
 
-    private <T extends ProcessFile> List<T> getFilesFromList(Collection<ProcessFile> list,
-            List<Class<? extends ProcessFile>> selectedClasses) {
-        List<T> classes = new ArrayList<T>();
-        for (ProcessFile file : list) {
-            for (Class selectedClass : selectedClasses) {
-                if (file.getClass() == selectedClass) {
-                    classes.add((T) file);
-                }
+    public <T extends ProcessFile> Stream<T> getFileStream(Class<? extends ProcessFile> selectedClass) {
+        final List<Class<? extends ProcessFile>> list = Collections.singletonList(selectedClass);
+        return getFilesFromList(getFilesSet().stream(), list);
+    }
 
-            }
-        }
-        return classes;
+    private <T extends ProcessFile> Stream<T> getFilesFromList(final Stream<ProcessFile> list,
+            final List<Class<? extends ProcessFile>> selectedClasses) {
+        return list.filter(f -> selectedClasses.contains(f.getClass())).map(f -> (T) f);
     }
 
     public <T extends ProcessFile> List<T> getFilesIncludingDeleted(List<Class<? extends ProcessFile>> selectedClasses,
             boolean sortedByFileName) {
-        ArrayList<ProcessFile> classes = new ArrayList<ProcessFile>();
-        classes.addAll(getFiles());
-        classes.addAll(getDeletedFiles());
+        return (List) getFileStreamIncludingDeleted(selectedClasses, sortedByFileName).collect(Collectors.toList());
+    }
+    
+    public <T extends ProcessFile> Stream<T> getFileStreamIncludingDeleted(final List<Class<? extends ProcessFile>> selectedClasses,
+            final boolean sortedByFileName) {
+        final Stream<ProcessFile> files = Stream.concat(getFilesSet().stream(), getDeletedFilesSet().stream());
+        final Stream<ProcessFile> result = getFilesFromList(files, selectedClasses);
         if (!sortedByFileName) {
-            return getFilesFromList(classes, selectedClasses);
+            return (Stream) result;
         }
-        ArrayList<T> processFiles = (ArrayList<T>) getFilesFromList(classes, selectedClasses);
-        Collections.sort(processFiles, (o1, o2) -> o1.getFilename().compareTo(o2.getFilename()));
-        return processFiles;
-
+        return (Stream) result.sorted((o1, o2) -> o1.getFilename().compareTo(o2.getFilename()));
     }
 
     @Override
-    public void addObservers(User observer) {
-        if (getObservers().contains(observer)) {
+    public void addObservers(final User observer) {
+        if (getObserversSet().contains(observer)) {
             throw new WorkflowDomainException("error.workflowProcess.addingExistingObserver");
         }
         super.addObservers(observer);
     }
 
-    public boolean isUserObserver(User user) {
-        return getObservers().contains(user);
+    public boolean isUserObserver(final User user) {
+        return getObserversSet().contains(user);
     }
 
     /**
@@ -823,6 +915,10 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base {
         return false;
     }
 
+    /**
+     * @deprecated use getExecutionLogStream instead
+     */
+    @Deprecated
     public Collection<? extends WorkflowLog> getExecutionLogs(final Class<? extends WorkflowLog>... classes) {
         final Collection<WorkflowLog> result = new ArrayList<WorkflowLog>();
         for (final WorkflowLog workflowLog : getExecutionLogsSet()) {
@@ -831,6 +927,10 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base {
             }
         }
         return result;
+    }
+
+    public Stream<? extends WorkflowLog> getExecutionLogStream(final Class<? extends WorkflowLog>... classes) {
+        return getExecutionLogStream().filter(l -> match(l, classes));
     }
 
     private boolean match(WorkflowLog workflowLog, Class<? extends WorkflowLog>[] classes) {
@@ -855,19 +955,9 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base {
     }
 
     public boolean hasLogOfBeingExecuted(Class<? extends WorkflowActivity> clazz, int count) {
-        String operationName = clazz.getSimpleName();
-        List<ActivityLog> activitiesExecution = (List<ActivityLog>) getExecutionLogs(ActivityLog.class);
-        int counter = 0;
-        for (ActivityLog log : activitiesExecution) {
-            if (log.getOperation().equalsIgnoreCase(operationName)) {
-                counter++;
-            }
-            if (counter == count) {
-                return true;
-            }
-        }
-
-        return false;
+        final String operationName = clazz.getSimpleName();
+        final Stream<? extends WorkflowLog> stream = getExecutionLogStream(ActivityLog.class);
+        return stream.map(l -> (ActivityLog) l).filter(l -> l.getOperation().equalsIgnoreCase(operationName)).count() >= count;
     }
 
     public DateTime getCreationDate() {
@@ -877,23 +967,12 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base {
     }
 
     private WorkflowLog findFirstLogEntry() {
-        WorkflowLog result = null;
-        for (final WorkflowLog log : getExecutionLogsSet()) {
-            if (result == null || log.isBefore(result)) {
-                result = log;
-            }
-        }
-        return result;
+        return getExecutionLogStream().min(WorkflowLog.COMPARATOR_BY_WHEN).orElse(null);
     }
 
-    public boolean hasUnreadCommentsForUser(User user) {
-        List<WorkflowProcessComment> comments = new ArrayList<WorkflowProcessComment>();
-        for (WorkflowProcessComment comment : getComments()) {
-            if (comment.isUnreadBy(user)) {
-                return true;
-            }
-        }
-        return false;
+    public boolean hasUnreadCommentsForUser(final User user) {
+        final Stream<WorkflowProcessComment> stream = getCommentsSet().stream();
+        return stream.anyMatch(c -> c.isUnreadBy(user));
     }
 
     @Deprecated

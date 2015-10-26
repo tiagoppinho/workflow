@@ -48,26 +48,23 @@ public class WorkflowUserGroupQueue extends WorkflowUserGroupQueue_Base {
         super();
     }
 
-    WorkflowUserGroupQueue(String name, List<User> baseUsers) {
+    WorkflowUserGroupQueue(final String name, final Collection<User> baseUsers) {
         this();
         init(name, baseUsers);
     }
 
     @Override
-    protected void init(String name) {
+    protected void init(final String name) {
         throw new RuntimeException("invalid init invocation");
     }
 
-    protected void init(String name, List<User> baseUsers) {
+    protected void init(final String name, final Collection<User> baseUsers) {
         setName(name);
-
-        for (User user : baseUsers) {
-            addUsers(user);
-        }
+        baseUsers.forEach(this::addUsers);
     }
 
     @Override
-    public boolean isUserAbleToAccessQueue(User user) {
+    public boolean isUserAbleToAccessQueue(final User user) {
         return getUsers().contains(user);
     }
 
@@ -75,15 +72,12 @@ public class WorkflowUserGroupQueue extends WorkflowUserGroupQueue_Base {
     @Atomic
     public void edit(WorkflowQueueBean bean) {
         setName(bean.getName());
-
-        for (User user : ((WorkflowUserGroupQueueBean) bean).getUsers()) {
-            addUsers(user);
-        }
+        ((WorkflowUserGroupQueueBean) bean).getUsers().forEach(this::addUsers);
     }
 
     @Override
     @Atomic
-    public void removeUsers(User users) {
+    public void removeUsers(final User users) {
         super.removeUsers(users);
     }
 

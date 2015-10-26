@@ -24,9 +24,7 @@
  */
 package module.workflow.domain;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.stream.Stream;
 
 import org.fenixedu.bennu.core.domain.User;
 import org.fenixedu.bennu.core.i18n.BundleUtil;
@@ -52,45 +50,23 @@ public class FileUploadLog extends FileUploadLog_Base {
         init(process, person, argumentsDescription);
     }
 
-    public static final User tryToGetUserWhoUploaded(ProcessFile file) {
+    public static final User tryToGetUserWhoUploaded(final ProcessFile file) {
         if (file.getProcess() != null && file.getProcessWithDeleteFile() != null) {
-            throw new Error("File: " + file.getExternalId()
-                    + " has an inconsistency problem. It is connected to a process twice!");
+            throw new Error(
+                    "File: " + file.getExternalId() + " has an inconsistency problem. It is connected to a process twice!");
         }
 
-        WorkflowProcess process = null;
-        if (file.getProcess() != null) {
-            process = file.getProcess();
-        } else {
+        WorkflowProcess process = file.getProcess();
+        if (process == null) {
             process = file.getProcessWithDeleteFile();
         }
         if (process == null) {
             throw new Error("File: " + file.getExternalId() + " has no connection with any WorkflowProcess");
         }
 
-        Collection<? extends WorkflowLog> executionLogs = process.getExecutionLogs(FileUploadLog.class);
-
-        Set<FileUploadLog> potentialLogMatches = new HashSet<FileUploadLog>();
-
-        for (WorkflowLog workflowLog : executionLogs) {
-            FileUploadLog uploadLog = (FileUploadLog) workflowLog;
-
-            if (matches(uploadLog, file)) {
-                potentialLogMatches.add(uploadLog);
-            }
-        }
-        if (potentialLogMatches.size() > 1) {
-            LOGGER.debug("File: " + file.getExternalId() + " class: " + file.getClass().getSimpleName() + " Process: "
-                    + process.getExternalId() + " class: " + process.getClass().getSimpleName()
-                    + " has more than one potential match");
-            return null;
-        } else if (potentialLogMatches.size() == 1) {
-            FileUploadLog theLog = potentialLogMatches.iterator().next();
-
-            return theLog.getActivityExecutor();
-        }
-
-        return null;
+        final Stream<? extends WorkflowLog> logs = process.getExecutionLogStream(FileUploadLog.class);
+        final FileUploadLog log = logs.map(l -> (FileUploadLog) l).filter(l -> matches(l, file)).max(WorkflowLog.COMPARATOR_BY_WHEN).orElse(null);
+        return log == null ? null : log.getActivityExecutor();
     }
 
     /**
@@ -131,8 +107,8 @@ public class FileUploadLog extends FileUploadLog_Base {
 
     @Override
     public String getDescription() {
-        return BundleUtil.getString("resources/WorkflowResources", "label.description.FileUploadLog", getDescriptionArguments()
-                .toArray(new String[] {}));
+        return BundleUtil.getString("resources/WorkflowResources", "label.description.FileUploadLog",
+                getDescriptionArguments().toArray(new String[] {}));
     }
 
 }

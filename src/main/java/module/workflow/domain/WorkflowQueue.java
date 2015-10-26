@@ -31,12 +31,13 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
-
-import module.workflow.presentationTier.WorkflowQueueLayoutContext;
-import module.workflow.util.WorkflowQueueBean;
+import java.util.stream.Stream;
 
 import org.fenixedu.bennu.core.domain.User;
 import org.fenixedu.bennu.core.security.Authenticate;
+
+import module.workflow.presentationTier.WorkflowQueueLayoutContext;
+import module.workflow.util.WorkflowQueueBean;
 
 /**
  * 
@@ -68,6 +69,10 @@ public abstract class WorkflowQueue extends WorkflowQueue_Base {
 
     public abstract boolean isUserAbleToAccessQueue(User user);
 
+    /**
+     * @deprecated use filterProcessStream instead
+     */
+    @Deprecated
     private List<WorkflowProcess> filterProcesses(boolean active) {
         List<WorkflowProcess> filteredProcesses = new ArrayList<WorkflowProcess>();
         for (WorkflowProcess process : getProcessesSet()) {
@@ -78,20 +83,41 @@ public abstract class WorkflowQueue extends WorkflowQueue_Base {
         return filteredProcesses;
     }
 
+    private Stream<WorkflowProcess> filterProcessStream(boolean active) {
+        final Stream<WorkflowProcess> stream = getProcessesSet().stream();
+        return stream.filter(p -> p.isActive() == active);
+    }
+
+    /**
+     * @deprecated use getActiveProcessStream instead
+     */
+    @Deprecated
     public List<WorkflowProcess> getActiveProcesses() {
         return filterProcesses(true);
     }
 
+    public Stream<WorkflowProcess> getActiveProcessStream() {
+        return filterProcessStream(true);
+    }
+
+    /**
+     * @deprecated use getNotActiveProcessStream instead
+     */
+    @Deprecated
     public List<WorkflowProcess> getNotActiveProcesses() {
         return filterProcesses(false);
     }
 
+    public Stream<WorkflowProcess> getNotActiveProcessStream() {
+        return filterProcessStream(false);
+    }
+
     public int getActiveProcessCount() {
-        return getActiveProcesses().size();
+        return (int) getActiveProcessStream().count();
     }
 
     public int getNotActiveProcessCount() {
-        return getNotActiveProcesses().size();
+        return (int) getNotActiveProcessStream().count();
     }
 
     protected void fillNonDefaultFields(WorkflowQueueBean bean) {

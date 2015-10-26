@@ -66,11 +66,12 @@ public class CommentersForProcess implements DataProvider {
             availablePeopleToNotify.add(new UserNotificationBean(process.getCurrentOwner(), process));
         }
 
-        for (WorkflowProcessComment comment : process.getCommentsSet()) {
-            availablePeopleToNotify.add(new UserNotificationBean(comment.getCommenter(), process));
-        }
+        process.getCommentsSet().stream()
+            .map(c -> new UserNotificationBean(c.getCommenter(), process))
+            .forEach(b -> availablePeopleToNotify.add(b));
 
-        availablePeopleToNotify.addAll(getWorkers(process));
+        process.getProcessWorkerStream().map(u -> new UserNotificationBean(u, process))
+            .forEach(b -> availablePeopleToNotify.add(b));
 
         WorkflowSystem.getInstance().getPermanentProcessCommentUserSet().forEach(ppcu -> getPeople(availablePeopleToNotify, ppcu, process));
 
@@ -88,11 +89,4 @@ public class CommentersForProcess implements DataProvider {
         }
     }
 
-    private List<UserNotificationBean> getWorkers(WorkflowProcess process) {
-        List<UserNotificationBean> moreBeans = new ArrayList<UserNotificationBean>();
-        for (User user : process.getProcessWorkers()) {
-            moreBeans.add(new UserNotificationBean(user, process));
-        }
-        return moreBeans;
-    }
 }

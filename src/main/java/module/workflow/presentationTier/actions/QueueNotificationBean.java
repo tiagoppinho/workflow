@@ -43,7 +43,7 @@ public class QueueNotificationBean implements Serializable {
     private boolean ableToNotify;
     private final WorkflowQueue queue;
 
-    public QueueNotificationBean(WorkflowQueue queue, WorkflowProcess process) {
+    public QueueNotificationBean(final WorkflowQueue queue, final WorkflowProcess process) {
         this.queue = queue;
         this.ableToNotify = process.isSystemAbleToNotifyQueue(queue);
     }
@@ -52,7 +52,7 @@ public class QueueNotificationBean implements Serializable {
         return ableToNotify;
     }
 
-    public void setAbleToNotify(boolean ableToNotify) {
+    public void setAbleToNotify(final boolean ableToNotify) {
         this.ableToNotify = ableToNotify;
     }
 
@@ -70,7 +70,7 @@ public class QueueNotificationBean implements Serializable {
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         return obj instanceof QueueNotificationBean && ((QueueNotificationBean) obj).getQueue() == getQueue();
     }
 

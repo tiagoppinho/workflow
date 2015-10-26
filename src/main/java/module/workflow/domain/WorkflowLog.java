@@ -41,6 +41,7 @@ import pt.utl.ist.fenix.tools.util.Strings;
  * 
  */
 public abstract class WorkflowLog extends WorkflowLog_Base {
+
     public static final Comparator<WorkflowLog> COMPARATOR_BY_WHEN = (log1, log2) -> {
         final DateTime when1 = log1.getWhenOperationWasRan();
         final DateTime when2 = log2.getWhenOperationWasRan();
@@ -48,8 +49,8 @@ public abstract class WorkflowLog extends WorkflowLog_Base {
         return result == 0 ? log1.getExternalId().compareTo(log2.getExternalId()) : result;
     };
 
-    public static final Comparator<WorkflowLog> COMPARATOR_BY_WHEN_REVERSED = (log1, log2) -> COMPARATOR_BY_WHEN.compare(log2,
-            log1);
+    public static final Comparator<WorkflowLog> COMPARATOR_BY_WHEN_REVERSED =
+            (log1, log2) -> COMPARATOR_BY_WHEN.compare(log2, log1);
 
     public WorkflowLog() {
         super.setWorkflowSystem(WorkflowSystem.getInstance());
@@ -78,14 +79,7 @@ public abstract class WorkflowLog extends WorkflowLog_Base {
 
     public WorkflowLog getPrevious() {
         final WorkflowProcess workflowProcess = getProcess();
-        final DateTime when = getWhenOperationWasRan();
-        WorkflowLog previous = null;
-        for (final WorkflowLog workflowLog : workflowProcess.getExecutionLogsSet()) {
-            if (workflowLog.isBefore(this) && (previous == null || previous.isBefore(workflowLog))) {
-                previous = workflowLog;
-            }
-        }
-        return previous;
+        return workflowProcess.getExecutionLogStream().filter(l -> l.isBefore(this)).max(COMPARATOR_BY_WHEN).orElse(null);
     }
 
     public boolean isBefore(final WorkflowLog workflowLog) {

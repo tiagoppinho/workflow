@@ -40,7 +40,7 @@ public class UserNotificationBean implements Serializable {
     private boolean ableToNotify;
     private User user;
 
-    public UserNotificationBean(User user, WorkflowProcess process) {
+    public UserNotificationBean(final User user, final WorkflowProcess process) {
         this.user = user;
         this.ableToNotify = process.isSystemAbleToNotifyUser(user);
     }
@@ -49,7 +49,7 @@ public class UserNotificationBean implements Serializable {
         return ableToNotify;
     }
 
-    public void setAbleToNotify(boolean ableToNotify) {
+    public void setAbleToNotify(final boolean ableToNotify) {
         this.ableToNotify = ableToNotify;
     }
 
@@ -57,7 +57,7 @@ public class UserNotificationBean implements Serializable {
         return user;
     }
 
-    public void setUser(User user) {
+    public void setUser(final User user) {
         this.user = user;
     }
 
@@ -67,7 +67,7 @@ public class UserNotificationBean implements Serializable {
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         return obj instanceof UserNotificationBean && ((UserNotificationBean) obj).user == user;
     }
 }

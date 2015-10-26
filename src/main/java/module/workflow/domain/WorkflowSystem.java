@@ -44,19 +44,14 @@ public class WorkflowSystem extends WorkflowSystem_Base {
     }
 
     public static WorkflowSystem getInstance() {
-        WorkflowSystem system = Bennu.getInstance().getWorkflowSystem();
-        if (system == null) {
-            return initialize();
-        }
-        return system;
+        final WorkflowSystem system = Bennu.getInstance().getWorkflowSystem();
+        return system == null ? initialize() : system;
     }
 
     @Atomic
     private static WorkflowSystem initialize() {
-        if (Bennu.getInstance().getWorkflowSystem() == null) {
-            return new WorkflowSystem();
-        }
-        return Bennu.getInstance().getWorkflowSystem();
+        final Bennu b = Bennu.getInstance();
+        return b.getWorkflowSystem() == null ? new WorkflowSystem() : b.getWorkflowSystem();
     }
 
 }

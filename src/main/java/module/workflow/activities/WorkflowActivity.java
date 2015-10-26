@@ -135,11 +135,9 @@ public abstract class WorkflowActivity<P extends WorkflowProcess, AI extends Act
     public final void execute(AI activityInformation) {
         P process = activityInformation.getProcess();
         checkConditionsFor(process);
-        ActivityLog log = null;
         if (shouldLogActivity(activityInformation)) {
-            log =
-                    logExecution(process, getClass().getSimpleName(), getLoggedPerson(), activityInformation,
-                            getArgumentsDescription(activityInformation));
+            logExecution(process, getClass().getSimpleName(), getLoggedPerson(), activityInformation,
+                    getArgumentsDescription(activityInformation));
         }
         process(activityInformation);
         notifyUsers(process);

@@ -29,10 +29,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import module.workflow.util.WorkflowQueueBean;
-
 import org.fenixedu.bennu.core.domain.User;
 
+import module.workflow.util.WorkflowQueueBean;
 import pt.ist.fenixframework.Atomic;
 
 /**
@@ -45,13 +44,11 @@ public class WorkflowUserGroupQueueBean extends WorkflowQueueBean {
 
     private static final long serialVersionUID = 1L;
 
-    private final Set<User> users;
-    private User userToAdd;
+    private final Set<User> users = new HashSet<User>();
+    private User userToAdd = null;
 
     public WorkflowUserGroupQueueBean() {
         super();
-        users = new HashSet<User>();
-        setUserToAdd(null);
     }
 
     public Set<User> getUsers() {
@@ -71,18 +68,13 @@ public class WorkflowUserGroupQueueBean extends WorkflowQueueBean {
     }
 
     @Override
-    protected void fillQueueFields(WorkflowQueue queue) {
-        for (User user : ((WorkflowUserGroupQueue) queue).getUsers()) {
-            users.add(user);
-        }
+    protected void fillQueueFields(final WorkflowQueue queue) {
+        users.addAll(((WorkflowUserGroupQueue) queue).getUsers());
     }
 
     @Override
     @Atomic
     public WorkflowUserGroupQueue createWorkflowQueue() {
-        List<User> usersList = new ArrayList<User>();
-        usersList.addAll(getUsers());
-
-        return new WorkflowUserGroupQueue(getName(), usersList);
+        return new WorkflowUserGroupQueue(getName(), users);
     }
 }

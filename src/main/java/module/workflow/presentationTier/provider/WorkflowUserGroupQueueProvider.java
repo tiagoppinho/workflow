@@ -24,9 +24,7 @@
  */
 package module.workflow.presentationTier.provider;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.stream.Collectors;
 
 import module.workflow.domain.WorkflowQueue;
 import module.workflow.domain.WorkflowSystem;
@@ -48,15 +46,10 @@ public class WorkflowUserGroupQueueProvider implements DataProvider {
 
     @Override
     public Object provide(Object source, Object currentValue) {
-        final List<WorkflowQueue> result = new ArrayList<WorkflowQueue>();
-        for (WorkflowQueue workflowQueue : WorkflowSystem.getInstance().getWorkflowQueuesSet()) {
-            if (workflowQueue instanceof WorkflowUserGroupQueue) {
-                result.add(workflowQueue);
-            }
-        }
-
-        Collections.sort(result, WorkflowQueue.COMPARATOR_BY_NAME);
-        return result;
+        return WorkflowSystem.getInstance().getWorkflowQueuesSet().stream()
+            .filter(q -> q instanceof WorkflowUserGroupQueue)
+            .sorted(WorkflowQueue.COMPARATOR_BY_NAME)
+            .collect(Collectors.toList());
     }
 
 }
