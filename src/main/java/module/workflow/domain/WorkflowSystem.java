@@ -50,8 +50,8 @@ public class WorkflowSystem extends WorkflowSystem_Base {
 
     @Atomic
     private static WorkflowSystem initialize() {
-        final Bennu b = Bennu.getInstance();
-        return b.getWorkflowSystem() == null ? new WorkflowSystem() : b.getWorkflowSystem();
+        final WorkflowSystem system = Bennu.getInstance().getWorkflowSystem();
+        return system == null ? new WorkflowSystem() : system;
     }
 
 }
