@@ -24,6 +24,8 @@
  */
 package module.workflow.presentationTier.renderers;
 
+import org.fenixedu.bennu.core.domain.User;
+
 import module.workflow.presentationTier.actions.UserNotificationBean;
 import pt.ist.fenixWebFramework.renderers.OutputRenderer;
 import pt.ist.fenixWebFramework.renderers.components.HtmlComponent;
@@ -60,7 +62,8 @@ public class NotifyUsers extends OutputRenderer {
 
                 component.addChild(container);
 
-                HtmlText text = new HtmlText(bean.getUser().getPresentationName());
+                final User user = bean.getUser();
+                HtmlText text = new HtmlText(user.getDisplayName() + " (" + user.getUsername() + ")");
 
                 container.addChild(text);
 

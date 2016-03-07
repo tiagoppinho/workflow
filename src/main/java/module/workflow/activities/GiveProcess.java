@@ -24,10 +24,10 @@
  */
 package module.workflow.activities;
 
-import module.workflow.domain.WorkflowProcess;
-
 import org.fenixedu.bennu.core.domain.User;
 import org.fenixedu.bennu.core.i18n.BundleUtil;
+
+import module.workflow.domain.WorkflowProcess;
 
 /**
  * 
@@ -59,13 +59,13 @@ public class GiveProcess<T extends WorkflowProcess> extends WorkflowActivity<T, 
     }
 
     @Override
-    public boolean isActive(WorkflowProcess process, User user) {
+    public boolean isActive(final WorkflowProcess process, final User user) {
         return process.isTicketSupportAvailable() && !process.isUserObserver(user)
                 && (process.getCurrentOwner() == null || process.getCurrentOwner() == user);
     }
 
     @Override
-    protected void process(UserInformation<T> information) {
+    protected void process(final UserInformation<T> information) {
         final User user = information.getUser();
         information.getProcess().giveProcess(user);
         if (notifyUser != null) {
@@ -74,18 +74,19 @@ public class GiveProcess<T extends WorkflowProcess> extends WorkflowActivity<T, 
     }
 
     @Override
-    public boolean isUserAwarenessNeeded(T process, User user) {
+    public boolean isUserAwarenessNeeded(final T process, final User user) {
         return false;
     }
 
     @Override
-    public ActivityInformation<T> getActivityInformation(T process) {
+    public ActivityInformation<T> getActivityInformation(final T process) {
         return new UserInformation<T>(process, this);
     }
 
     @Override
-    protected String[] getArgumentsDescription(UserInformation<T> activityInformation) {
-        return new String[] { activityInformation.getUser().getPresentationName() };
+    protected String[] getArgumentsDescription(final UserInformation<T> activityInformation) {
+        final User user = activityInformation.getUser();
+        return new String[] { user.getDisplayName() + " (" + user.getUsername() + ")" };
     }
 
     @Override

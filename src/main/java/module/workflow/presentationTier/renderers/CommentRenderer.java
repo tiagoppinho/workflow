@@ -27,11 +27,10 @@ package module.workflow.presentationTier.renderers;
 import java.util.Set;
 import java.util.TreeSet;
 
-import module.workflow.domain.WorkflowProcess;
-import module.workflow.domain.WorkflowProcessComment;
-
 import org.fenixedu.bennu.core.domain.User;
 
+import module.workflow.domain.WorkflowProcess;
+import module.workflow.domain.WorkflowProcessComment;
 import pt.ist.fenixWebFramework.renderers.OutputRenderer;
 import pt.ist.fenixWebFramework.renderers.components.Face;
 import pt.ist.fenixWebFramework.renderers.components.HtmlBlockContainer;
@@ -185,7 +184,7 @@ public class CommentRenderer extends OutputRenderer {
                 HtmlBlockContainer bodyBlock = new HtmlBlockContainer();
                 bodyCell.setBody(bodyBlock);
 
-                HtmlText name = new HtmlText(comment.getCommenter().getPresentationName());
+                HtmlText name = new HtmlText(comment.getCommenter().getDisplayName() + " (" + comment.getCommenter().getUsername() + ")");
                 name.setFace(Face.STRONG);
                 name.setClasses(getNameClasses());
                 bodyBlock.addChild(name);

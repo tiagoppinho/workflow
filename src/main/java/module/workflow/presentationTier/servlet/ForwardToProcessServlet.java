@@ -38,10 +38,12 @@ import module.workflow.presentationTier.actions.BasicSearchProcessBean;
 import module.workflow.presentationTier.actions.ProcessManagement;
 
 import org.apache.struts.action.ActionForward;
+import org.fenixedu.bennu.core.domain.Bennu;
 import org.fenixedu.bennu.core.domain.User;
 import org.fenixedu.bennu.core.security.Authenticate;
 import org.fenixedu.bennu.core.util.CoreConfiguration;
-import org.fenixedu.bennu.core.util.CoreConfiguration.CasConfig;
+import org.fenixedu.bennu.portal.BennuPortalConfiguration;
+import org.fenixedu.bennu.portal.domain.PortalConfiguration;
 
 import pt.ist.fenixWebFramework.servlets.filters.contentRewrite.GenericChecksumRewriter;
 import pt.ist.fenixframework.DomainObject;
@@ -72,19 +74,7 @@ public class ForwardToProcessServlet extends HttpServlet {
         } else {
             workflowProcess = search.iterator().next();
         }
-        final User user = Authenticate.getUser();
-        if (user == null) {
-            final CasConfig casConfig = CoreConfiguration.casConfig();
-            if (casConfig != null && casConfig.isCasEnabled()) {
-                final String casLoginUrl = casConfig.getCasLoginUrl();
-                final StringBuilder url = new StringBuilder();
-                url.append(casLoginUrl);
-                url.append(getDownloadUrlForDomainObject(request, workflowProcess));
-                response.sendRedirect(url.toString());
-                return;
-            }
-            throw new Error("unauthorized.access");
-        } else {
+        if (workflowProcess.isAccessibleToCurrentUser()) {
             final ActionForward actionForward = ProcessManagement.forwardToProcess(workflowProcess);
             final String path = request.getContextPath() + actionForward.getPath();
             final String args =
@@ -93,6 +83,8 @@ public class ForwardToProcessServlet extends HttpServlet {
             response.sendRedirect(path + args);
             response.getOutputStream().close();
             return;
+        } else {
+            throw new Error("unauthorized.access");
         }
     }
 
