@@ -29,7 +29,7 @@
 
  
 <logic:present name="process" property="currentOwner">
-	<bean:define id="ownerName" name="process" property="currentOwner.presentationName"/>
+	<bean:define id="ownerName" name="process" property="currentOwner.displayName"/>
 	<div class="alert alert-warning">
 		<bean:message key="message.info.currentOwnerIs" bundle="WORKFLOW_RESOURCES" arg0="<%= ownerName.toString() %>"/>
 	</div>
@@ -38,7 +38,7 @@
 <p>
 	<logic:equal name="process" property="createdByAvailable" value="true">					
 		<span class="glyphicon glyphicon-calendar"></span> Criado em <fr:view name="process" property="creationDate" layout="no-time"/>
-		<span class="glyphicon glyphicon-user"></span> Criado por ${process.processCreator.shortPresentationName}
+		<span class="glyphicon glyphicon-user"></span> Criado por ${process.processCreator.displayName} (${process.processCreator.username})
 	</logic:equal>
 
 	<logic:equal name="process" property="commentsSupportAvailable" value="true">

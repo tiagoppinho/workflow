@@ -36,7 +36,7 @@
 <schema name="viewLogs" type="module.workflow.domain.WorkflowLog" bundle="WORKFLOW_RESOURCES">
 	<slot name="whenOperationWasRan" key="label.whenOperationWasRan"/>
 	<slot name="description" layout="html" key="label.description"/>
-	<slot name="activityExecutor.presentationName" key="label.activityExecutor"/>
+	<slot name="activityExecutor.displayName" key="label.activityExecutor"/>
 </schema>
 
 <schema name="addFile-ProcessFile"
@@ -76,7 +76,7 @@
 <schema name="showUsers"
 		type="module.workflow.presentationTier.actions.UserNotificationBean"
 		bundle="WORKFLOW_RESOURCES">
-	<slot name="user.presentationName"/>
+	<slot name="user.displayName"/>
 </schema>
 
 <schema name="search.quick"
