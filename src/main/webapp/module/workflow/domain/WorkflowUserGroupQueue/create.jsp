@@ -27,7 +27,7 @@
 			<fr:edit id="users" name="bean" slot="userToAdd">
 				<fr:layout name="autoComplete">
 					<fr:property name="labelField" value="username" />
-					<fr:property name="format" value="\${presentationName}" />
+					<fr:property name="format" value="\${displayName}" />
 					<fr:property name="minChars" value="3" />
 					<fr:property name="provider"
 						value="org.fenixedu.bennu.core.presentationTier.renderers.autoCompleteProvider.UserAutoComplete" />
@@ -49,7 +49,7 @@
 			<logic:notEmpty name="bean" property="users">
 				<ul>
 					<logic:iterate id="userAdded" name="bean" property="users" >
-						<li><fr:view name="userAdded" property="presentationName"/></li>
+						<li><fr:view name="userAdded" property="profile.fullName"/></li>
 					</logic:iterate>
 				</ul>
 			</logic:notEmpty>

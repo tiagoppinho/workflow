@@ -13,7 +13,7 @@
 		<td class="aleft"> 
 			<ul>
 				<logic:iterate id="user" name="queue" property="users">
-					<li><fr:view name="user" property="presentationName"/></li>
+					<li><fr:view name="user" property="displayName"/></li>
 				</logic:iterate>
 			</ul> 
 		</td>

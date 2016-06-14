@@ -27,7 +27,7 @@
 			<fr:edit id="users" name="bean" slot="userToAdd">
 				<fr:layout name="autoComplete">
 					<fr:property name="labelField" value="username" />
-					<fr:property name="format" value="\${presentationName}" />
+					<fr:property name="format" value="\${displayName}" />
 					<fr:property name="minChars" value="3" />
 					<fr:property name="provider"
 						value="org.fenixedu.bennu.core.presentationTier.renderers.autoCompleteProvider.UserAutoComplete" />
@@ -37,7 +37,7 @@
 			</fr:edit>
 		</td>
 		<td>
-			<input id="addUser" type="button"  value="+" class="inputbutton"/> </input>
+			<input id="addUser" type="button"  value="+" class="inputbutton"/> 
 		</td>
 	</tr>
 	<tr>
@@ -52,7 +52,7 @@
 						<bean:define id="userId" name="userAdded" property="externalId" type="java.lang.String"/>
 						
 						<tr>
-							<td><fr:view name="userAdded" property="presentationName"/></td>
+							<td><fr:view name="userAdded" property="displayName"/></td>
 							<td>(<html:link page="/workflowQueueManagement.do?method=removeUser&queueId=${queueId}&userId=${userId}"> 
 								<bean:message key="link.remove" bundle="MYORG_RESOURCES"/>
 							</html:link>)</td>
