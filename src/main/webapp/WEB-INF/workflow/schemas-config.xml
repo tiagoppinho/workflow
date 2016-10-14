@@ -4,7 +4,7 @@
 	<slot name="user" layout="autoComplete" key="label.giveProcess.user"
 		bundle="WORKFLOW_RESOURCES">
 		<property name="labelField" value="username" />
-		<property name="format" value="${displayName}" />
+		<property name="format" value="${profile.fullName}" />
 		<property name="minChars" value="3" />
 		<property name="provider" value="org.fenixedu.bennu.core.presentationTier.renderers.autoCompleteProvider.UserAutoComplete" />
 		<property name="size" value="50" />
@@ -15,7 +15,7 @@
 	<slot name="user" layout="autoComplete" key="label.giveProcess.user"
 		bundle="WORKFLOW_RESOURCES">
 		<property name="labelField" value="username" />
-		<property name="format" value="${displayName}" />
+		<property name="format" value="${profile.fullName}" />
 		<property name="minChars" value="3" />
 		<property name="provider" value="org.fenixedu.bennu.core.presentationTier.renderers.autoCompleteProvider.UserAutoComplete" />
 		<property name="size" value="40" />
