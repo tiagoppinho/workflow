@@ -133,6 +133,8 @@ public abstract class WorkflowActivity<P extends WorkflowProcess, AI extends Act
      */
     @Atomic
     public final void execute(AI activityInformation) {
+        ActivityListenerManager.beforeExcecute(this, activityInformation);
+
         P process = activityInformation.getProcess();
         checkConditionsFor(process);
         if (shouldLogActivity(activityInformation)) {
@@ -142,6 +144,7 @@ public abstract class WorkflowActivity<P extends WorkflowProcess, AI extends Act
         process(activityInformation);
         notifyUsers(process);
 
+        ActivityListenerManager.afterExcecute(this, activityInformation);
     }
 
     /**
