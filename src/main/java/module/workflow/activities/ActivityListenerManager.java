@@ -3,7 +3,7 @@ package module.workflow.activities;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentSkipListSet;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 import module.workflow.domain.WorkflowProcess;
 
@@ -22,10 +22,22 @@ public class ActivityListenerManager {
 
         Set<ActivityListener> set = listeners.get(clazz);
         if (set == null) {
-            set = new ConcurrentSkipListSet<ActivityListener>();
+            set = new CopyOnWriteArraySet<ActivityListener>();
             listeners.put(clazz, set);
         }
         set.add(listener);
+    }
+
+    public static void removeListener(Class<? extends WorkflowActivity> clazz, ActivityListener listener) {
+        if (clazz == null || listener == null) {
+            return;
+        }
+
+        final Set<ActivityListener> set = listeners.get(clazz);
+        if (set == null) {
+            return;
+        }
+        set.remove(listener);
     }
 
     protected static void beforeExcecute(WorkflowActivity<? extends WorkflowProcess, ? extends ActivityInformation> activity,
