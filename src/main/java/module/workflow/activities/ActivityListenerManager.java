@@ -4,31 +4,27 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.function.BiConsumer;
 
 import module.workflow.domain.WorkflowProcess;
 
 public class ActivityListenerManager {
 
-    private static Map<Class<? extends WorkflowActivity>, Set<ActivityListener>> listeners;
+    private static Map<Class<?>, Set<ActivityListener>> listeners;
 
     static {
-        listeners = new ConcurrentHashMap<Class<? extends WorkflowActivity>, Set<ActivityListener>>();
+        listeners = new ConcurrentHashMap<Class<?>, Set<ActivityListener>>();
     }
 
-    public static void addListener(Class<? extends WorkflowActivity> clazz, ActivityListener listener) {
+    public static void addListener(final Class<?> clazz, final ActivityListener listener) {
         if (clazz == null || listener == null) {
             return;
         }
 
-        Set<ActivityListener> set = listeners.get(clazz);
-        if (set == null) {
-            set = new CopyOnWriteArraySet<ActivityListener>();
-            listeners.put(clazz, set);
-        }
-        set.add(listener);
+        listeners.computeIfAbsent(clazz, k -> new CopyOnWriteArraySet<ActivityListener>()).add(listener);
     }
 
-    public static void removeListener(Class<? extends WorkflowActivity> clazz, ActivityListener listener) {
+    public static void removeListener(Class<?> clazz, ActivityListener listener) {
         if (clazz == null || listener == null) {
             return;
         }
@@ -40,25 +36,43 @@ public class ActivityListenerManager {
         set.remove(listener);
     }
 
-    protected static void beforeExcecute(WorkflowActivity<? extends WorkflowProcess, ? extends ActivityInformation> activity,
-            ActivityInformation<? extends WorkflowProcess> activityInformation) {
-        final Set<ActivityListener> set = listeners.get(activity.getClass());
+    private static final BiConsumer<ActivityInformation<? extends WorkflowProcess>, ActivityListener> BEFORE_EX_CONSUMER =
+            (i, l) -> l.beforeExecute(i);
 
+    private static final BiConsumer<ActivityInformation<? extends WorkflowProcess>, ActivityListener> BEFORE_P_CONSUMER =
+            (i, l) -> l.beforeProcess(i);
+
+    private static final BiConsumer<ActivityInformation<? extends WorkflowProcess>, ActivityListener> AFTER_P_CONSUMER =
+            (i, l) -> l.afterProcess(i);
+
+    private static final BiConsumer<ActivityInformation<? extends WorkflowProcess>, ActivityListener> AFTER_EX_CONSUMER =
+            (i, l) -> l.afterExecute(i);
+
+    protected static void beforeExcecute(final ActivityInformation<? extends WorkflowProcess> activityInformation) {
+        doWithInformation(activityInformation, BEFORE_EX_CONSUMER);
+    }
+
+    protected static void beforeProcess(final ActivityInformation<? extends WorkflowProcess> activityInformation) {
+        doWithInformation(activityInformation, BEFORE_P_CONSUMER);
+    }
+
+    protected static void afterProcess(final ActivityInformation<? extends WorkflowProcess> activityInformation) {
+        doWithInformation(activityInformation, AFTER_P_CONSUMER);
+    }
+
+    protected static void afterExcecute(final ActivityInformation<? extends WorkflowProcess> activityInformation) {
+        doWithInformation(activityInformation, AFTER_EX_CONSUMER);
+    }
+
+    private static void doWithInformation(final ActivityInformation<? extends WorkflowProcess> activityInformation,
+            final BiConsumer<ActivityInformation<? extends WorkflowProcess>, ActivityListener> consumer) {
+        final Class<?> clazz = activityInformation.getActivityClass();
+        final Set<ActivityListener> set = listeners.get(clazz);
         if (set != null) {
             for (final ActivityListener l : set) {
-                l.beforeExecute(activityInformation);
+                consumer.accept(activityInformation, l);
             }
         }
     }
 
-    protected static void afterExcecute(WorkflowActivity<? extends WorkflowProcess, ? extends ActivityInformation> activity,
-            ActivityInformation<? extends WorkflowProcess> activityInformation) {
-        final Set<ActivityListener> set = listeners.get(activity.getClass());
-
-        if (set != null) {
-            for (final ActivityListener l : set) {
-                l.afterExecute(activityInformation);
-            }
-        }
-    }
 }

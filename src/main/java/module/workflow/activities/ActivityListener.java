@@ -4,8 +4,16 @@ import module.workflow.domain.WorkflowProcess;
 
 public interface ActivityListener {
 
-    public void beforeExecute(ActivityInformation<? extends WorkflowProcess> activityInformation);
+    default public void beforeExecute(ActivityInformation<? extends WorkflowProcess> activityInformation) {
+    }
 
-    public void afterExecute(ActivityInformation<? extends WorkflowProcess> activityInformation);
+    default public void afterExecute(ActivityInformation<? extends WorkflowProcess> activityInformation) {
+    }
+
+    default public void beforeProcess(ActivityInformation<? extends WorkflowProcess> activityInformation) {
+    }
+
+    default public void afterProcess(ActivityInformation<? extends WorkflowProcess> activityInformation) {
+    }
 
 }

@@ -27,14 +27,13 @@ package module.workflow.activities;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
-import module.workflow.domain.ActivityLog;
-import module.workflow.domain.WorkflowProcess;
-
 import org.fenixedu.bennu.core.domain.User;
 import org.fenixedu.bennu.core.i18n.BundleUtil;
 import org.fenixedu.bennu.core.security.Authenticate;
 import org.fenixedu.commons.i18n.I18N;
 
+import module.workflow.domain.ActivityLog;
+import module.workflow.domain.WorkflowProcess;
 import pt.ist.fenixframework.Atomic;
 
 /**
@@ -133,7 +132,7 @@ public abstract class WorkflowActivity<P extends WorkflowProcess, AI extends Act
      */
     @Atomic
     public final void execute(AI activityInformation) {
-        ActivityListenerManager.beforeExcecute(this, activityInformation);
+        ActivityListenerManager.beforeExcecute(activityInformation);
 
         P process = activityInformation.getProcess();
         checkConditionsFor(process);
@@ -141,10 +140,12 @@ public abstract class WorkflowActivity<P extends WorkflowProcess, AI extends Act
             logExecution(process, getClass().getSimpleName(), getLoggedPerson(), activityInformation,
                     getArgumentsDescription(activityInformation));
         }
+        ActivityListenerManager.beforeProcess(activityInformation);
         process(activityInformation);
+        ActivityListenerManager.afterProcess(activityInformation);
         notifyUsers(process);
 
-        ActivityListenerManager.afterExcecute(this, activityInformation);
+        ActivityListenerManager.afterExcecute(activityInformation);
     }
 
     /**
