@@ -1,13 +1,12 @@
 package module.workflow.domain;
 
-import org.fenixedu.bennu.core.domain.User;
 import org.fenixedu.bennu.core.i18n.BundleUtil;
 
 public class FileAccessLog extends FileAccessLog_Base {
 
-    public FileAccessLog(WorkflowProcess process, User person, String... argumentsDescription) {
+    public FileAccessLog(WorkflowProcess process, String... argumentsDescription) {
         super();
-        init(process, person, argumentsDescription);
+        init(process, argumentsDescription);
     }
 
     @Override

@@ -24,7 +24,6 @@
  */
 package module.workflow.domain;
 
-import org.fenixedu.bennu.core.domain.User;
 import org.fenixedu.bennu.core.i18n.BundleUtil;
 
 /**
@@ -34,9 +33,9 @@ import org.fenixedu.bennu.core.i18n.BundleUtil;
  */
 public class FileRemoveLog extends FileRemoveLog_Base {
 
-    public FileRemoveLog(WorkflowProcess process, User person, String... argumentsDescription) {
+    public FileRemoveLog(WorkflowProcess process, String... argumentsDescription) {
         super();
-        init(process, person, argumentsDescription);
+        init(process, argumentsDescription);
     }
 
     @Override

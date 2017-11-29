@@ -24,12 +24,10 @@
  */
 package module.workflow.domain;
 
-import module.workflow.activities.ActivityInformation;
-import module.workflow.activities.WorkflowActivity;
-
-import org.fenixedu.bennu.core.domain.User;
 import org.fenixedu.bennu.core.i18n.BundleUtil;
 
+import module.workflow.activities.ActivityInformation;
+import module.workflow.activities.WorkflowActivity;
 import pt.utl.ist.fenix.tools.util.Strings;
 
 /**
@@ -46,9 +44,9 @@ public class ActivityLog extends ActivityLog_Base {
         super();
     }
 
-    public ActivityLog(WorkflowProcess process, User person, String operationName, String... argumentsDescription) {
+    public ActivityLog(WorkflowProcess process, String operationName, String... argumentsDescription) {
         super();
-        init(process, person, argumentsDescription);
+        init(process, argumentsDescription);
         setOperation(operationName);
     }
 

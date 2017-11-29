@@ -42,6 +42,7 @@ class WorkflowProcess {
 class WorkflowLog {
 	DateTime whenOperationWasRan;
 	Strings descriptionArguments;
+	protected String authenticationMethods;
 }
 
 	class ActivityLog extends WorkflowLog {

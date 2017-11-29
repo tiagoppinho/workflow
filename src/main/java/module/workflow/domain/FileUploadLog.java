@@ -45,9 +45,9 @@ public class FileUploadLog extends FileUploadLog_Base {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FileUploadLog.class);
 
-    public FileUploadLog(WorkflowProcess process, User person, String... argumentsDescription) {
+    public FileUploadLog(WorkflowProcess process, String... argumentsDescription) {
         super();
-        init(process, person, argumentsDescription);
+        init(process, argumentsDescription);
     }
 
     public static final User tryToGetUserWhoUploaded(final ProcessFile file) {

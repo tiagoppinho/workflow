@@ -472,7 +472,7 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base {
             file.postFileContentAccess();
             if (file.shouldFileContentAccessBeLogged()) {
                 String nameToLog = file.getDisplayName() != null ? file.getDisplayName() : file.getFilename();
-                new FileAccessLog(this, Authenticate.getUser(), file.getFilename(), nameToLog,
+                new FileAccessLog(this, file.getFilename(), nameToLog,
                         WorkflowClassUtil.getNameForType(file.getClass()));
             }
         } else {
@@ -506,7 +506,7 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base {
             file.preProcess(bean);
             addFiles(file);
             file.postProcess(bean);
-            new FileUploadLog(this, Authenticate.getUser(), file.getFilename(), file.getDisplayName(),
+            new FileUploadLog(this, file.getFilename(), file.getDisplayName(),
                     WorkflowClassUtil.getNameForType(file.getClass()), bean.getExtraArguments());
 
             return file;
@@ -602,8 +602,8 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base {
     }
 
     @SuppressWarnings("unchecked")
-    public <T extends ActivityLog> T logExecution(User person, String operationName, String... args) {
-        return (T) new ActivityLog(this, person, operationName, args);
+    public <T extends ActivityLog> T logExecution(String operationName, String... args) {
+        return (T) new ActivityLog(this, operationName, args);
     }
 
     @Atomic
@@ -616,7 +616,7 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base {
         addDeletedFiles(file);
         file.processRemoval();
         String nameToLog = file.getDisplayName() != null ? file.getDisplayName() : file.getFilename();
-        new FileRemoveLog(this, Authenticate.getUser(), file.getFilename(), nameToLog,
+        new FileRemoveLog(this, file.getFilename(), nameToLog,
                 WorkflowClassUtil.getNameForType(file.getClass()));
 
     }

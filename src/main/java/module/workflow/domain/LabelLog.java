@@ -24,7 +24,6 @@
  */
 package module.workflow.domain;
 
-import org.fenixedu.bennu.core.domain.User;
 import org.fenixedu.bennu.core.i18n.BundleUtil;
 
 import pt.utl.ist.fenix.tools.util.Strings;
@@ -40,9 +39,9 @@ public class LabelLog extends LabelLog_Base {
         super();
     }
 
-    public LabelLog(WorkflowProcess process, User person, String label, String bundle, String... arguments) {
+    public LabelLog(WorkflowProcess process, String label, String bundle, String... arguments) {
         super();
-        init(process, person, arguments);
+        init(process, arguments);
         setLabel(label);
         setBundle(bundle);
 

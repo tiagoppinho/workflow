@@ -25,8 +25,13 @@
 package module.workflow.domain;
 
 import java.util.Comparator;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
+import org.fenixedu.bennu.core.domain.AuthenticationContext;
+import org.fenixedu.bennu.core.domain.AuthenticationContext.AuthenticationMethodEvent;
 import org.fenixedu.bennu.core.domain.User;
+import org.fenixedu.bennu.core.security.Authenticate;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
 
@@ -63,12 +68,30 @@ public abstract class WorkflowLog extends WorkflowLog_Base {
         }
     }
 
-    public void init(WorkflowProcess process, User person, String... argumentsDescription) {
+    public void init(WorkflowProcess process, String... argumentsDescription) {
         super.setProcess(process);
-        super.setActivityExecutor(person);
+        final AuthenticationContext context = Authenticate.getAuthenticationContext();
+        final User user = context.getUser();
+        final String authenticationMethods = toString(context.getAuthenticationMethodEvents());
+        super.setActivityExecutor(user);
+        super.setAuthenticationMethods(authenticationMethods);
         if (argumentsDescription != null) {
             super.setDescriptionArguments(new Strings(argumentsDescription));
         }
+    }
+
+    private String toString(final AuthenticationMethodEvent[] authenticationMethodEvents) {
+        if (authenticationMethodEvents == null || authenticationMethodEvents.length == 0) {
+            return null;
+        }
+        final StringBuilder b = new StringBuilder();
+        for (final AuthenticationMethodEvent event : authenticationMethodEvents) {
+            if (b.length() > 0) {
+                b.append(", ");
+            }
+            b.append(event.getAuthenticationMethod());
+        }
+        return b.toString();
     }
 
     public void updateWhenOperationWasRan() {
@@ -102,6 +125,17 @@ public abstract class WorkflowLog extends WorkflowLog_Base {
         setWorkflowSystem(null);
         deleteDomainObject();
 
+    }
+
+    public SortedSet<String> getUsedAuthenticationMethods() {
+        final SortedSet<String> set = new TreeSet<>();
+        final String methods = getAuthenticationMethods();
+        if (methods != null && methods.length() > 0) {
+            for (final String method : methods.split(", ")) {
+                set.add(method);
+            }
+        }
+        return set;
     }
 
 }

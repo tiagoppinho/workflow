@@ -119,7 +119,7 @@ public abstract class WorkflowActivity<P extends WorkflowProcess, AI extends Act
      */
     protected ActivityLog logExecution(P process, String operationName, User user, AI activityInfo,
             String... argumentsDescription) {
-        return process.logExecution(getLoggedPerson(), operationName, argumentsDescription);
+        return process.logExecution(operationName, argumentsDescription);
     }
 
     /**
