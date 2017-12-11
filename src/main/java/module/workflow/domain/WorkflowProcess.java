@@ -29,9 +29,13 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -1008,6 +1012,26 @@ public abstract class WorkflowProcess extends WorkflowProcess_Base {
     @Deprecated
     public java.util.Set<module.workflow.domain.ProcessFile> getFiles() {
         return getFilesSet();
+    }
+
+    private static Map<String, SortedSet<String>> HOOKS = new HashMap<>();
+
+    public static void registerHook(final String key, final String hook) {
+        synchronized (HOOKS) {
+            final SortedSet<String> set = new TreeSet<>();
+            set.add(hook);
+            HOOKS.compute(key, (k, s) -> {
+                if (s != null) {
+                    set.addAll(s);
+                }
+                return Collections.unmodifiableSortedSet(set);
+            });
+        }
+    }
+
+    public static SortedSet<String> getHooksFor(final String key) {
+        final SortedSet<String> result = HOOKS.get(key);
+        return result == null ? Collections.emptySortedSet() : result;
     }
 
 }
