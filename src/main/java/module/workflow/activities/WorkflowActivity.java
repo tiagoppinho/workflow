@@ -24,8 +24,11 @@
  */
 package module.workflow.activities;
 
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
+import java.util.function.BiPredicate;
 
 import org.fenixedu.bennu.core.domain.User;
 import org.fenixedu.bennu.core.i18n.BundleUtil;
@@ -52,6 +55,14 @@ import pt.ist.fenixframework.Atomic;
  * 
  */
 public abstract class WorkflowActivity<P extends WorkflowProcess, AI extends ActivityInformation<P>> {
+
+    private final Collection<BiPredicate<P, User>> isActivePredicates = new HashSet<>();
+
+    public void registerIsActivePredicate(final BiPredicate<P, User> predicate) {
+        synchronized (isActivePredicates) {
+            isActivePredicates.add(predicate);
+        }
+    }
 
     /**
      * 
@@ -360,6 +371,15 @@ public abstract class WorkflowActivity<P extends WorkflowProcess, AI extends Act
      *         otherwise
      */
     public boolean isVisible() {
+        return true;
+    }
+
+    public boolean isVisible(final P process, final User user) {
+        for (final BiPredicate<P, User> predicate : isActivePredicates) {
+            if (!predicate.test(process, user)) {
+                return false;
+            }
+        }
         return true;
     }
 

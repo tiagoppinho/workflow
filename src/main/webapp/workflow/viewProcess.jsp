@@ -1,3 +1,6 @@
+<%@page import="module.workflow.domain.WorkflowProcess"%>
+<%@page import="org.fenixedu.bennu.core.domain.User"%>
+<%@page import="org.fenixedu.bennu.core.security.Authenticate"%>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://jakarta.apache.org/struts/tags-bean" prefix="bean"%>
 <%@ taglib uri="http://jakarta.apache.org/struts/tags-html" prefix="html"%>
@@ -13,6 +16,7 @@
 <script src="${pageContext.request.contextPath}/bennu-renderers/js/jquery.alerts.js" type="text/javascript"></script>
 <script src="${pageContext.request.contextPath}/bennu-renderers/js/alertHandlers.js" type="text/javascript"></script>
 
+<bean:define id="workflowProcess" name="process" type="module.workflow.domain.WorkflowProcess"/>
 <bean:define id="processId" name="process" property="externalId"  type="java.lang.String"/>
 <bean:define id="processClassName" name="process" property="class.name" type="java.lang.String"/>
 <bean:define id="includeFolder" value="<%= processClassName.replace('.','/')%>"/>
@@ -79,19 +83,26 @@
 				<strong><bean:message key="label.activities" bundle="WORKFLOW_RESOURCES"/></strong>
 			</div>
 			<div class="activities panel-body">
+			    <% {
+			        User user = Authenticate.getUser();
+			    %>
 
 				<ul id="main-activities">
-					<logic:iterate id="activity" name="process" property="activeActivities">
+					<logic:iterate id="activity" name="process" property="activeActivities" type="module.workflow.activities.WorkflowActivity">
 						<logic:equal name="activity" property="visible" value="true">
-							<bean:define id="name" name="activity" property="class.simpleName" type="java.lang.String"/>
-							<li>
-								<wf:activityLink id="<%= name %>" processName="process" activityName="<%= name %>" scope="request">
-									<wf:activityName processName="process" activityName="<%= name %>" scope="request"/>
-								</wf:activityLink>
-							</li>
+						  <% if (activity.isVisible(workflowProcess, user)) { %>
+							     <bean:define id="name" name="activity" property="class.simpleName" type="java.lang.String"/>
+							     <li>
+								    <wf:activityLink id="<%= name %>" processName="process" activityName="<%= name %>" scope="request">
+									   <wf:activityName processName="process" activityName="<%= name %>" scope="request"/>
+								    </wf:activityLink>
+							     </li>
+						  <% } %>
 						</logic:equal>
 					</logic:iterate>
 				</ul>
+
+                <% } %>
 
 				<logic:empty name="process" property="activeActivities">
 					<p class="mvert05">
