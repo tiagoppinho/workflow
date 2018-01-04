@@ -37,20 +37,6 @@ import java.util.TreeSet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import jvstm.cps.ConsistencyException;
-import module.workflow.activities.ActivityException;
-import module.workflow.activities.ActivityInformation;
-import module.workflow.activities.WorkflowActivity;
-import module.workflow.domain.ProcessFile;
-import module.workflow.domain.ProcessFileValidationException;
-import module.workflow.domain.WorkflowProcess;
-import module.workflow.domain.WorkflowProcessComment;
-import module.workflow.presentationTier.WorkflowLayoutContext;
-import module.workflow.servlet.WorkflowContainerInitializer;
-import module.workflow.util.FileUploadBeanResolver;
-import module.workflow.util.PresentableProcessState;
-import module.workflow.util.WorkflowFileUploadBean;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
@@ -64,12 +50,25 @@ import org.fenixedu.bennu.portal.servlet.BennuPortalDispatcher;
 import org.fenixedu.bennu.struts.annotations.Mapping;
 import org.fenixedu.bennu.struts.base.BaseAction;
 
+import com.google.gson.JsonObject;
+
+import jvstm.cps.ConsistencyException;
+import module.workflow.activities.ActivityException;
+import module.workflow.activities.ActivityInformation;
+import module.workflow.activities.WorkflowActivity;
+import module.workflow.domain.ProcessFile;
+import module.workflow.domain.ProcessFileValidationException;
+import module.workflow.domain.WorkflowProcess;
+import module.workflow.domain.WorkflowProcessComment;
+import module.workflow.presentationTier.WorkflowLayoutContext;
+import module.workflow.servlet.WorkflowContainerInitializer;
+import module.workflow.util.FileUploadBeanResolver;
+import module.workflow.util.PresentableProcessState;
+import module.workflow.util.WorkflowFileUploadBean;
 import pt.ist.fenixWebFramework.renderers.utils.RenderUtils;
 import pt.ist.fenixWebFramework.servlets.filters.contentRewrite.GenericChecksumRewriter;
 import pt.ist.fenixframework.DomainObject;
 import pt.ist.fenixframework.FenixFramework;
-
-import com.google.gson.JsonObject;
 
 /**
  * 
@@ -161,8 +160,14 @@ public class ProcessManagement extends BaseAction {
 
         final WorkflowProcess process = getProcess(request);
         final WorkflowActivity<WorkflowProcess, ActivityInformation<WorkflowProcess>> activity = getActivity(process, request);
-        final ActivityInformation<WorkflowProcess> information = populateInformation(process, activity, request);
-        return executeActivity(process, request, activity, information);
+        try {
+            final ActivityInformation<WorkflowProcess> information = populateInformation(process, activity, request);
+            return executeActivity(process, request, activity, information);
+        } catch (final DomainException domainEx) {
+            addLocalizedMessage(request, domainEx.getLocalizedMessage());
+            RenderUtils.invalidateViewState();
+            return viewProcess(process, request);
+        }
     }
 
     private ActivityInformation<WorkflowProcess> populateInformation(final WorkflowProcess process,
