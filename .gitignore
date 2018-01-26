@@ -15,3 +15,8 @@
 # Maven #
 target/
 bin/
+
+# IntelliJ
+
+*.iml
+.idea/
