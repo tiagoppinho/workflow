@@ -33,20 +33,15 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import module.workflow.domain.WorkflowProcess;
-import module.workflow.presentationTier.actions.BasicSearchProcessBean;
-import module.workflow.presentationTier.actions.ProcessManagement;
-
 import org.apache.struts.action.ActionForward;
-import org.fenixedu.bennu.core.domain.Bennu;
 import org.fenixedu.bennu.core.domain.User;
 import org.fenixedu.bennu.core.security.Authenticate;
 import org.fenixedu.bennu.core.util.CoreConfiguration;
-import org.fenixedu.bennu.portal.BennuPortalConfiguration;
-import org.fenixedu.bennu.portal.domain.PortalConfiguration;
 
+import module.workflow.domain.WorkflowProcess;
+import module.workflow.presentationTier.actions.BasicSearchProcessBean;
+import module.workflow.presentationTier.actions.ProcessManagement;
 import pt.ist.fenixWebFramework.servlets.filters.contentRewrite.GenericChecksumRewriter;
-import pt.ist.fenixframework.DomainObject;
 import pt.ist.fenixframework.FenixFramework;
 
 /**
@@ -63,11 +58,21 @@ public class ForwardToProcessServlet extends HttpServlet {
     protected void doGet(final HttpServletRequest request, final HttpServletResponse response) throws ServletException,
             IOException {
         final String uri = request.getRequestURI();
-        String[] split = uri.split("ForwardToProcess/");
+        final String[] split = uri.split("ForwardToProcess/");
         final String externalId = split[1];
-        BasicSearchProcessBean searchBean = new BasicSearchProcessBean();
+
+        final User user = Authenticate.getUser();
+        if (user == null) {
+            final String applicationUrl = CoreConfiguration.getConfiguration().applicationUrl();
+            final String path = applicationUrl + "/login??callback=" + applicationUrl + "/ForwardToProcess/" + externalId;
+            response.sendRedirect(path);
+            response.getOutputStream().close();            
+            return;
+        }
+
+        final BasicSearchProcessBean searchBean = new BasicSearchProcessBean();
         searchBean.setProcessId(externalId);
-        Set<WorkflowProcess> search = searchBean.search();
+        final Set<WorkflowProcess> search = searchBean.search();
         WorkflowProcess workflowProcess = null;
         if (search.size() != 1) {
             workflowProcess = FenixFramework.getDomainObject(externalId);
@@ -86,27 +91,6 @@ public class ForwardToProcessServlet extends HttpServlet {
         } else {
             throw new Error("unauthorized.access");
         }
-    }
-
-    private String getDownloadUrlForDomainObject(final HttpServletRequest request, final DomainObject domainObject) {
-        return getDownloadUrl(request.getScheme(), request.getServerName(), request.getServerPort(), request.getContextPath(),
-                domainObject);
-    }
-
-    private String getDownloadUrl(final String scheme, final String servername, final int serverPort, final String contextPath,
-            final DomainObject domainObject) {
-        final StringBuilder url = new StringBuilder();
-        url.append(scheme);
-        url.append("://");
-        url.append(servername);
-        if (serverPort > 0 && serverPort != 80 && serverPort != 443) {
-            url.append(":");
-            url.append(serverPort);
-        }
-        url.append(contextPath);
-        url.append("/ForwardToProcess/");
-        url.append(domainObject.getExternalId());
-        return url.toString();
     }
 
 }
