@@ -1,1 +1,2 @@
 module.workflow.servlet.WorkflowContainerInitializer
+module.workflow.servlet.ActivityLogContainerInitializer

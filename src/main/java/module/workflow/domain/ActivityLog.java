@@ -24,10 +24,13 @@
  */
 package module.workflow.domain;
 
+import static module.workflow.servlet.ActivityLogContainerInitializer.getWorkflowActivity;
+
 import org.fenixedu.bennu.core.i18n.BundleUtil;
 
 import module.workflow.activities.ActivityInformation;
 import module.workflow.activities.WorkflowActivity;
+import module.workflow.servlet.ActivityLogContainerInitializer;
 import pt.utl.ist.fenix.tools.util.Strings;
 
 /**
@@ -52,8 +55,7 @@ public class ActivityLog extends ActivityLog_Base {
 
     @Override
     public String getDescription() {
-        WorkflowActivity<WorkflowProcess, ActivityInformation<WorkflowProcess>> activity =
-                getProcess().getActivity(getOperation());
+        WorkflowActivity activity = getWorkflowActivity(getOperation()).orElseThrow(UnsupportedOperationException::new);
 
         Strings arguments = getDescriptionArguments();
         if (arguments != null && !arguments.isEmpty()) {
