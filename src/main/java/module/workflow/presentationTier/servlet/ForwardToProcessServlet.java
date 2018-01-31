@@ -64,7 +64,7 @@ public class ForwardToProcessServlet extends HttpServlet {
         final User user = Authenticate.getUser();
         if (user == null) {
             final String applicationUrl = CoreConfiguration.getConfiguration().applicationUrl();
-            final String path = applicationUrl + "/login??callback=" + applicationUrl + "/ForwardToProcess/" + externalId;
+            final String path = applicationUrl + "/login?callback=" + applicationUrl + "/ForwardToProcess/" + externalId;
             response.sendRedirect(path);
             response.getOutputStream().close();            
             return;
