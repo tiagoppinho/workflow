@@ -1,3 +1,4 @@
+<%@page import="module.workflow.activities.AddObserver"%>
 <%@page import="module.workflow.domain.WorkflowProcess"%>
 <%@page import="org.fenixedu.bennu.core.domain.User"%>
 <%@page import="org.fenixedu.bennu.core.security.Authenticate"%>
@@ -133,6 +134,13 @@
 	               </wf:activityLink>
 	           </li>
 	           </wf:isActive>
+               <wf:isActive processName="process" activityName="<%= AddObserver.class.getSimpleName() %>" scope="request">
+               <li>
+                   <wf:activityLink id="add-observer" processName="process" activityName="<%=  AddObserver.class.getSimpleName() %>" scope="request">
+                               <wf:activityName processName="process" activityName="<%= AddObserver.class.getSimpleName() %>" scope="request"/>
+                   </wf:activityLink>
+               </li>
+               </wf:isActive>
 	       </logic:equal>    
 				<logic:equal name="process" property="currentUserCanViewLogs" value="true"> 
 					<li>

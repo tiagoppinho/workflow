@@ -26,18 +26,13 @@ package module.workflow.presentationTier.renderers.providers;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import module.workflow.domain.PermanentProcessCommentUser;
 import module.workflow.domain.WorkflowProcess;
-import module.workflow.domain.WorkflowProcessComment;
 import module.workflow.domain.WorkflowSystem;
 import module.workflow.presentationTier.actions.CommentBean;
 import module.workflow.presentationTier.actions.UserNotificationBean;
-
-import org.fenixedu.bennu.core.domain.User;
-
 import pt.ist.fenixWebFramework.renderers.DataProvider;
 import pt.ist.fenixWebFramework.renderers.components.converters.Converter;
 
@@ -71,6 +66,10 @@ public class CommentersForProcess implements DataProvider {
             .forEach(b -> availablePeopleToNotify.add(b));
 
         process.getProcessWorkerStream().map(u -> new UserNotificationBean(u, process))
+            .forEach(b -> availablePeopleToNotify.add(b));
+
+        process.getObserversSet().stream()
+            .map(o -> new UserNotificationBean(o, process))
             .forEach(b -> availablePeopleToNotify.add(b));
 
         WorkflowSystem.getInstance().getPermanentProcessCommentUserSet().forEach(ppcu -> getPeople(availablePeopleToNotify, ppcu, process));
