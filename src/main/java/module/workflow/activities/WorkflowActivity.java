@@ -52,6 +52,7 @@ import pt.ist.fenixframework.Atomic;
  * @author Anil Kassamali
  * @author Luis Cruz
  * @author Paulo Abrantes
+ * @author Ricardo Almeida
  * 
  */
 public abstract class WorkflowActivity<P extends WorkflowProcess, AI extends ActivityInformation<P>> {
@@ -120,7 +121,7 @@ public abstract class WorkflowActivity<P extends WorkflowProcess, AI extends Act
      * 
      */
     protected boolean isProcessTakenByUser(P process, User user) {
-        User taker = process.getCurrentOwner();
+        final User taker = process.getCurrentOwner();
         return taker != null && taker == user;
     }
 
@@ -145,7 +146,7 @@ public abstract class WorkflowActivity<P extends WorkflowProcess, AI extends Act
     public final void execute(AI activityInformation) {
         ActivityListenerManager.beforeExcecute(activityInformation);
 
-        P process = activityInformation.getProcess();
+        final P process = activityInformation.getProcess();
         checkConditionsFor(process);
         if (shouldLogActivity(activityInformation)) {
             logExecution(process, getClass().getSimpleName(), getLoggedPerson(), activityInformation,
@@ -284,7 +285,7 @@ public abstract class WorkflowActivity<P extends WorkflowProcess, AI extends Act
         try {
             return ResourceBundle.getBundle(getUsedBundle(), I18N.getLocale())
                     .getString("activity." + getClass().getSimpleName());
-        } catch (java.util.MissingResourceException e) {
+        } catch (final java.util.MissingResourceException e) {
             e.printStackTrace();
             return getClass().getSimpleName();
         }
@@ -398,7 +399,7 @@ public abstract class WorkflowActivity<P extends WorkflowProcess, AI extends Act
         final ResourceBundle resourceBundle = ResourceBundle.getBundle(getUsedBundle(), I18N.getLocale());
         try {
             resourceBundle.getString("label." + getClass().getName() + ".help");
-        } catch (MissingResourceException e) {
+        } catch (final MissingResourceException e) {
             return false;
         }
         return true;
@@ -411,5 +412,15 @@ public abstract class WorkflowActivity<P extends WorkflowProcess, AI extends Act
      */
     public String getHelpMessage() {
         return BundleUtil.getString(getUsedBundle(), "label." + getClass().getName() + ".help");
+    }
+
+    /**
+     * Some activities may require redirection. The ProcessManagement executeActivity
+     * method will not forward if isRedirectEnabled returns true
+     * 
+     * @return
+     */
+    public boolean isRedirectEnabled() {
+        return false;
     }
 }
