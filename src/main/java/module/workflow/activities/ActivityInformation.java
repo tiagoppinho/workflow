@@ -33,6 +33,7 @@ import module.workflow.domain.WorkflowProcess;
  * @author Daniel Ribeiro
  * @author Pedro Santos
  * @author Paulo Abrantes
+ * @author Ricardo Almeida
  * 
  */
 public class ActivityInformation<P extends WorkflowProcess> implements Serializable {
@@ -102,4 +103,5 @@ public class ActivityInformation<P extends WorkflowProcess> implements Serializa
     public String getUsedSchema() {
         return "activityInformation." + getActivityClass().getSimpleName();
     }
+
 }

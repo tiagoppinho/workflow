@@ -79,6 +79,7 @@ import pt.ist.fenixframework.FenixFramework;
  * @author Shezad Anavarali
  * @author Paulo Abrantes
  * @author Luis Cruz
+ * @author Ricardo Almeida
  * 
  */
 @Mapping(path = "/workflowProcessManagement")
@@ -142,7 +143,7 @@ public class ProcessManagement extends BaseAction {
         final WorkflowProcess process = getProcess(request);
         final WorkflowActivity<WorkflowProcess, ActivityInformation<WorkflowProcess>> activity = getActivity(process, request);
         final ActivityInformation<WorkflowProcess> information = getRenderedObject("activityBean");
-        return doLifeCycle(information, process, activity, request);
+        return doLifeCycle(information, process, activity, request, response);
     }
 
     public ActionForward activityDefaultPostback(final ActionMapping mapping, final ActionForm form,
@@ -152,7 +153,7 @@ public class ProcessManagement extends BaseAction {
         final WorkflowActivity<WorkflowProcess, ActivityInformation<WorkflowProcess>> activity = getActivity(process, request);
         final ActivityInformation<WorkflowProcess> information = getRenderedObject("activityBean");
         RenderUtils.invalidateViewState();
-        return executeActivity(process, request, activity, information);
+        return executeActivity(process, request, response, activity, information);
     }
 
     public ActionForward actionLink(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
@@ -162,7 +163,7 @@ public class ProcessManagement extends BaseAction {
         final WorkflowActivity<WorkflowProcess, ActivityInformation<WorkflowProcess>> activity = getActivity(process, request);
         try {
             final ActivityInformation<WorkflowProcess> information = populateInformation(process, activity, request);
-            return executeActivity(process, request, activity, information);
+            return executeActivity(process, request, response, activity, information);
         } catch (final DomainException domainEx) {
             addLocalizedMessage(request, domainEx.getLocalizedMessage());
             RenderUtils.invalidateViewState();
@@ -171,8 +172,8 @@ public class ProcessManagement extends BaseAction {
     }
 
     private ActivityInformation<WorkflowProcess> populateInformation(final WorkflowProcess process,
-            final WorkflowActivity<WorkflowProcess, ActivityInformation<WorkflowProcess>> activity, final HttpServletRequest request)
-            throws Exception {
+            final WorkflowActivity<WorkflowProcess, ActivityInformation<WorkflowProcess>> activity,
+            final HttpServletRequest request) throws Exception {
         final ActivityInformation<WorkflowProcess> activityInformation = activity.getActivityInformation(process);
         final String parameters = request.getParameter("parameters");
         final Class<? extends ActivityInformation> activityClass = activityInformation.getClass();
@@ -182,9 +183,8 @@ public class ProcessManagement extends BaseAction {
                 final Field field = getField(activityClass, parameter);
                 final Class<?> type = field.getType();
                 final Object convertedValue = convert(type, request.getParameter(parameter));
-                final Method declaredMethod =
-                        getMethod("set" + parameter.substring(0, 1).toUpperCase() + parameter.substring(1), activityClass,
-                                convertedValue.getClass());
+                final Method declaredMethod = getMethod("set" + parameter.substring(0, 1).toUpperCase() + parameter.substring(1),
+                        activityClass, convertedValue.getClass());
                 declaredMethod.invoke(activityInformation, convertedValue);
             }
         }
@@ -209,7 +209,7 @@ public class ProcessManagement extends BaseAction {
         while (!argumentClass.equals(Object.class)) {
             try {
                 return activityClass.getMethod(methodName, argumentClass);
-            } catch (NoSuchMethodException e) {
+            } catch (final NoSuchMethodException e) {
                 argumentClass = argumentClass.getSuperclass();
             }
         }
@@ -236,44 +236,46 @@ public class ProcessManagement extends BaseAction {
     }
 
     private ActionForward doLifeCycle(ActivityInformation<WorkflowProcess> information, final WorkflowProcess process,
-            final WorkflowActivity<WorkflowProcess, ActivityInformation<WorkflowProcess>> activity, final HttpServletRequest request) {
+            final WorkflowActivity<WorkflowProcess, ActivityInformation<WorkflowProcess>> activity,
+            final HttpServletRequest request, final HttpServletResponse response) {
         if (information == null) {
             information = activity.getActivityInformation(process);
         } else {
             information.markHasForwardedFromInput();
         }
-
-        return executeActivity(process, request, activity, information);
+        return executeActivity(process, request, response, activity, information);
     }
 
     public ActionForward executeActivity(final WorkflowProcess process, final HttpServletRequest request,
+            final HttpServletResponse response,
             final WorkflowActivity<WorkflowProcess, ActivityInformation<WorkflowProcess>> activity,
             final ActivityInformation<WorkflowProcess> information) {
         if (information.hasAllneededInfo()) {
-
             try {
                 activity.execute(information);
             } catch (final ActivityException e) {
                 addLocalizedMessage(request, e.getMessage());
                 RenderUtils.invalidateViewState();
-                return information.isForwardedFromInput() ? forwardProcessForInput(activity, request, information) : viewProcess(
-                        process, request);
+                return information.isForwardedFromInput() ? forwardProcessForInput(activity, request,
+                        information) : viewProcess(process, request);
             } catch (final DomainException domainEx) {
                 addLocalizedMessage(request, domainEx.getLocalizedMessage());
                 RenderUtils.invalidateViewState();
-                return information.isForwardedFromInput() ? forwardProcessForInput(activity, request, information) : viewProcess(
-                        process, request);
+                return information.isForwardedFromInput() ? forwardProcessForInput(activity, request,
+                        information) : viewProcess(process, request);
             } catch (final ConsistencyException exc) {
                 displayConsistencyException(exc, request);
 
                 RenderUtils.invalidateViewState();
-                return information.isForwardedFromInput() ? forwardProcessForInput(activity, request, information) : viewProcess(
-                        process, request);
+                return information.isForwardedFromInput() ? forwardProcessForInput(activity, request,
+                        information) : viewProcess(process, request);
             }
-
+            if (activity.customHandleResponse()) {
+                activity.handleResponse(request, response, information);
+                return null;
+            }
             return forwardToProcessPage(process, request);
         }
-
         return forwardProcessForInput(activity, request, information);
     }
 
@@ -410,7 +412,7 @@ public class ProcessManagement extends BaseAction {
             final HttpServletRequest request) {
 
         final WorkflowProcess process = getProcess(request);
-        WorkflowFileUploadBean bean = FileUploadBeanResolver.getBeanForProcessFile(process, selectedInstance);
+        final WorkflowFileUploadBean bean = FileUploadBeanResolver.getBeanForProcessFile(process, selectedInstance);
         bean.setSelectedInstance(selectedInstance);
 
         request.setAttribute("bean", bean);
@@ -574,8 +576,8 @@ public class ProcessManagement extends BaseAction {
         public void handleRequest(T process, HttpServletRequest request);
     }
 
-    public ActionForward viewTypeDescription(final ActionMapping mapping, final ActionForm form,
-            final HttpServletRequest request, final HttpServletResponse response) throws IOException {
+    public ActionForward viewTypeDescription(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
+            final HttpServletResponse response) throws IOException {
         String classname = request.getParameter("classname");
         final int indexOfInnerClassInEnum = classname.indexOf("$");
         if (indexOfInnerClassInEnum > 0) {
@@ -585,7 +587,7 @@ public class ProcessManagement extends BaseAction {
         try {
             final Class<Enum> stateEnum = (Class<Enum>) Class.forName(classname);
             type = (PresentableProcessState) Enum.valueOf(stateEnum, request.getParameter("type"));
-        } catch (Exception e) {
+        } catch (final Exception e) {
             e.printStackTrace();
             return null;
         }

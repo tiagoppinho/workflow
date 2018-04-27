@@ -30,6 +30,9 @@ import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 import java.util.function.BiPredicate;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.fenixedu.bennu.core.domain.User;
 import org.fenixedu.bennu.core.i18n.BundleUtil;
 import org.fenixedu.bennu.core.security.Authenticate;
@@ -52,6 +55,7 @@ import pt.ist.fenixframework.Atomic;
  * @author Anil Kassamali
  * @author Luis Cruz
  * @author Paulo Abrantes
+ * @author Ricardo Almeida
  * 
  */
 public abstract class WorkflowActivity<P extends WorkflowProcess, AI extends ActivityInformation<P>> {
@@ -120,7 +124,7 @@ public abstract class WorkflowActivity<P extends WorkflowProcess, AI extends Act
      * 
      */
     protected boolean isProcessTakenByUser(P process, User user) {
-        User taker = process.getCurrentOwner();
+        final User taker = process.getCurrentOwner();
         return taker != null && taker == user;
     }
 
@@ -145,7 +149,7 @@ public abstract class WorkflowActivity<P extends WorkflowProcess, AI extends Act
     public final void execute(AI activityInformation) {
         ActivityListenerManager.beforeExcecute(activityInformation);
 
-        P process = activityInformation.getProcess();
+        final P process = activityInformation.getProcess();
         checkConditionsFor(process);
         if (shouldLogActivity(activityInformation)) {
             logExecution(process, getClass().getSimpleName(), getLoggedPerson(), activityInformation,
@@ -284,7 +288,7 @@ public abstract class WorkflowActivity<P extends WorkflowProcess, AI extends Act
         try {
             return ResourceBundle.getBundle(getUsedBundle(), I18N.getLocale())
                     .getString("activity." + getClass().getSimpleName());
-        } catch (java.util.MissingResourceException e) {
+        } catch (final java.util.MissingResourceException e) {
             e.printStackTrace();
             return getClass().getSimpleName();
         }
@@ -398,7 +402,7 @@ public abstract class WorkflowActivity<P extends WorkflowProcess, AI extends Act
         final ResourceBundle resourceBundle = ResourceBundle.getBundle(getUsedBundle(), I18N.getLocale());
         try {
             resourceBundle.getString("label." + getClass().getName() + ".help");
-        } catch (MissingResourceException e) {
+        } catch (final MissingResourceException e) {
             return false;
         }
         return true;
@@ -412,4 +416,23 @@ public abstract class WorkflowActivity<P extends WorkflowProcess, AI extends Act
     public String getHelpMessage() {
         return BundleUtil.getString(getUsedBundle(), "label." + getClass().getName() + ".help");
     }
+
+    /**
+     * Some activities may require a specific handling of the response. The ProcessManagement executeActivity
+     * method will not forward if customHandleResponse returns true and will instead call the activities 
+     * handleResponse(request, response) method;
+     * 
+     */
+    public boolean customHandleResponse() {
+        return false;
+    }
+
+    /**
+     * Handle response to send to client after activity execute.
+     * This is only called if in the context of the Process Management cycle in a web app
+     */
+    public void handleResponse(final HttpServletRequest request, final HttpServletResponse response, final AI activityInformation) {
+        throw new Error("handleResponse method not implemented by activity that declared customHandleResponse");
+    }
+
 }
