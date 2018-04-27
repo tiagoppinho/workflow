@@ -30,6 +30,9 @@ import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 import java.util.function.BiPredicate;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.fenixedu.bennu.core.domain.User;
 import org.fenixedu.bennu.core.i18n.BundleUtil;
 import org.fenixedu.bennu.core.security.Authenticate;
@@ -415,12 +418,21 @@ public abstract class WorkflowActivity<P extends WorkflowProcess, AI extends Act
     }
 
     /**
-     * Some activities may require redirection. The ProcessManagement executeActivity
-     * method will not forward if isRedirectEnabled returns true
+     * Some activities may require a specific handling of the response. The ProcessManagement executeActivity
+     * method will not forward if customHandleResponse returns true and will instead call the activities 
+     * handleResponse(request, response) method;
      * 
-     * @return
      */
-    public boolean isRedirectEnabled() {
+    public boolean customHandleResponse() {
         return false;
     }
+
+    /**
+     * Handle response to send to client after activity execute.
+     * This is only called if in the context of the Process Management cycle in a web app
+     */
+    public void handleResponse(final HttpServletRequest request, final HttpServletResponse response, final AI activityInformation) {
+        throw new Error("handleResponse method not implemented by activity that declared customHandleResponse");
+    }
+
 }

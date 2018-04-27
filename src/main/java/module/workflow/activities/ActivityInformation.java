@@ -26,9 +26,6 @@ package module.workflow.activities;
 
 import java.io.Serializable;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import module.workflow.domain.WorkflowProcess;
 
 /**
@@ -46,8 +43,6 @@ public class ActivityInformation<P extends WorkflowProcess> implements Serializa
     private String activityName;
     private String localizedName;
     private boolean forwardFromInput;
-    private HttpServletRequest request;
-    private HttpServletResponse response;
 
     public boolean isForwardedFromInput() {
         return forwardFromInput;
@@ -109,19 +104,4 @@ public class ActivityInformation<P extends WorkflowProcess> implements Serializa
         return "activityInformation." + getActivityClass().getSimpleName();
     }
 
-    public HttpServletRequest getRequest() {
-        return request;
-    }
-
-    public void setRequest(HttpServletRequest request) {
-        this.request = request;
-    }
-
-    public HttpServletResponse getResponse() {
-        return response;
-    }
-
-    public void setResponse(HttpServletResponse response) {
-        this.response = response;
-    }
 }

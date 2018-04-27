@@ -143,7 +143,7 @@ public class ProcessManagement extends BaseAction {
         final WorkflowProcess process = getProcess(request);
         final WorkflowActivity<WorkflowProcess, ActivityInformation<WorkflowProcess>> activity = getActivity(process, request);
         final ActivityInformation<WorkflowProcess> information = getRenderedObject("activityBean");
-        return doLifeCycle(information, process, activity, request);
+        return doLifeCycle(information, process, activity, request, response);
     }
 
     public ActionForward activityDefaultPostback(final ActionMapping mapping, final ActionForm form,
@@ -153,7 +153,7 @@ public class ProcessManagement extends BaseAction {
         final WorkflowActivity<WorkflowProcess, ActivityInformation<WorkflowProcess>> activity = getActivity(process, request);
         final ActivityInformation<WorkflowProcess> information = getRenderedObject("activityBean");
         RenderUtils.invalidateViewState();
-        return executeActivity(process, request, activity, information);
+        return executeActivity(process, request, response, activity, information);
     }
 
     public ActionForward actionLink(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
@@ -162,8 +162,8 @@ public class ProcessManagement extends BaseAction {
         final WorkflowProcess process = getProcess(request);
         final WorkflowActivity<WorkflowProcess, ActivityInformation<WorkflowProcess>> activity = getActivity(process, request);
         try {
-            final ActivityInformation<WorkflowProcess> information = populateInformation(process, activity, request, response);
-            return executeActivity(process, request, activity, information);
+            final ActivityInformation<WorkflowProcess> information = populateInformation(process, activity, request);
+            return executeActivity(process, request, response, activity, information);
         } catch (final DomainException domainEx) {
             addLocalizedMessage(request, domainEx.getLocalizedMessage());
             RenderUtils.invalidateViewState();
@@ -173,10 +173,8 @@ public class ProcessManagement extends BaseAction {
 
     private ActivityInformation<WorkflowProcess> populateInformation(final WorkflowProcess process,
             final WorkflowActivity<WorkflowProcess, ActivityInformation<WorkflowProcess>> activity,
-            final HttpServletRequest request, final HttpServletResponse response) throws Exception {
+            final HttpServletRequest request) throws Exception {
         final ActivityInformation<WorkflowProcess> activityInformation = activity.getActivityInformation(process);
-        activityInformation.setRequest(request);
-        activityInformation.setResponse(response);
         final String parameters = request.getParameter("parameters");
         final Class<? extends ActivityInformation> activityClass = activityInformation.getClass();
         if (!StringUtils.isEmpty(parameters)) {
@@ -239,21 +237,20 @@ public class ProcessManagement extends BaseAction {
 
     private ActionForward doLifeCycle(ActivityInformation<WorkflowProcess> information, final WorkflowProcess process,
             final WorkflowActivity<WorkflowProcess, ActivityInformation<WorkflowProcess>> activity,
-            final HttpServletRequest request) {
+            final HttpServletRequest request, final HttpServletResponse response) {
         if (information == null) {
             information = activity.getActivityInformation(process);
         } else {
             information.markHasForwardedFromInput();
         }
-
-        return executeActivity(process, request, activity, information);
+        return executeActivity(process, request, response, activity, information);
     }
 
     public ActionForward executeActivity(final WorkflowProcess process, final HttpServletRequest request,
+            final HttpServletResponse response,
             final WorkflowActivity<WorkflowProcess, ActivityInformation<WorkflowProcess>> activity,
             final ActivityInformation<WorkflowProcess> information) {
         if (information.hasAllneededInfo()) {
-
             try {
                 activity.execute(information);
             } catch (final ActivityException e) {
@@ -273,14 +270,13 @@ public class ProcessManagement extends BaseAction {
                 return information.isForwardedFromInput() ? forwardProcessForInput(activity, request,
                         information) : viewProcess(process, request);
             }
-            if (!activity.isRedirectEnabled()) {
-                return forwardToProcessPage(process, request);
+            if (activity.customHandleResponse()) {
+                activity.handleResponse(request, response, information);
+                return null;
             }
+            return forwardToProcessPage(process, request);
         }
-        if (!activity.isRedirectEnabled()) {
-            return forwardProcessForInput(activity, request, information);
-        }
-        return null;
+        return forwardProcessForInput(activity, request, information);
     }
 
     private final <T extends WorkflowProcess> ActionForward forwardProcessForInput(final WorkflowActivity activity,
