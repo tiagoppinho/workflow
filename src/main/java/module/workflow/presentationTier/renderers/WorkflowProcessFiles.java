@@ -27,13 +27,15 @@ package module.workflow.presentationTier.renderers;
 import java.util.Iterator;
 import java.util.List;
 
-import module.workflow.domain.ProcessFile;
-import module.workflow.domain.WorkflowProcess;
-import module.workflow.util.WorkflowClassUtil;
-
 import org.apache.commons.lang.StringUtils;
+import org.fenixedu.bennu.WorkflowConfiguration;
 import org.fenixedu.bennu.core.i18n.BundleUtil;
 
+import module.workflow.domain.ProcessFile;
+import module.workflow.domain.ProcessFileSignatureHandler;
+import module.workflow.domain.SigningState;
+import module.workflow.domain.WorkflowProcess;
+import module.workflow.util.WorkflowClassUtil;
 import pt.ist.fenixWebFramework.renderers.OutputRenderer;
 import pt.ist.fenixWebFramework.renderers.components.HtmlBlockContainer;
 import pt.ist.fenixWebFramework.renderers.components.HtmlComponent;
@@ -55,6 +57,7 @@ import pt.ist.fenixWebFramework.renderers.utils.RenderUtils;
 public class WorkflowProcessFiles extends OutputRenderer {
 
     private String downloadFormat;
+    private String signFormat;
     private String removeFormat;
 
     public String getDownloadFormat() {
@@ -63,6 +66,14 @@ public class WorkflowProcessFiles extends OutputRenderer {
 
     public void setDownloadFormat(String downloadFormat) {
         this.downloadFormat = downloadFormat;
+    }
+
+    public String getSignFormat() {
+        return signFormat;
+    }
+
+    public void setSignFormat(String signFormat) {
+        this.signFormat = signFormat;
     }
 
     public String getRemoveFormat() {
@@ -124,6 +135,18 @@ public class WorkflowProcessFiles extends OutputRenderer {
                         container.addChild(downloadLink);
                         if (file.shouldFileContentAccessBeLogged()) {
                             container.addChild(accessConfirmation(file));
+                        }
+
+                        final ProcessFileSignatureHandler<ProcessFile> handler = ProcessFileSignatureHandler.handlerFor(file);
+                        if (WorkflowConfiguration.getConfiguration().smartsignerIntegration() && handler.canSignFile()) {
+                            HtmlLink signLink = new HtmlLink();
+                            signLink.setIndented(false);
+                            signLink.setId("sign-" + file.getExternalId());
+                            signLink.setBody(new HtmlText("("
+                                    + RenderUtils.getResourceString("WORKFLOW_RESOURCES", "link.signFile") + ")"));
+                            signLink.setUrl(RenderUtils.getFormattedProperties(getSignFormat(), file));
+
+                            container.addChild(signLink);
                         }
 
                         if (file.isPossibleToArchieve() && file.getProcess().isFileEditionAllowed()) {

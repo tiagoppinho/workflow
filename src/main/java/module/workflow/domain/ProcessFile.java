@@ -24,12 +24,25 @@
  */
 package module.workflow.domain;
 
-import jvstm.cps.ConsistencyPredicate;
-import module.workflow.util.ClassNameBundle;
-import module.workflow.util.WorkflowFileUploadBean;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.security.SecureRandom;
+import java.util.Base64;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
+import org.fenixedu.bennu.SmartsiignerSdkConfiguration;
+import org.fenixedu.bennu.WorkflowConfiguration;
 import org.fenixedu.bennu.core.domain.User;
+import org.fenixedu.bennu.core.security.Authenticate;
+import org.fenixedu.bennu.portal.domain.PortalConfiguration;
+
+import jvstm.cps.ConsistencyPredicate;
+import module.workflow.domain.exceptions.WorkflowDomainException;
+import module.workflow.util.ClassNameBundle;
+import module.workflow.util.WorkflowFileUploadBean;
+import pt.ist.fenixframework.Atomic;
+import pt.ist.smartsigner.sdk.SmartSignerSdk;
 
 /**
  * 
@@ -47,10 +60,13 @@ public class ProcessFile extends ProcessFile_Base {
 
     public ProcessFile() {
         super();
+        setShouldBeSigned(Boolean.FALSE);
+        setUuid(generateSecureId(16));
+        setSigningState(SigningState.CREATED);
     }
 
     public ProcessFile(String displayName, String filename, byte[] content) {
-        super();
+        this();
         init(displayName, filename, content);
     }
 
@@ -181,4 +197,51 @@ public class ProcessFile extends ProcessFile_Base {
     public WorkflowProcess getProcess() {
         return super.getProcess();
     }
+
+    private static final Pattern REMOVE_PATTERN = Pattern.compile("[-_]");
+
+    private static String generateSecureId(int length) {
+        if (length <= 0) {
+            throw new IllegalArgumentException("Invalid length: " + length);
+        }
+        SecureRandom random = new SecureRandom();
+        // Request some extra bytes to account for '-' and '_' characters
+        byte[] bytes = new byte[length + 5];
+        while (true) {
+            random.nextBytes(bytes);
+
+            // Remove all invalid characters
+            String str = REMOVE_PATTERN.matcher(Base64.getUrlEncoder().encodeToString(bytes)).replaceAll("");
+
+            // If we have the necessary length, trim and return it
+            if (str.length() >= length) {
+                return str.substring(0, length);
+            }
+        }
+    }
+
+    @Atomic
+    public void sendFileForSigning() {
+        if (isArchieved()) {
+            throw new WorkflowDomainException("error.cannot.sign.archieved.files");
+        }
+        if (!WorkflowConfiguration.getConfiguration().smartsignerIntegration()) {
+            throw new WorkflowDomainException("error.smart.signer.not.configured");
+        }
+
+        final ProcessFileSignatureHandler<ProcessFile> handler = ProcessFileSignatureHandler.handlerFor(this);
+
+        final InputStream content = new ByteArrayInputStream(getContent());
+        final String filename = handler.filename();
+        final String creator = PortalConfiguration.getInstance().getApplicationSubTitle().getContent();
+
+        final byte[] jwtSecret = SmartsiignerSdkConfiguration.getConfiguration().jwtSecret().getBytes();
+
+        SmartSignerSdk.sendForSigning(filename, content, handler.queue(), creator, handler.title(),
+                handler.allowMultipleSignatures(), handler.description(), handler.externalIdentifier(),
+                handler.signatureField(), handler.callbackUrl(jwtSecret), Authenticate.getUser().getUsername());
+
+        setSigningState(SigningState.PENDING);
+    }
+
 }

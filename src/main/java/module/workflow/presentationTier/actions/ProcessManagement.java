@@ -484,6 +484,16 @@ public class ProcessManagement extends BaseAction {
 
     }
 
+    public ActionForward sendFileForSigning(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
+            final HttpServletResponse response) {
+
+        final ProcessFile file = getDomainObject(request, "fileId");
+        final WorkflowProcess process = file.getProcess();
+        file.sendFileForSigning();
+
+        return viewProcess(process, request);
+    }
+
     public ActionForward viewFilesDetails(final ActionMapping mapping, final ActionForm form, final HttpServletRequest request,
             final HttpServletResponse response) {
 

@@ -19,6 +19,7 @@
         <version.org.fenixedu.dashboard>2.2.0</version.org.fenixedu.dashboard>
         <version.javax.servlet.jsp>2.1</version.javax.servlet.jsp>
         <version.pt.ist.fenix-legacy-tools>2.0.0</version.pt.ist.fenix-legacy-tools>
+        <version.pt.ist.smartsigner>2.0.0</version.pt.ist.smartsigner>
     </properties>
 
     <dependencies>
@@ -46,6 +47,11 @@
             <groupId>pt.ist</groupId>
             <artifactId>fenix-legacy-tools</artifactId>
             <version>${version.pt.ist.fenix-legacy-tools}</version>
+        </dependency>
+        <dependency>
+            <groupId>pt.ist.smartsigner</groupId>
+            <artifactId>sdk-java</artifactId>
+            <version>${version.pt.ist.smartsigner}</version>
         </dependency>
         <dependency>
             <groupId>javax.servlet.jsp</groupId>

@@ -24,7 +24,14 @@
  * 
  */
  
-class module.workflow.domain.ProcessFile extends .org.fenixedu.bennu.io.domain.GenericFile { }
+enum module.workflow.domain.SigningState as SigningState;
+
+ 
+class module.workflow.domain.ProcessFile extends .org.fenixedu.bennu.io.domain.GenericFile {
+    String uuid;
+    Boolean shouldBeSigned;
+    SigningState signingState;
+}
 
 
  //R1 - remove relation
