@@ -27,7 +27,7 @@ public class WorkflowConfiguration {
     @ConfigurationManager(description = "Workflow Configuration")
     public interface ConfigurationProperties {
         //SmartSigner
-        @ConfigurationProperty(key = "smartsigner.integration", description = "Wether integration with SmartSigner is enabled",
+        @ConfigurationProperty(key = "workflow.smartsigner.integration", description = "Wether integration with SmartSigner is enabled",
                 defaultValue = "false")
         public boolean smartsignerIntegration();
     }
