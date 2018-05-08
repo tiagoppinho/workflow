@@ -10,7 +10,7 @@
     </parent>
 
     <artifactId>workflow</artifactId>
-    <version>DEV-SNAPSHOT</version>
+    <version>3.1.1</version>
     <packaging>jar</packaging>
     <name>Workflow</name>
 
