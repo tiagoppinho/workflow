@@ -25,10 +25,13 @@
 package module.workflow.domain;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.security.SecureRandom;
 import java.util.Base64;
 import java.util.regex.Pattern;
+
+import javax.ws.rs.ProcessingException;
 
 import org.apache.commons.lang.StringUtils;
 import org.fenixedu.bennu.SmartsiignerSdkConfiguration;
@@ -36,10 +39,12 @@ import org.fenixedu.bennu.WorkflowConfiguration;
 import org.fenixedu.bennu.core.domain.User;
 import org.fenixedu.bennu.core.security.Authenticate;
 import org.fenixedu.bennu.portal.domain.PortalConfiguration;
+import org.springframework.web.multipart.MultipartFile;
 
 import jvstm.cps.ConsistencyPredicate;
 import module.workflow.domain.exceptions.WorkflowDomainException;
 import module.workflow.util.ClassNameBundle;
+import module.workflow.util.WorkflowClassUtil;
 import module.workflow.util.WorkflowFileUploadBean;
 import pt.ist.fenixframework.Atomic;
 import pt.ist.smartsigner.sdk.SmartSignerSdk;
@@ -237,11 +242,26 @@ public class ProcessFile extends ProcessFile_Base {
 
         final byte[] jwtSecret = SmartsiignerSdkConfiguration.getConfiguration().jwtSecret().getBytes();
 
-        SmartSignerSdk.sendForSigning(filename, content, handler.queue(), creator, handler.title(),
-                handler.allowMultipleSignatures(), handler.description(), handler.externalIdentifier(),
-                handler.signatureField(), handler.callbackUrl(jwtSecret), Authenticate.getUser().getUsername());
+        try {
+            SmartSignerSdk.sendForSigning(filename, content, handler.queue(), creator, handler.title(),
+                    handler.allowMultipleSignatures(), handler.description(), handler.externalIdentifier(),
+                    handler.signatureField(), handler.callbackUrl(jwtSecret), Authenticate.getUser().getUsername());
+        } catch (ProcessingException ex) {
+            throw new WorkflowDomainException("error.smart.signer.communication.problem", ex);
+        }
 
         setSigningState(SigningState.PENDING);
+    }
+
+    @Atomic
+    public void setSignedFile(final MultipartFile file, final String filename) {
+        try {
+            init(filename, filename, file.getBytes());
+        } catch (final IOException e) {
+            throw new Error(e);
+        }
+        setSigningState(SigningState.SIGNED);
+        new FileUploadLog(getProcess(), filename, filename, WorkflowClassUtil.getNameForType(file.getClass()), "");
     }
 
 }

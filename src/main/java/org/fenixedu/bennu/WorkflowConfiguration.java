@@ -18,10 +18,14 @@
  */
 package org.fenixedu.bennu;
 
+import org.fenixedu.bennu.spring.BennuSpringModule;
 import org.fenixedu.commons.configuration.ConfigurationInvocationHandler;
 import org.fenixedu.commons.configuration.ConfigurationManager;
 import org.fenixedu.commons.configuration.ConfigurationProperty;
+import org.springframework.context.annotation.ComponentScan;
 
+@ComponentScan("module.workflow.ui")
+@BennuSpringModule(basePackages = "module.workflow.ui", bundles = "WorkflowResources")
 public class WorkflowConfiguration {
 
     @ConfigurationManager(description = "Workflow Configuration")

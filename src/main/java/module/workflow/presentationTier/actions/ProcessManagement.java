@@ -60,6 +60,7 @@ import module.workflow.domain.ProcessFile;
 import module.workflow.domain.ProcessFileValidationException;
 import module.workflow.domain.WorkflowProcess;
 import module.workflow.domain.WorkflowProcessComment;
+import module.workflow.domain.exceptions.WorkflowDomainException;
 import module.workflow.presentationTier.WorkflowLayoutContext;
 import module.workflow.servlet.WorkflowContainerInitializer;
 import module.workflow.util.FileUploadBeanResolver;
@@ -489,7 +490,11 @@ public class ProcessManagement extends BaseAction {
 
         final ProcessFile file = getDomainObject(request, "fileId");
         final WorkflowProcess process = file.getProcess();
-        file.sendFileForSigning();
+        try {
+            file.sendFileForSigning();
+        } catch (WorkflowDomainException ex) {
+            addLocalizedMessage(request, ex.getLocalizedMessage());
+        }
 
         return viewProcess(process, request);
     }

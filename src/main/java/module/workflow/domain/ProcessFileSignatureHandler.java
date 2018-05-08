@@ -3,7 +3,6 @@ package module.workflow.domain;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.fenixedu.bennu.WorkflowConfiguration;
 import org.fenixedu.bennu.core.security.Authenticate;
 import org.fenixedu.bennu.core.util.CoreConfiguration;
 
@@ -78,7 +77,7 @@ public class ProcessFileSignatureHandler<T extends ProcessFile> {
     }
 
     public String callbackUrl(final byte[] jwtSecret) {
-        return CoreConfiguration.getConfiguration().applicationUrl() + "/workflow/" + processFile.getProcess().getExternalId() + "/sign?nounce=" + nounce(jwtSecret);
+        return CoreConfiguration.getConfiguration().applicationUrl() + "/workflow/" + processFile.getExternalId() + "/sign?nounce=" + nounce(jwtSecret);
     }
 
     protected String nounce(final byte[] jwtSecret) {
@@ -90,6 +89,14 @@ public class ProcessFileSignatureHandler<T extends ProcessFile> {
 
     public boolean canSignFile() {
         return false;
+    }
+
+    private static final String SUFFIX = "_signed";
+
+    public String signedFileName() {
+        final String filename = filename();
+        final int i = filename.lastIndexOf('.');
+        return i < 0 ? filename + SUFFIX : filename.substring(0, i) + SUFFIX + filename.substring(i);
     }
 
 }
