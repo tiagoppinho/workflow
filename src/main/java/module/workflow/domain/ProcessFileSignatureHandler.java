@@ -69,7 +69,7 @@ public class ProcessFileSignatureHandler<T extends ProcessFile> {
     }
 
     public String externalIdentifier() {
-        return processFile.getUuid();
+        return processFile.getUuid().toString();
     }
 
     public String signatureField() {
@@ -77,12 +77,13 @@ public class ProcessFileSignatureHandler<T extends ProcessFile> {
     }
 
     public String callbackUrl(final byte[] jwtSecret) {
-        return CoreConfiguration.getConfiguration().applicationUrl() + "/workflow/" + processFile.getExternalId() + "/sign?nounce=" + nounce(jwtSecret);
+        return CoreConfiguration.getConfiguration().applicationUrl() + "/workflow/" + processFile.getExternalId()
+                + "/sign?nounce=" + nounce(jwtSecret);
     }
 
     protected String nounce(final byte[] jwtSecret) {
         return Jwts.builder()
-                .setSubject(processFile.getUuid())
+                .setSubject(processFile.getUuid().toString())
                 .signWith(SignatureAlgorithm.HS512, jwtSecret)
                 .compact();
     }

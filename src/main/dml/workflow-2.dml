@@ -26,9 +26,16 @@
  
 enum module.workflow.domain.SigningState as SigningState;
 
+
+valueType java.util.UUID as UUID {
+    externalizeWith {
+        String toString();
+    }
+    internalizeWith java.util.UUID.fromString();
+}
  
 class module.workflow.domain.ProcessFile extends .org.fenixedu.bennu.io.domain.GenericFile {
-    String uuid;
+    UUID uuid;
     Boolean shouldBeSigned;
     SigningState signingState;
 }
