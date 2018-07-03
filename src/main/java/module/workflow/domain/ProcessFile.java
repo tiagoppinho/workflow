@@ -29,6 +29,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.security.SecureRandom;
 import java.util.Base64;
+import java.util.UUID;
 import java.util.regex.Pattern;
 
 import javax.ws.rs.ProcessingException;
@@ -66,7 +67,7 @@ public class ProcessFile extends ProcessFile_Base {
     public ProcessFile() {
         super();
         setShouldBeSigned(Boolean.FALSE);
-        setUuid(generateSecureId(16));
+        setUuid(UUID.randomUUID());
         setSigningState(SigningState.CREATED);
     }
 
@@ -162,6 +163,7 @@ public class ProcessFile extends ProcessFile_Base {
      * returns true).
      * 
      * By default it returns true
+     *
      * @return true
      */
     public boolean isPossibleToArchieve() {
@@ -209,14 +211,14 @@ public class ProcessFile extends ProcessFile_Base {
         if (length <= 0) {
             throw new IllegalArgumentException("Invalid length: " + length);
         }
-        SecureRandom random = new SecureRandom();
+        final SecureRandom random = new SecureRandom();
         // Request some extra bytes to account for '-' and '_' characters
-        byte[] bytes = new byte[length + 5];
+        final byte[] bytes = new byte[length + 5];
         while (true) {
             random.nextBytes(bytes);
 
             // Remove all invalid characters
-            String str = REMOVE_PATTERN.matcher(Base64.getUrlEncoder().encodeToString(bytes)).replaceAll("");
+            final String str = REMOVE_PATTERN.matcher(Base64.getUrlEncoder().encodeToString(bytes)).replaceAll("");
 
             // If we have the necessary length, trim and return it
             if (str.length() >= length) {
@@ -225,8 +227,12 @@ public class ProcessFile extends ProcessFile_Base {
         }
     }
 
-    @Atomic
     public void sendFileForSigning() {
+        sendFileForSigning(ProcessFileSignatureHandler.handlerFor(this).queue());
+    }
+
+    @Atomic
+    public void sendFileForSigning(String queue) {
         if (isArchieved()) {
             throw new WorkflowDomainException("error.cannot.sign.archieved.files");
         }
@@ -243,10 +249,10 @@ public class ProcessFile extends ProcessFile_Base {
         final byte[] jwtSecret = SmartsiignerSdkConfiguration.getConfiguration().jwtSecret().getBytes();
 
         try {
-            SmartSignerSdk.sendForSigning(filename, content, handler.queue(), creator, handler.title(),
-                    handler.allowMultipleSignatures(), handler.description(), handler.externalIdentifier(),
-                    handler.signatureField(), handler.callbackUrl(jwtSecret), Authenticate.getUser().getUsername());
-        } catch (ProcessingException ex) {
+            SmartSignerSdk.sendForSigning(filename, content, queue, creator, handler.title(), handler.allowMultipleSignatures(),
+                    handler.description(), handler.externalIdentifier(), handler.signatureField(), handler.callbackUrl(jwtSecret),
+                    Authenticate.getUser().getUsername());
+        } catch (final ProcessingException ex) {
             throw new WorkflowDomainException("error.smart.signer.communication.problem", ex);
         }
 
