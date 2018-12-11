@@ -1,5 +1,7 @@
 package module.workflow.ui;
 
+import java.util.UUID;
+
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 
@@ -38,8 +40,10 @@ public class CallbackController {
         }
 
         try {
-            final String uuid = Jwts.parser().setSigningKey(SmartsiignerSdkConfiguration.getConfiguration().jwtSecret().getBytes())
+            final String rawUuid =
+                    Jwts.parser().setSigningKey(SmartsiignerSdkConfiguration.getConfiguration().jwtSecret().getBytes())
                     .parseClaimsJws(nounce).getBody().getSubject();
+            final UUID uuid = UUID.fromString(rawUuid);
             if (logger.isDebugEnabled()) {
                 logger.debug("   uuid: " + uuid);
             }
