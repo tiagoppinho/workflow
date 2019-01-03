@@ -20,6 +20,7 @@
         <version.javax.servlet.jsp>2.1</version.javax.servlet.jsp>
         <version.pt.ist.fenix-legacy-tools>2.0.0</version.pt.ist.fenix-legacy-tools>
         <version.pt.ist.smartsigner>2.0.0</version.pt.ist.smartsigner>
+        <version.org.fenixedu.employer>1.0.0</version.org.fenixedu.employer>
     </properties>
 
     <dependencies>
@@ -63,6 +64,11 @@
             <groupId>org.fenixedu</groupId>
             <artifactId>bennu-spring</artifactId>
             <version>${version.org.fenixedu.bennu.core}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.fenixedu</groupId>
+            <artifactId>employer</artifactId>
+            <version>1.0.0</version>
         </dependency>
     </dependencies>
 

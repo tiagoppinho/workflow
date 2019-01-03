@@ -38,6 +38,10 @@ class module.workflow.domain.ProcessFile extends .org.fenixedu.bennu.io.domain.G
     UUID uuid;
     Boolean shouldBeSigned;
     SigningState signingState;
+    
+    protected boolean toBeCertified;
+    protected boolean certified;
+    protected boolean certifiedOnCreation;
 }
 
 

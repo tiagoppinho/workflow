@@ -69,6 +69,40 @@ public class ProcessFile extends ProcessFile_Base {
         setShouldBeSigned(Boolean.FALSE);
         setUuid(UUID.randomUUID());
         setSigningState(SigningState.CREATED);
+
+        // initial certified state (false)
+        setCertified(Boolean.FALSE);
+        // true if it is to be certified
+        setToBeCertified(Boolean.FALSE);
+        // true if the template contains certification information
+        setCertifiedOnCreation(Boolean.FALSE);
+    }
+
+    @Override
+    public void setCertified(final boolean certified) {
+        super.setCertified(certified);
+    }
+
+    @Override
+    public void setToBeCertified(final boolean toBeCertified) {
+        super.setToBeCertified(toBeCertified);
+    }
+
+    @Override
+    public void setCertifiedOnCreation(final boolean certifiedOnCreation) {
+        super.setCertifiedOnCreation(certifiedOnCreation);
+    }
+
+    public boolean isCertified() {
+        return super.getCertified();
+    }
+
+    public boolean isToBeCertified() {
+        return super.getToBeCertified();
+    }
+
+    public boolean isCertifiedOnCreation() {
+        return super.getCertifiedOnCreation();
     }
 
     public ProcessFile(String displayName, String filename, byte[] content) {

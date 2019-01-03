@@ -22,6 +22,10 @@ import org.fenixedu.bennu.spring.BennuSpringModule;
 import org.fenixedu.commons.configuration.ConfigurationInvocationHandler;
 import org.fenixedu.commons.configuration.ConfigurationManager;
 import org.fenixedu.commons.configuration.ConfigurationProperty;
+import org.fenixedu.employer.Employer;
+import org.fenixedu.employer.backoff.ExponentialBackoff;
+import org.fenixedu.employer.workflow.SimpleWorkflow;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 
 @ComponentScan("module.workflow.ui")
@@ -34,10 +38,20 @@ public class WorkflowConfiguration {
         @ConfigurationProperty(key = "workflow.smartsigner.integration", description = "Wether integration with SmartSigner is enabled",
                 defaultValue = "false")
         public boolean smartsignerIntegration();
+
+        @ConfigurationProperty(key = "certifier.url", description = "Certifier Url")
+        String certifierUrl();
+
+        @ConfigurationProperty(key = "certifier.jwt.secret", description = "Certifier JWT Secret")
+        String certifierJwtSecret();
     }
 
     public static ConfigurationProperties getConfiguration() {
         return ConfigurationInvocationHandler.getConfiguration(ConfigurationProperties.class);
     }
 
+    @Bean
+    public Employer employer() {
+        return new Employer(new SimpleWorkflow(), new ExponentialBackoff(), 2);
+    }
 }

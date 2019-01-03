@@ -8,5 +8,4 @@ package module.workflow.domain;
 public enum SigningState {
 
     CREATED, PENDING, SIGNED, REFUSED
-
 }

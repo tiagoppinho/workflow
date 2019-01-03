@@ -9,8 +9,10 @@ import org.fenixedu.bennu.SmartsiignerSdkConfiguration;
 import org.fenixedu.bennu.core.domain.User;
 import org.fenixedu.bennu.core.security.Authenticate;
 import org.fenixedu.bennu.core.security.SkipCSRF;
+import org.fenixedu.employer.Employer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -27,6 +29,15 @@ import module.workflow.domain.WorkflowProcess;
 @RestController
 @RequestMapping("/workflow")
 public class CallbackController {
+
+    private final Employer employer;
+    private final CertifierService certifierService;
+
+    @Autowired
+    public CallbackController(Employer employer, final CertifierService certifierService) {
+        this.employer = employer;
+        this.certifierService = certifierService;
+    }
 
     private static final Logger logger = LoggerFactory.getLogger(CallbackController.class);
 
@@ -91,6 +102,10 @@ public class CallbackController {
                     logger.debug("   using handler: " + handler.getClass().getName());
                 }
                 processFile.setSignedFile(file, handler.signedFileName());
+
+                if (processFile.isToBeCertified() && !processFile.isCertified()) {
+                    certify(processFile);
+                }
             }
 
             if (logger.isDebugEnabled()) {
@@ -104,6 +119,10 @@ public class CallbackController {
         } finally {
             Authenticate.unmock();
         }
+    }
+
+    private void certify(final ProcessFile processFile) {
+        employer.offer(new CertifierJob(processFile, certifierService));
     }
 
 }
