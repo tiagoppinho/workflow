@@ -23,6 +23,13 @@
         <version.org.fenixedu.employer>1.0.0</version.org.fenixedu.employer>
     </properties>
 
+    <scm>
+        <connection>scm:git:git@github.com:fenixedu/workflow.git</connection>
+        <developerConnection>scm:git:git@github.com:fenixedu/workflow.git</developerConnection>
+        <url>https://github.com/FenixEdu/workflow</url>
+        <tag>HEAD</tag>
+    </scm>
+
     <dependencies>
         <dependency>
             <groupId>org.fenixedu</groupId>
