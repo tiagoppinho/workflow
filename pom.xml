@@ -9,7 +9,7 @@
     </parent>
 
     <artifactId>workflow</artifactId>
-    <version>3.5.0</version>
+    <version>3.6.0-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>Workflow</name>
 
@@ -26,7 +26,7 @@
         <connection>scm:git:git@github.com:fenixedu/workflow.git</connection>
         <developerConnection>scm:git:git@github.com:fenixedu/workflow.git</developerConnection>
         <url>https://github.com/FenixEdu/workflow</url>
-        <tag>v3.5.0</tag>
+        <tag>HEAD</tag>
     </scm>
 
     <dependencies>
