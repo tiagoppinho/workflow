@@ -4,7 +4,7 @@
     <parent>
         <groupId>org.fenixedu</groupId>
         <artifactId>fenix-framework-project</artifactId>
-        <version>2.2.0</version>
+        <version>2.5.2</version>
         <relativePath />
     </parent>
 
@@ -14,10 +14,10 @@
     <name>Workflow</name>
 
     <properties>
-        <version.org.fenixedu.bennu.core>5.1.1</version.org.fenixedu.bennu.core>
-        <version.org.fenixedu.dashboard>2.2.0</version.org.fenixedu.dashboard>
+        <version.org.fenixedu.bennu.core>6.1.0</version.org.fenixedu.bennu.core>
+        <version.org.fenixedu.dashboard>3.0.0</version.org.fenixedu.dashboard>
         <version.javax.servlet.jsp>2.1</version.javax.servlet.jsp>
-        <version.pt.ist.fenix-legacy-tools>2.0.0</version.pt.ist.fenix-legacy-tools>
+        <version.pt.ist.fenix-legacy-tools>2.1.0</version.pt.ist.fenix-legacy-tools>
         <version.pt.ist.smartsigner>2.0.0</version.pt.ist.smartsigner>
         <version.org.fenixedu.employer>1.0.0</version.org.fenixedu.employer>
     </properties>
