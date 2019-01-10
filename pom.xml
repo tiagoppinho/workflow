@@ -29,6 +29,11 @@
         <tag>HEAD</tag>
     </scm>
 
+    <issueManagement>
+        <system>JIRA</system>
+        <url>https://jira.fenixedu.org/browse/FWKW</url>
+    </issueManagement>
+
     <dependencies>
         <dependency>
             <groupId>org.fenixedu</groupId>
